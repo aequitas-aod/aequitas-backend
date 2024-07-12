@@ -59,3 +59,23 @@ class TestQuestionnairesAPI(unittest.TestCase):
             frozenset([a.text for a in first_question.answers]),
             frozenset([a.text for a in related_question.answers]),
         )
+
+    def test_select_answer(self):
+        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/1")
+        self.assertEqual(response.status_code, 200)
+        first_question: ProjectQuestion = deserialize(
+            json.loads(response.data), ProjectQuestion
+        )
+        answer = next(iter(first_question.answers))
+        expected_question: ProjectQuestion = first_question.select_answer(answer.id)
+        response = self.app.put(
+            f"/projects/{self.project_id.code}/questionnaire/1",
+            json={"answer_ids": [answer.id.code]},
+        )
+        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/1")
+        self.assertEqual(response.status_code, 200)
+        selected_question: ProjectQuestion = deserialize(
+            json.loads(response.data), ProjectQuestion
+        )
+        self.assertEqual(selected_question, expected_question)
+

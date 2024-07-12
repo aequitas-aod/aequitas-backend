@@ -1,7 +1,7 @@
 from typing import Optional, List, FrozenSet
 
 from application import GraphQuestionService
-from domain.common.core import QuestionId, Answer
+from domain.common.core import QuestionId, Answer, AnswerId
 from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectId, ProjectQuestion, ProjectAnswer
 from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
@@ -40,31 +40,40 @@ class QuestionnaireService:
             return q
         else:
             if nth == 1:
-                questions: List[GraphQuestion] = self.question_service.get_all_questions()
+                questions: List[GraphQuestion] = (
+                    self.question_service.get_all_questions()
+                )
                 question: Optional[GraphQuestion] = next(
                     filter(lambda x: len(x.enabled_by) == 0, questions), None
                 )
                 if question is None:
                     raise ValueError("No first question found")
-                project_answers: FrozenSet[ProjectAnswer] = frozenset([
-                    ProjectAnswerFactory.create_project_answer(a.id, a.text, False)
-                    for a in question.answers
-                ])
+
+                project_answers: List[ProjectAnswer] = []
+                for a in question.answers:
+                    project_answers.append(
+                        ProjectAnswerFactory.create_project_answer(
+                            AnswerId(code=f"{project_id.code}-{a.id.code}"),
+                            a.text,
+                            False,
+                        )
+                    )
                 new_q: ProjectQuestion = ProjectQuestionFactory.create_project_question(
                     QuestionId(code=f"{project_id.code}-{question.id.code}"),
                     question.text,
                     question.type,
-                    project_answers,
+                    frozenset(project_answers),
                 )
                 self.question_repository.insert_project_question(new_q)
                 return new_q
 
-
-
-    def insert_answer(
-        self, project_id: ProjectId, question_id: QuestionId, answer: Answer
+    def select_answers(
+        self, project_id: ProjectId, index: int, answer_ids: List[AnswerId]
     ) -> None:
-        pass
+        question: ProjectQuestion = self.get_nth_question(project_id, index)
+        for answer_id in answer_ids:
+            question = question.select_answer(answer_id)
+        self.question_repository.update_project_question(question.id, question)
 
     def reset_questionnaire(self, project_id: ProjectId) -> None:
         pass

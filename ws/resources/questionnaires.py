@@ -1,8 +1,9 @@
 from typing import Optional, List
 
-from flask import Blueprint
+from flask import Blueprint, request
 from flask_restful import Api, Resource
 
+from domain.common.core import AnswerId
 from domain.project.core import ProjectId, ProjectQuestion
 from presentation.presentation import serialize
 from utils.status_code import StatusCode
@@ -30,6 +31,14 @@ class QuestionnaireResource(Resource):
             )
             return [serialize(q) for q in questionnaire], StatusCode.OK
 
+    def put(self, project_id=None, index=None):
+        if project_id is None or index is None:
+            return "Missing project id or question index", StatusCode.BAD_REQUEST
+        else:
+            answer_ids_json = request.get_json()["answer_ids"]
+            answer_ids: List[AnswerId] = [AnswerId(code=code) for code in answer_ids_json]
+            questionnaire_service.select_answers(ProjectId(code=project_id), index, answer_ids)
+            return "Answer selected successfully", StatusCode.OK
     def delete(self, project_id=None, index=None):
         # Replace this with business logic
         return "", 404
