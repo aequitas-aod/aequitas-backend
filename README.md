@@ -6,9 +6,20 @@
 
 ## Getting Started
 
+### Installation
+
 - Run `pip install -r requirements.txt` to install poetry package manager.
 - Run `poetry install` to install the project dependencies. Poetry will create a virtual environment that will be used
   to handle project dependencies.
+
+### Running the service
+
+- Run `docker compose up -d` to start the database.
+- Starting the web server:
+  - `poe dev --port 4005` to run the service in the development mode.
+  - `poe serve --port 4005` to run the service in the production mode.
+- Interact with the service through the [Aequitas Frontend](https://github.com/aequitas-aod/aequitas-frontend/tree/feature/admin-view)
+
 
 ## Dependencies Management
 
@@ -19,8 +30,9 @@ You can add new dependencies to the project by running `poetry add <package-name
 package to the `pyproject.toml` file and install it in the virtual environment.
 
 ## Testing
+
 In order to run the whole test suite:
-  
+
 ```bash
 poe test
 ```
