@@ -1,4 +1,6 @@
-# Aequitas - Reasoner Service
+# Aequitas - Backend
+
+Web service implementing the Aequitas context service.
 
 ## Prerequisites
 
