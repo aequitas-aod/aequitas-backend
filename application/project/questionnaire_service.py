@@ -1,14 +1,22 @@
-from typing import Optional, List
+from typing import Optional, List, FrozenSet
 
+from application import GraphQuestionService
 from domain.common.core import QuestionId, Answer
-from domain.project.core import ProjectId, ProjectQuestion
+from domain.graph.core import GraphQuestion
+from domain.project.core import ProjectId, ProjectQuestion, ProjectAnswer
+from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
 
 
 class QuestionnaireService:
 
-    def __init__(self, questionnaire_repository: QuestionnaireRepository):
+    def __init__(
+        self,
+        questionnaire_repository: QuestionnaireRepository,
+        question_service: GraphQuestionService,
+    ):
         self.question_repository = questionnaire_repository
+        self.question_service = question_service
 
     def get_questionnaire(self, project_id: ProjectId) -> List[ProjectQuestion]:
         """
@@ -25,7 +33,33 @@ class QuestionnaireService:
         :param nth: the question index
         :return: the nth question
         """
-        return self.question_repository.get_nth_question(project_id, nth)
+        q: Optional[ProjectQuestion] = self.question_repository.get_nth_question(
+            project_id, nth
+        )
+        if q:
+            return q
+        else:
+            if nth == 1:
+                questions: List[GraphQuestion] = self.question_service.get_all_questions()
+                question: Optional[GraphQuestion] = next(
+                    filter(lambda x: len(x.enabled_by) == 0, questions), None
+                )
+                if question is None:
+                    raise ValueError("No first question found")
+                project_answers: FrozenSet[ProjectAnswer] = frozenset([
+                    ProjectAnswerFactory.create_project_answer(a.id, a.text, False)
+                    for a in question.answers
+                ])
+                new_q: ProjectQuestion = ProjectQuestionFactory.create_project_question(
+                    QuestionId(code=f"{project_id.code}-{question.id.code}"),
+                    question.text,
+                    question.type,
+                    project_answers,
+                )
+                self.question_repository.insert_project_question(new_q)
+                return new_q
+
+
 
     def insert_answer(
         self, project_id: ProjectId, question_id: QuestionId, answer: Answer

@@ -17,7 +17,8 @@ question_service: GraphQuestionService = GraphQuestionService(graph_question_rep
 
 questionnaire_repository: QuestionnaireRepository = Neo4jQuestionnaireRepository()
 questionnaire_service: QuestionnaireService = QuestionnaireService(
-    questionnaire_repository
+    questionnaire_repository,
+    question_service,
 )
 
 project_repository: ProjectRepository = Neo4jProjectRepository()

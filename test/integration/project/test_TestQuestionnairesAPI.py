@@ -9,7 +9,6 @@ from domain.project.core import ProjectId, ProjectQuestion
 from presentation.presentation import deserialize
 from test.utils.utils import get_file_path
 from ws.main import create_app
-from ws.utils.logger import logger
 
 
 class TestQuestionnairesAPI(unittest.TestCase):
@@ -44,8 +43,6 @@ class TestQuestionnairesAPI(unittest.TestCase):
     def test_get_first_question(self):
         response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/1")
         self.assertEqual(response.status_code, 200)
-        logger.info(response.data)
-        logger.info(json.loads(response.data))
         first_question: ProjectQuestion = deserialize(
             json.loads(response.data), ProjectQuestion
         )
@@ -53,10 +50,12 @@ class TestQuestionnairesAPI(unittest.TestCase):
         related_question: GraphQuestion = deserialize(
             json.loads(response.data), GraphQuestion
         )
-        self.assertEqual(first_question.answers, related_question.answers)
         self.assertEqual(
             first_question.id.code, f"{self.project_id.code}-{related_question.id.code}"
         )
         self.assertEqual(first_question.text, related_question.text)
         self.assertEqual(first_question.type, related_question.type)
-        self.assertEqual(first_question.selected_answers, [])
+        self.assertEqual(
+            frozenset([a.text for a in first_question.answers]),
+            frozenset([a.text for a in related_question.answers]),
+        )

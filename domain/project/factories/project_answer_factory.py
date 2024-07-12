@@ -6,6 +6,6 @@ class ProjectAnswerFactory:
 
     @staticmethod
     def create_project_answer(
-        project_id: AnswerId, text: str, selected: bool = False
+        project_answer_id: AnswerId, text: str, selected: bool = False
     ) -> ProjectAnswer:
-        return ProjectAnswer(id=project_id, text=text, selected=selected)
+        return ProjectAnswer(id=project_answer_id, text=text, selected=selected)
