@@ -183,9 +183,22 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             )
         )
 
-    def get_questionnaire(self) -> List[ProjectQuestion]:
-        # TODO
-        pass
+    def get_questionnaire(self, project_id: ProjectId) -> List[ProjectQuestion]:
+        query_string: str = (
+            "MATCH (p:Project {id: $project_code})-[:QUESTIONNAIRE]->(initial:ProjectQuestion) "
+            "MATCH path = (initial)-[:NEXT*1..]->(:ProjectQuestion) "
+            "WITH nodes(path) AS questions "
+            "RETURN questions"
+        )
+        query: Neo4jQuery = Neo4jQuery(query_string, {"project_code": project_id.code})
+        res: List[dict] = self.driver.query(query)
+        questions: List[ProjectQuestion] = []
+        for q in res[len(res) - 1]["questions"]:
+            question: ProjectQuestion = self.get_project_question_by_id(
+                QuestionId(code=q["id"])
+            )
+            questions.append(question)
+        return questions
 
     def _check_project_question_exists(self, question_id: QuestionId) -> bool:
         q: ProjectQuestion = self.get_project_question_by_id(question_id)
@@ -300,8 +313,8 @@ if __name__ == "__main__":
     # print(updated_question.selection_strategy.__class__.__name__)
     # print(questionnaire_repository.get_project_question_by_id(project_question.id))
     # print(questionnaire_repository.get_project_question_by_id(project_question2.id))
-    print(questionnaire_repository.get_nth_question(ProjectId(code="p1"), 1))
-    print(questionnaire_repository.get_nth_question(ProjectId(code="p1"), 2))
+    # print(questionnaire_repository.get_nth_question(ProjectId(code="p1"), 1))
+    print(questionnaire_repository.get_questionnaire(ProjectId(code="p1")))
 
     # questionnaire_repository.delete_project_question(project_question.id)
     # questionnaire_repository.delete_project_question(project_question2.id)

@@ -8,9 +8,10 @@ from domain.project.core import ProjectQuestion, ProjectId
 class QuestionnaireRepository(ABC):
 
     @abstractmethod
-    def get_questionnaire(self) -> List[ProjectQuestion]:
-        """Gets all questions of the questionnaire
-        :return: a list of all questions"""
+    def get_questionnaire(self, project_id: ProjectId) -> List[ProjectQuestion]:
+        """Gets all questions a project questionnaire
+        :param project_id: the project id
+        :return: the list of questions"""
         pass
 
     @abstractmethod
