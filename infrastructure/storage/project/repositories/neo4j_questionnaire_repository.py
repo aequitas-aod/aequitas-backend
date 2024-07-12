@@ -24,6 +24,57 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         )
         self.project_repository: ProjectRepository = Neo4jProjectRepository()
 
+    def get_nth_question(
+        self, project_id: ProjectId, index: int
+    ) -> Optional[ProjectQuestion]:
+        if index <= 0:
+            raise ValueError("Index must be greater than 0")
+        elif index == 1:
+            query_string: str = (
+                "MATCH (p:Project {id: $project_code})-[:QUESTIONNAIRE]->(q:ProjectQuestion) "
+                "OPTIONAL MATCH (q)-[:HAS_AVAILABLE]->(available:Answer) "
+                "OPTIONAL MATCH (q)-[:HAS_SELECTED]->(selected:Answer) "
+                "RETURN q, COLLECT(available) AS available_answers, COLLECT(selected) AS selected_answers"
+            )
+            query: Neo4jQuery = Neo4jQuery(
+                query_string, {"project_code": project_id.code}
+            )
+            res: List[dict] = self.driver.query(query)
+            if len(res) == 0:
+                return None
+            question: ProjectQuestion = self._convert_node_in_project_question(
+                res[0]["q"],
+                res[0]["available_answers"],
+                res[0]["selected_answers"],
+                None,
+            )
+            return question
+        else:
+            up_to_index: int = index - 1
+            query_string: str = (
+                "MATCH (p:Project {id: $project_code})-[:QUESTIONNAIRE]->(initial:ProjectQuestion) "
+                "MATCH path = (initial)-[:NEXT*1..]->(:ProjectQuestion) "
+                "WITH nodes(path) AS questions "
+                "WITH questions[$index - 1] AS prev_q, questions[$index] AS q "
+                "OPTIONAL MATCH (q)-[:HAS_AVAILABLE]->(available:Answer) "
+                "OPTIONAL MATCH (q)-[:HAS_SELECTED]->(selected:Answer) "
+                "RETURN q, COLLECT(available) AS available_answers, COLLECT(selected) AS selected_answers, prev_q"
+            )
+            query: Neo4jQuery = Neo4jQuery(
+                query_string, {"project_code": project_id.code, "index": up_to_index}
+            )
+            res: List[dict] = self.driver.query(query)
+            print(res[0]["q"])
+            if len(res) == 0:
+                return None
+            question: ProjectQuestion = self._convert_node_in_project_question(
+                res[0]["q"],
+                res[0]["available_answers"],
+                res[0]["selected_answers"],
+                res[0]["prev_q"],
+            )
+            return question
+
     def get_project_question_by_id(
         self, question_id: QuestionId
     ) -> Optional[ProjectQuestion]:
@@ -31,7 +82,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             "MATCH (q:ProjectQuestion {id: $question_id})-[:HAS_AVAILABLE]->(available:Answer) "
             "OPTIONAL MATCH (q)-[:HAS_SELECTED]->(selected:Answer) "
             "OPTIONAL MATCH (prev_q: ProjectQuestion)-[:NEXT]->(q)"
-            "RETURN q, COLLECT(available) AS available_answers, COLLECT(selected) AS selected_answers, prev_q as previous_question"
+            "RETURN q, COLLECT(available) AS available_answers, COLLECT(selected) AS selected_answers, prev_q"
         )
         query: Neo4jQuery = Neo4jQuery(query_string, {"question_id": question_id.code})
         res: List[dict] = self.driver.query(query)
@@ -41,7 +92,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             res[0]["q"],
             res[0]["available_answers"],
             res[0]["selected_answers"],
-            res[0]["previous_question"],
+            res[0]["prev_q"],
         )
         return question
 
@@ -133,6 +184,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         )
 
     def get_questionnaire(self) -> List[ProjectQuestion]:
+        # TODO
         pass
 
     def _check_project_question_exists(self, question_id: QuestionId) -> bool:
@@ -164,7 +216,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         q: dict,
         available_answers: List,
         selected_answers: List,
-        previous_question: dict,
+        previous_question: Optional[dict],
     ) -> ProjectQuestion:
         question: dict = q
         question["id"] = {"code": q["id"]}
@@ -178,75 +230,78 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             }
             for a in available_answers
         ]
-        question["previous_question_id"] = (
-            {"code": previous_question['id']} if previous_question else None
-        )
-        logger.info(f"question: {question}")
+        if previous_question:
+            question["previous_question_id"] = (
+                {"code": previous_question["id"]} if previous_question else None
+            )
+        else:
+            question["previous_question_id"] = None
         return deserialize(question, ProjectQuestion)
 
 
 if __name__ == "__main__":
     questionnaire_repository: QuestionnaireRepository = Neo4jQuestionnaireRepository()
-    project_question: ProjectQuestion = ProjectQuestionFactory.create_project_question(
-        QuestionId(code="p1-Q-1"),
-        text="What is your favorite color?",
-        question_type=QuestionType.SINGLE_CHOICE,
-        answers=frozenset(
-            {
-                ProjectAnswerFactory.create_project_answer(
-                    AnswerId(code="p1-Q-1-A-1"), "Red"
-                ),
-                ProjectAnswerFactory.create_project_answer(
-                    AnswerId(code="p1-Q-1-A-2"), "Green"
-                ),
-                ProjectAnswerFactory.create_project_answer(
-                    AnswerId(code="p1-Q-1-A-3"), "Blue"
-                ),
-            }
-        ),
-    )
-    updated_question: ProjectQuestion = project_question.select_answer(
-        ProjectAnswerFactory.create_project_answer(
-            AnswerId(code="p1-Q-1-A-1"), "Red"
-        ).id
-    )
-    project_question2: ProjectQuestion = ProjectQuestionFactory.create_project_question(
-        QuestionId(code="p1-Q-2"),
-        text="What is your favorite animal?",
-        question_type=QuestionType.SINGLE_CHOICE,
-        answers=frozenset(
-            {
-                ProjectAnswerFactory.create_project_answer(
-                    AnswerId(code="p1-Q-2-A-1"), "Dog"
-                ),
-                ProjectAnswerFactory.create_project_answer(
-                    AnswerId(code="p1-Q-2-A-2"), "Cat"
-                ),
-                ProjectAnswerFactory.create_project_answer(
-                    AnswerId(code="p1-Q-2-A-3"), "Bird"
-                ),
-            }
-        ),
-        previous_question_id=QuestionId(code="p1-Q-1"),
-    )
-    updated_question2: ProjectQuestion = project_question2.select_answer(
-        ProjectAnswerFactory.create_project_answer(
-            AnswerId(code="p1-Q-2-A-1"), "Dog"
-        ).id
-    )
-
-    questionnaire_repository.insert_project_question(project_question)
-    questionnaire_repository.update_project_question(
-        project_question.id, updated_question
-    )
-    questionnaire_repository.insert_project_question(project_question2)
-    questionnaire_repository.update_project_question(
-        project_question2.id, updated_question2
-    )
+    # project_question: ProjectQuestion = ProjectQuestionFactory.create_project_question(
+    #     QuestionId(code="p1-Q-1"),
+    #     text="What is your favorite color?",
+    #     question_type=QuestionType.SINGLE_CHOICE,
+    #     answers=frozenset(
+    #         {
+    #             ProjectAnswerFactory.create_project_answer(
+    #                 AnswerId(code="p1-Q-1-A-1"), "Red"
+    #             ),
+    #             ProjectAnswerFactory.create_project_answer(
+    #                 AnswerId(code="p1-Q-1-A-2"), "Green"
+    #             ),
+    #             ProjectAnswerFactory.create_project_answer(
+    #                 AnswerId(code="p1-Q-1-A-3"), "Blue"
+    #             ),
+    #         }
+    #     ),
+    # )
+    # updated_question: ProjectQuestion = project_question.select_answer(
+    #     ProjectAnswerFactory.create_project_answer(
+    #         AnswerId(code="p1-Q-1-A-1"), "Red"
+    #     ).id
+    # )
+    # project_question2: ProjectQuestion = ProjectQuestionFactory.create_project_question(
+    #     QuestionId(code="p1-Q-2"),
+    #     text="What is your favorite animal?",
+    #     question_type=QuestionType.SINGLE_CHOICE,
+    #     answers=frozenset(
+    #         {
+    #             ProjectAnswerFactory.create_project_answer(
+    #                 AnswerId(code="p1-Q-2-A-1"), "Dog"
+    #             ),
+    #             ProjectAnswerFactory.create_project_answer(
+    #                 AnswerId(code="p1-Q-2-A-2"), "Cat"
+    #             ),
+    #             ProjectAnswerFactory.create_project_answer(
+    #                 AnswerId(code="p1-Q-2-A-3"), "Bird"
+    #             ),
+    #         }
+    #     ),
+    #     previous_question_id=QuestionId(code="p1-Q-1"),
+    # )
+    # updated_question2: ProjectQuestion = project_question2.select_answer(
+    #     ProjectAnswerFactory.create_project_answer(
+    #         AnswerId(code="p1-Q-2-A-1"), "Dog"
+    #     ).id
+    # )
+    #
+    # questionnaire_repository.insert_project_question(project_question)
+    # questionnaire_repository.update_project_question(
+    #     project_question.id, updated_question
+    # )
+    # questionnaire_repository.insert_project_question(project_question2)
+    # questionnaire_repository.update_project_question(
+    #     project_question2.id, updated_question2
+    # )
     # print(updated_question.selection_strategy.__class__.__name__)
-    print(questionnaire_repository.get_project_question_by_id(project_question.id))
-    print(questionnaire_repository.get_project_question_by_id(project_question2.id))
+    # print(questionnaire_repository.get_project_question_by_id(project_question.id))
+    # print(questionnaire_repository.get_project_question_by_id(project_question2.id))
+    print(questionnaire_repository.get_nth_question(ProjectId(code="p1"), 1))
+    print(questionnaire_repository.get_nth_question(ProjectId(code="p1"), 2))
 
-    questionnaire_repository.delete_project_question(project_question.id)
-    questionnaire_repository.delete_project_question(project_question2.id)
-
+    # questionnaire_repository.delete_project_question(project_question.id)
+    # questionnaire_repository.delete_project_question(project_question2.id)

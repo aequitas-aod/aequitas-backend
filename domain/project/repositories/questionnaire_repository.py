@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from domain.common.core import QuestionId
-from domain.project.core import ProjectQuestion
+from domain.project.core import ProjectQuestion, ProjectId
 
 
 class QuestionnaireRepository(ABC):
@@ -12,6 +12,15 @@ class QuestionnaireRepository(ABC):
         """Gets all questions of the questionnaire
         :return: a list of all questions"""
         pass
+
+    @abstractmethod
+    def get_nth_question(
+        self, project_id: ProjectId, index: int
+    ) -> Optional[ProjectQuestion]:
+        """Gets the nth question of the questionnaire of a project
+        :param project_id: the project id
+        :param index: the index of the question
+        :return: the nth question or None if it does not exist"""
 
     @abstractmethod
     def get_project_question_by_id(
