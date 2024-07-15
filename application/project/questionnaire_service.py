@@ -6,7 +6,6 @@ from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectId, ProjectQuestion, ProjectAnswer
 from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
-from ws.utils.logger import logger
 
 
 class QuestionnaireService:
@@ -75,6 +74,33 @@ class QuestionnaireService:
         for answer_id in answer_ids:
             question = question.select_answer(answer_id)
         self.questionnaire_repository.update_project_question(question.id, question)
+        graph_q_id: QuestionId = QuestionId(
+            code=question.id.code.replace(project_id.code + "-", "")
+        )
+        graph_answer_ids: List[AnswerId] = [
+            AnswerId(code=answer_id.code.replace(project_id.code + "-", ""))
+            for answer_id in answer_ids
+        ]
+        enabled_question: Optional[GraphQuestion] = (
+            self.question_service.get_enabled_question(graph_q_id, graph_answer_ids)
+        )
+        if enabled_question:
+            project_answers: List[ProjectAnswer] = []
+            for a in enabled_question.answers:
+                project_answers.append(
+                    ProjectAnswerFactory.create_project_answer(
+                        AnswerId(code=f"{project_id.code}-{a.id.code}"),
+                        a.text,
+                        False,
+                    )
+                )
+            new_q: ProjectQuestion = ProjectQuestionFactory.create_project_question(
+                QuestionId(code=f"{project_id.code}-{enabled_question.id.code}"),
+                enabled_question.text,
+                enabled_question.type,
+                frozenset(project_answers),
+            )
+            self.questionnaire_repository.insert_project_question(new_q)
 
     def reset_questionnaire(self, project_id: ProjectId) -> None:
         pass
@@ -86,9 +112,9 @@ class QuestionnaireService:
         last: Optional[ProjectQuestion] = (
             self.questionnaire_repository.get_last_question(project_id)
         )
-        logger.info(f"Last question: {last}")
         if last is None:
             raise ValueError("No questions exist in the questionnaire")
         if last.id != self.get_nth_question(project_id, index).id:
             raise ValueError("Question was not the last in the questionnaire")
         self.questionnaire_repository.delete_project_question(last.id)
+

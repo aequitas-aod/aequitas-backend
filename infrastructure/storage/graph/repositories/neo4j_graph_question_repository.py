@@ -10,6 +10,7 @@ from presentation.presentation import serialize, deserialize
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
 from utils.errors import NotFoundError, ConflictError
 from utils.neo4j_driver import Neo4jDriver, Credentials, Neo4jQuery
+from ws.utils.logger import logger
 
 
 class Neo4JGraphQuestionRepository(GraphQuestionRepository):
@@ -114,6 +115,32 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
             return None
         question: GraphQuestion = self._convert_node_in_question(
             r[0]["q"], r[0]["answers"]
+        )
+        return question
+
+    def get_enabled_question(
+        self, question_id: QuestionId, answer_ids: List[AnswerId]
+    ) -> Optional[GraphQuestion]:
+        query_string = (
+            "OPTIONAL MATCH (q:GraphQuestion {id: $question_id})-[:HAS_ANSWER]->(a:Answer) "
+            "WHERE a.id IN $answer_ids "
+            "OPTIONAL MATCH (q_enabled:GraphQuestion)-[:ENABLED_BY]->(a:Answer) "
+            "OPTIONAL MATCH (q_enabled)-[:HAS_ANSWER]->(a_enabled:Answer) "
+            "RETURN q_enabled, COLLECT(a_enabled) AS answers"
+        )
+        query: Neo4jQuery = Neo4jQuery(
+            query_string,
+            {
+                "question_id": question_id.code,
+                "answer_ids": [a.code for a in answer_ids],
+            },
+        )
+        r: List[dict] = self.driver.query(query)
+        logger.info(f"RES: {r}")
+        if len(r) == 0:
+            return None
+        question: GraphQuestion = self._convert_node_in_question(
+            r[0]["q_enabled"], r[0]["answers"]
         )
         return question
 

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from domain.common.core import QuestionId
+from domain.common.core import QuestionId, AnswerId
 from domain.graph.core import GraphQuestion
 
 
@@ -47,4 +47,16 @@ class GraphQuestionRepository(ABC):
     def get_last_inserted_question(self) -> Optional[GraphQuestion]:
         """Gets the last inserted question
         :return: the last inserted question"""
+        pass
+
+    @abstractmethod
+    def get_enabled_question(
+        self, question_id: QuestionId, answer_ids: List[AnswerId]
+    ) -> Optional[GraphQuestion]:
+        """
+        Gets the enabled question given a question and a list of answers
+        :param question_id: the question id
+        :param answer_ids: the list of answer ids
+        :return: the enabled question or None there is no enabled question
+        """
         pass
