@@ -1,9 +1,7 @@
 from typing import List, Optional
 
-from domain.common.core import QuestionId, AnswerId
-from domain.common.core.enum import QuestionType
+from domain.common.core import QuestionId
 from domain.project.core import ProjectQuestion, Project, ProjectId, ProjectAnswer
-from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
 from domain.project.repositories import ProjectRepository
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
 from infrastructure.storage.project.repositories.neo4j_project_repository import (
@@ -13,7 +11,6 @@ from presentation.presentation import serialize, deserialize
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
 from utils.errors import NotFoundError
 from utils.neo4j_driver import Neo4jDriver, Credentials, Neo4jQuery
-from ws.utils.logger import logger
 
 
 class Neo4jQuestionnaireRepository(QuestionnaireRepository):
@@ -234,14 +231,13 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         question: dict = q
         question["id"] = {"code": q["id"]}
         question["selection_strategy"] = {"type": q["selection_strategy"]}
-        selected_ids = {a["id"] for a in selected_answers}
         question["answers"] = [
             {
                 "id": {"code": a["id"]},
                 "text": a["text"],
-                "selected": a["id"] in selected_ids,
+                "selected": a in selected_answers,
             }
-            for a in available_answers
+            for a in available_answers + selected_answers
         ]
         if previous_question:
             question["previous_question_id"] = (

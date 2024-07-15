@@ -36,9 +36,14 @@ class QuestionnaireResource(Resource):
             return "Missing project id or question index", StatusCode.BAD_REQUEST
         else:
             answer_ids_json = request.get_json()["answer_ids"]
-            answer_ids: List[AnswerId] = [AnswerId(code=code) for code in answer_ids_json]
-            questionnaire_service.select_answers(ProjectId(code=project_id), index, answer_ids)
+            answer_ids: List[AnswerId] = [
+                AnswerId(code=code) for code in answer_ids_json
+            ]
+            questionnaire_service.select_answers(
+                ProjectId(code=project_id), index, answer_ids
+            )
             return "Answer selected successfully", StatusCode.OK
+
     def delete(self, project_id=None, index=None):
         # Replace this with business logic
         return "", 404

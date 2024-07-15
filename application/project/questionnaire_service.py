@@ -1,7 +1,7 @@
-from typing import Optional, List, FrozenSet
+from typing import Optional, List
 
 from application import GraphQuestionService
-from domain.common.core import QuestionId, Answer, AnswerId
+from domain.common.core import QuestionId, AnswerId
 from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectId, ProjectQuestion, ProjectAnswer
 from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory

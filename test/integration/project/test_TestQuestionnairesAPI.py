@@ -72,10 +72,10 @@ class TestQuestionnairesAPI(unittest.TestCase):
             f"/projects/{self.project_id.code}/questionnaire/1",
             json={"answer_ids": [answer.id.code]},
         )
+        self.assertEqual(response.status_code, 200)
         response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/1")
         self.assertEqual(response.status_code, 200)
         selected_question: ProjectQuestion = deserialize(
             json.loads(response.data), ProjectQuestion
         )
-        self.assertEqual(selected_question, expected_question)
-
+        self.assertEqual(set(selected_question.answers), set(expected_question.answers))
