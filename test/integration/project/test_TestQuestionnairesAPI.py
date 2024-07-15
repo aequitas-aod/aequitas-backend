@@ -79,3 +79,9 @@ class TestQuestionnairesAPI(unittest.TestCase):
             json.loads(response.data), ProjectQuestion
         )
         self.assertEqual(set(selected_question.answers), set(expected_question.answers))
+
+    def test_select_wrong_answer(self):
+        response = self.app.put(
+            f"/projects/{self.project_id.code}/questionnaire/1", json={"answer_ids": ["not-existing"]}
+        )
+        self.assertEqual(response.status_code, 400)

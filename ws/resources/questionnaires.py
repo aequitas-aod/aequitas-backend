@@ -39,9 +39,12 @@ class QuestionnaireResource(Resource):
             answer_ids: List[AnswerId] = [
                 AnswerId(code=code) for code in answer_ids_json
             ]
-            questionnaire_service.select_answers(
-                ProjectId(code=project_id), index, answer_ids
-            )
+            try:
+                questionnaire_service.select_answers(
+                    ProjectId(code=project_id), index, answer_ids
+                )
+            except ValueError:
+                return "Answer selected is not in the set of available answers", StatusCode.BAD_REQUEST
             return "Answer selected successfully", StatusCode.OK
 
     def delete(self, project_id=None, index=None):
