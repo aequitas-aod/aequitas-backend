@@ -43,29 +43,18 @@ class QuestionnaireService:
                 questions: List[GraphQuestion] = (
                     self.question_service.get_all_questions()
                 )
-                question: Optional[GraphQuestion] = next(
+                graph_question: Optional[GraphQuestion] = next(
                     filter(lambda x: len(x.enabled_by) == 0, questions), None
                 )
-                if question is None:
+                if graph_question is None:
                     raise ValueError("No first question found")
-
-                project_answers: List[ProjectAnswer] = []
-                for a in question.answers:
-                    project_answers.append(
-                        ProjectAnswerFactory.create_project_answer(
-                            AnswerId(code=f"{project_id.code}-{a.id.code}"),
-                            a.text,
-                            False,
-                        )
+                project_question: ProjectQuestion = (
+                    ProjectQuestionFactory.from_graph_question(
+                        graph_question, project_id
                     )
-                new_q: ProjectQuestion = ProjectQuestionFactory.create_project_question(
-                    QuestionId(code=f"{project_id.code}-{question.id.code}"),
-                    question.text,
-                    question.type,
-                    frozenset(project_answers),
                 )
-                self.questionnaire_repository.insert_project_question(new_q)
-                return new_q
+                self.questionnaire_repository.insert_project_question(project_question)
+                return project_question
 
     def select_answers(
         self, project_id: ProjectId, index: int, answer_ids: List[AnswerId]
@@ -85,20 +74,8 @@ class QuestionnaireService:
             self.question_service.get_enabled_question(graph_q_id, graph_answer_ids)
         )
         if enabled_question:
-            project_answers: List[ProjectAnswer] = []
-            for a in enabled_question.answers:
-                project_answers.append(
-                    ProjectAnswerFactory.create_project_answer(
-                        AnswerId(code=f"{project_id.code}-{a.id.code}"),
-                        a.text,
-                        False,
-                    )
-                )
-            new_q: ProjectQuestion = ProjectQuestionFactory.create_project_question(
-                QuestionId(code=f"{project_id.code}-{enabled_question.id.code}"),
-                enabled_question.text,
-                enabled_question.type,
-                frozenset(project_answers),
+            new_q: ProjectQuestion = ProjectQuestionFactory.from_graph_question(
+                enabled_question, project_id
             )
             self.questionnaire_repository.insert_project_question(new_q)
 
@@ -117,4 +94,3 @@ class QuestionnaireService:
         if last.id != self.get_nth_question(project_id, index).id:
             raise ValueError("Question was not the last in the questionnaire")
         self.questionnaire_repository.delete_project_question(last.id)
-

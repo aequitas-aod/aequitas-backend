@@ -1,10 +1,11 @@
 from datetime import datetime
-from typing import FrozenSet
+from typing import FrozenSet, List
 
 from domain.common.core import Answer, AnswerId, QuestionId
 from domain.common.core.enum import QuestionType
 from domain.common.factories import AnswerFactory
-from domain.project.core import ProjectQuestion, ProjectAnswer
+from domain.graph.core import GraphQuestion
+from domain.project.core import ProjectQuestion, ProjectAnswer, ProjectId
 from domain.project.core.selection import (
     MultipleSelectionStrategy,
     SingleSelectionStrategy,
@@ -74,4 +75,22 @@ class ProjectQuestionFactory:
             answers,
             created_at,
             previous_question_id=previous_question_id,
+        )
+
+    @staticmethod
+    def from_graph_question(graph_question: GraphQuestion, project_id: ProjectId):
+        project_answers: List[ProjectAnswer] = []
+        for a in graph_question.answers:
+            project_answers.append(
+                ProjectAnswerFactory.create_project_answer(
+                    AnswerId(code=f"{project_id.code}-{a.id.code}"),
+                    a.text,
+                    False,
+                )
+            )
+        return ProjectQuestionFactory.create_project_question(
+            QuestionId(code=f"{project_id.code}-{graph_question.id.code}"),
+            graph_question.text,
+            graph_question.type,
+            frozenset(project_answers),
         )
