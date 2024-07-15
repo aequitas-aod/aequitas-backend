@@ -11,6 +11,7 @@ from presentation.presentation import serialize, deserialize
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
 from utils.errors import NotFoundError
 from utils.neo4j_driver import Neo4jDriver, Credentials, Neo4jQuery
+from ws.utils.logger import logger
 
 
 class Neo4jQuestionnaireRepository(QuestionnaireRepository):
@@ -71,6 +72,23 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                 res[0]["prev_q"],
             )
             return question
+
+    def get_last_question(self, project_id: ProjectId) -> Optional[ProjectQuestion]:
+        query_string: str = (
+            "MATCH (p:Project {id: $project_code})-[:QUESTIONNAIRE]->(initial:ProjectQuestion) "
+            "MATCH path = (initial)-[:NEXT*0..]->(:ProjectQuestion) "
+            "WITH nodes(path) AS questions "
+            "RETURN questions[-1] AS q"
+        )
+        query: Neo4jQuery = Neo4jQuery(query_string, {"project_code": project_id.code})
+        res: List[dict] = self.driver.query(query)
+        logger.info(f"RES {res}")
+        if len(res) == 0:
+            return None
+        question: ProjectQuestion = self.get_project_question_by_id(
+            QuestionId(code=res[0]["q"]["id"])
+        )
+        return question
 
     def get_project_question_by_id(
         self, question_id: QuestionId

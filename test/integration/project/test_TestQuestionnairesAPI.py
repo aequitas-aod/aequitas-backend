@@ -50,15 +50,7 @@ class TestQuestionnairesAPI(unittest.TestCase):
         related_question: GraphQuestion = deserialize(
             json.loads(response.data), GraphQuestion
         )
-        self.assertEqual(
-            first_question.id.code, f"{self.project_id.code}-{related_question.id.code}"
-        )
-        self.assertEqual(first_question.text, related_question.text)
-        self.assertEqual(first_question.type, related_question.type)
-        self.assertEqual(
-            frozenset([a.text for a in first_question.answers]),
-            frozenset([a.text for a in related_question.answers]),
-        )
+        self._compare_questions(first_question, related_question)
 
     def test_select_answer(self):
         response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/1")
@@ -82,6 +74,34 @@ class TestQuestionnairesAPI(unittest.TestCase):
 
     def test_select_wrong_answer(self):
         response = self.app.put(
-            f"/projects/{self.project_id.code}/questionnaire/1", json={"answer_ids": ["not-existing"]}
+            f"/projects/{self.project_id.code}/questionnaire/1",
+            json={"answer_ids": ["not-existing"]},
         )
         self.assertEqual(response.status_code, 400)
+
+    # def test_remove_question(self):
+    #     response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire/1")
+    #     self.assertEqual(response.status_code, 200)
+    #     response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/1")
+    #     self.assertEqual(response.status_code, 400)
+
+    # def test_get_second_question(self):
+    #     response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/2")
+    #     self.assertEqual(response.status_code, 200)
+    #     second_question: ProjectQuestion = deserialize(
+    #         json.loads(response.data), ProjectQuestion
+    #     )
+    #     response = self.app.get(f"questions/{self.questions[1].id.code}")
+    #     related_question: GraphQuestion = deserialize(
+    #         json.loads(response.data), GraphQuestion
+    #     )
+    #     self._compare_questions(second_question, related_question)
+
+    def _compare_questions(self, q1: ProjectQuestion, q2: GraphQuestion):
+        self.assertEqual(q1.id.code, f"{self.project_id.code}-{q2.id.code}")
+        self.assertEqual(q1.text, q2.text)
+        self.assertEqual(q1.type, q2.type)
+        self.assertEqual(
+            frozenset([a.text for a in q1.answers]),
+            frozenset([a.text for a in q2.answers]),
+        )

@@ -6,6 +6,7 @@ from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectId, ProjectQuestion, ProjectAnswer
 from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
+from ws.utils.logger import logger
 
 
 class QuestionnaireService:
@@ -15,7 +16,7 @@ class QuestionnaireService:
         questionnaire_repository: QuestionnaireRepository,
         question_service: GraphQuestionService,
     ):
-        self.question_repository = questionnaire_repository
+        self.questionnaire_repository = questionnaire_repository
         self.question_service = question_service
 
     def get_questionnaire(self, project_id: ProjectId) -> List[ProjectQuestion]:
@@ -24,7 +25,7 @@ class QuestionnaireService:
         :param project_id: the project id
         :return: the list of questions
         """
-        return self.question_repository.get_questionnaire(project_id)
+        return self.questionnaire_repository.get_questionnaire(project_id)
 
     def get_nth_question(self, project_id: ProjectId, nth: int) -> ProjectQuestion:
         """
@@ -33,7 +34,7 @@ class QuestionnaireService:
         :param nth: the question index
         :return: the nth question
         """
-        q: Optional[ProjectQuestion] = self.question_repository.get_nth_question(
+        q: Optional[ProjectQuestion] = self.questionnaire_repository.get_nth_question(
             project_id, nth
         )
         if q:
@@ -64,7 +65,7 @@ class QuestionnaireService:
                     question.type,
                     frozenset(project_answers),
                 )
-                self.question_repository.insert_project_question(new_q)
+                self.questionnaire_repository.insert_project_question(new_q)
                 return new_q
 
     def select_answers(
@@ -73,10 +74,21 @@ class QuestionnaireService:
         question: ProjectQuestion = self.get_nth_question(project_id, index)
         for answer_id in answer_ids:
             question = question.select_answer(answer_id)
-        self.question_repository.update_project_question(question.id, question)
+        self.questionnaire_repository.update_project_question(question.id, question)
 
     def reset_questionnaire(self, project_id: ProjectId) -> None:
         pass
 
-    def _get_question_from_graph(self, question_id: QuestionId):
-        pass
+    # def _get_question_from_graph(self, question_id: QuestionId):
+    #     pass
+
+    def remove_question(self, project_id: ProjectId, index: int) -> None:
+        last: Optional[ProjectQuestion] = (
+            self.questionnaire_repository.get_last_question(project_id)
+        )
+        logger.info(f"Last question: {last}")
+        if last is None:
+            raise ValueError("No questions exist in the questionnaire")
+        if last.id != self.get_nth_question(project_id, index).id:
+            raise ValueError("Question was not the last in the questionnaire")
+        self.questionnaire_repository.delete_project_question(last.id)

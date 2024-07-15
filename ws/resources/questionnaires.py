@@ -44,12 +44,24 @@ class QuestionnaireResource(Resource):
                     ProjectId(code=project_id), index, answer_ids
                 )
             except ValueError:
-                return "Answer selected is not in the set of available answers", StatusCode.BAD_REQUEST
+                return (
+                    "Answer selected is not in the set of available answers",
+                    StatusCode.BAD_REQUEST,
+                )
             return "Answer selected successfully", StatusCode.OK
 
     def delete(self, project_id=None, index=None):
-        # Replace this with business logic
-        return "", 404
+        if project_id is None or index is None:
+            return "Missing project id or question index", StatusCode.BAD_REQUEST
+        else:
+            try:
+                questionnaire_service.remove_question(ProjectId(code=project_id), index)
+                return "Question removed successfully", StatusCode.OK
+            except ValueError:
+                return (
+                    "Question was not the last in the questionnaire",
+                    StatusCode.BAD_REQUEST,
+                )
 
 
 api.add_resource(

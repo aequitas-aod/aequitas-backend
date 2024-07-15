@@ -24,6 +24,14 @@ class QuestionnaireRepository(ABC):
         :return: the nth question or None if it does not exist"""
 
     @abstractmethod
+    def get_last_question(self, project_id: ProjectId) -> Optional[ProjectQuestion]:
+        """
+        Get the last question of the questionnaire of a project
+        :param project_id: the project id
+        :return: the last question or None if it does not exist
+        """
+
+    @abstractmethod
     def get_project_question_by_id(
         self, question_id: QuestionId
     ) -> Optional[ProjectQuestion]:
