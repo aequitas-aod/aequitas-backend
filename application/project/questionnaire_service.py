@@ -50,7 +50,7 @@ class QuestionnaireService:
                     raise ValueError("No first question found")
                 project_question: ProjectQuestion = (
                     ProjectQuestionFactory.from_graph_question(
-                        graph_question, project_id
+                        graph_question, project_id, None
                     )
                 )
                 self.questionnaire_repository.insert_project_question(project_question)
@@ -75,7 +75,7 @@ class QuestionnaireService:
         )
         if enabled_question:
             new_q: ProjectQuestion = ProjectQuestionFactory.from_graph_question(
-                enabled_question, project_id
+                enabled_question, project_id, question.id
             )
             self.questionnaire_repository.insert_project_question(new_q)
 

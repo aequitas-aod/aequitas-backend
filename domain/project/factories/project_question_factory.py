@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import FrozenSet, List
+from typing import FrozenSet, List, Optional
 
 from domain.common.core import Answer, AnswerId, QuestionId
 from domain.common.core.enum import QuestionType
@@ -78,7 +78,11 @@ class ProjectQuestionFactory:
         )
 
     @staticmethod
-    def from_graph_question(graph_question: GraphQuestion, project_id: ProjectId):
+    def from_graph_question(
+        graph_question: GraphQuestion,
+        project_id: ProjectId,
+        previous_question_id: Optional[QuestionId],
+    ) -> ProjectQuestion:
         project_answers: List[ProjectAnswer] = []
         for a in graph_question.answers:
             project_answers.append(
@@ -93,4 +97,5 @@ class ProjectQuestionFactory:
             graph_question.text,
             graph_question.type,
             frozenset(project_answers),
+            previous_question_id=previous_question_id,
         )
