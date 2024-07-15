@@ -11,7 +11,6 @@ from presentation.presentation import serialize, deserialize
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
 from utils.errors import NotFoundError
 from utils.neo4j_driver import Neo4jDriver, Credentials, Neo4jQuery
-from ws.utils.logger import logger
 
 
 class Neo4jQuestionnaireRepository(QuestionnaireRepository):
@@ -62,7 +61,6 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                 query_string, {"project_code": project_id.code, "index": up_to_index}
             )
             res: List[dict] = self.driver.query(query)
-            print(res[0]["q"])
             if len(res) == 0:
                 return None
             question: ProjectQuestion = self._convert_node_in_project_question(
@@ -82,7 +80,6 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         )
         query: Neo4jQuery = Neo4jQuery(query_string, {"project_code": project_id.code})
         res: List[dict] = self.driver.query(query)
-        logger.info(f"RES {res}")
         if len(res) == 0:
             return None
         question: ProjectQuestion = self.get_project_question_by_id(
@@ -324,11 +321,14 @@ if __name__ == "__main__":
     # questionnaire_repository.update_project_question(
     #     project_question2.id, updated_question2
     # )
-    # print(updated_question.selection_strategy.__class__.__name__)
     # print(questionnaire_repository.get_project_question_by_id(project_question.id))
     # print(questionnaire_repository.get_project_question_by_id(project_question2.id))
-    # print(questionnaire_repository.get_nth_question(ProjectId(code="p1"), 1))
-    print(questionnaire_repository.get_questionnaire(ProjectId(code="p1")))
+    print(
+        questionnaire_repository.get_nth_question(
+            ProjectId(code="o8BMer9dF6MxdDrCM5VQGb"), 2
+        )
+    )
+    # print(questionnaire_repository.get_questionnaire(ProjectId(code="p1")))
 
     # questionnaire_repository.delete_project_question(project_question.id)
     # questionnaire_repository.delete_project_question(project_question2.id)

@@ -10,7 +10,6 @@ from presentation.presentation import serialize, deserialize
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
 from utils.errors import NotFoundError, ConflictError
 from utils.neo4j_driver import Neo4jDriver, Credentials, Neo4jQuery
-from ws.utils.logger import logger
 
 
 class Neo4JGraphQuestionRepository(GraphQuestionRepository):
@@ -136,7 +135,6 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
             },
         )
         r: List[dict] = self.driver.query(query)
-        logger.info(f"RES: {r}")
         if len(r) == 0:
             return None
         question: GraphQuestion = self._convert_node_in_question(

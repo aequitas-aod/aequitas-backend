@@ -3,8 +3,8 @@ from typing import Optional, List
 from application import GraphQuestionService
 from domain.common.core import QuestionId, AnswerId
 from domain.graph.core import GraphQuestion
-from domain.project.core import ProjectId, ProjectQuestion, ProjectAnswer
-from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
+from domain.project.core import ProjectId, ProjectQuestion
+from domain.project.factories import ProjectQuestionFactory
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
 
 
@@ -26,12 +26,15 @@ class QuestionnaireService:
         """
         return self.questionnaire_repository.get_questionnaire(project_id)
 
-    def get_nth_question(self, project_id: ProjectId, nth: int) -> ProjectQuestion:
+    def get_nth_question(
+        self, project_id: ProjectId, nth: int
+    ) -> Optional[ProjectQuestion]:
         """
-        Gets the nth question of a project
+        Gets the nth question of a project. If nth is 1, it will create and return the first question,
+        otherwise it will return the nth question (if it exists).
         :param project_id: the project id
         :param nth: the question index
-        :return: the nth question
+        :return: the nth question or None if it does not exist
         """
         q: Optional[ProjectQuestion] = self.questionnaire_repository.get_nth_question(
             project_id, nth
@@ -55,6 +58,8 @@ class QuestionnaireService:
                 )
                 self.questionnaire_repository.insert_project_question(project_question)
                 return project_question
+            else:
+                return None
 
     def select_answers(
         self, project_id: ProjectId, index: int, answer_ids: List[AnswerId]
