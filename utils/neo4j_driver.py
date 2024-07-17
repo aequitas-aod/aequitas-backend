@@ -2,7 +2,7 @@ from typing import List
 
 import backoff
 from neo4j import GraphDatabase, Driver
-from neo4j.exceptions import ServiceUnavailable
+from neo4j.exceptions import ServiceUnavailable, SessionExpired
 
 
 class Credentials:
@@ -27,12 +27,16 @@ class Neo4jDriver:
             auth=(credentials.user, credentials.password),
         )
 
-    @backoff.on_exception(backoff.expo, ServiceUnavailable, max_tries=10)
+    @backoff.on_exception(
+        backoff.expo, (ServiceUnavailable, SessionExpired), max_tries=10
+    )
     def query(self, query: Neo4jQuery) -> List[dict]:
         with self.driver.session() as session:
             return session.run(query.query, **query.params).data()
 
-    @backoff.on_exception(backoff.expo, ServiceUnavailable, max_tries=10)
+    @backoff.on_exception(
+        backoff.expo, (ServiceUnavailable, SessionExpired), max_tries=10
+    )
     def transaction(self, queries: List[Neo4jQuery]) -> None:
         with self.driver.session() as session:
             with session.begin_transaction() as tx:

@@ -24,7 +24,7 @@ class TestGraphQuestionPresentation(unittest.TestCase):
             "id": {"code": "boolean_question_id"},
             "text": "Do you practice TDD?",
             "type": QuestionType.BOOLEAN.value,
-            "available_answers": [
+            "answers": [
                 {
                     "id": {"code": "boolean_question_id-false"},
                     "text": "No",

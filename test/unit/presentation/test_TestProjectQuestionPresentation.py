@@ -3,9 +3,8 @@ from datetime import datetime
 
 from domain.common.core import AnswerId, QuestionId
 from domain.common.core.enum import QuestionType
-from domain.common.factories import AnswerFactory
 from domain.project.core import ProjectQuestion
-from domain.project.factories import ProjectQuestionFactory
+from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
 from presentation.presentation import deserialize, serialize
 
 
@@ -19,45 +18,35 @@ class TestProjectQuestionPresentation(unittest.TestCase):
             QuestionType.SINGLE_CHOICE,
             frozenset(
                 {
-                    AnswerFactory.create_answer(
+                    ProjectAnswerFactory.create_project_answer(
                         AnswerId(code="project_question_id-false"), "No"
                     ),
-                    AnswerFactory.create_answer(
-                        AnswerId(code="project_question_id-true"), "Yes"
+                    ProjectAnswerFactory.create_project_answer(
+                        AnswerId(code="project_question_id-true"), "Yes", True
                     ),
                 }
             ),
             created_at=self.question_timestamp,
-            selected_answers=frozenset(
-                {
-                    AnswerFactory.create_answer(
-                        AnswerId(code="project_question_id-false"), "No"
-                    ),
-                }
-            ),
         )
         self.question_dict: dict = {
             "id": {"code": "project_question_id"},
             "text": "Do you practice TDD?",
             "type": QuestionType.SINGLE_CHOICE.value,
-            "available_answers": [
+            "answers": [
                 {
                     "id": {"code": "project_question_id-false"},
                     "text": "No",
+                    "selected": False,
                 },
                 {
                     "id": {"code": "project_question_id-true"},
                     "text": "Yes",
+                    "selected": True,
                 },
             ],
             "created_at": self.question_timestamp.isoformat(),
-            "selection_strategy": {'type': 'single'},
-            "selected_answers": [
-                {
-                    "id": {"code": "project_question_id-false"},
-                    "text": "No",
-                },
-            ],
+            "selection_strategy": {"type": "SingleSelectionStrategy"},
+            "previous_question_id": None,
         }
 
     def test_deserialize_project_question(self):

@@ -1,7 +1,7 @@
 - id: { code: q1 }
   text: First question
   type: single
-  available_answers:
+  answers:
     - id: { code: q1-a1 }
       text: First answer
     - id: { code: q1-a2 }
@@ -13,7 +13,7 @@
 - id: { code: q2 }
   text: Second question
   type: multiple
-  available_answers:
+  answers:
     - id: { code: q2-a1 }
       text: First answer
     - id: { code: q2-a2 }

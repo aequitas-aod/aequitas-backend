@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from domain.common.core import QuestionId
+from domain.common.core import QuestionId, AnswerId
 from domain.graph.core import GraphQuestion
 from domain.graph.repositories import GraphQuestionRepository
 from utils.errors import BadRequestError
@@ -76,3 +76,14 @@ class GraphQuestionService:
         :return: the last inserted question
         """
         return self.question_repository.get_last_inserted_question()
+
+    def get_enabled_question(
+        self, question_id: QuestionId, answer_ids: List[AnswerId]
+    ) -> Optional[GraphQuestion]:
+        """
+        Gets the enabled question from a question and the selected answers
+        :param question_id: the question id
+        :param answer_ids: the selected answers
+        :return: the enabled question or None if there is no enabled question
+        """
+        return self.question_repository.get_enabled_question(question_id, answer_ids)

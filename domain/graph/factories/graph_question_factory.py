@@ -15,7 +15,7 @@ class GraphQuestionFactory:
         question_id: QuestionId,
         text: str,
         question_type: QuestionType,
-        available_answers: FrozenSet[Answer],
+        answers: FrozenSet[Answer],
         created_at: datetime = datetime.now(),
         enabled_by: FrozenSet[AnswerId] = frozenset(),
         action_needed: Optional[Action] = None,
@@ -24,7 +24,7 @@ class GraphQuestionFactory:
             id=question_id,
             text=text,
             type=question_type,
-            available_answers=available_answers,
+            answers=answers,
             created_at=created_at,
             enabled_by=enabled_by,
             action_needed=action_needed,
@@ -38,7 +38,7 @@ class GraphQuestionFactory:
         enabled_by: FrozenSet[AnswerId] = frozenset(),
         action_needed: Optional[Action] = None,
     ) -> GraphQuestion:
-        available_answers: FrozenSet[Answer] = frozenset(
+        answers: FrozenSet[Answer] = frozenset(
             {
                 AnswerFactory.create_boolean_answer(
                     AnswerId(code=f"{question_id.code}-true"), True
@@ -52,7 +52,7 @@ class GraphQuestionFactory:
             question_id,
             text,
             QuestionType.BOOLEAN,
-            available_answers,
+            answers,
             created_at,
             enabled_by,
             action_needed,

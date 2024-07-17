@@ -165,9 +165,7 @@ class TestGraphQuestionsAPI(unittest.TestCase):
         self.assertEqual(expected_question, json.loads(response.data))
 
     def test_questions_load(self):
-        yaml_file_path: Path = get_file_path(
-            "test/resources/questions-load-example.yml"
-        )
+        yaml_file_path = get_file_path("test/resources/questions-load-example.yml")
         with yaml_file_path.open("r") as file:
             questions_yaml: str = file.read()
             response = self.app.post(

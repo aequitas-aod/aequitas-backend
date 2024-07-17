@@ -24,8 +24,8 @@ entity ProjectQuestion {
 }
 
 entity SelectionStrategy {
-  +selectAnswer(question, answer): Question
-  +deselectAnswer(question, answer): Question
+  +selectAnswer(question, answer): SelectableQuestion
+  +deselectAnswer(question, answer): SelectableQuestion
 }
 
 entity SelectionStrategyImpl {

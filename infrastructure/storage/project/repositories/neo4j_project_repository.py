@@ -57,10 +57,15 @@ class Neo4jProjectRepository(ProjectRepository):
     def delete_project(self, project_id: ProjectId) -> None:
         if not self._check_project_exists(project_id):
             raise NotFoundError(f"Project with id {project_id} does not exist")
+        query_string = (
+            "MATCH (p:Project {id: $project_code}) "
+            "OPTIONAL MATCH path = (p)-[*]-(nodeToDelete) "
+            "DETACH DELETE nodeToDelete, p"
+        )
         self.driver.query(
             Neo4jQuery(
-                "MATCH (p:Project {id: $project_id}) DETACH DELETE p",
-                {"project_id": project_id.code},
+                query_string,
+                {"project_code": project_id.code},
             )
         )
 
@@ -79,17 +84,8 @@ class Neo4jProjectRepository(ProjectRepository):
         project["name"] = project["name"]
         return deserialize(project, Project)
 
-    def delete_all_projects(self) -> None:
-        self.driver.transaction(
-            [
-                Neo4jQuery(
-                    "MATCH (n:Project) DETACH DELETE n", {}
-                ),  # TODO: also ProjectQuestions?
-            ]
-        )
-
 
 if __name__ == "__main__":
-    Neo4jProjectRepository().delete_all_projects()
-    p1: Project = ProjectFactory.create_project(ProjectId(code="1"), "Project name")
+    Neo4jProjectRepository().delete_project(ProjectId(code="p1"))
+    p1: Project = ProjectFactory.create_project(ProjectId(code="p1"), "Project 1")
     Neo4jProjectRepository().insert_project(p1)

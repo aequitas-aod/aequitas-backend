@@ -1,14 +1,16 @@
 from datetime import datetime
-from typing import FrozenSet
+from typing import FrozenSet, List, Optional
 
 from domain.common.core import Answer, AnswerId, QuestionId
 from domain.common.core.enum import QuestionType
 from domain.common.factories import AnswerFactory
-from domain.project.core import ProjectQuestion
+from domain.graph.core import GraphQuestion
+from domain.project.core import ProjectQuestion, ProjectAnswer, ProjectId
 from domain.project.core.selection import (
     MultipleSelectionStrategy,
     SingleSelectionStrategy,
 )
+from domain.project.factories import ProjectAnswerFactory
 
 
 class ProjectQuestionFactory:
@@ -18,9 +20,9 @@ class ProjectQuestionFactory:
         question_id: QuestionId,
         text: str,
         question_type: QuestionType,
-        available_answers: FrozenSet[Answer],
+        answers: FrozenSet[ProjectAnswer],
         created_at: datetime = datetime.now(),
-        selected_answers: FrozenSet[Answer] = frozenset(),
+        previous_question_id: QuestionId = None,
     ) -> ProjectQuestion:
         match question_type:
             case QuestionType.BOOLEAN:
@@ -34,6 +36,7 @@ class ProjectQuestionFactory:
             case _:
                 raise ValueError(f"Unsupported question type {question_type}")
 
+        selected_answers = list(filter(lambda answer: answer.selected, answers))
         if len(selected_answers) > 1 and question_type != QuestionType.MULTIPLE_CHOICE:
             raise ValueError(
                 "Selected answers are only allowed for multiple choice questions"
@@ -42,10 +45,10 @@ class ProjectQuestionFactory:
             id=question_id,
             text=text,
             type=question_type,
-            available_answers=available_answers,
+            answers=answers,
             created_at=created_at,
             selection_strategy=selection_strategy,
-            selected_answers=selected_answers,
+            previous_question_id=previous_question_id,
         )
 
     @staticmethod
@@ -53,14 +56,15 @@ class ProjectQuestionFactory:
         question_id: QuestionId,
         text: str,
         created_at: datetime = datetime.now(),
+        previous_question_id: QuestionId = None,
     ) -> ProjectQuestion:
-        available_answers: FrozenSet[Answer] = frozenset(
+        answers: FrozenSet[ProjectAnswer] = frozenset(
             {
-                AnswerFactory.create_boolean_answer(
-                    AnswerId(code=f"{question_id.code}-true"), True
+                ProjectAnswerFactory.create_project_answer(
+                    AnswerId(code=f"{question_id.code}-true"), "Yes"
                 ),
-                AnswerFactory.create_boolean_answer(
-                    AnswerId(code=f"{question_id.code}-false"), False
+                ProjectAnswerFactory.create_project_answer(
+                    AnswerId(code=f"{question_id.code}-false"), "No"
                 ),
             }
         )
@@ -68,6 +72,30 @@ class ProjectQuestionFactory:
             question_id,
             text,
             QuestionType.BOOLEAN,
-            available_answers,
+            answers,
             created_at,
+            previous_question_id=previous_question_id,
+        )
+
+    @staticmethod
+    def from_graph_question(
+        graph_question: GraphQuestion,
+        project_id: ProjectId,
+        previous_question_id: Optional[QuestionId],
+    ) -> ProjectQuestion:
+        project_answers: List[ProjectAnswer] = []
+        for a in graph_question.answers:
+            project_answers.append(
+                ProjectAnswerFactory.create_project_answer(
+                    AnswerId(code=f"{project_id.code}-{a.id.code}"),
+                    a.text,
+                    False,
+                )
+            )
+        return ProjectQuestionFactory.create_project_question(
+            QuestionId(code=f"{project_id.code}-{graph_question.id.code}"),
+            graph_question.text,
+            graph_question.type,
+            frozenset(project_answers),
+            previous_question_id=previous_question_id,
         )

@@ -1,7 +1,7 @@
 - id: { code: q1 }
   text: Do you have some AI system already in place, or are you developing an AI system?
   type: single
-  available_answers:
+  answers:
       - id: { code: q1-a1 }
         text: I already have an AI system in place
       - id: { code: q1-a2 }
@@ -13,7 +13,7 @@
 - id: { code: q2 }
   text: In what area / sector is the AI system intended to be used?
   type: multiple
-  available_answers:
+  answers:
       - id: { code: q2-a1 }
         text: Biometrics
       - id: { code: q2-a2 }
@@ -55,7 +55,7 @@
 - id: { code: "q3" }
   text: "Which AI methods will the AI system adopt?"
   type: multiple
-  available_answers:
+  answers:
       - id: { code: "q3-a1" }
         text: "Uninformed search"
       - id: { code: "q3-a2" }
@@ -123,7 +123,7 @@
 - id: { code: "q4" }
   text: "Is the AI model developed using techniques that involve the model's training with data?"
   type: single
-  available_answers:
+  answers:
       - id: { code: "q4-a1" }
         text: "Yes"
       - id: { code: "q4-a2" }
@@ -157,7 +157,7 @@
 - id: { code: "q5" }
   text: "Are you using readily-available data sets?"
   type: single
-  available_answers:
+  answers:
       - id: { code: "q5-a1" }
         text: "Yes"
       - id: { code: "q5-a2" }
@@ -171,7 +171,7 @@
 - id: { code: "q6" }
   text: "Was the readily available dataset obtained by sampling the same population that where the system is going to be used?"
   type: single
-  available_answers:
+  answers:
       - id: { code: "q6-a1" }
         text: "Yes"
       - id: { code: "q6-a2" }
@@ -185,7 +185,7 @@
 - id: { code: "q7" }
   text: "Is the data set sufficiently representative of the population where the system will be used?"
   type: single
-  available_answers:
+  answers:
       - id: { code: "q7-a1" }
         text: "Yes"
       - id: { code: "q7-a2" }
@@ -199,7 +199,7 @@
 - id: { code: "q8" }
   text: "Which sensitive attributes are included in the dataset (or inferrable from the included ones)?"
   type: multiple
-  available_answers:
+  answers:
       - id: { code: "q8-a1" }
         text: "Sex"
       - id: { code: "q8-a2" }

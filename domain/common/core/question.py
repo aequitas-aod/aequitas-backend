@@ -12,18 +12,17 @@ class Question(ABC, BaseModel):
     id: QuestionId
     text: str
     type: QuestionType
-    available_answers: FrozenSet[Answer]
+    answers: FrozenSet[Answer]
     created_at: datetime
 
-    @field_serializer("available_answers", when_used="json")
-    def serialize_available_answers_in_order(self, answers: FrozenSet[Answer]):
+    @field_serializer("answers", when_used="json")
+    def serialize_answers_in_order(self, answers: FrozenSet[Answer]):
         return sorted(answers, key=lambda answer: answer.text)
 
     def __str__(self) -> str:
         return (
-            f"Question(\n id={self.id},\n text='{self.text}',\n type={self.type}, \n"
-            f"available_answers={self.available_answers}, \n"
-            f"created_at={self.created_at}\n)"
+            f"Question(\n id={self.id},\n text='{self.text}',\n type={self.type},\n"
+            f" answers={self.answers},\n created_at={self.created_at}\n)"
         )
 
     def __hash__(self):
@@ -32,7 +31,7 @@ class Question(ABC, BaseModel):
                 self.id.code,
                 self.text,
                 self.type,
-                self.available_answers,
+                self.answers,
                 self.created_at,
             )
         )
