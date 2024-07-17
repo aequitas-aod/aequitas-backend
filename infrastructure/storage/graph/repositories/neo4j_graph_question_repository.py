@@ -165,7 +165,6 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
         return q
 
     def _convert_node_in_question(self, q: dict, answers: List) -> GraphQuestion:
-        # TODO check useless fields?
         question: dict = q
         question["id"] = {"code": question["id"]}
         question["created_at"] = question["created_at"]
