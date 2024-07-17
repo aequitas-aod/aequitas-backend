@@ -65,5 +65,7 @@ class QuestionnaireResource(Resource):
 
 
 api.add_resource(
-    QuestionnaireResource, "/projects/<string:project_id>/questionnaire/<int:index>"
+    QuestionnaireResource,
+    "/projects/<string:project_id>/questionnaire",
+    "/projects/<string:project_id>/questionnaire/<int:index>"
 )

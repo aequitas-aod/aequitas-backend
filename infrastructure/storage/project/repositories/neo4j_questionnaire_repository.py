@@ -47,18 +47,18 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             )
             return question
         else:
-            up_to_index: int = index - 1
+            question_index: int = index - 1
             query_string: str = (
                 "MATCH (p:Project {id: $project_code})-[:QUESTIONNAIRE]->(initial:ProjectQuestion) "
-                "MATCH path = (initial)-[:NEXT*1..]->(:ProjectQuestion) "
-                "WITH nodes(path) AS questions "
-                "WITH questions[$index - 1] AS prev_q, questions[$index] AS q "
-                "OPTIONAL MATCH (q)-[:HAS_AVAILABLE]->(available:Answer) "
-                "OPTIONAL MATCH (q)-[:HAS_SELECTED]->(selected:Answer) "
+                f"MATCH path = (initial)-[:NEXT*{question_index}]->(:ProjectQuestion) "
+                "WITH nodes(path) AS questions  "
+                f"WITH questions[{question_index}] as q, questions[{question_index}-1] as prev_q "
+                "OPTIONAL MATCH (q)-[:HAS_AVAILABLE]->(available:Answer)  "
+                "OPTIONAL MATCH (q)-[:HAS_SELECTED]->(selected:Answer)  "
                 "RETURN q, COLLECT(available) AS available_answers, COLLECT(selected) AS selected_answers, prev_q"
             )
             query: Neo4jQuery = Neo4jQuery(
-                query_string, {"project_code": project_id.code, "index": up_to_index}
+                query_string, {"project_code": project_id.code}
             )
             res: List[dict] = self.driver.query(query)
             if len(res) == 0:
@@ -198,16 +198,16 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
     def get_questionnaire(self, project_id: ProjectId) -> List[ProjectQuestion]:
         query_string: str = (
             "MATCH (p:Project {id: $project_code})-[:QUESTIONNAIRE]->(initial:ProjectQuestion) "
-            "MATCH path = (initial)-[:NEXT*1..]->(:ProjectQuestion) "
+            "MATCH path = (initial)-[:NEXT*0..]->(:ProjectQuestion) "
             "WITH nodes(path) AS questions "
-            "RETURN questions"
+            "RETURN questions[-1] as q"
         )
         query: Neo4jQuery = Neo4jQuery(query_string, {"project_code": project_id.code})
         res: List[dict] = self.driver.query(query)
         questions: List[ProjectQuestion] = []
-        for q in res[len(res) - 1]["questions"]:
+        for q in res:
             question: ProjectQuestion = self.get_project_question_by_id(
-                QuestionId(code=q["id"])
+                QuestionId(code=q["q"]["id"])
             )
             questions.append(question)
         return questions
