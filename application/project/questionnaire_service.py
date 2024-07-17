@@ -6,6 +6,7 @@ from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectId, ProjectQuestion
 from domain.project.factories import ProjectQuestionFactory
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
+from utils.errors import BadRequestError, NotFoundError
 
 
 class QuestionnaireService:
@@ -26,15 +27,15 @@ class QuestionnaireService:
         """
         return self.questionnaire_repository.get_questionnaire(project_id)
 
-    def get_nth_question(
-        self, project_id: ProjectId, nth: int
-    ) -> Optional[ProjectQuestion]:
+    def get_nth_question(self, project_id: ProjectId, nth: int) -> ProjectQuestion:
         """
         Gets the nth question of a project. If nth is 1, it will create and return the first question,
         otherwise it will return the nth question (if it exists).
         :param project_id: the project id
         :param nth: the question index
-        :return: the nth question or None if it does not exist
+        :return: the nth question
+        :raises NotFoundError: if the question is not found
+        :raises BadRequestError: if nth is greater than the number of questions
         """
         q: Optional[ProjectQuestion] = self.questionnaire_repository.get_nth_question(
             project_id, nth
@@ -42,15 +43,13 @@ class QuestionnaireService:
         if q:
             return q
         else:
+            questions: List[GraphQuestion] = self.question_service.get_all_questions()
             if nth == 1:
-                questions: List[GraphQuestion] = (
-                    self.question_service.get_all_questions()
-                )
                 graph_question: Optional[GraphQuestion] = next(
                     filter(lambda x: len(x.enabled_by) == 0, questions), None
                 )
                 if graph_question is None:
-                    raise ValueError("No first question found")
+                    raise NotFoundError("No first question found")
                 project_question: ProjectQuestion = (
                     ProjectQuestionFactory.from_graph_question(
                         graph_question, project_id, None
@@ -59,7 +58,10 @@ class QuestionnaireService:
                 self.questionnaire_repository.insert_project_question(project_question)
                 return project_question
             else:
-                return None
+                if len(questions) < nth:
+                    raise BadRequestError("Questionnaire is finished")
+                else:
+                    raise NotFoundError("Question not found")
 
     def select_answers(
         self, project_id: ProjectId, index: int, answer_ids: List[AnswerId]

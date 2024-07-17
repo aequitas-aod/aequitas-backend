@@ -6,6 +6,7 @@ from flask_restful import Api, Resource
 from domain.common.core import AnswerId
 from domain.project.core import ProjectId, ProjectQuestion
 from presentation.presentation import serialize
+from utils.errors import NotFoundError, BadRequestError
 from utils.status_code import StatusCode
 from ws.setup import questionnaire_service
 
@@ -16,13 +17,15 @@ api = Api(questionnaires_bp)
 class QuestionnaireResource(Resource):
     def get(self, project_id, index=None):
         if index:
-            q: Optional[ProjectQuestion] = questionnaire_service.get_nth_question(
-                ProjectId(code=project_id), index
-            )
-            if q:
+            try:
+                q: Optional[ProjectQuestion] = questionnaire_service.get_nth_question(
+                    ProjectId(code=project_id), index
+                )
                 return serialize(q), StatusCode.OK
-            else:
-                return "Question not found", StatusCode.NOT_FOUND
+            except NotFoundError as e:
+                return e.message, StatusCode.NOT_FOUND
+            except BadRequestError as e:
+                return e.message, StatusCode.BAD_REQUEST
         else:
             questionnaire: List[ProjectQuestion] = (
                 questionnaire_service.get_questionnaire(ProjectId(code=project_id))
