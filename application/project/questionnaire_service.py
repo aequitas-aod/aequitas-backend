@@ -6,7 +6,6 @@ from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectId, ProjectQuestion
 from domain.project.factories import ProjectQuestionFactory
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
-from ws.utils.logger import logger
 
 
 class QuestionnaireService:
@@ -65,6 +64,12 @@ class QuestionnaireService:
     def select_answers(
         self, project_id: ProjectId, index: int, answer_ids: List[AnswerId]
     ) -> None:
+        """
+        Updates a question with the selected answers, and inserts the next question in the questionnaire.
+        :param project_id: the project id
+        :param index: the question index
+        :param answer_ids: the list of answer ids
+        """
         question: ProjectQuestion = self.get_nth_question(project_id, index)
         for answer_id in answer_ids:
             question = question.select_answer(answer_id)
@@ -86,12 +91,19 @@ class QuestionnaireService:
             self.questionnaire_repository.insert_project_question(new_q)
 
     def reset_questionnaire(self, project_id: ProjectId) -> None:
-        pass
-
-    # def _get_question_from_graph(self, question_id: QuestionId):
-    #     pass
+        """
+        Removes all questions from the questionnaire.
+        :param project_id: the project id
+        """
+        self.questionnaire_repository.delete_questionnaire(project_id)
 
     def remove_question(self, project_id: ProjectId, index: int) -> None:
+        """
+        Removes a question from the questionnaire only if it is the last question.
+        :param project_id: the project id
+        :param index: the question index
+        :raises ValueError: if the question is not the last in the questionnaire or if no questions exist
+        """
         last: Optional[ProjectQuestion] = (
             self.questionnaire_repository.get_last_question(project_id)
         )

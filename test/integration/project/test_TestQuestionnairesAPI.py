@@ -38,8 +38,7 @@ class TestQuestionnairesAPI(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        # cls.docker.compose.down(volumes=True)
-        pass
+        cls.docker.compose.down(volumes=True)
 
     def _compare_graph_and_project_questions(
         self, q1: ProjectQuestion, q2: GraphQuestion
@@ -51,6 +50,22 @@ class TestQuestionnairesAPI(unittest.TestCase):
             frozenset([a.text for a in q1.answers]),
             frozenset([a.text for a in q2.answers]),
         )
+
+    def _get_question_from_questionnaire_and_graph(
+        self, index: int
+    ) -> (ProjectQuestion, GraphQuestion):
+        response = self.app.get(
+            f"/projects/{self.project_id.code}/questionnaire/{index}"
+        )
+        self.assertEqual(response.status_code, 200)
+        project_question: ProjectQuestion = deserialize(
+            json.loads(response.data), ProjectQuestion
+        )
+        response = self.app.get(f"questions/{self.questions[index - 1].id.code}")
+        related_question: GraphQuestion = deserialize(
+            json.loads(response.data), GraphQuestion
+        )
+        return project_question, related_question
 
     def test_01_get_first_question(self):
         first_question, related_question = (
@@ -128,18 +143,8 @@ class TestQuestionnairesAPI(unittest.TestCase):
         response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/3")
         self.assertEqual(response.status_code, 404)
 
-    def _get_question_from_questionnaire_and_graph(
-        self, index: int
-    ) -> (ProjectQuestion, GraphQuestion):
-        response = self.app.get(
-            f"/projects/{self.project_id.code}/questionnaire/{index}"
-        )
+    def test_08_reset_questionnaire(self):
+        response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire")
         self.assertEqual(response.status_code, 200)
-        project_question: ProjectQuestion = deserialize(
-            json.loads(response.data), ProjectQuestion
-        )
-        response = self.app.get(f"questions/{self.questions[index - 1].id.code}")
-        related_question: GraphQuestion = deserialize(
-            json.loads(response.data), GraphQuestion
-        )
-        return project_question, related_question
+        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire")
+        self.assertEqual(response.data, b"[]\n")

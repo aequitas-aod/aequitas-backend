@@ -50,7 +50,8 @@ class QuestionnaireResource(Resource):
 
     def delete(self, project_id, index=None):
         if index is None:
-            return "Missing question index", StatusCode.BAD_REQUEST
+            questionnaire_service.reset_questionnaire(ProjectId(code=project_id))
+            return "Questionnaire reset successfully", StatusCode.OK
         else:
             try:
                 questionnaire_service.remove_question(ProjectId(code=project_id), index)

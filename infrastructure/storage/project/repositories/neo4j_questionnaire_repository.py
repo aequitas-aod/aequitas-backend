@@ -212,6 +212,18 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             questions.append(question)
         return questions
 
+    def delete_questionnaire(self, project_id: ProjectId):
+        query_string = (
+            "MATCH path = (p:Project {id: $project_code})-[*]-(nodeToDelete) "
+            "DETACH DELETE nodeToDelete"
+        )
+        self.driver.query(
+            Neo4jQuery(
+                query_string,
+                {"project_code": project_id.code},
+            )
+        )
+
     def _check_project_question_exists(self, question_id: QuestionId) -> bool:
         q: ProjectQuestion = self.get_project_question_by_id(question_id)
         return q is not None

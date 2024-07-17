@@ -58,10 +58,9 @@ class Neo4jProjectRepository(ProjectRepository):
         if not self._check_project_exists(project_id):
             raise NotFoundError(f"Project with id {project_id} does not exist")
         query_string = (
-            "MATCH path = (p:Project {id: $project_code})-[*]-(nodeToDelete) "
-            "WITH nodes(path) AS nodesToDelete "
-            "UNWIND nodesToDelete AS node "
-            "DETACH DELETE node"
+            "MATCH (p:Project {id: $project_code}) "
+            "OPTIONAL MATCH path = (p)-[*]-(nodeToDelete) "
+            "DETACH DELETE nodeToDelete, p"
         )
         self.driver.query(
             Neo4jQuery(

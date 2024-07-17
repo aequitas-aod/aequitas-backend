@@ -62,3 +62,11 @@ class QuestionnaireRepository(ABC):
         :param question_id: the id of the question to delete
         :raises NotFoundError: if the question does not exist"""
         pass
+
+    @abstractmethod
+    def delete_questionnaire(self, project_id: ProjectId):
+        """
+        Removes all questions from the questionnaire.
+        :param project_id: the project id
+        """
+        pass
