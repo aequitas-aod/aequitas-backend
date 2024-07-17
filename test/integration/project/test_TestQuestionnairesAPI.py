@@ -41,7 +41,9 @@ class TestQuestionnairesAPI(unittest.TestCase):
         # cls.docker.compose.down(volumes=True)
         pass
 
-    def _compare_graph_and_project_questions(self, q1: ProjectQuestion, q2: GraphQuestion):
+    def _compare_graph_and_project_questions(
+        self, q1: ProjectQuestion, q2: GraphQuestion
+    ):
         self.assertEqual(q1.id.code, f"{self.project_id.code}-{q2.id.code}")
         self.assertEqual(q1.text, q2.text)
         self.assertEqual(q1.type, q2.type)
@@ -51,7 +53,9 @@ class TestQuestionnairesAPI(unittest.TestCase):
         )
 
     def test_01_get_first_question(self):
-        first_question, related_question = self._get_question_from_questionnaire_and_graph(1)
+        first_question, related_question = (
+            self._get_question_from_questionnaire_and_graph(1)
+        )
         self._compare_graph_and_project_questions(first_question, related_question)
 
     def test_02_select_answer_to_first_question(self):
@@ -81,14 +85,10 @@ class TestQuestionnairesAPI(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
-    # def test_remove_question(self):
-    #     response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire/1")
-    #     self.assertEqual(response.status_code, 200)
-    #     response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/1")
-    #     self.assertEqual(response.status_code, 400)
-
     def test_04_get_second_question(self):
-        second_question, related_question = self._get_question_from_questionnaire_and_graph(2)
+        second_question, related_question = (
+            self._get_question_from_questionnaire_and_graph(2)
+        )
         self._compare_graph_and_project_questions(second_question, related_question)
 
     def test_05_select_answer_to_second_question(self):
@@ -112,11 +112,28 @@ class TestQuestionnairesAPI(unittest.TestCase):
         self.assertEqual(set(selected_question.answers), set(expected_question.answers))
 
     def test_06_get_third_question(self):
-        third_question, related_question = self._get_question_from_questionnaire_and_graph(3)
+        third_question, related_question = (
+            self._get_question_from_questionnaire_and_graph(3)
+        )
         self._compare_graph_and_project_questions(third_question, related_question)
 
-    def _get_question_from_questionnaire_and_graph(self, index: int) -> (ProjectQuestion, GraphQuestion):
-        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/{index}")
+    def test_07_remove_question(self):
+        response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire/1")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data, b'"Question was not the last in the questionnaire"\n'
+        )
+        response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire/3")
+        self.assertEqual(response.status_code, 200)
+        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/3")
+        self.assertEqual(response.status_code, 404)
+
+    def _get_question_from_questionnaire_and_graph(
+        self, index: int
+    ) -> (ProjectQuestion, GraphQuestion):
+        response = self.app.get(
+            f"/projects/{self.project_id.code}/questionnaire/{index}"
+        )
         self.assertEqual(response.status_code, 200)
         project_question: ProjectQuestion = deserialize(
             json.loads(response.data), ProjectQuestion

@@ -6,6 +6,7 @@ from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectId, ProjectQuestion
 from domain.project.factories import ProjectQuestionFactory
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
+from ws.utils.logger import logger
 
 
 class QuestionnaireService:

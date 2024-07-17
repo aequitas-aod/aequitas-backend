@@ -14,9 +14,7 @@ api = Api(questionnaires_bp)
 
 
 class QuestionnaireResource(Resource):
-    def get(self, project_id=None, index=None):
-        if project_id is None:
-            return "Missing project id", StatusCode.BAD_REQUEST
+    def get(self, project_id, index=None):
         if index:
             q: Optional[ProjectQuestion] = questionnaire_service.get_nth_question(
                 ProjectId(code=project_id), index
@@ -31,9 +29,9 @@ class QuestionnaireResource(Resource):
             )
             return [serialize(q) for q in questionnaire], StatusCode.OK
 
-    def put(self, project_id=None, index=None):
-        if project_id is None or index is None:
-            return "Missing project id or question index", StatusCode.BAD_REQUEST
+    def put(self, project_id, index=None):
+        if index is None:
+            return "Missing question index", StatusCode.BAD_REQUEST
         else:
             answer_ids_json = request.get_json()["answer_ids"]
             answer_ids: List[AnswerId] = [
@@ -50,16 +48,16 @@ class QuestionnaireResource(Resource):
                 )
             return "Answer selected successfully", StatusCode.OK
 
-    def delete(self, project_id=None, index=None):
-        if project_id is None or index is None:
-            return "Missing project id or question index", StatusCode.BAD_REQUEST
+    def delete(self, project_id, index=None):
+        if index is None:
+            return "Missing question index", StatusCode.BAD_REQUEST
         else:
             try:
                 questionnaire_service.remove_question(ProjectId(code=project_id), index)
                 return "Question removed successfully", StatusCode.OK
-            except ValueError:
+            except ValueError as e:
                 return (
-                    "Question was not the last in the questionnaire",
+                    e.args[0],
                     StatusCode.BAD_REQUEST,
                 )
 
@@ -67,5 +65,5 @@ class QuestionnaireResource(Resource):
 api.add_resource(
     QuestionnaireResource,
     "/projects/<string:project_id>/questionnaire",
-    "/projects/<string:project_id>/questionnaire/<int:index>"
+    "/projects/<string:project_id>/questionnaire/<int:index>",
 )

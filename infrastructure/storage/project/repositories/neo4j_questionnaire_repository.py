@@ -83,7 +83,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         if len(res) == 0:
             return None
         question: ProjectQuestion = self.get_project_question_by_id(
-            QuestionId(code=res[0]["q"]["id"])
+            QuestionId(code=res[-1]["q"]["id"])
         )
         return question
 
