@@ -40,6 +40,12 @@ class TestQuestionnairesAPI(unittest.TestCase):
     def tearDownClass(cls):
         cls.docker.compose.down(volumes=True)
 
+    def tearDown(self):
+        self._reset_questionnaire()
+
+    def _reset_questionnaire(self):
+        self.app.delete(f"/projects/{self.project_id.code}/questionnaire")
+
     def _compare_graph_and_project_questions(
         self, q1: ProjectQuestion, q2: GraphQuestion
     ):
@@ -51,99 +57,100 @@ class TestQuestionnairesAPI(unittest.TestCase):
             frozenset([a.text for a in q2.answers]),
         )
 
-    def _get_question_from_questionnaire_and_graph(
-        self, index: int
-    ) -> (ProjectQuestion, GraphQuestion):
+    def _get_nth_question(self, index: int) -> ProjectQuestion:
         response = self.app.get(
             f"/projects/{self.project_id.code}/questionnaire/{index}"
         )
         self.assertEqual(response.status_code, 200)
-        project_question: ProjectQuestion = deserialize(
-            json.loads(response.data), ProjectQuestion
+        return deserialize(json.loads(response.data), ProjectQuestion)
+
+    def _select_answer_to_nth_question(self, index: int, answer_id: str):
+        response = self.app.put(
+            f"/projects/{self.project_id.code}/questionnaire/{index}",
+            json={"answer_ids": [answer_id]},
         )
+        self.assertEqual(response.status_code, 200)
+
+    def _get_question_from_questionnaire_and_graph(
+        self, index: int
+    ) -> (ProjectQuestion, GraphQuestion):
+        project_question: ProjectQuestion = self._get_nth_question(index)
         response = self.app.get(f"questions/{self.questions[index - 1].id.code}")
         related_question: GraphQuestion = deserialize(
             json.loads(response.data), GraphQuestion
         )
         return project_question, related_question
 
-    def test_01_get_first_question(self):
+    def test_get_first_question(self):
         first_question, related_question = (
             self._get_question_from_questionnaire_and_graph(1)
         )
         self._compare_graph_and_project_questions(first_question, related_question)
 
-    def test_02_select_answer_to_first_question(self):
-        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/1")
-        self.assertEqual(response.status_code, 200)
-        first_question: ProjectQuestion = deserialize(
-            json.loads(response.data), ProjectQuestion
-        )
+    def test_select_answer_to_first_question(self):
+        first_question: ProjectQuestion = self._get_nth_question(1)
         answer = next(iter(first_question.answers))
         expected_question: ProjectQuestion = first_question.select_answer(answer.id)
-        response = self.app.put(
-            f"/projects/{self.project_id.code}/questionnaire/1",
-            json={"answer_ids": [answer.id.code]},
-        )
-        self.assertEqual(response.status_code, 200)
-        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/1")
-        self.assertEqual(response.status_code, 200)
-        selected_question: ProjectQuestion = deserialize(
-            json.loads(response.data), ProjectQuestion
-        )
+        self._select_answer_to_nth_question(1, answer.id.code)
+        selected_question: ProjectQuestion = self._get_nth_question(1)
         self.assertEqual(set(selected_question.answers), set(expected_question.answers))
+        new_question, related_question = (
+            self._get_question_from_questionnaire_and_graph(2)
+        )
+        self._compare_graph_and_project_questions(new_question, related_question)
 
-    def test_03_select_wrong_answer(self):
+    def test_select_wrong_answer(self):
         response = self.app.put(
             f"/projects/{self.project_id.code}/questionnaire/1",
             json={"answer_ids": ["not-existing"]},
         )
         self.assertEqual(response.status_code, 400)
 
-    def test_04_get_second_question(self):
+    def test_select_answers_until_third_question(self):
+        first_question, related_question = (
+            self._get_question_from_questionnaire_and_graph(1)
+        )
+        self._compare_graph_and_project_questions(first_question, related_question)
+        answer = next(iter(first_question.answers))
+        self._select_answer_to_nth_question(1, answer.id.code)
         second_question, related_question = (
             self._get_question_from_questionnaire_and_graph(2)
         )
         self._compare_graph_and_project_questions(second_question, related_question)
-
-    def test_05_select_answer_to_second_question(self):
-        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/2")
-        self.assertEqual(response.status_code, 200)
-        first_question: ProjectQuestion = deserialize(
-            json.loads(response.data), ProjectQuestion
-        )
-        answer = next(iter(first_question.answers))
-        expected_question: ProjectQuestion = first_question.select_answer(answer.id)
-        response = self.app.put(
-            f"/projects/{self.project_id.code}/questionnaire/2",
-            json={"answer_ids": [answer.id.code]},
-        )
-        self.assertEqual(response.status_code, 200)
-        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/2")
-        self.assertEqual(response.status_code, 200)
-        selected_question: ProjectQuestion = deserialize(
-            json.loads(response.data), ProjectQuestion
-        )
-        self.assertEqual(set(selected_question.answers), set(expected_question.answers))
-
-    def test_06_get_third_question(self):
+        answer = next(iter(second_question.answers))
+        self._select_answer_to_nth_question(2, answer.id.code)
         third_question, related_question = (
             self._get_question_from_questionnaire_and_graph(3)
         )
         self._compare_graph_and_project_questions(third_question, related_question)
+        answer = next(iter(third_question.answers))
+        self._select_answer_to_nth_question(3, answer.id.code)
+        expected_question: ProjectQuestion = third_question.select_answer(answer.id)
+        selected_question: ProjectQuestion = self._get_nth_question(3)
+        self.assertEqual(set(selected_question.answers), set(expected_question.answers))
 
-    def test_07_remove_question(self):
+    def test_remove_question(self):
+        response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire/3")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, b'"No questions exist in the questionnaire"\n')
+        first_question: ProjectQuestion = self._get_nth_question(1)
+        answer = next(iter(first_question.answers))
+        self._select_answer_to_nth_question(1, answer.id.code)
         response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire/1")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.data, b'"Question was not the last in the questionnaire"\n'
         )
-        response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire/3")
+        response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire/2")
         self.assertEqual(response.status_code, 200)
-        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/3")
-        self.assertEqual(response.status_code, 404)
 
-    def test_08_reset_questionnaire(self):
+    def test_reset_questionnaire(self):
+        first_question: ProjectQuestion = self._get_nth_question(1)
+        answer = next(iter(first_question.answers))
+        self._select_answer_to_nth_question(1, answer.id.code)
+        second_question: ProjectQuestion = self._get_nth_question(2)
+        answer = next(iter(second_question.answers))
+        self._select_answer_to_nth_question(2, answer.id.code)
         response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire")
         self.assertEqual(response.status_code, 200)
         response = self.app.get(f"/projects/{self.project_id.code}/questionnaire")
