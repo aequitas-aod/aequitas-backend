@@ -37,8 +37,8 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
 
     def get_question_by_id(self, question_id: QuestionId) -> Optional[GraphQuestion]:
         query_string = (
-            "MATCH (q:GraphQuestion {id: $question_id})-[:HAS_ANSWER]->(a:Answer)"
-            "OPTIONAL MATCH (q)-[:PREVIOUS]->(prev:GraphQuestion)"
+            "MATCH (q:GraphQuestion {id: $question_id})-[:HAS_ANSWER]->(a:Answer) "
+            "OPTIONAL MATCH (q)-[:PREVIOUS]->(prev:GraphQuestion) "
             "RETURN q, COLLECT(a) AS answers"
         )
         query: Neo4jQuery = Neo4jQuery(query_string, {"question_id": question_id.code})
