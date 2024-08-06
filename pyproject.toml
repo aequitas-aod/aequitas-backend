@@ -15,7 +15,7 @@ python-dotenv = "1.0.1"
 pydantic = "2.8.2"
 neo4j = "5.23.1"
 flask-cors = "4.0.1"
-pyyaml = "6.0.1"
+pyyaml = "6.0.2"
 backoff = "2.2.1"
 shortuuid = "1.0.13"
 
