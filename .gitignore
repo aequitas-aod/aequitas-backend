@@ -137,3 +137,5 @@ cython_debug/
 
 # Node modules (for semantic release)
 node_modules
+
+.DS_Store
