@@ -18,6 +18,7 @@ flask-cors = "5.0.0"
 pyyaml = "6.0.2"
 backoff = "2.2.1"
 shortuuid = "1.0.13"
+coverage = "^7.6.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "24.8.0"
@@ -31,6 +32,8 @@ build-backend = "poetry.core.masonry.api"
 test = "python -m unittest discover -v -t . -s test -p 'test_*.py'"
 unit-test = "python -m unittest discover -v -t . -s test/unit -p 'test_*.py'"
 integration-test = "python -m unittest discover -v -t . -s test/integration -p 'test_*.py'"
+coverage = "coverage run -m unittest discover -v -t . -s test -p 'test_*.py'"
+coverage-report = "coverage report"
 format-check = "black --check ."
 format = "black ."
 
