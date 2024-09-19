@@ -1,0 +1,300 @@
+- id: { code: DatasetSelection }
+  text: Choose a dataset or load your own.
+  type: single
+  answers:
+  - id: { code: Custom }
+    text: Custom
+    content: |
+      Custom:
+        description: Load your own dataset.
+  - id: { code: AdultDataset }
+    text: Adult Census Income Dataset
+    content: |
+      AdultDataset:
+        description: Adult Census Income Dataset.
+  - id: { code: BankDataset }
+    text: Bank Marketing Dataset
+    content: |
+      BankDataset:
+        description: Bank marketing Dataset.
+  - id: { code: CompasDataset }
+    text: ProPublica COMPAS Dataset
+    content: |
+      CompasDataset:
+        description: ProPublica COMPAS Dataset.
+  - id: { code: GermanDataset }
+    text: German credit Dataset
+    content: |
+      GermanDataset:
+        description: German credit Dataset.
+  - id: { code: LawSchoolGPADataset }
+    text: Law School GPA Dataset
+    content: |
+      LawSchoolGPADataset:
+        description: Law School GPA dataset.
+  - id: { code: MEPSDataset19 }
+    text: Medical Expenditure Panel Survey Dataset
+    content: |
+      MEPSDataset19:
+        description: Medical Expenditure Panel Survey Dataset.
+  - id: { code: MEPSDataset20 }
+    text: Medical Expenditure Panel Survey Dataset
+    content: |
+      MEPSDataset20:
+        description: Medical Expenditure Panel Survey Dataset.
+  - id: { code: MEPSDataset21 }
+    text: Medical Expenditure Panel Survey Dataset
+    content: |
+      MEPSDataset21:
+        description: Medical Expenditure Panel Survey Dataset.
+  enabled_by: []
+  action_needed: null
+  created_at: 2024-05-31T18:20:23
+
+- id: { code: OutputFeatures }
+  text: Which are the output features?
+  type: multiple
+  answers:
+      - id: { code: OutputFeatures-features-selected }
+        text: ""
+  enabled_by:
+      - { code: AdultDataset }
+      - { code: BankDataset }
+      - { code: CompasDataset }
+      - { code: GermanDataset }
+      - { code: LawSchoolGPADataset }
+      - { code: MEPSDataset19 }
+      - { code: MEPSDataset20 }
+      - { code: MEPSDataset21 }
+  action_needed: null
+  created_at: 2024-05-31T18:20:24
+
+# in the project question it will be:
+#  content: |
+#    FeatureSelection:
+#      features:
+#        - Age
+#        - Workclass
+#        - Education
+#        - Occupation
+
+- id: { code: SensitiveFeatures }
+  text: Which are the sensitive features?
+  type: multiple
+  answers:
+    - id: { code: SensitiveFeatures-features-selected }
+      text: ""
+  enabled_by:
+    - { code: OutputFeatures-features-selected }
+  action_needed: null
+  created_at: 2024-05-31T18:20:25
+
+# in project question, same content of OutputFeatures question
+
+- id: { code: Proxies }
+  text: Specify the proxies for the sensitive features.
+  type: multiple
+  answers:
+    - id: { code: Proxies-features-selected }
+      text: ""
+  enabled_by:
+    - { code: SensitiveFeatures-features-selected }
+  action_needed: null
+  created_at: 2024-05-31T18:20:26
+
+- id: { code: Detection }
+  text: Select the fairness metrics and the features to check.
+  type: multiple
+  answers:
+    - id: { code: StatisticalParity }
+      text: Statistical Parity
+      content: |
+        StatisticalParity:
+          name: Statistical Parity
+          description: Difference between the probability of a favorable outcome for the unprivileged group and the probability of a favorable outcome for the privileged group.
+    - id: { code: DisparateImpact }
+      text: Disparate Impact
+      content: |
+        DisparateImpact:
+          name: Disparate Impact
+          description: Ratio of the probability of a favorable outcome for the unprivileged group to the probability of a favorable outcome for the privileged group.
+    - id: { code: EqualOpportunity }
+      text: Equal Opportunity
+      content: |
+        EqualOpportunity:
+          name: Equal Opportunity
+          description: Difference between the true positive rate for the unprivileged group and the true positive rate for the privileged group.
+    - id: { code: AverageOdds }
+      text: Average Odds
+      content: |
+        AverageOdds:
+          name: Average Odds
+          description: Average of the true positive rate difference and false positive rate difference between the unprivileged and privileged groups.
+  enabled_by:
+    - { code: Proxies-features-selected }
+  action_needed: null
+  created_at: 2024-05-31T18:20:27
+
+- id: { code: DataMitigation }
+  text: Which data mitigation technique do you want to apply?
+  type: single
+  answers:
+    - id: { code: AdversarialDebiasing }
+      text: Adversarial Debiasing
+    - id: { code: Reweighing }
+      text: Reweighing
+    - id: { code: DisparateImpactRemover }
+      text: Disparate Impact Remover
+  enabled_by:
+    - { code: StatisticalParity }
+    - { code: DisparateImpact }
+    - { code: EqualOpportunity }
+    - { code: AverageOdds }
+    - { code: MitigateDataAgain } # note the comeback from the summary
+  action_needed: null
+  created_at: 2024-05-31T18:20:28
+
+- id: { code: DataMitigationSummary }
+  text: What do you want to do next?
+  type: single
+  answers:
+    - id: { code: MitigateDataAgain}
+      text: Mitigate Data Again
+    - id: { code: MitigateModel }
+      text: Mitigate Model
+    - id: { code: Done }
+      text: Done
+  enabled_by:
+    - { code: AdversarialDebiasing }
+    - { code: Reweighing }
+    - { code: DisparateImpactRemover }
+  action_needed: null
+  created_at: 2024-05-31T18:20:29
+
+- id: { code: ModelMitigation }
+  text: Which model mitigation technique do you want to apply?
+  type: single
+  answers:
+    - id: { code: Algo1 }
+      text: Algo 1
+    - id: { code: Algo2 }
+      text: Algo 2
+    - id: { code: Algo3 }
+      text: Algo 3
+  enabled_by:
+    - { code: MitigateModel }
+    - { code: MitigateModelAgain } # note the comeback from the summary
+  action_needed: null
+  created_at: 2024-05-31T18:20:30
+
+- id: { code: ModelMitigationSummary }
+  text: What do you want to do next?
+  type: single
+  answers:
+    - id: { code: MitigateDataAgain }
+      text: Mitigate Data Again
+    - id: { code: MitigateModelAgain }
+      text: Mitigate Model Again
+    - id: { code: MitigateOutcome }
+      text: Mitigate Outcome
+    - id: { code: Done }
+      text: Done
+  enabled_by:
+    - { code: Algo1 }
+    - { code: Algo2 }
+    - { code: Algo3 }
+  action_needed: null
+  created_at: 2024-05-31T18:20:31
+
+- id: { code: OutcomeMitigation }
+  text: Which outcome mitigation technique do you want to apply?
+  type: single
+  answers:
+    - id: { code: OutcomeAlgo1 }
+      text: Outcome Algo 1
+    - id: { code: OutcomeAlgo2 }
+      text: Outcome Algo 2
+    - id: { code: OutcomeAlgo3 }
+      text: Outcome Algo 3
+  enabled_by:
+    - { code: MitigateOutcome }
+  action_needed: null
+  created_at: 2024-05-31T18:20:32
+
+- id: { code: OutcomeMitigationSummary }
+  text: What do you want to do next?
+  type: single
+  answers:
+    - id: { code: MitigateDataAgain}
+      text: Mitigate Data Again
+    - id: { code: MitigateModelAgain }
+      text: Mitigate Model Again
+    - id: { code: MitigateOutcomeAgain }
+      text: Mitigate Outcome Again
+    - id: { code: Test }
+      text: Test
+    - id: { code: Done }
+      text: Done
+  enabled_by:
+    - { code: OutcomeAlgo1 }
+    - { code: OutcomeAlgo2 }
+    - { code: OutcomeAlgo3 }
+  action_needed: null
+  created_at: 2024-05-31T18:20:33
+
+- id: { code: TestSetChoice }
+  text: Choose a test set.
+  type: single
+  answers:
+    - id: { code: TestSet1 }
+      text: Test Set 1
+    - id: { code: TestSet2 }
+      text: Test Set 2
+    - id: { code: TestSet3 }
+      text: Test Set 3
+  enabled_by:
+    - { code: Test }
+  action_needed: null
+  created_at: 2024-05-31T18:20:34
+
+- id: { code: Polarization }
+  text: Select the polarization metrics and the features to check.
+  type: multiple
+  answers:
+    - id: { code: DemographicParity }
+      text: Demographic Parity
+#      content: |
+#        DemographicParity:
+#          name: Demographic Parity
+#          description: Difference between the probability of a favorable outcome for the unprivileged group and the probability of a favorable outcome for the privileged group.
+    - id: { code: EqualizedOdds }
+      text: Equalized Odds
+#      content: |
+#        EqualizedOdds:
+#          name: Equalized Odds
+#          description: Difference between the true positive rate for the unprivileged group and the true positive rate for the privileged group.
+
+  enabled_by:
+    - { code: TestSet1 }
+    - { code: TestSet2 }
+    - { code: TestSet3 }
+  action_needed: null
+  created_at: 2024-05-31T18:20:35
+
+- id: { code: TestSummary }
+  text: What do you want to do next?
+  type: single
+  answers:
+    - id: { code: MitigateDataAgain }
+      text: Mitigate Data Again
+    - id: { code: MitigateModelAgain }
+      text: Mitigate Model Again
+    - id: { code: MitigateOutcomeAgain }
+      text: Mitigate Outcome Again
+    - id: { code: Done }
+      text: Done
+  enabled_by:
+    - { code: DemographicParity }
+    - { code: EqualizedOdds }
+  action_needed: null
+  created_at: 2024-05-31T18:20:36
