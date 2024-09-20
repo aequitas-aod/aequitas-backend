@@ -55,17 +55,18 @@
   text: Which are the output features?
   type: multiple
   answers:
-      - id: { code: OutputFeatures-features-selected }
-        text: ""
+    - id: { code: OutputFeatures-features-selected }
+      text: ""
   enabled_by:
-      - { code: AdultDataset }
-      - { code: BankDataset }
-      - { code: CompasDataset }
-      - { code: GermanDataset }
-      - { code: LawSchoolGPADataset }
-      - { code: MEPSDataset19 }
-      - { code: MEPSDataset20 }
-      - { code: MEPSDataset21 }
+    - { code: Custom }
+    - { code: AdultDataset }
+    - { code: BankDataset }
+    - { code: CompasDataset }
+    - { code: GermanDataset }
+    - { code: LawSchoolGPADataset }
+    - { code: MEPSDataset19 }
+    - { code: MEPSDataset20 }
+    - { code: MEPSDataset21 }
   action_needed: null
   created_at: 2024-05-31T18:20:24
 
@@ -139,12 +140,14 @@
   text: Which data mitigation technique do you want to apply?
   type: single
   answers:
-    - id: { code: AdversarialDebiasing }
-      text: Adversarial Debiasing
-    - id: { code: Reweighing }
-      text: Reweighing
     - id: { code: DisparateImpactRemover }
       text: Disparate Impact Remover
+    - id: { code: LearningFairRepresentations }
+      text: Learning Fair Representations
+    - id: { code: OptimizedPreprocessing }
+      text: Optimized Preprocessing
+    - id: { code: Reweighing }
+      text: Reweighing
   enabled_by:
     - { code: StatisticalParity }
     - { code: DisparateImpact }
@@ -165,9 +168,10 @@
     - id: { code: Done }
       text: Done
   enabled_by:
-    - { code: AdversarialDebiasing }
-    - { code: Reweighing }
     - { code: DisparateImpactRemover }
+    - { code: LearningFairRepresentations }
+    - { code: OptimizedPreprocessing }
+    - { code: Reweighing }
   action_needed: null
   created_at: 2024-05-31T18:20:29
 
@@ -175,12 +179,14 @@
   text: Which model mitigation technique do you want to apply?
   type: single
   answers:
-    - id: { code: Algo1 }
-      text: Algo 1
-    - id: { code: Algo2 }
-      text: Algo 2
-    - id: { code: Algo3 }
-      text: Algo 3
+    - id: { code: AdversarialDebiasing }
+      text: Adversarial Debiasing
+    - id: { code: GerryFairClassifier }
+      text: GerryFair Classifier
+    - id: { code: MetaFairClassifier }
+      text: MetaFair Classifier
+    - id: { code: PrejudiceRemover }
+      text: Prejudice Remover
   enabled_by:
     - { code: MitigateModel }
     - { code: MitigateModelAgain } # note the comeback from the summary
@@ -200,9 +206,10 @@
     - id: { code: Done }
       text: Done
   enabled_by:
-    - { code: Algo1 }
-    - { code: Algo2 }
-    - { code: Algo3 }
+    - { code: AdversarialDebiasing }
+    - { code: GerryFairClassifier }
+    - { code: MetaFairClassifier }
+    - { code: PrejudiceRemover }
   action_needed: null
   created_at: 2024-05-31T18:20:31
 
@@ -210,12 +217,12 @@
   text: Which outcome mitigation technique do you want to apply?
   type: single
   answers:
-    - id: { code: OutcomeAlgo1 }
-      text: Outcome Algo 1
-    - id: { code: OutcomeAlgo2 }
-      text: Outcome Algo 2
-    - id: { code: OutcomeAlgo3 }
-      text: Outcome Algo 3
+    - id: { code: CalibratedEqualizedOdds }
+      text: Calibrated Equalized Odds
+    - id: { code: EqualizedOdds }
+      text: Equalized Odds
+    - id: { code: RejectOptionClassification }
+      text: Reject Option Classification
   enabled_by:
     - { code: MitigateOutcome }
   action_needed: null
@@ -236,9 +243,9 @@
     - id: { code: Done }
       text: Done
   enabled_by:
-    - { code: OutcomeAlgo1 }
-    - { code: OutcomeAlgo2 }
-    - { code: OutcomeAlgo3 }
+    - { code: CalibratedEqualizedOdds }
+    - { code: EqualizedOdds }
+    - { code: RejectOptionClassification }
   action_needed: null
   created_at: 2024-05-31T18:20:33
 
@@ -263,16 +270,16 @@
   answers:
     - id: { code: DemographicParity }
       text: Demographic Parity
-#      content: |
-#        DemographicParity:
-#          name: Demographic Parity
-#          description: Difference between the probability of a favorable outcome for the unprivileged group and the probability of a favorable outcome for the privileged group.
+      content: |
+        DemographicParity:
+          name: Demographic Parity
+          description: Difference between the probability of a favorable outcome for the unprivileged group and the probability of a favorable outcome for the privileged group.
     - id: { code: EqualizedOdds }
       text: Equalized Odds
-#      content: |
-#        EqualizedOdds:
-#          name: Equalized Odds
-#          description: Difference between the true positive rate for the unprivileged group and the true positive rate for the privileged group.
+      content: |
+        EqualizedOdds:
+          name: Equalized Odds
+          description: Difference between the true positive rate for the unprivileged group and the true positive rate for the privileged group.
 
   enabled_by:
     - { code: TestSet1 }
