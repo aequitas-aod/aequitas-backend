@@ -33,20 +33,20 @@
       LawSchoolGPADataset:
         description: Law School GPA dataset.
   - id: { code: MEPSDataset19 }
-    text: Medical Expenditure Panel Survey Dataset
+    text: Medical Expenditure Panel Survey Dataset 2019
     content: |
       MEPSDataset19:
-        description: Medical Expenditure Panel Survey Dataset.
+        description: Medical Expenditure Panel Survey Dataset 2019.
   - id: { code: MEPSDataset20 }
-    text: Medical Expenditure Panel Survey Dataset
+    text: Medical Expenditure Panel Survey Dataset 2020
     content: |
       MEPSDataset20:
-        description: Medical Expenditure Panel Survey Dataset.
+        description: Medical Expenditure Panel Survey Dataset 2020.
   - id: { code: MEPSDataset21 }
-    text: Medical Expenditure Panel Survey Dataset
+    text: Medical Expenditure Panel Survey Dataset 2021
     content: |
       MEPSDataset21:
-        description: Medical Expenditure Panel Survey Dataset.
+        description: Medical Expenditure Panel Survey Dataset 2021.
   enabled_by: []
   action_needed: null
   created_at: 2024-05-31T18:20:23
@@ -225,6 +225,7 @@
       text: Reject Option Classification
   enabled_by:
     - { code: MitigateOutcome }
+    - { code: MitigateOutcomeAgain }
   action_needed: null
   created_at: 2024-05-31T18:20:32
 
