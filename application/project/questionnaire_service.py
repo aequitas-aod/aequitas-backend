@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from application import GraphQuestionService
+from application.graph import GraphQuestionService
 from domain.common.core import QuestionId, AnswerId
 from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectId, ProjectQuestion

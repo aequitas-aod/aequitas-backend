@@ -1,4 +1,4 @@
-from application import GraphQuestionService
+from application.graph import GraphQuestionService
 from application.project.project_service import ProjectService
 from application.project.questionnaire_service import QuestionnaireService
 from domain.graph.repositories import GraphQuestionRepository

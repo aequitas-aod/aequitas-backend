@@ -16,9 +16,11 @@ class Neo4jProjectRepository(ProjectRepository):
         )
 
     def get_all_projects(self) -> List[Project]:
-        query_string: str = ("MATCH (p:Project) "
-                             "MATCH (p)-[:HAS_CONTEXT]->(pc:ProjectContext) "
-                             "RETURN p, pc")
+        query_string: str = (
+            "MATCH (p:Project) "
+            "MATCH (p)-[:HAS_CONTEXT]->(pc:ProjectContext) "
+            "RETURN p, pc"
+        )
         query: Neo4jQuery = Neo4jQuery(query_string, {})
         res: List[dict] = self.driver.query(query)
         projects: List[Project] = []
@@ -28,9 +30,11 @@ class Neo4jProjectRepository(ProjectRepository):
         return projects
 
     def get_project_by_id(self, project_id: ProjectId) -> Optional[Project]:
-        query_string: str = ("MATCH (p:Project {id: $project_id}) "
-                             "OPTIONAL MATCH (p)-[:HAS_CONTEXT]->(pc:ProjectContext) "
-                             "RETURN p, pc")
+        query_string: str = (
+            "MATCH (p:Project {id: $project_id}) "
+            "OPTIONAL MATCH (p)-[:HAS_CONTEXT]->(pc:ProjectContext) "
+            "RETURN p, pc"
+        )
         query: Neo4jQuery = Neo4jQuery(query_string, {"project_id": project_id.code})
         r: List[dict] = self.driver.query(query)
         if len(r) == 0:
