@@ -9,7 +9,7 @@ class Project(BaseModel):
 
     id: ProjectId
     name: str
-    context: dict[str, str] = dict()
+    context: dict[str, str]
 
     def add_to_context(self, key: str, value: str) -> "Project":
         if key in self.context:
@@ -20,7 +20,6 @@ class Project(BaseModel):
         if key not in self.context:
             raise ValueError(f"Key {key} does not exist in context")
         context: dict[str, str] = deepcopy(self.context)
-        # logger.info(context)
         context.pop(key)
         return Project(id=self.id, name=self.name, context=context)
 
@@ -28,12 +27,4 @@ class Project(BaseModel):
         return f"Project(id={self.id}, name={self.name}, context={self.context})"
 
     def __hash__(self):
-        return hash(self.id)
-
-
-if __name__ == "__main__":
-    project = Project(
-        id=ProjectId(code="project_id"), name="Project name"
-    ).add_to_context("key", "value")
-    p = project.remove_from_context("key")
-    print(p)
+        return hash(self.id.code)

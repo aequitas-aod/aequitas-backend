@@ -36,7 +36,7 @@ class ProjectService:
         :raises ConflictError: if the project already exists
         """
         project: Project = ProjectFactory.create_project(
-            ProjectId(code=shortuuid.uuid()), name
+            ProjectId(code=shortuuid.uuid()), name, {}
         )
         return self.project_repository.insert_project(project)
 
