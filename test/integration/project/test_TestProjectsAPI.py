@@ -5,7 +5,7 @@ from typing import Set
 from python_on_whales import DockerClient
 
 from domain.project.core import Project, ProjectId
-from presentation.presentation import deserialize
+from presentation.presentation import deserialize, serialize
 from ws.main import create_app
 
 
@@ -74,6 +74,23 @@ class TestProjectsAPI(unittest.TestCase):
             self.project_name_1,
             project.name,
         )
+
+    def test_update_project(self):
+        response = self.app.post("/projects", json={"name": self.project_name_1})
+        project_id: ProjectId = deserialize(json.loads(response.data), ProjectId)
+        project_response = self.app.get(f"/projects/{project_id.code}")
+        project: Project = deserialize(json.loads(project_response.data), Project)
+        updated_project: Project = project.model_copy().add_to_context("key", "value")
+        updated_project.name = "Updated project name"
+        response = self.app.put(
+            f"/projects/{project_id.code}",
+            json=serialize(updated_project),
+        )
+        self.assertEqual(response.status_code, 200)
+        response = self.app.get(f"/projects/{project_id.code}")
+        expected_project: Project = deserialize(json.loads(response.data), Project)
+        self.assertEqual(updated_project.context, expected_project.context)
+
 
     def test_delete_project(self):
         response = self.app.post("/projects", json={"name": self.project_name_1})

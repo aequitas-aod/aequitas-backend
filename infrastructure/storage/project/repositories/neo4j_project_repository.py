@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from domain.project.core import ProjectId, Project
+from domain.project.factories import ProjectFactory
 from domain.project.repositories.project_repository import ProjectRepository
 from presentation.presentation import deserialize, serialize
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
@@ -46,9 +47,7 @@ class Neo4jProjectRepository(ProjectRepository):
         if self._check_project_exists(project.id):
             raise ConflictError(f"Project with id {project.id} already exists")
 
-        context: dict[str, str] = {}
-        for key in project.context:
-            context[key] = project.context[key]
+        context: dict = self._get_context_dict(project)
         p: dict = self._convert_project_in_node(project)
         self.driver.query(
             Neo4jQuery(
@@ -66,10 +65,16 @@ class Neo4jProjectRepository(ProjectRepository):
         if project_id != project.id:
             raise ConflictError("Updated project id does not match")
         p: dict = self._convert_project_in_node(project)
+        context: dict = self._get_context_dict(project)
+        query = ("MATCH (p:Project {id: $project_code}) "
+                 "OPTIONAL MATCH (p)-[r:HAS_CONTEXT]->(pc:ProjectContext) "
+                 "SET p = $project "
+                 "SET pc = $context"
+                 )
         self.driver.query(
             Neo4jQuery(
-                "MATCH (p:Project {id: $project_code}) SET p = $project",
-                {"project_code": project_id.code, "project": p},
+                query,
+                {"project_code": project_id.code, "project": p, "context": context},
             )
         )
 
@@ -104,3 +109,9 @@ class Neo4jProjectRepository(ProjectRepository):
         project["name"] = project["name"]
         project["context"] = {} if pc is None else pc
         return deserialize(project, Project)
+
+    def _get_context_dict(self, project: Project) -> dict:
+        context: dict[str, str] = {}
+        for key in project.context:
+            context[key] = project.context[key]
+        return context
