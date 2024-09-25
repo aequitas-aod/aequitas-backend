@@ -31,7 +31,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                 "MATCH (p:Project {id: $project_code})-[:QUESTIONNAIRE]->(q:ProjectQuestion) "
                 "OPTIONAL MATCH (q)-[:HAS_AVAILABLE]->(available:Answer) "
                 "OPTIONAL MATCH (q)-[:HAS_SELECTED]->(selected:Answer) "
-                "RETURN q, COLLECT(available) AS available_answers, COLLECT(selected) AS selected_answers"
+                "RETURN q, COLLECT(available) AS available_answers, COLLECT(selected) AS selected_answers, p AS project"
             )
             query: Neo4jQuery = Neo4jQuery(
                 query_string, {"project_code": project_id.code}
@@ -43,6 +43,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                 res[0]["q"],
                 res[0]["available_answers"],
                 res[0]["selected_answers"],
+                res[0]["project"]["id"],
                 None,
             )
             return question
@@ -63,10 +64,15 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             res: List[dict] = self.driver.query(query)
             if len(res) == 0:
                 return None
+
+            project_code: str = self._get_project_code_from_question_id(
+                res[0]["q"]["id"]
+            )
             question: ProjectQuestion = self._convert_node_in_project_question(
                 res[0]["q"],
                 res[0]["available_answers"],
                 res[0]["selected_answers"],
+                project_code,
                 res[0]["prev_q"],
             )
             return question
@@ -90,10 +96,11 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
     def get_project_question_by_id(
         self, question_id: QuestionId
     ) -> Optional[ProjectQuestion]:
+        project_code: str = self._get_project_code_from_question_id(question_id.code)
         query_string: str = (
             "MATCH (q:ProjectQuestion {id: $question_id})-[:HAS_AVAILABLE]->(available:Answer) "
             "OPTIONAL MATCH (q)-[:HAS_SELECTED]->(selected:Answer) "
-            "OPTIONAL MATCH (prev_q: ProjectQuestion)-[:NEXT]->(q)"
+            "OPTIONAL MATCH (prev_q: ProjectQuestion)-[:NEXT]->(q) "
             "RETURN q, COLLECT(available) AS available_answers, COLLECT(selected) AS selected_answers, prev_q"
         )
         query: Neo4jQuery = Neo4jQuery(query_string, {"question_id": question_id.code})
@@ -104,12 +111,13 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             res[0]["q"],
             res[0]["available_answers"],
             res[0]["selected_answers"],
+            project_code,
             res[0]["prev_q"],
         )
         return question
 
     def insert_project_question(self, question: ProjectQuestion) -> QuestionId:
-        project_code: str = question.id.code.split("-")[0]
+        project_code: str = question.project_id.code
         project: Optional[Project] = self.project_repository.get_project_by_id(
             ProjectId(code=project_code)
         )
@@ -128,12 +136,12 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         for answer in question.answers:
             a: dict = self._convert_answer_in_node(answer)
             queries.append(Neo4jQuery("CREATE (:Answer $answer)", {"answer": a}))
-            relation_name: str = "HAS_SELECTED" if answer.selected else "HAS_AVAILABLE"
             queries.append(
                 Neo4jQuery(
                     "MATCH (q:ProjectQuestion {id: $question_id}) "
                     "MATCH (a:Answer {id: $answer_id}) "
-                    f"CREATE (q)-[:{relation_name}]->(a)",
+                    f"CREATE (q)-[:HAS_AVAILABLE]->(a) "
+                    f"{'CREATE (q)-[:HAS_SELECTED]->(a)' if answer.selected else ''}",
                     {"question_id": question.id.code, "answer_id": answer.id.code},
                 )
             )
@@ -234,6 +242,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         q["created_at"] = question.created_at.isoformat()
         q["selection_strategy"] = question.selection_strategy.__class__.__name__
         del q["answers"]
+        del q["project_id"]
         del q["previous_question_id"]
         return q
 
@@ -253,6 +262,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         q: dict,
         available_answers: List,
         selected_answers: List,
+        project_code: str,
         previous_question: Optional[dict],
     ) -> ProjectQuestion:
         question: dict = q
@@ -266,6 +276,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             }
             for a in available_answers + selected_answers
         ]
+        question["project_id"] = {"code": project_code}
         if previous_question:
             question["previous_question_id"] = (
                 {"code": previous_question["id"]} if previous_question else None
@@ -273,6 +284,14 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         else:
             question["previous_question_id"] = None
         return deserialize(question, ProjectQuestion)
+
+    def _get_project_code_from_question_id(self, question_id: str):
+        project_query: Neo4jQuery = Neo4jQuery(
+            "MATCH path=(q:ProjectQuestion {id: $question_id})-[*]-(p:Project) RETURN p",
+            {"question_id": question_id},
+        )
+        res: List[dict] = self.driver.query(project_query)
+        return res[0]["p"]["id"]
 
 
 if __name__ == "__main__":

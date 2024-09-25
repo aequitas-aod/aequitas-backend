@@ -4,7 +4,7 @@ from typing import FrozenSet
 
 from domain.common.core import AnswerId, QuestionId
 from domain.common.core.enum import QuestionType
-from domain.project.core import ProjectQuestion, ProjectAnswer
+from domain.project.core import ProjectQuestion, ProjectAnswer, ProjectId
 from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
 
 
@@ -30,6 +30,7 @@ class TestProjectQuestionSingleChoice(unittest.TestCase):
                     ),
                 }
             ),
+            ProjectId(code="project_id"),
             created_at=self.question_timestamp,
         )
 
@@ -101,7 +102,9 @@ class TestBooleanProjectQuestion(unittest.TestCase):
     def setUp(self):
         self.project_question: ProjectQuestion = (
             ProjectQuestionFactory.create_project_boolean_question(
-                QuestionId(code="boolean_question_id"), "Do you practice TDD?"
+                QuestionId(code="boolean_question_id"),
+                "Do you practice TDD?",
+                ProjectId(code="project_id"),
             )
         )
 

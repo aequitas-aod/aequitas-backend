@@ -66,11 +66,12 @@ class Neo4jProjectRepository(ProjectRepository):
             raise ConflictError("Updated project id does not match")
         p: dict = self._convert_project_in_node(project)
         context: dict = self._get_context_dict(project)
-        query = ("MATCH (p:Project {id: $project_code}) "
-                 "OPTIONAL MATCH (p)-[r:HAS_CONTEXT]->(pc:ProjectContext) "
-                 "SET p = $project "
-                 "SET pc = $context"
-                 )
+        query = (
+            "MATCH (p:Project {id: $project_code}) "
+            "OPTIONAL MATCH (p)-[r:HAS_CONTEXT]->(pc:ProjectContext) "
+            "SET p = $project "
+            "SET pc = $context"
+        )
         self.driver.query(
             Neo4jQuery(
                 query,
@@ -115,3 +116,11 @@ class Neo4jProjectRepository(ProjectRepository):
         for key in project.context:
             context[key] = project.context[key]
         return context
+
+
+if __name__ == "__main__":
+    Neo4jProjectRepository().insert_project(
+        ProjectFactory().create_project(
+            ProjectId(code="p-1"), "Project 1", {"key": "value"}
+        )
+    )

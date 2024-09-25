@@ -91,7 +91,6 @@ class TestProjectsAPI(unittest.TestCase):
         expected_project: Project = deserialize(json.loads(response.data), Project)
         self.assertEqual(updated_project.context, expected_project.context)
 
-
     def test_delete_project(self):
         response = self.app.post("/projects", json={"name": self.project_name_1})
         project_id: ProjectId = deserialize(json.loads(response.data), ProjectId)

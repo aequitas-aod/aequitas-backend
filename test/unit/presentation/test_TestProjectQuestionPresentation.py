@@ -3,7 +3,7 @@ from datetime import datetime
 
 from domain.common.core import AnswerId, QuestionId
 from domain.common.core.enum import QuestionType
-from domain.project.core import ProjectQuestion
+from domain.project.core import ProjectQuestion, ProjectId
 from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
 from presentation.presentation import deserialize, serialize
 
@@ -26,6 +26,7 @@ class TestProjectQuestionPresentation(unittest.TestCase):
                     ),
                 }
             ),
+            ProjectId(code="project_id"),
             created_at=self.question_timestamp,
         )
         self.question_dict: dict = {
@@ -44,6 +45,7 @@ class TestProjectQuestionPresentation(unittest.TestCase):
                     "selected": True,
                 },
             ],
+            "project_id": {"code": "project_id"},
             "created_at": self.question_timestamp.isoformat(),
             "selection_strategy": {"type": "SingleSelectionStrategy"},
             "previous_question_id": None,

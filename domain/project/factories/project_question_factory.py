@@ -21,6 +21,7 @@ class ProjectQuestionFactory:
         text: str,
         question_type: QuestionType,
         answers: FrozenSet[ProjectAnswer],
+        project_id: ProjectId,
         created_at: datetime = datetime.now(),
         previous_question_id: QuestionId = None,
     ) -> ProjectQuestion:
@@ -46,6 +47,7 @@ class ProjectQuestionFactory:
             text=text,
             type=question_type,
             answers=answers,
+            project_id=project_id,
             created_at=created_at,
             selection_strategy=selection_strategy,
             previous_question_id=previous_question_id,
@@ -55,6 +57,7 @@ class ProjectQuestionFactory:
     def create_project_boolean_question(
         question_id: QuestionId,
         text: str,
+        project_id: ProjectId,
         created_at: datetime = datetime.now(),
         previous_question_id: QuestionId = None,
     ) -> ProjectQuestion:
@@ -73,6 +76,7 @@ class ProjectQuestionFactory:
             text,
             QuestionType.BOOLEAN,
             answers,
+            project_id,
             created_at,
             previous_question_id=previous_question_id,
         )
@@ -97,5 +101,6 @@ class ProjectQuestionFactory:
             graph_question.text,
             graph_question.type,
             frozenset(project_answers),
+            project_id,
             previous_question_id=previous_question_id,
         )

@@ -5,7 +5,7 @@ from typing_extensions import Self
 
 from domain.common.core import Question, AnswerId
 from domain.common.core import QuestionId
-from domain.project.core import ProjectAnswer
+from domain.project.core import ProjectAnswer, ProjectId
 from domain.project.core.selection import (
     SelectionStrategy,
     SingleSelectionStrategy,
@@ -14,6 +14,7 @@ from domain.project.core.selection import (
 
 
 class ProjectQuestion(Question):
+    project_id: ProjectId
     answers: FrozenSet[ProjectAnswer]
     selection_strategy: SelectionStrategy
     previous_question_id: Optional[QuestionId]
@@ -30,6 +31,7 @@ class ProjectQuestion(Question):
             text=self.text,
             type=self.type,
             answers=answers,
+            project_id=self.project_id,
             created_at=self.created_at,
             selection_strategy=self.selection_strategy,
             previous_question_id=self.previous_question_id,
@@ -42,6 +44,7 @@ class ProjectQuestion(Question):
             text=self.text,
             type=self.type,
             answers=answers,
+            project_id=self.project_id,
             created_at=self.created_at,
             selection_strategy=self.selection_strategy,
             previous_question_id=self.previous_question_id,
@@ -78,7 +81,7 @@ class ProjectQuestion(Question):
     def __str__(self) -> str:
         return (
             f"ProjectQuestion(id={self.id},\n text={self.text},\n type={self.type},\n answers={self.answers},\n "
-            f"created_at={self.created_at},\n selection_strategy={self.selection_strategy},\n "
+            f"project_id={self.project_id},\n created_at={self.created_at},\n selection_strategy={self.selection_strategy},\n "
             f"previous_question_id={self.previous_question_id}\n)"
         )
 

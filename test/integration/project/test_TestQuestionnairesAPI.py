@@ -87,12 +87,6 @@ class TestQuestionnairesAPI(unittest.TestCase):
         )
         self._compare_graph_and_project_questions(first_question, related_question)
 
-    def test_get_not_already_existing_nth_question(self):
-        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/4")
-        self.assertEqual(response.status_code, 404)
-        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/5")
-        self.assertEqual(response.status_code, 404)
-
     def test_select_answer_to_first_question(self):
         first_question: ProjectQuestion = self._get_nth_question(1)
         answer = next(iter(first_question.answers))
@@ -104,6 +98,12 @@ class TestQuestionnairesAPI(unittest.TestCase):
             self._get_question_from_questionnaire_and_graph(2)
         )
         self._compare_graph_and_project_questions(new_question, related_question)
+
+    def test_get_not_already_existing_nth_question(self):
+        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/4")
+        self.assertEqual(response.status_code, 404)
+        response = self.app.get(f"/projects/{self.project_id.code}/questionnaire/5")
+        self.assertEqual(response.status_code, 404)
 
     def test_select_wrong_answer(self):
         response = self.app.put(
