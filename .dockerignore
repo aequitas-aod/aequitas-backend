@@ -1,0 +1,48 @@
+LICENSE
+README.md
+docs
+Dockerfile
+.dockerignore
+.gitattributes
+.gitignore
+.github
+.git
+.coverage
+package.json
+package-lock.json
+test
+neo4j-healthcheck.sh
+renovate.json
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# pytest cache
+.pytest_cache/
+
+# MyPy cache
+.mypy_cache/
+
+# Virtual environments
+venv/
+.venv/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore local configuration files
+*.local
+
+# Logs and temporary files
+logs/
+tmp/
+*.bak

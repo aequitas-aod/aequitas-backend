@@ -69,6 +69,16 @@ services:
       - ${KAFKA_HOST_1}
       - ${KAFKA_HOST_2}
 
+  aequitas-backend:
+    image: aequitas-backend
+    container_name: ${AEQUITAS_BACKEND_HOST}
+    build: .
+    restart: on-failure
+    ports:
+      - ${AEQUITAS_BACKEND_PORT}:${AEQUITAS_BACKEND_PORT}
+    environment:
+      - AEQUITAS_BACKEND_PORT=${AEQUITAS_BACKEND_PORT}
+
   db:
     image: neo4j:latest
     container_name: aequitas-backend-db
