@@ -1,8 +1,77 @@
 services:
 
+  zookeeper-1:
+    image: bitnami/zookeeper:latest
+    container_name: zookeeper-1
+    ports:
+      - ${ZOOKEEPER_PORT_1}:2181
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  zookeeper-2:
+    image: bitnami/zookeeper:latest
+    container_name: zookeeper-2
+    ports:
+      - ${ZOOKEEPER_PORT_2}:2181
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka-1:
+    image: bitnami/kafka:latest
+    container_name: ${KAFKA_HOST_1}
+    ports:
+      - ${KAFKA_PORT_1}:${KAFKA_PORT_1}
+      - ${KAFKA_EXTERNAL_PORT_1}:${KAFKA_EXTERNAL_PORT_1}
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:${KAFKA_PORT_1},EXTERNAL://:${KAFKA_EXTERNAL_PORT_1}
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST_1}:${KAFKA_PORT_1},EXTERNAL://localhost:${KAFKA_EXTERNAL_PORT_1}
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=1
+      - KAFKA_MESSAGE_MAX_BYTES=200000000
+      - KAFKA_DELETE_TOPIC_ENABLE=true
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+
+  kafka-2:
+    image: bitnami/kafka:latest
+    container_name: ${KAFKA_HOST_2}
+    ports:
+      - ${KAFKA_PORT_2}:${KAFKA_PORT_2}
+      - ${KAFKA_EXTERNAL_PORT_2}:${KAFKA_EXTERNAL_PORT_2}
+    environment:
+      - KAFKA_BROKER_ID=2
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:${KAFKA_PORT_2},EXTERNAL://:${KAFKA_EXTERNAL_PORT_2}
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST_2}:${KAFKA_PORT_2},EXTERNAL://localhost:${KAFKA_EXTERNAL_PORT_2}
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=1
+      - KAFKA_MESSAGE_MAX_BYTES=200000000
+      - KAFKA_DELETE_TOPIC_ENABLE=true
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8082:8080"
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_HOST_1}:${KAFKA_PORT_1},${KAFKA_HOST_2}:${KAFKA_PORT_2}
+    depends_on:
+      - ${KAFKA_HOST_1}
+      - ${KAFKA_HOST_2}
+
   db:
     image: neo4j:latest
-#    container_name: aequitas-reasoner-db
+    container_name: aequitas-backend-db
     restart: always
     environment:
       NEO4J_AUTH: neo4j/${DB_PASSWORD}

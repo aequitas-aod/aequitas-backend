@@ -15,7 +15,7 @@ class TestProjectsAPI(unittest.TestCase):
     def startDocker(cls):
         cls.docker = DockerClient()
         cls.docker.compose.down(volumes=True)
-        cls.docker.compose.up(detach=True, wait=True)
+        cls.docker.compose.up(services=["db"], detach=True, wait=True)
 
     @classmethod
     def setUpClass(cls):
