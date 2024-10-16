@@ -8,7 +8,7 @@ from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectId, ProjectQuestion
 from presentation.presentation import deserialize
 from test.utils.utils import get_file_path
-from ws.main import create_app
+from infrastructure.ws.main import create_app
 
 
 class TestQuestionnairesAPI(unittest.TestCase):

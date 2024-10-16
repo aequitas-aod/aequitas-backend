@@ -8,7 +8,7 @@ from domain.project.core import ProjectId, ProjectQuestion
 from presentation.presentation import serialize
 from utils.errors import NotFoundError, BadRequestError
 from utils.status_code import StatusCode
-from ws.setup import questionnaire_service
+from infrastructure.ws.setup import questionnaire_service
 
 questionnaires_bp = Blueprint("questionnaires", __name__)
 api = Api(questionnaires_bp)

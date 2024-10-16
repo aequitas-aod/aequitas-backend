@@ -7,7 +7,7 @@ from domain.project.core import Project, ProjectId
 from presentation.presentation import serialize, deserialize
 from utils.errors import ConflictError, NotFoundError, BadRequestError
 from utils.status_code import StatusCode
-from ws.setup import project_service
+from infrastructure.ws.setup import project_service
 
 projects_bp = Blueprint("projects", __name__)
 api = Api(projects_bp)

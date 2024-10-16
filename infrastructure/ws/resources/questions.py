@@ -9,7 +9,7 @@ from domain.graph.core import GraphQuestion
 from presentation.presentation import serialize, deserialize
 from utils.errors import BadRequestError, ConflictError, NotFoundError
 from utils.status_code import StatusCode
-from ws.setup import question_service
+from infrastructure.ws.setup import question_service
 
 questions_bp = Blueprint("questions", __name__)
 api = Api(questions_bp)

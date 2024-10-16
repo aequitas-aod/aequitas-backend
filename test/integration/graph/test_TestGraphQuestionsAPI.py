@@ -1,7 +1,6 @@
 import json
 import unittest
 from datetime import datetime
-from pathlib import Path
 from typing import Set
 
 import yaml
@@ -14,7 +13,7 @@ from domain.common.core.enum import QuestionType
 from domain.graph.factories import GraphQuestionFactory
 from presentation.presentation import serialize, deserialize
 from test.utils.utils import get_file_path
-from ws.main import create_app
+from infrastructure.ws.main import create_app
 
 
 class TestGraphQuestionsAPI(unittest.TestCase):

@@ -1,16 +1,13 @@
 from typing import List, Optional
 
 from domain.common.core import QuestionId, Answer, AnswerId
-from domain.common.core.enum import QuestionType
 from domain.common.factories import AnswerFactory
 from domain.graph.core import GraphQuestion
-from domain.graph.factories import GraphQuestionFactory
 from domain.graph.repositories import GraphQuestionRepository
 from presentation.presentation import serialize, deserialize
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
 from utils.errors import NotFoundError, ConflictError
 from utils.neo4j_driver import Neo4jDriver, Credentials, Neo4jQuery
-from ws.utils.logger import logger
 
 
 class Neo4JGraphQuestionRepository(GraphQuestionRepository):

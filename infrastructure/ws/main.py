@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_cors import CORS
 
-from ws.resources.projects import projects_bp
-from ws.resources.questionnaires import questionnaires_bp
-from ws.resources.questions import questions_bp
+from infrastructure.ws.resources.projects import projects_bp
+from infrastructure.ws.resources.questionnaires import questionnaires_bp
+from infrastructure.ws.resources.questions import questions_bp
 
 
 def create_app():

@@ -6,7 +6,7 @@ from python_on_whales import DockerClient
 
 from domain.project.core import Project, ProjectId
 from presentation.presentation import deserialize, serialize
-from ws.main import create_app
+from infrastructure.ws.main import create_app
 
 
 class TestProjectsAPI(unittest.TestCase):
