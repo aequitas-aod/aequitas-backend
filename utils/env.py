@@ -23,7 +23,9 @@ for path in _descending_priority_env_paths:
         load_dotenv(path, override=False)
 
 ENV = _get_env_var_or_fail("ENV")
-DB_HOST = _get_env_var_or_fail("DB_HOST")
+
+FLASK_ENV = os.getenv("FLASK_ENV")
+DB_HOST = "localhost" if FLASK_ENV == "develop" else _get_env_var_or_fail("DB_HOST")
 DB_USER = _get_env_var_or_fail("DB_USER")
 
 if DB_USER != "neo4j":
