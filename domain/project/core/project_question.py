@@ -50,6 +50,19 @@ class ProjectQuestion(Question):
             previous_question_id=self.previous_question_id,
         )
 
+    def deselect_all_answers(self) -> Self:
+        new_answers = frozenset(map(lambda a: a.deselect(), self.answers))
+        return ProjectQuestion(
+            id=self.id,
+            text=self.text,
+            type=self.type,
+            answers=new_answers,
+            project_id=self.project_id,
+            created_at=self.created_at,
+            selection_strategy=self.selection_strategy,
+            previous_question_id=self.previous_question_id,
+        )
+
     @field_serializer("selection_strategy", when_used="json")
     def serialize_selection_strategy(self, selection_strategy: SelectionStrategy):
         if isinstance(selection_strategy, SelectionStrategy):
