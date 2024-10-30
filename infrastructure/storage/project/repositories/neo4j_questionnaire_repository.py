@@ -222,8 +222,11 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
 
     def delete_questionnaire(self, project_id: ProjectId):
         query_string = (
-            "MATCH path = (p:Project {id: $project_code})-[*]-(nodeToDelete) "
-            "DETACH DELETE nodeToDelete"
+            "CALL {"
+            "    MATCH (p:Project {id: $project_code})-[*]-(nodeToDelete)"
+            "    WITH nodeToDelete LIMIT 1000"
+            "    DETACH DELETE nodeToDelete"
+            "}"
         )
         self.driver.query(
             Neo4jQuery(
