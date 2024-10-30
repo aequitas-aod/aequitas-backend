@@ -64,4 +64,38 @@ class ProjectResource(Resource):
             return "Missing project id", StatusCode.BAD_REQUEST
 
 
+class ProjectContextResource(Resource):
+
+    def get(self, project_id):
+        project: Optional[Project] = project_service.get_project_by_id(
+            ProjectId(code=project_id)
+        )
+        if project:
+            key = request.args.get("key")
+            if not key:
+                return project.context, StatusCode.OK
+            else:
+                return project.context.get(key), StatusCode.OK
+        else:
+            return "Project not found", StatusCode.NOT_FOUND
+
+    def put(self, project_id):
+        project: Optional[Project] = project_service.get_project_by_id(
+            ProjectId(code=project_id)
+        )
+        if project:
+            key = request.args.get("key")
+            if not key:
+                return "Missing key", StatusCode.BAD_REQUEST
+            value: str = request.get_json()
+            if not value:
+                return "Missing value", StatusCode.BAD_REQUEST
+            updated_project = project.add_to_context(key, value)
+            project_service.update_project(ProjectId(code=project_id), updated_project)
+            return "Project context updated successfully", StatusCode.OK
+        else:
+            return "Project not found", StatusCode.NOT_FOUND
+
+
 api.add_resource(ProjectResource, "/projects", "/projects/<string:project_id>")
+api.add_resource(ProjectContextResource, "/projects/<string:project_id>/context")

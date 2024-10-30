@@ -31,6 +31,10 @@ class TestProjectsAPI(unittest.TestCase):
     def tearDown(self):
         self._delete_all_projects()
 
+    def _create_project(self, project_name: str) -> ProjectId:
+        response = self.app.post("/projects", json={"name": project_name})
+        return deserialize(json.loads(response.data), ProjectId)
+
     def _delete_all_projects(self):
         response = self.app.get("/projects")
         projects_dict = json.loads(response.data)
@@ -52,8 +56,7 @@ class TestProjectsAPI(unittest.TestCase):
         )
 
     def test_get_project(self):
-        response = self.app.post("/projects", json={"name": self.project_name_1})
-        project_id: ProjectId = deserialize(json.loads(response.data), ProjectId)
+        project_id: ProjectId = self._create_project(self.project_name_1)
         response = self.app.get(f"/projects/{project_id.code}")
         self.assertEqual(response.status_code, 200)
         project: Project = deserialize(json.loads(response.data), Project)
@@ -76,8 +79,7 @@ class TestProjectsAPI(unittest.TestCase):
         )
 
     def test_update_project(self):
-        response = self.app.post("/projects", json={"name": self.project_name_1})
-        project_id: ProjectId = deserialize(json.loads(response.data), ProjectId)
+        project_id: ProjectId = self._create_project(self.project_name_1)
         project_response = self.app.get(f"/projects/{project_id.code}")
         project: Project = deserialize(json.loads(project_response.data), Project)
         updated_project: Project = project.model_copy().add_to_context("key", "value")
@@ -91,9 +93,24 @@ class TestProjectsAPI(unittest.TestCase):
         expected_project: Project = deserialize(json.loads(response.data), Project)
         self.assertEqual(updated_project.context, expected_project.context)
 
+    def test_update_project_context(self):
+        project_id: ProjectId = self._create_project(self.project_name_1)
+        project_response = self.app.get(f"/projects/{project_id.code}")
+        project: Project = deserialize(json.loads(project_response.data), Project)
+        expected_project: Project = project.model_copy().add_to_context("key", "value")
+        response = self.app.put(
+            f"/projects/{project_id.code}/context?key=key",
+            json="value",
+        )
+        self.assertEqual(response.status_code, 200)
+        updated_project_response = self.app.get(f"/projects/{project_id.code}")
+        updated_project: Project = deserialize(
+            json.loads(updated_project_response.data), Project
+        )
+        self.assertEqual(expected_project, updated_project)
+
     def test_delete_project(self):
-        response = self.app.post("/projects", json={"name": self.project_name_1})
-        project_id: ProjectId = deserialize(json.loads(response.data), ProjectId)
+        project_id: ProjectId = self._create_project(self.project_name_1)
         response = self.app.delete(f"/projects/{project_id.code}")
         self.assertEqual(response.status_code, 200)
         response = self.app.get(f"/projects/{project_id.code}")
