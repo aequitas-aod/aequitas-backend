@@ -55,7 +55,7 @@ jobs:
         run: poetry install
 
       - name: Check syntax of Python sources
-        run: python -m compileall ws test
+        run: python -m compileall domain application infrastructure presentation utils test
 
       - name: Run tests
         run: poe unit-test
