@@ -72,7 +72,9 @@ class QuestionnaireService:
         :param index: the question index
         :param answer_ids: the list of answer ids
         """
-        question: ProjectQuestion = self.get_nth_question(project_id, index)
+        question: ProjectQuestion = self.get_nth_question(
+            project_id, index
+        ).deselect_all_answers()
         for answer_id in answer_ids:
             question = question.select_answer(answer_id)
         self.questionnaire_repository.update_project_question(question.id, question)

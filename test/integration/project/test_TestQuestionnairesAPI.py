@@ -135,6 +135,17 @@ class TestQuestionnairesAPI(unittest.TestCase):
         selected_question: ProjectQuestion = self._get_nth_question(3)
         self.assertEqual(set(selected_question.answers), set(expected_question.answers))
 
+    def test_change_selected_answers(self):
+        first_question: ProjectQuestion = self._get_nth_question(1)
+        answers_iter = iter(first_question.answers)
+        answer = next(answers_iter)
+        self._select_answer_to_nth_question(1, answer.id.code)
+        new_answer = next(answers_iter)
+        expected_selected_answers = first_question.select_answer(new_answer.id).answers
+        self._select_answer_to_nth_question(1, new_answer.id.code)
+        selected_answers = self._get_nth_question(1).answers
+        self.assertEqual(selected_answers, expected_selected_answers)
+
     def test_remove_question(self):
         response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire/3")
         self.assertEqual(response.status_code, 400)
