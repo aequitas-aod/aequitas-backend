@@ -1,9 +1,15 @@
 [tool.poetry]
-name = "Reasoner Service"
+name = "Aequitas Backend"
 version = "0.1.0"
-description = "Reasoner servive of Aequitas"
+description = "Backend service of for Aequitas project"
 authors = ["aequitas-aod"]
-packages = [{include = "ws"}]
+packages = [
+    { include = "domain" },
+    { include = "application" },
+    { include = "presentation" },
+    { include = "infrastructure" },
+    { include = "utils" },
+]
 
 [tool.poetry.dependencies]
 python = ">= 3.10.0, < 4.0.0"
