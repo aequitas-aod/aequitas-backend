@@ -21,7 +21,7 @@ class TestGraphQuestionsAPI(unittest.TestCase):
     @classmethod
     def startDocker(cls):
         cls.docker = DockerClient()
-        cls.docker.compose.down(volumes=True)
+        cls.docker.compose.down(services=["db"], volumes=True)
         cls.docker.compose.up(services=["db"], detach=True, wait=True)
 
     @classmethod
@@ -53,7 +53,7 @@ class TestGraphQuestionsAPI(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.docker.compose.down(volumes=True)
+        cls.docker.compose.down(services=["db"], volumes=True)
 
     def tearDown(self):
         self._delete_all_questions()
