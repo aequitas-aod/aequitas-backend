@@ -14,19 +14,21 @@ class ProjectAnswer(Answer):
         Selects the answer
         :return: ProjectAnswer a new instance of ProjectAnswer with selected=True
         """
-        return ProjectAnswer(id=self.id, text=self.text, selected=True)
+        return ProjectAnswer(
+            id=self.id, text=self.text, description=self.description, selected=True
+        )
 
     def deselect(self) -> Self:
         """
         Deselects the answer
         :return: ProjectAnswer a new instance of ProjectAnswer with selected=False
         """
-        return ProjectAnswer(id=self.id, text=self.text, selected=False)
+        return ProjectAnswer(
+            id=self.id, text=self.text, description=self.description, selected=False
+        )
 
     def __str__(self):
-        return (
-            f"Answer(\n id={self.id},\n text={self.text},\n selected={self.selected}\n)"
-        )
+        return f"Answer(\n id={self.id},\n text={self.text},\n description={self.description},\n selected={self.selected}\n)"
 
     def __hash__(self):
         return hash((self.id.code, self.text, self.selected))

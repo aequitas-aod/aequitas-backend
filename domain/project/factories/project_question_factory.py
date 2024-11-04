@@ -93,6 +93,7 @@ class ProjectQuestionFactory:
                 ProjectAnswerFactory.create_project_answer(
                     AnswerId(code=f"{project_id.code}-{a.id.code}"),
                     a.text,
+                    a.description,
                     False,
                 )
             )

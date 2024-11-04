@@ -21,11 +21,13 @@ class TestProjectQuestionSingleChoice(unittest.TestCase):
                     ProjectAnswer(
                         id=AnswerId(code="answer-always"),
                         text="Always",
+                        description=None,
                         selected=False,
                     ),
                     ProjectAnswer(
                         id=AnswerId(code="answer-never"),
                         text="Never",
+                        description=None,
                         selected=False,
                     ),
                 }

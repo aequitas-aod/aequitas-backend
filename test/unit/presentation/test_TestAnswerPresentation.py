@@ -14,6 +14,7 @@ class TestAnswerPresentation(unittest.TestCase):
         self.answer_dict: dict = {
             "id": {"code": "answer"},
             "text": "Always.",
+            "description": None,
         }
         self.boolean_answer: Answer = AnswerFactory.create_boolean_answer(
             AnswerId(code="boolean-answer"), False
@@ -21,6 +22,7 @@ class TestAnswerPresentation(unittest.TestCase):
         self.boolean_answer_dict: dict = {
             "id": {"code": "boolean-answer"},
             "text": "No",
+            "description": None,
         }
 
     def test_serialize_answer(self):

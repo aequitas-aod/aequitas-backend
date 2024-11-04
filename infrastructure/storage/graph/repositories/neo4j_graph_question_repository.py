@@ -204,7 +204,12 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
         question["id"] = {"code": question["id"]}
         question["created_at"] = question["created_at"]
         question["answers"] = [
-            {"id": {"code": a["id"]}, "text": a["text"]} for a in answers
+            {
+                "id": {"code": a["id"]},
+                "text": a["text"],
+                "description": a["description"] if "description" in a else None,
+            }
+            for a in answers
         ]
         enabled_by: List[dict] = self._get_enabled_by(
             QuestionId(code=question["id"]["code"])

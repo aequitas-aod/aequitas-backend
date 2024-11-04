@@ -22,7 +22,7 @@ class TestProjectQuestionPresentation(unittest.TestCase):
                         AnswerId(code="project_question_id-false"), "No"
                     ),
                     ProjectAnswerFactory.create_project_answer(
-                        AnswerId(code="project_question_id-true"), "Yes", True
+                        AnswerId(code="project_question_id-true"), "Yes", selected=True
                     ),
                 }
             ),
@@ -37,11 +37,13 @@ class TestProjectQuestionPresentation(unittest.TestCase):
                 {
                     "id": {"code": "project_question_id-false"},
                     "text": "No",
+                    "description": None,
                     "selected": False,
                 },
                 {
                     "id": {"code": "project_question_id-true"},
                     "text": "Yes",
+                    "description": None,
                     "selected": True,
                 },
             ],

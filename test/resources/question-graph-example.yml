@@ -4,8 +4,10 @@
   answers:
       - id: { code: q1-a1 }
         text: I already have an AI system in place
+        description: null
       - id: { code: q1-a2 }
         text: I am bootstrapping an AI system from scratch
+        description: null
   enabled_by: []
   action_needed: null
   created_at: "2024-05-31T18:20:23"
@@ -16,36 +18,52 @@
   answers:
       - id: { code: q2-a1 }
         text: Biometrics
+        description: null
       - id: { code: q2-a2 }
         text: Critical infrastructure
+        description: null
       - id: { code: q2-a3 }
         text: Education and Vocational training+
+        description: null
       - id: { code: q2-a4 }
         text: Recruiting
+        description: null
       - id: { code: q2-a5 }
         text: Employment
+        description: null
       - id: { code: q2-a6 }
         text: Access to essential private and public services
+        description: null
       - id: { code: q2-a7 }
         text: Access to benefits
+        description: null
       - id: { code: q2-a8 }
         text: Law enforcement
+        description: null
       - id: { code: q2-a9 }
         text: Migration, asylum and border control
+        description: null
       - id: { code: q2-a10 }
         text: Administration of justice
+        description: null
       - id: { code: q2-a11 }
         text: Democratic processes
+        description: null
       - id: { code: q2-a12 }
         text: Healthcare
+        description: null
       - id: { code: q2-a13 }
         text: Marketing
+        description: null
       - id: { code: q2-a14 }
         text: Online platforms
+        description: null
       - id: { code: q2-a15 }
         text: Content Generation
+        description: null
       - id: { code: q2-a16 }
         text: Social Media
+        description: null
   enabled_by:
       - { code: q1-a1 }
       - { code: q1-a2 }
@@ -58,48 +76,70 @@
   answers:
       - id: { code: "q3-a1" }
         text: "Uninformed search"
+        description: null
       - id: { code: "q3-a2" }
         text: "Informed search"
+        description: null
       - id: { code: "q3-a3" }
         text: "Local search"
+        description: null
       - id: { code: "q3-a4" }
         text: "Constraint satisfaction"
+        description: null
       - id: { code: "q3-a5" }
         text: "Constraint optimization"
+        description: null
       - id: { code: "q3-a6" }
         text: "Adversarial search"
+        description: null
       - id: { code: "q3-a7" }
         text: "Inductive logic programming"
+        description: null
       - id: { code: "q3-a8" }
         text: "Decision trees"
+        description: null
       - id: { code: "q3-a9" }
         text: "Deep learning"
+        description: null
       - id: { code: "q3-a10" }
         text: "Support vector machines"
+        description: null
       - id: { code: "q3-a11" }
         text: "Nearest neighbours"
+        description: null
       - id: { code: "q3-a12" }
         text: "Generalised-linear models"
+        description: null
       - id: { code: "q3-a13" }
         text: "Ensemble learning"
+        description: null
       - id: { code: "q3-a14" }
         text: "Principal component analysis"
+        description: null
       - id: { code: "q3-a15" }
         text: "K-Means"
+        description: null
       - id: { code: "q3-a16" }
         text: "Mixture models"
+        description: null
       - id: { code: "q3-a17" }
         text: "A-priori"
+        description: null
       - id: { code: "q3-a18" }
         text: "Large language models"
+        description: null
       - id: { code: "q3-a19" }
         text: "Phrase structure grammars"
+        description: null
       - id: { code: "q3-a20" }
         text: "Parsing"
+        description: null
       - id: { code: "q3-a21" }
         text: "Machine translation"
+        description: null
       - id: { code: "q3-a22" }
         text: "Speech recognition"
+        description: null
   enabled_by:
       - { code: "q2-a1" }
       - { code: "q2-a2" }
@@ -126,8 +166,10 @@
   answers:
       - id: { code: "q4-a1" }
         text: "Yes"
+        description: null
       - id: { code: "q4-a2" }
         text: "No"
+        description: null
   enabled_by:
       - { code: "q3-a1" }
       - { code: "q3-a2" }
@@ -160,8 +202,10 @@
   answers:
       - id: { code: "q5-a1" }
         text: "Yes"
+        description: null
       - id: { code: "q5-a2" }
         text: "No"
+        description: null
   enabled_by:
       - { code: "q4-a1" }
       - { code: "q4-a2" }
@@ -174,8 +218,10 @@
   answers:
       - id: { code: "q6-a1" }
         text: "Yes"
+        description: null
       - id: { code: "q6-a2" }
         text: "No"
+        description: null
   enabled_by:
       - { code: q5-a1 }
       - { code: q5-a2 }
@@ -188,8 +234,10 @@
   answers:
       - id: { code: "q7-a1" }
         text: "Yes"
+        description: null
       - id: { code: "q7-a2" }
         text: "No"
+        description: null
   enabled_by:
       - { code: q6-a1 }
       - { code: q6-a2 }
@@ -202,36 +250,52 @@
   answers:
       - id: { code: "q8-a1" }
         text: "Sex"
+        description: null
       - id: { code: "q8-a2" }
         text: "Race"
+        description: null
       - id: { code: "q8-a3" }
         text: "Colour"
+        description: null
       - id: { code: "q8-a4" }
         text: "Ethnic origin"
+        description: null
       - id: { code: "q8-a5" }
         text: "Social origin"
+        description: null
       - id: { code: "q8-a6" }
         text: "Genetic features"
+        description: null
       - id: { code: "q8-a7" }
         text: "Language"
+        description: null
       - id: { code: "q8-a8" }
         text: "Religion or belief"
+        description: null
       - id: { code: "q8-a9" }
         text: "Political or any other opinion"
+        description: null
       - id: { code: "q8-a10" }
         text: "Membership of a minority"
+        description: null
       - id: { code: "q8-a11" }
         text: "Property"
+        description: null
       - id: { code: "q8-a12" }
         text: "Birth"
+        description: null
       - id: { code: "q8-a13" }
         text: "Disability"
+        description: null
       - id: { code: "q8-a14" }
         text: "Age"
+        description: null
       - id: { code: "q8-a15" }
         text: "Sexual orientation"
+        description: null
       - id: { code: "q8-a16" }
         text: "Other"
+        description: null
   enabled_by:
       - { code: q7-a1 }
       - { code: q7-a2 }

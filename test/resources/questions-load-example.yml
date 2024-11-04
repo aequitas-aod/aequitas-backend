@@ -4,8 +4,10 @@
   answers:
     - id: { code: q1-a1 }
       text: First answer
+      description: First answer description
     - id: { code: q1-a2 }
       text: Second answer
+      description: Second answer description
   enabled_by: []
   action_needed: null
   created_at: '2024-05-31T18:20:23'
@@ -16,10 +18,13 @@
   answers:
     - id: { code: q2-a1 }
       text: First answer
+      description: First answer description
     - id: { code: q2-a2 }
       text: Second answer
+      description: Second answer description
     - id: { code: q2-a3 }
       text: Third answer
+      description: Third answer description
   enabled_by:
     - { code: q1-a1 }
     - { code: q1-a2 }

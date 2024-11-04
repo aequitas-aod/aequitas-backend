@@ -275,6 +275,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             {
                 "id": {"code": a["id"]},
                 "text": a["text"],
+                "description": a["description"] if "description" in a else None,
                 "selected": a in selected_answers,
             }
             for a in available_answers + selected_answers

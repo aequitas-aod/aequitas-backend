@@ -28,10 +28,12 @@ class TestGraphQuestionPresentation(unittest.TestCase):
                 {
                     "id": {"code": "boolean_question_id-false"},
                     "text": "No",
+                    "description": None,
                 },
                 {
                     "id": {"code": "boolean_question_id-true"},
                     "text": "Yes",
+                    "description": None,
                 },
             ],
             "enabled_by": [{"code": "answer-code"}],
