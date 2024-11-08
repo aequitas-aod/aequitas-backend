@@ -2,10 +2,10 @@
   text: Do you have some AI system already in place, or are you developing an AI system?
   type: single
   answers:
-      - id: { code: q1-a1 }
+      - id: { code: q1-a1, question_code: q1 }
         text: I already have an AI system in place
         description: null
-      - id: { code: q1-a2 }
+      - id: { code: q1-a2, question_code: q1 }
         text: I am bootstrapping an AI system from scratch
         description: null
   enabled_by: []
@@ -16,57 +16,57 @@
   text: In what area / sector is the AI system intended to be used?
   type: multiple
   answers:
-      - id: { code: q2-a1 }
+      - id: { code: q2-a1, question_code: q2 }
         text: Biometrics
         description: null
-      - id: { code: q2-a2 }
+      - id: { code: q2-a2, question_code: q2 }
         text: Critical infrastructure
         description: null
-      - id: { code: q2-a3 }
+      - id: { code: q2-a3, question_code: q2 }
         text: Education and Vocational training+
         description: null
-      - id: { code: q2-a4 }
+      - id: { code: q2-a4, question_code: q2 }
         text: Recruiting
         description: null
-      - id: { code: q2-a5 }
+      - id: { code: q2-a5, question_code: q2 }
         text: Employment
         description: null
-      - id: { code: q2-a6 }
+      - id: { code: q2-a6, question_code: q2 }
         text: Access to essential private and public services
         description: null
-      - id: { code: q2-a7 }
+      - id: { code: q2-a7, question_code: q2 }
         text: Access to benefits
         description: null
-      - id: { code: q2-a8 }
+      - id: { code: q2-a8, question_code: q2 }
         text: Law enforcement
         description: null
-      - id: { code: q2-a9 }
+      - id: { code: q2-a9, question_code: q2 }
         text: Migration, asylum and border control
         description: null
-      - id: { code: q2-a10 }
+      - id: { code: q2-a10, question_code: q2 }
         text: Administration of justice
         description: null
-      - id: { code: q2-a11 }
+      - id: { code: q2-a11, question_code: q2 }
         text: Democratic processes
         description: null
-      - id: { code: q2-a12 }
+      - id: { code: q2-a12, question_code: q2 }
         text: Healthcare
         description: null
-      - id: { code: q2-a13 }
+      - id: { code: q2-a13, question_code: q2 }
         text: Marketing
         description: null
-      - id: { code: q2-a14 }
+      - id: { code: q2-a14, question_code: q2 }
         text: Online platforms
         description: null
-      - id: { code: q2-a15 }
+      - id: { code: q2-a15, question_code: q2 }
         text: Content Generation
         description: null
-      - id: { code: q2-a16 }
+      - id: { code: q2-a16, question_code: q2 }
         text: Social Media
         description: null
   enabled_by:
-      - { code: q1-a1 }
-      - { code: q1-a2 }
+      - { code: q1-a1, question_code: q1 }
+      - { code: q1-a2, question_code: q1 }
   action_needed: null
   created_at: "2024-05-31T18:20:24"
 
@@ -74,125 +74,125 @@
   text: "Which AI methods will the AI system adopt?"
   type: multiple
   answers:
-      - id: { code: "q3-a1" }
-        text: "Uninformed search"
+      - id: { code: q3-a1, question_code: q3 }
+        text: Uninformed search
         description: null
-      - id: { code: "q3-a2" }
-        text: "Informed search"
+      - id: { code: q3-a2, question_code: q3 }
+        text: Informed search
         description: null
-      - id: { code: "q3-a3" }
-        text: "Local search"
+      - id: { code: q3-a3, question_code: q3 }
+        text: Local search
         description: null
-      - id: { code: "q3-a4" }
-        text: "Constraint satisfaction"
+      - id: { code: q3-a4, question_code: q3 }
+        text: Constraint satisfaction
         description: null
-      - id: { code: "q3-a5" }
-        text: "Constraint optimization"
+      - id: { code: q3-a5, question_code: q3 }
+        text: Constraint optimization
         description: null
-      - id: { code: "q3-a6" }
-        text: "Adversarial search"
+      - id: { code: q3-a6, question_code: q3 }
+        text: Adversarial search
         description: null
-      - id: { code: "q3-a7" }
-        text: "Inductive logic programming"
+      - id: { code: q3-a7, question_code: q3 }
+        text: Inductive logic programming
         description: null
-      - id: { code: "q3-a8" }
-        text: "Decision trees"
+      - id: { code: q3-a8, question_code: q3 }
+        text: Decision trees
         description: null
-      - id: { code: "q3-a9" }
-        text: "Deep learning"
+      - id: { code: q3-a9, question_code: q3 }
+        text: Deep learning
         description: null
-      - id: { code: "q3-a10" }
-        text: "Support vector machines"
+      - id: { code: q3-a10, question_code: q3 }
+        text: Support vector machines
         description: null
-      - id: { code: "q3-a11" }
-        text: "Nearest neighbours"
+      - id: { code: q3-a11, question_code: q3 }
+        text: Nearest neighbours
         description: null
-      - id: { code: "q3-a12" }
-        text: "Generalised-linear models"
+      - id: { code: q3-a12, question_code: q3 }
+        text: Generalised-linear models
         description: null
-      - id: { code: "q3-a13" }
-        text: "Ensemble learning"
+      - id: { code: q3-a13, question_code: q3 }
+        text: Ensemble learning
         description: null
-      - id: { code: "q3-a14" }
-        text: "Principal component analysis"
+      - id: { code: q3-a14, question_code: q3 }
+        text: Principal component analysis
         description: null
-      - id: { code: "q3-a15" }
-        text: "K-Means"
+      - id: { code: q3-a15, question_code: q3 }
+        text: K-Means
         description: null
-      - id: { code: "q3-a16" }
-        text: "Mixture models"
+      - id: { code: q3-a16, question_code: q3 }
+        text: Mixture models
         description: null
-      - id: { code: "q3-a17" }
-        text: "A-priori"
+      - id: { code: q3-a17, question_code: q3 }
+        text: A-priori
         description: null
-      - id: { code: "q3-a18" }
-        text: "Large language models"
+      - id: { code: q3-a18, question_code: q3 }
+        text: Large language models
         description: null
-      - id: { code: "q3-a19" }
-        text: "Phrase structure grammars"
+      - id: { code: q3-a19, question_code: q3 }
+        text: Phrase structure grammars
         description: null
-      - id: { code: "q3-a20" }
-        text: "Parsing"
+      - id: { code: q3-a20, question_code: q3 }
+        text: Parsing
         description: null
-      - id: { code: "q3-a21" }
-        text: "Machine translation"
+      - id: { code: q3-a21, question_code: q3 }
+        text: Machine translation
         description: null
-      - id: { code: "q3-a22" }
-        text: "Speech recognition"
+      - id: { code: q3-a22, question_code: q3 }
+        text: Speech recognition
         description: null
   enabled_by:
-      - { code: "q2-a1" }
-      - { code: "q2-a2" }
-      - { code: "q2-a3" }
-      - { code: "q2-a4" }
-      - { code: "q2-a5" }
-      - { code: "q2-a6" }
-      - { code: "q2-a7" }
-      - { code: "q2-a8" }
-      - { code: "q2-a9" }
-      - { code: "q2-a10" }
-      - { code: "q2-a11" }
-      - { code: "q2-a12" }
-      - { code: "q2-a13" }
-      - { code: "q2-a14" }
-      - { code: "q2-a15" }
-      - { code: "q2-a16" }
+      - { code: q2-a1, question_code: q2 }
+      - { code: q2-a2, question_code: q2 }
+      - { code: q2-a3, question_code: q2 }
+      - { code: q2-a4, question_code: q2 }
+      - { code: q2-a5, question_code: q2 }
+      - { code: q2-a6, question_code: q2 }
+      - { code: q2-a7, question_code: q2 }
+      - { code: q2-a8, question_code: q2 }
+      - { code: q2-a9, question_code: q2 }
+      - { code: q2-a10, question_code: q2 }
+      - { code: q2-a11, question_code: q2 }
+      - { code: q2-a12, question_code: q2 }
+      - { code: q2-a13, question_code: q2 }
+      - { code: q2-a14, question_code: q2 }
+      - { code: q2-a15, question_code: q2 }
+      - { code: q2-a16, question_code: q2 }
   action_needed: null
-  created_at: "2024-05-31T18:20:25"
+  created_at: 2024-05-31T18:20:25
 
-- id: { code: "q4" }
-  text: "Is the AI model developed using techniques that involve the model's training with data?"
+- id: { code: q4 }
+  text: Is the AI model developed using techniques that involve the model's training with data?
   type: single
   answers:
-      - id: { code: "q4-a1" }
+      - id: { code: q4-a1, question_code: q4 }
         text: "Yes"
         description: null
-      - id: { code: "q4-a2" }
+      - id: { code: q4-a2, question_code: q4 }
         text: "No"
         description: null
   enabled_by:
-      - { code: "q3-a1" }
-      - { code: "q3-a2" }
-      - { code: "q3-a3" }
-      - { code: "q3-a4" }
-      - { code: "q3-a5" }
-      - { code: "q3-a6" }
-      - { code: "q3-a7" }
-      - { code: "q3-a8" }
-      - { code: "q3-a9" }
-      - { code: "q3-a10" }
-      - { code: "q3-a11" }
-      - { code: "q3-a12" }
-      - { code: "q3-a13" }
-      - { code: "q3-a14" }
-      - { code: "q3-a15" }
-      - { code: "q3-a16" }
-      - { code: "q3-a17" }
-      - { code: "q3-a18" }
-      - { code: "q3-a19" }
-      - { code: "q3-a20" }
-      - { code: "q3-a21" }
-      - { code: "q3-a22" }
+      - { code: q3-a1, question_code: q3 }
+      - { code: q3-a2, question_code: q3 }
+      - { code: q3-a3, question_code: q3 }
+      - { code: q3-a4, question_code: q3 }
+      - { code: q3-a5, question_code: q3 }
+      - { code: q3-a6, question_code: q3 }
+      - { code: q3-a7, question_code: q3 }
+      - { code: q3-a8, question_code: q3 }
+      - { code: q3-a9, question_code: q3 }
+      - { code: q3-a10, question_code: q3 }
+      - { code: q3-a11, question_code: q3 }
+      - { code: q3-a12, question_code: q3 }
+      - { code: q3-a13, question_code: q3 }
+      - { code: q3-a14, question_code: q3 }
+      - { code: q3-a15, question_code: q3 }
+      - { code: q3-a16, question_code: q3 }
+      - { code: q3-a17, question_code: q3 }
+      - { code: q3-a18, question_code: q3 }
+      - { code: q3-a19, question_code: q3 }
+      - { code: q3-a20, question_code: q3 }
+      - { code: q3-a21, question_code: q3 }
+      - { code: q3-a22, question_code: q3 }
   action_needed: null
   created_at: "2024-05-31T18:20:26"
 
@@ -200,15 +200,15 @@
   text: "Are you using readily-available data sets?"
   type: single
   answers:
-      - id: { code: "q5-a1" }
+      - id: { code: "q5-a1", question_code: q5 }
         text: "Yes"
         description: null
-      - id: { code: "q5-a2" }
+      - id: { code: "q5-a2", question_code: q5 }
         text: "No"
         description: null
   enabled_by:
-      - { code: "q4-a1" }
-      - { code: "q4-a2" }
+      - { code: "q4-a1", question_code: q4 }
+      - { code: "q4-a2", question_code: q4 }
   action_needed: null
   created_at: "2024-05-31T18:20:27"
 
@@ -216,15 +216,15 @@
   text: "Was the readily available dataset obtained by sampling the same population that where the system is going to be used?"
   type: single
   answers:
-      - id: { code: "q6-a1" }
+      - id: { code: "q6-a1", question_code: q6 }
         text: "Yes"
         description: null
-      - id: { code: "q6-a2" }
+      - id: { code: "q6-a2", question_code: q6 }
         text: "No"
         description: null
   enabled_by:
-      - { code: q5-a1 }
-      - { code: q5-a2 }
+      - { code: q5-a1, question_code: q5 }
+      - { code: q5-a2, question_code: q5 }
   action_needed: null
   created_at: "2024-05-31T18:20:28"
 
@@ -232,15 +232,15 @@
   text: "Is the data set sufficiently representative of the population where the system will be used?"
   type: single
   answers:
-      - id: { code: "q7-a1" }
+      - id: { code: "q7-a1", question_code: q7 }
         text: "Yes"
         description: null
-      - id: { code: "q7-a2" }
+      - id: { code: "q7-a2", question_code: q7 }
         text: "No"
         description: null
   enabled_by:
-      - { code: q6-a1 }
-      - { code: q6-a2 }
+      - { code: q6-a1, question_code: q6 }
+      - { code: q6-a2, question_code: q6 }
   action_needed: null
   created_at: "2024-05-31T18:20:29"
 
@@ -248,56 +248,56 @@
   text: "Which sensitive attributes are included in the dataset (or inferrable from the included ones)?"
   type: multiple
   answers:
-      - id: { code: "q8-a1" }
+      - id: { code: "q8-a1", question_code: q8 }
         text: "Sex"
         description: null
-      - id: { code: "q8-a2" }
+      - id: { code: "q8-a2", question_code: q8 }
         text: "Race"
         description: null
-      - id: { code: "q8-a3" }
+      - id: { code: "q8-a3", question_code: q8 }
         text: "Colour"
         description: null
-      - id: { code: "q8-a4" }
+      - id: { code: "q8-a4", question_code: q8 }
         text: "Ethnic origin"
         description: null
-      - id: { code: "q8-a5" }
+      - id: { code: "q8-a5", question_code: q8 }
         text: "Social origin"
         description: null
-      - id: { code: "q8-a6" }
+      - id: { code: "q8-a6", question_code: q8 }
         text: "Genetic features"
         description: null
-      - id: { code: "q8-a7" }
+      - id: { code: "q8-a7", question_code: q8 }
         text: "Language"
         description: null
-      - id: { code: "q8-a8" }
+      - id: { code: "q8-a8", question_code: q8 }
         text: "Religion or belief"
         description: null
-      - id: { code: "q8-a9" }
+      - id: { code: "q8-a9", question_code: q8 }
         text: "Political or any other opinion"
         description: null
-      - id: { code: "q8-a10" }
+      - id: { code: "q8-a10", question_code: q8 }
         text: "Membership of a minority"
         description: null
-      - id: { code: "q8-a11" }
+      - id: { code: "q8-a11", question_code: q8 }
         text: "Property"
         description: null
-      - id: { code: "q8-a12" }
+      - id: { code: "q8-a12", question_code: q8 }
         text: "Birth"
         description: null
-      - id: { code: "q8-a13" }
+      - id: { code: "q8-a13", question_code: q8 }
         text: "Disability"
         description: null
-      - id: { code: "q8-a14" }
+      - id: { code: "q8-a14", question_code: q8 }
         text: "Age"
         description: null
-      - id: { code: "q8-a15" }
+      - id: { code: "q8-a15", question_code: q8 }
         text: "Sexual orientation"
         description: null
-      - id: { code: "q8-a16" }
+      - id: { code: "q8-a16", question_code: q8 }
         text: "Other"
         description: null
   enabled_by:
-      - { code: q7-a1 }
-      - { code: q7-a2 }
+      - { code: q7-a1, question_code: q7 }
+      - { code: q7-a2, question_code: q7 }
   action_needed: null
   created_at: "2024-05-31T18:20:30"

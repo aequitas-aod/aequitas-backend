@@ -4,12 +4,12 @@ from typing import FrozenSet
 
 from pydantic import BaseModel, field_serializer
 
-from domain.common.core import Answer, QuestionId
+from domain.common.core import Answer, EntityId
 from domain.common.core.enum import QuestionType
 
 
 class Question(ABC, BaseModel):
-    id: QuestionId
+    id: EntityId
     text: str
     type: QuestionType
     answers: FrozenSet[Answer]
@@ -28,7 +28,7 @@ class Question(ABC, BaseModel):
     def __hash__(self):
         return hash(
             (
-                self.id.code,
+                self.id,
                 self.text,
                 self.type,
                 self.answers,

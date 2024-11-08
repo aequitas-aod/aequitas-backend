@@ -1,56 +1,80 @@
 import unittest
 from datetime import datetime
 
-from domain.common.core import AnswerId, QuestionId
+from domain.common.core import EntityId
 from domain.common.core.enum import QuestionType
-from domain.project.core import ProjectQuestion, ProjectId
-from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
+from domain.project.core import ProjectQuestion
+from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory, ProjectFactory
 from presentation.presentation import deserialize, serialize
 
 
 class TestProjectQuestionPresentation(unittest.TestCase):
 
     def setUp(self):
+        project_id: EntityId = ProjectFactory.id_of(code="project_id")
+        project_question_id: EntityId = ProjectQuestionFactory.id_of(
+            code="project_question_id", project_id=project_id
+        )
+        self.previous_question_id: EntityId = ProjectQuestionFactory.id_of(
+            code="project_question_id_2", project_id=project_id
+        )
         self.question_timestamp = datetime.now()
         self.question: ProjectQuestion = ProjectQuestionFactory.create_project_question(
-            QuestionId(code="project_question_id"),
+            project_question_id,
             "Do you practice TDD?",
             QuestionType.SINGLE_CHOICE,
             frozenset(
                 {
                     ProjectAnswerFactory.create_project_answer(
-                        AnswerId(code="project_question_id-false"), "No"
+                        ProjectAnswerFactory.id_of(
+                            code="false", project_question_id=project_question_id
+                        ),
+                        "No",
                     ),
                     ProjectAnswerFactory.create_project_answer(
-                        AnswerId(code="project_question_id-true"), "Yes", selected=True
+                        ProjectAnswerFactory.id_of(
+                            code="true", project_question_id=project_question_id
+                        ),
+                        "Yes",
+                        selected=True,
                     ),
                 }
             ),
-            ProjectId(code="project_id"),
             created_at=self.question_timestamp,
+            previous_question_id=self.previous_question_id,
         )
         self.question_dict: dict = {
-            "id": {"code": "project_question_id"},
+            "id": {"code": "project_question_id", "project_code": "project_id"},
             "text": "Do you practice TDD?",
             "type": QuestionType.SINGLE_CHOICE.value,
             "answers": [
                 {
-                    "id": {"code": "project_question_id-false"},
+                    "id": {
+                        "code": "false",
+                        "question_code": "project_question_id",
+                        "project_code": "project_id",
+                    },
                     "text": "No",
                     "description": None,
                     "selected": False,
                 },
                 {
-                    "id": {"code": "project_question_id-true"},
+                    "id": {
+                        "code": "true",
+                        "question_code": "project_question_id",
+                        "project_code": "project_id",
+                    },
                     "text": "Yes",
                     "description": None,
                     "selected": True,
                 },
             ],
-            "project_id": {"code": "project_id"},
             "created_at": self.question_timestamp.isoformat(),
             "selection_strategy": {"type": "SingleSelectionStrategy"},
-            "previous_question_id": None,
+            "previous_question_id": {
+                "code": "project_question_id_2",
+                "project_code": "project_id",
+            },
         }
 
     def test_deserialize_project_question(self):

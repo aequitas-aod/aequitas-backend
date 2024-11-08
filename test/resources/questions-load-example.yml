@@ -2,10 +2,10 @@
   text: First question
   type: single
   answers:
-    - id: { code: q1-a1 }
+    - id: { code: q1-a1, question_code: q1 }
       text: First answer
       description: First answer description
-    - id: { code: q1-a2 }
+    - id: { code: q1-a2, question_code: q1 }
       text: Second answer
       description: Second answer description
   enabled_by: []
@@ -16,17 +16,36 @@
   text: Second question
   type: multiple
   answers:
-    - id: { code: q2-a1 }
+    - id: { code: q2-a1, question_code: q2 }
       text: First answer
       description: First answer description
-    - id: { code: q2-a2 }
+    - id: { code: q2-a2, question_code: q2 }
       text: Second answer
       description: Second answer description
-    - id: { code: q2-a3 }
+    - id: { code: q2-a3, question_code: q2 }
       text: Third answer
       description: Third answer description
   enabled_by:
-    - { code: q1-a1 }
-    - { code: q1-a2 }
+    - { code: q1-a1, question_code: q1 }
+    - { code: q1-a2, question_code: q1 }
   action_needed: null
   created_at: '2024-05-31T18:20:24'
+
+- id: { code: q3 }
+  text: Third question
+  type: multiple
+  answers:
+    - id: { code: q3-a1, question_code: q3 }
+      text: First answer
+      description: First answer description
+    - id: { code: q3-a2, question_code: q3 }
+      text: Second answer
+      description: Second answer description
+    - id: { code: q3-a3, question_code: q3 }
+      text: Third answer
+      description: Third answer description
+  enabled_by:
+    - { code: q1-a2, question_code: q1 }
+    - { code: q2-a1, question_code: q2 }
+  action_needed: null
+  created_at: '2024-05-31T18:20:25'

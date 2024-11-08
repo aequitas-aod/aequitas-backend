@@ -1,6 +1,6 @@
 import unittest
 
-from domain.project.core import Project, ProjectId
+from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from presentation.presentation import serialize, deserialize
 
@@ -9,7 +9,7 @@ class TestProjectPresentation(unittest.TestCase):
 
     def setUp(self):
         self.project: Project = ProjectFactory.create_project(
-            ProjectId(code="project1"),
+            ProjectFactory.id_of(code="project1"),
             "project_name",
             {"key": "value"},
         )
@@ -33,7 +33,7 @@ class TestProjectPresentation(unittest.TestCase):
 
     def test_deserialize_project(self):
         expected: Project = ProjectFactory.create_project(
-            ProjectId(code="project1"),
+            ProjectFactory.id_of(code="project1"),
             "project_name",
             {"key": "value"},
         )

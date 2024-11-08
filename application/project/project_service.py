@@ -2,7 +2,8 @@ from typing import Optional, List
 
 import shortuuid
 
-from domain.project.core import Project, ProjectId
+from domain.common.core import EntityId
+from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from domain.project.repositories import ProjectRepository
 from utils.errors import BadRequestError
@@ -20,7 +21,7 @@ class ProjectService:
         """
         return self.project_repository.get_all_projects()
 
-    def get_project_by_id(self, project_id: ProjectId) -> Optional[Project]:
+    def get_project_by_id(self, project_id: EntityId) -> Optional[Project]:
         """
         Gets a project by its id
         :param project_id: the project id
@@ -28,7 +29,7 @@ class ProjectService:
         """
         return self.project_repository.get_project_by_id(project_id)
 
-    def add_project(self, name: str) -> ProjectId:
+    def add_project(self, name: str) -> EntityId:
         """
         Inserts a project
         :param name: the project name
@@ -36,11 +37,11 @@ class ProjectService:
         :raises ConflictError: if the project already exists
         """
         project: Project = ProjectFactory.create_project(
-            ProjectId(code=shortuuid.uuid()), name, {}
+            ProjectFactory.id_of(code=shortuuid.uuid()), name, {}
         )
         return self.project_repository.insert_project(project)
 
-    def update_project(self, project_id: ProjectId, project: Project) -> None:
+    def update_project(self, project_id: EntityId, project: Project) -> None:
         """
         Updates an existing project
         :param project_id: the id of the project to update
@@ -52,7 +53,7 @@ class ProjectService:
             raise BadRequestError("Updated project id does not match")
         self.project_repository.update_project(project_id, project)
 
-    def delete_project(self, project_id: ProjectId) -> None:
+    def delete_project(self, project_id: EntityId) -> None:
         """
         Deletes a project
         :param project_id: the id of the project to delete

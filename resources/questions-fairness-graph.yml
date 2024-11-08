@@ -95,6 +95,7 @@
   answers:
     - id: { code: SensitiveFeatures-features-selected }
       text: ""
+      description: null
   enabled_by:
     - { code: OutputFeatures-features-selected }
   action_needed: null

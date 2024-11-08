@@ -1,11 +1,13 @@
 from datetime import datetime
 from typing import FrozenSet, List, Optional
 
-from domain.common.core import Answer, AnswerId, QuestionId
+from domain.common.core import EntityId
 from domain.common.core.enum import QuestionType
-from domain.common.factories import AnswerFactory
 from domain.graph.core import GraphQuestion
-from domain.project.core import ProjectQuestion, ProjectAnswer, ProjectId
+from domain.project.core import (
+    ProjectQuestion,
+    ProjectAnswer,
+)
 from domain.project.core.selection import (
     MultipleSelectionStrategy,
     SingleSelectionStrategy,
@@ -16,14 +18,17 @@ from domain.project.factories import ProjectAnswerFactory
 class ProjectQuestionFactory:
 
     @staticmethod
+    def id_of(code: str, project_id: EntityId) -> EntityId:
+        return EntityId(code=code, project_code=project_id.code)
+
+    @staticmethod
     def create_project_question(
-        question_id: QuestionId,
+        question_id: EntityId,
         text: str,
         question_type: QuestionType,
         answers: FrozenSet[ProjectAnswer],
-        project_id: ProjectId,
         created_at: datetime = datetime.now(),
-        previous_question_id: QuestionId = None,
+        previous_question_id: EntityId = None,
     ) -> ProjectQuestion:
         match question_type:
             case QuestionType.BOOLEAN:
@@ -47,7 +52,6 @@ class ProjectQuestionFactory:
             text=text,
             type=question_type,
             answers=answers,
-            project_id=project_id,
             created_at=created_at,
             selection_strategy=selection_strategy,
             previous_question_id=previous_question_id,
@@ -55,28 +59,32 @@ class ProjectQuestionFactory:
 
     @staticmethod
     def create_project_boolean_question(
-        question_id: QuestionId,
+        project_question_id: EntityId,
         text: str,
-        project_id: ProjectId,
         created_at: datetime = datetime.now(),
-        previous_question_id: QuestionId = None,
+        previous_question_id: EntityId = None,
     ) -> ProjectQuestion:
         answers: FrozenSet[ProjectAnswer] = frozenset(
             {
                 ProjectAnswerFactory.create_project_answer(
-                    AnswerId(code=f"{question_id.code}-true"), "Yes"
+                    ProjectAnswerFactory.id_of(
+                        code=f"true", project_question_id=project_question_id
+                    ),
+                    "Yes",
                 ),
                 ProjectAnswerFactory.create_project_answer(
-                    AnswerId(code=f"{question_id.code}-false"), "No"
+                    ProjectAnswerFactory.id_of(
+                        code=f"false", project_question_id=project_question_id
+                    ),
+                    "No",
                 ),
             }
         )
         return ProjectQuestionFactory.create_project_question(
-            question_id,
+            project_question_id,
             text,
             QuestionType.BOOLEAN,
             answers,
-            project_id,
             created_at,
             previous_question_id=previous_question_id,
         )
@@ -84,24 +92,29 @@ class ProjectQuestionFactory:
     @staticmethod
     def from_graph_question(
         graph_question: GraphQuestion,
-        project_id: ProjectId,
-        previous_question_id: Optional[QuestionId],
+        project_id: EntityId,
+        previous_question_id: Optional[EntityId],
     ) -> ProjectQuestion:
         project_answers: List[ProjectAnswer] = []
+        project_question_id: EntityId = ProjectQuestionFactory.id_of(
+            graph_question.id.code, project_id
+        )
         for a in graph_question.answers:
+            project_answer_id: EntityId = ProjectAnswerFactory.id_of(
+                a.id.code, project_question_id
+            )
             project_answers.append(
                 ProjectAnswerFactory.create_project_answer(
-                    AnswerId(code=f"{project_id.code}-{a.id.code}"),
+                    project_answer_id,
                     a.text,
                     a.description,
                     False,
                 )
             )
         return ProjectQuestionFactory.create_project_question(
-            QuestionId(code=f"{project_id.code}-{graph_question.id.code}"),
+            project_question_id,
             graph_question.text,
             graph_question.type,
             frozenset(project_answers),
-            project_id,
             previous_question_id=previous_question_id,
         )

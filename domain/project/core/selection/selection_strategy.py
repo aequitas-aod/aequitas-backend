@@ -3,15 +3,15 @@ from abc import ABC, abstractmethod
 from pydantic import BaseModel
 from typing_extensions import FrozenSet
 
-from domain.common.core import AnswerId
-from domain.project.core.project_answer import ProjectAnswer
+from domain.common.core import EntityId
+from domain.project.core import ProjectAnswer
 
 
 class SelectionStrategy(ABC, BaseModel):
 
     @abstractmethod
     def select_answer(
-        self, answer_id: AnswerId, answers: FrozenSet[ProjectAnswer]
+        self, answer_id: EntityId, answers: FrozenSet[ProjectAnswer]
     ) -> FrozenSet[ProjectAnswer]:
         """
         Selects an answer from a set of answers.
@@ -24,7 +24,7 @@ class SelectionStrategy(ABC, BaseModel):
 
     @abstractmethod
     def deselect_answer(
-        self, answer_id: AnswerId, answers: FrozenSet[ProjectAnswer]
+        self, answer_id: EntityId, answers: FrozenSet[ProjectAnswer]
     ) -> FrozenSet[ProjectAnswer]:
         """
         Deselects an answer from a set of answers.
@@ -35,8 +35,10 @@ class SelectionStrategy(ABC, BaseModel):
         """
         pass
 
-    def _check_answer_exists(
-        self, answer_id: AnswerId, answers: FrozenSet[ProjectAnswer]
-    ) -> None:
-        if not any(answer.id == answer_id for answer in answers):
-            raise ValueError(f"Answer {answer_id} is not available for this question")
+    def _answer_exists(
+        self, answer_id: EntityId, answers: FrozenSet[ProjectAnswer]
+    ) -> bool:
+        """
+        Checks if an answer exists in a set of answers.
+        """
+        return any(answer.id == answer_id for answer in answers)

@@ -3,11 +3,13 @@ from typing import List, Set, Optional
 from flask import Blueprint, request
 from flask_restful import Api, Resource
 
-from domain.project.core import Project, ProjectId
+from domain.common.core import EntityId
+from domain.project.core import Project
+from domain.project.factories import ProjectFactory
+from infrastructure.ws.setup import project_service
 from presentation.presentation import serialize, deserialize
 from utils.errors import ConflictError, NotFoundError, BadRequestError
 from utils.status_code import StatusCode
-from infrastructure.ws.setup import project_service
 
 projects_bp = Blueprint("projects", __name__)
 api = Api(projects_bp)
@@ -20,7 +22,7 @@ class ProjectResource(Resource):
     def get(self, project_id=None):
         if project_id:
             project: Optional[Project] = project_service.get_project_by_id(
-                ProjectId(code=project_id)
+                ProjectFactory.id_of(code=project_id)
             )
             if project:
                 return serialize(project), StatusCode.OK
@@ -33,7 +35,7 @@ class ProjectResource(Resource):
     def post(self):
         body: dict = request.get_json()
         try:
-            project_id: ProjectId = project_service.add_project(body["name"])
+            project_id: EntityId = project_service.add_project(body["name"])
         except ConflictError as e:
             return e.message, e.status_code
         return serialize(project_id), StatusCode.CREATED
@@ -43,7 +45,7 @@ class ProjectResource(Resource):
             updated_project: Project = deserialize(request.get_json(), Project)
             try:
                 project_service.update_project(
-                    ProjectId(code=project_id), updated_project
+                    ProjectFactory.id_of(code=project_id), updated_project
                 )
                 return "Project updated successfully", StatusCode.OK
             except BadRequestError as e:
@@ -56,7 +58,7 @@ class ProjectResource(Resource):
     def delete(self, project_id=None):
         if project_id:
             try:
-                project_service.delete_project(ProjectId(code=project_id))
+                project_service.delete_project(ProjectFactory.id_of(code=project_id))
                 return "Project deleted successfully", StatusCode.OK
             except NotFoundError as e:
                 return e.message, e.status_code
@@ -68,7 +70,7 @@ class ProjectContextResource(Resource):
 
     def get(self, project_id):
         project: Optional[Project] = project_service.get_project_by_id(
-            ProjectId(code=project_id)
+            ProjectFactory.id_of(code=project_id)
         )
         if project:
             key = request.args.get("key")
@@ -81,7 +83,7 @@ class ProjectContextResource(Resource):
 
     def put(self, project_id):
         project: Optional[Project] = project_service.get_project_by_id(
-            ProjectId(code=project_id)
+            ProjectFactory.id_of(code=project_id)
         )
         if project:
             key = request.args.get("key")
@@ -91,7 +93,9 @@ class ProjectContextResource(Resource):
             if not value:
                 return "Missing value", StatusCode.BAD_REQUEST
             updated_project = project.add_to_context(key, value)
-            project_service.update_project(ProjectId(code=project_id), updated_project)
+            project_service.update_project(
+                ProjectFactory.id_of(code=project_id), updated_project
+            )
             return "Project context updated successfully", StatusCode.OK
         else:
             return "Project not found", StatusCode.NOT_FOUND

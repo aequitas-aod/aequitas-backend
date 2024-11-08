@@ -2,20 +2,20 @@ from typing import Optional, FrozenSet
 
 from pydantic import field_serializer
 
-from domain.common.core import AnswerId, Question
+from domain.common.core import EntityId, Question
 from domain.graph.core.enum import Action
 
 
 class GraphQuestion(Question):
 
-    enabled_by: FrozenSet[AnswerId]
+    enabled_by: FrozenSet[EntityId]
     action_needed: Optional[Action]
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     @field_serializer("enabled_by", when_used="json")
-    def serialize_enabled_by_in_order(self, answer_ids: FrozenSet[AnswerId]):
+    def serialize_enabled_by_in_order(self, answer_ids: FrozenSet[EntityId]):
         return sorted(answer_ids, key=lambda answer_id: answer_id.code)
 
     def __str__(self) -> str:
@@ -28,7 +28,7 @@ class GraphQuestion(Question):
     def __hash__(self):
         return hash(
             (
-                self.id.code,
+                self.id,
                 self.text,
                 self.type,
                 self.answers,

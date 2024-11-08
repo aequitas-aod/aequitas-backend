@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from domain.common.core import QuestionId, AnswerId
+from domain.common.core import EntityId
 from domain.graph.core import GraphQuestion
 
 
@@ -14,14 +14,14 @@ class GraphQuestionRepository(ABC):
         pass
 
     @abstractmethod
-    def get_question_by_id(self, question_id: QuestionId) -> Optional[GraphQuestion]:
+    def get_question_by_id(self, question_id: EntityId) -> Optional[GraphQuestion]:
         """Gets a question by its id
         :param question_id: the question id
         :return: the question or None if it does not exist"""
         pass
 
     @abstractmethod
-    def insert_question(self, question) -> QuestionId:
+    def insert_question(self, question) -> EntityId:
         """Inserts a question
         :param question: the question to insert
         :return: the id of the inserted question
@@ -29,7 +29,7 @@ class GraphQuestionRepository(ABC):
         pass
 
     @abstractmethod
-    def update_question(self, question_id: QuestionId, question) -> None:
+    def update_question(self, question_id: EntityId, question) -> None:
         """Updates an existing question
         :param question_id: the id of the question to update
         :param question: the updated question
@@ -37,7 +37,7 @@ class GraphQuestionRepository(ABC):
         pass
 
     @abstractmethod
-    def delete_question(self, question_id: QuestionId) -> None:
+    def delete_question(self, question_id: EntityId) -> None:
         """Deletes a question
         :param question_id: the id of the question to delete
         :raises NotFound: if the question does not exist"""
@@ -51,7 +51,7 @@ class GraphQuestionRepository(ABC):
 
     @abstractmethod
     def get_enabled_question(
-        self, question_id: QuestionId, answer_ids: List[AnswerId]
+        self, question_id: EntityId, answer_ids: List[EntityId]
     ) -> Optional[GraphQuestion]:
         """
         Gets the enabled question given a question and a list of answers

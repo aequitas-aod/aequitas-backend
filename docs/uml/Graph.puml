@@ -1,12 +1,27 @@
 @startuml
 
+entity ProjectQuestionId {
+  +questionId: QuestionId
+  +projectId: ProjectId
+}
+
 entity Answer {
   +id: AnswerId
-  +value: string
   +text: string
+  +description: string
 }
 
 entity AnswerId {
+  +code: string
+  +questionId: QuestionId
+}
+entity ProjectAnswerId {
+  +questionId: ProjectQuestionId
+}
+
+AnswerId <|-- ProjectAnswerId
+
+entity QuestionId {
   +code: string
 }
 
@@ -14,16 +29,28 @@ entity Question {
   +id: QuestionId
   +text: string
   +type: QuestionType
-  +availableAnswers: Set<Answer>
-  +previousQuestionId: Optional<QuestionId>
-  +enabledBy: Set<AnswerId>
-  +actionNeeded: Optional<Action>
-  +createdAt: string
+  +answers: Set<Answer>
+  +createdAt: Datetime
 }
 
-entity QuestionId {
-  +code: string
+entity GraphQuestion {
+  +enabledBy: Set<GraphAnswerId>
+  +actionNeeded: Optional<Action>
 }
+
+ProjectQuestionId --|> QuestionId
+ProjectQuestionId *- ProjectId
+
+entity ProjectQuestion {
+  +id: ProjectQuestionId
+  +answers: Set<ProjectAnswer>
+  +selectionStrategy: SelectionStrategy
+  +previousQuestionId: Optional<ProjectQuestionId>
+  +selectAnswer(answerId: ProjectAnswerId): ProjectQuestion
+  +deselectAnswer(answerId: ProjectAnswerId): ProjectQuestion
+  +deselectAllAnswers(): ProjectQuestion
+}
+
 
 entity AnswerFactory {
   +createAnswer(answerId, text, value): Answer
@@ -67,13 +94,15 @@ enum QuestionType {
 Answer *- AnswerId
 AnswerFactory --> Answer : creates
 QuestionFactory --> Question : creates
-QuestionRepository -right-> Question : uses
-QuestionService o-up- QuestionRepository
-Question o-right- Answer
-Question *-- QuestionId
-Question *-- QuestionType
-Question *-- "0..1" Action
+QuestionRepository --> Question : uses
+QuestionService o-- QuestionRepository
 
+Question *- QuestionId
+Question <|-- GraphQuestion
+Question <|-- ProjectQuestion
+Question o-- Answer
+'Question *-- QuestionType
+'GraphQuestion *-- "0..1" Action
 
 
 

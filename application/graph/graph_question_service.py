@@ -1,7 +1,8 @@
 from typing import Optional, List
 
-from domain.common.core import QuestionId, AnswerId
+from domain.common.core import EntityId
 from domain.graph.core import GraphQuestion
+from domain.graph.factories import GraphQuestionFactory
 from domain.graph.repositories import GraphQuestionRepository
 from utils.errors import BadRequestError
 
@@ -18,7 +19,7 @@ class GraphQuestionService:
         """
         return self.question_repository.get_all_questions()
 
-    def get_question_by_id(self, question_id: QuestionId) -> Optional[GraphQuestion]:
+    def get_question_by_id(self, question_id: EntityId) -> Optional[GraphQuestion]:
         """
         Gets a question by its id
         :param question_id: the question id
@@ -26,7 +27,7 @@ class GraphQuestionService:
         """
         return self.question_repository.get_question_by_id(question_id)
 
-    def add_question(self, question: GraphQuestion) -> QuestionId:
+    def add_question(self, question: GraphQuestion) -> EntityId:
         """
         Inserts a question
         :param question: the question to insert
@@ -35,7 +36,7 @@ class GraphQuestionService:
         """
         return self.question_repository.insert_question(question)
 
-    def update_question(self, question_id: QuestionId, question: GraphQuestion) -> None:
+    def update_question(self, question_id: EntityId, question: GraphQuestion) -> None:
         """
         Updates an existing question
         :param question_id: the id of the question to update
@@ -47,7 +48,7 @@ class GraphQuestionService:
             raise BadRequestError("Updated question id does not match")
         self.question_repository.update_question(question_id, question)
 
-    def delete_question(self, question_id: QuestionId) -> None:
+    def delete_question(self, question_id: EntityId) -> None:
         """
         Deletes a question
         :param question_id: the id of the question to delete
@@ -55,18 +56,22 @@ class GraphQuestionService:
         """
         self.question_repository.delete_question(question_id)
 
-    def get_new_candidate_id(self) -> QuestionId:
+    def get_new_candidate_id(self) -> EntityId:
         """
         Gets a new candidate id for a question
         :return: the new candidate id
         """
         increment = 1
         questions_number = len(self.get_all_questions())
-        candidate_id: QuestionId = QuestionId(code=f"q-{questions_number + increment}")
+        candidate_id: EntityId = GraphQuestionFactory.id_of(
+            code=f"q-{questions_number + increment}"
+        )
         check = self.question_repository.get_question_by_id(candidate_id)
         while check is not None:
             increment += 1
-            candidate_id = QuestionId(code=f"q-{questions_number + increment}")
+            candidate_id = GraphQuestionFactory.id_of(
+                code=f"q-{questions_number + increment}"
+            )
             check = self.question_repository.get_question_by_id(candidate_id)
         return candidate_id
 
@@ -78,7 +83,7 @@ class GraphQuestionService:
         return self.question_repository.get_last_inserted_question()
 
     def get_enabled_question(
-        self, question_id: QuestionId, answer_ids: List[AnswerId]
+        self, question_id: EntityId, answer_ids: List[EntityId]
     ) -> Optional[GraphQuestion]:
         """
         Gets the enabled question from a question and the selected answers

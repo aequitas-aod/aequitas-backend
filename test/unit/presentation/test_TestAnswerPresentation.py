@@ -1,26 +1,29 @@
 import unittest
 
-from domain.common.core import Answer, AnswerId
+from domain.common.core import Answer, EntityId
 from domain.common.factories import AnswerFactory
+from domain.graph.factories import GraphQuestionFactory
 from presentation.presentation import serialize, deserialize
 
 
 class TestAnswerPresentation(unittest.TestCase):
 
     def setUp(self):
+        self.question_id: EntityId = GraphQuestionFactory.id_of(code="question")
         self.answer: Answer = AnswerFactory.create_answer(
-            AnswerId(code="answer"), "Always."
+            AnswerFactory.id_of(code="answer", question_id=self.question_id), "Always."
         )
         self.answer_dict: dict = {
-            "id": {"code": "answer"},
+            "id": {"code": "answer", "question_code": "question"},
             "text": "Always.",
             "description": None,
         }
         self.boolean_answer: Answer = AnswerFactory.create_boolean_answer(
-            AnswerId(code="boolean-answer"), False
+            AnswerFactory.id_of(code="boolean-answer", question_id=self.question_id),
+            False,
         )
         self.boolean_answer_dict: dict = {
-            "id": {"code": "boolean-answer"},
+            "id": {"code": "boolean-answer", "question_code": "question"},
             "text": "No",
             "description": None,
         }

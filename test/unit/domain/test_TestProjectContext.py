@@ -1,13 +1,16 @@
 import unittest
 
-from domain.project.core import Project, ProjectId
+from domain.common.core import EntityId
+from domain.project.core import Project
+from domain.project.factories import ProjectFactory
 
 
 class TestProjectContext(unittest.TestCase):
 
     def setUp(self):
+        self.project_id: EntityId = ProjectFactory.id_of(code="project_id")
         self.project: Project = Project(
-            id=ProjectId(code="project_id"), name="Project name", context={}
+            id=self.project_id, name="Project name", context={}
         )
 
     def test_add_to_context(self):

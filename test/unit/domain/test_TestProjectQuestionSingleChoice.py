@@ -2,37 +2,51 @@ import unittest
 from datetime import datetime
 from typing import FrozenSet
 
-from domain.common.core import AnswerId, QuestionId
+from domain.common.core import EntityId
 from domain.common.core.enum import QuestionType
-from domain.project.core import ProjectQuestion, ProjectAnswer, ProjectId
-from domain.project.factories import ProjectQuestionFactory, ProjectAnswerFactory
+from domain.common.factories import AnswerFactory
+from domain.project.core import ProjectQuestion, ProjectAnswer
+from domain.project.factories import (
+    ProjectQuestionFactory,
+    ProjectAnswerFactory,
+    ProjectFactory,
+)
 
 
 class TestProjectQuestionSingleChoice(unittest.TestCase):
 
     def setUp(self):
+        self.project_id: EntityId = ProjectFactory.id_of(code="project_id")
+        self.project_question_id: EntityId = ProjectQuestionFactory.id_of(
+            code="question_id", project_id=self.project_id
+        )
         self.question_timestamp = datetime.now()
         self.question: ProjectQuestion = ProjectQuestionFactory.create_project_question(
-            QuestionId(code="question_id"),
+            self.project_question_id,
             "Do you practice TDD?",
             QuestionType.SINGLE_CHOICE,
             frozenset(
                 {
-                    ProjectAnswer(
-                        id=AnswerId(code="answer-always"),
+                    ProjectAnswerFactory.create_project_answer(
+                        answer_id=ProjectAnswerFactory.id_of(
+                            code="answer-always",
+                            project_question_id=self.project_question_id,
+                        ),
                         text="Always",
                         description=None,
                         selected=False,
                     ),
-                    ProjectAnswer(
-                        id=AnswerId(code="answer-never"),
+                    ProjectAnswerFactory.create_project_answer(
+                        answer_id=ProjectAnswerFactory.id_of(
+                            code="answer-sometimes",
+                            project_question_id=self.project_question_id,
+                        ),
                         text="Never",
                         description=None,
                         selected=False,
                     ),
                 }
             ),
-            ProjectId(code="project_id"),
             created_at=self.question_timestamp,
         )
 
@@ -57,7 +71,11 @@ class TestProjectQuestionSingleChoice(unittest.TestCase):
     def test_select_wrong_answer(self):
         self.assertRaises(
             ValueError,
-            lambda: self.question.select_answer(AnswerId(code="wrong-answer-id")),
+            lambda: self.question.select_answer(
+                ProjectAnswerFactory.id_of(
+                    code="wrong-answer-id", project_question_id=self.project_question_id
+                )
+            ),
         )
 
     def test_deselect_answer(self):
@@ -78,12 +96,16 @@ class TestProjectQuestionSingleChoice(unittest.TestCase):
 
 
 class TestBooleanProjectQuestion(unittest.TestCase):
+
     def setUp(self):
+        self.project_id: EntityId = ProjectFactory.id_of(code="project_id")
+        self.project_question_id: EntityId = ProjectQuestionFactory.id_of(
+            code="boolean_question_id", project_id=self.project_id
+        )
         self.project_question: ProjectQuestion = (
             ProjectQuestionFactory.create_project_boolean_question(
-                QuestionId(code="boolean_question_id"),
+                self.project_question_id,
                 "Do you practice TDD?",
-                ProjectId(code="project_id"),
             )
         )
 
@@ -93,10 +115,16 @@ class TestBooleanProjectQuestion(unittest.TestCase):
             frozenset(
                 {
                     ProjectAnswerFactory.create_project_answer(
-                        AnswerId(code="boolean_question_id-true"), "Yes"
+                        ProjectAnswerFactory.id_of(
+                            code="true", project_question_id=self.project_question.id
+                        ),
+                        "Yes",
                     ),
                     ProjectAnswerFactory.create_project_answer(
-                        AnswerId(code="boolean_question_id-false"), "No"
+                        ProjectAnswerFactory.id_of(
+                            code="false", project_question_id=self.project_question.id
+                        ),
+                        "No",
                     ),
                 }
             ),

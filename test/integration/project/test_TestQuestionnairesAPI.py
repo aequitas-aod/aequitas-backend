@@ -4,11 +4,12 @@ import unittest
 import yaml
 from python_on_whales import DockerClient
 
+from domain.common.core import EntityId
 from domain.graph.core import GraphQuestion
-from domain.project.core import ProjectId, ProjectQuestion
-from presentation.presentation import deserialize
-from test.utils.utils import get_file_path
+from domain.project.core import ProjectQuestion
 from infrastructure.ws.main import create_app
+from presentation.presentation import deserialize, serialize
+from test.utils.utils import get_file_path
 
 
 class TestQuestionnairesAPI(unittest.TestCase):
@@ -25,7 +26,7 @@ class TestQuestionnairesAPI(unittest.TestCase):
         cls.app = create_app().test_client()
         cls.project_name: str = "Project name"
         res = cls.app.post("/projects", json={"name": cls.project_name})
-        cls.project_id: ProjectId = deserialize(json.loads(res.data), ProjectId)
+        cls.project_id: EntityId = deserialize(json.loads(res.data), EntityId)
         yaml_file_path = get_file_path("test/resources/question-graph-example.yml")
         with yaml_file_path.open("r") as file:
             questions_yaml: str = file.read()
@@ -49,7 +50,8 @@ class TestQuestionnairesAPI(unittest.TestCase):
     def _compare_graph_and_project_questions(
         self, q1: ProjectQuestion, q2: GraphQuestion
     ):
-        self.assertEqual(q1.id.code, f"{self.project_id.code}-{q2.id.code}")
+        self.assertEqual(q1.id.code, q2.id.code)
+        self.assertEqual(self.project_id.code, q1.id.project_code)
         self.assertEqual(q1.text, q2.text)
         self.assertEqual(q1.type, q2.type)
         self.assertEqual(
@@ -64,10 +66,11 @@ class TestQuestionnairesAPI(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         return deserialize(json.loads(response.data), ProjectQuestion)
 
-    def _select_answer_to_nth_question(self, index: int, answer_id: str):
+    def _select_answer_to_nth_question(self, index: int, project_answer_id: EntityId):
+        serialized_answer_id = serialize(project_answer_id)
         response = self.app.put(
             f"/projects/{self.project_id.code}/questionnaire/{index}",
-            json={"answer_ids": [answer_id]},
+            json={"answer_ids": [serialized_answer_id]},
         )
         self.assertEqual(response.status_code, 200)
 
@@ -91,7 +94,7 @@ class TestQuestionnairesAPI(unittest.TestCase):
         first_question: ProjectQuestion = self._get_nth_question(1)
         answer = next(iter(first_question.answers))
         expected_question: ProjectQuestion = first_question.select_answer(answer.id)
-        self._select_answer_to_nth_question(1, answer.id.code)
+        self._select_answer_to_nth_question(1, answer.id)
         selected_question: ProjectQuestion = self._get_nth_question(1)
         self.assertEqual(set(selected_question.answers), set(expected_question.answers))
         new_question, related_question = (
@@ -118,19 +121,19 @@ class TestQuestionnairesAPI(unittest.TestCase):
         )
         self._compare_graph_and_project_questions(first_question, related_question)
         answer = next(iter(first_question.answers))
-        self._select_answer_to_nth_question(1, answer.id.code)
+        self._select_answer_to_nth_question(1, answer.id)
         second_question, related_question = (
             self._get_question_from_questionnaire_and_graph(2)
         )
         self._compare_graph_and_project_questions(second_question, related_question)
         answer = next(iter(second_question.answers))
-        self._select_answer_to_nth_question(2, answer.id.code)
+        self._select_answer_to_nth_question(2, answer.id)
         third_question, related_question = (
             self._get_question_from_questionnaire_and_graph(3)
         )
         self._compare_graph_and_project_questions(third_question, related_question)
         answer = next(iter(third_question.answers))
-        self._select_answer_to_nth_question(3, answer.id.code)
+        self._select_answer_to_nth_question(3, answer.id)
         expected_question: ProjectQuestion = third_question.select_answer(answer.id)
         selected_question: ProjectQuestion = self._get_nth_question(3)
         self.assertEqual(set(selected_question.answers), set(expected_question.answers))
@@ -139,10 +142,10 @@ class TestQuestionnairesAPI(unittest.TestCase):
         first_question: ProjectQuestion = self._get_nth_question(1)
         answers_iter = iter(first_question.answers)
         answer = next(answers_iter)
-        self._select_answer_to_nth_question(1, answer.id.code)
+        self._select_answer_to_nth_question(1, answer.id)
         new_answer = next(answers_iter)
         expected_selected_answers = first_question.select_answer(new_answer.id).answers
-        self._select_answer_to_nth_question(1, new_answer.id.code)
+        self._select_answer_to_nth_question(1, new_answer.id)
         selected_answers = self._get_nth_question(1).answers
         self.assertEqual(selected_answers, expected_selected_answers)
 
@@ -152,7 +155,7 @@ class TestQuestionnairesAPI(unittest.TestCase):
         self.assertEqual(response.data, b'"No questions exist in the questionnaire"\n')
         first_question: ProjectQuestion = self._get_nth_question(1)
         answer = next(iter(first_question.answers))
-        self._select_answer_to_nth_question(1, answer.id.code)
+        self._select_answer_to_nth_question(1, answer.id)
         response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire/1")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
@@ -164,10 +167,10 @@ class TestQuestionnairesAPI(unittest.TestCase):
     def test_reset_questionnaire(self):
         first_question: ProjectQuestion = self._get_nth_question(1)
         answer = next(iter(first_question.answers))
-        self._select_answer_to_nth_question(1, answer.id.code)
+        self._select_answer_to_nth_question(1, answer.id)
         second_question: ProjectQuestion = self._get_nth_question(2)
         answer = next(iter(second_question.answers))
-        self._select_answer_to_nth_question(2, answer.id.code)
+        self._select_answer_to_nth_question(2, answer.id)
         response = self.app.delete(f"/projects/{self.project_id.code}/questionnaire")
         self.assertEqual(response.status_code, 200)
         response = self.app.get(f"/projects/{self.project_id.code}/questionnaire")
@@ -177,7 +180,7 @@ class TestQuestionnairesAPI(unittest.TestCase):
         for i in range(1, len(self.questions) + 1):
             question = self._get_nth_question(i)
             answer = next(iter(question.answers))
-            self._select_answer_to_nth_question(i, answer.id.code)
+            self._select_answer_to_nth_question(i, answer.id)
 
         response = self.app.get(
             f"/projects/{self.project_id.code}/questionnaire/{len(self.questions) + 1}"

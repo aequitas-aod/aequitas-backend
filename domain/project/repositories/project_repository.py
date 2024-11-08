@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from domain.project.core import ProjectId, Project
+from domain.common.core import EntityId
+from domain.project.core import Project
 
 
 class ProjectRepository(ABC):
@@ -13,14 +14,14 @@ class ProjectRepository(ABC):
         pass
 
     @abstractmethod
-    def get_project_by_id(self, project_id: ProjectId) -> Optional[Project]:
+    def get_project_by_id(self, project_id: EntityId) -> Optional[Project]:
         """Gets a project by its id
         :param project_id: the project id
         :return: the project or None if it does not exist"""
         pass
 
     @abstractmethod
-    def insert_project(self, project) -> ProjectId:
+    def insert_project(self, project) -> EntityId:
         """Inserts a project
         :param project: the project to insert
         :return: the id of the inserted project
@@ -28,7 +29,7 @@ class ProjectRepository(ABC):
         pass
 
     @abstractmethod
-    def update_project(self, project_id: ProjectId, project) -> None:
+    def update_project(self, project_id: EntityId, project) -> None:
         """Updates an existing project
         :param project_id: the id of the project to update
         :param project: the updated project
@@ -36,7 +37,7 @@ class ProjectRepository(ABC):
         pass
 
     @abstractmethod
-    def delete_project(self, project_id: ProjectId) -> None:
+    def delete_project(self, project_id: EntityId) -> None:
         """Deletes a project
         :param project_id: the id of the project to delete
         :raises NotFoundError: if the project does not exist"""

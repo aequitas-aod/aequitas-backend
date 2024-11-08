@@ -4,7 +4,8 @@ from typing import Set
 
 from python_on_whales import DockerClient
 
-from domain.project.core import Project, ProjectId
+from domain.common.core import EntityId
+from domain.project.core import Project
 from presentation.presentation import deserialize, serialize
 from infrastructure.ws.main import create_app
 
@@ -31,9 +32,9 @@ class TestProjectsAPI(unittest.TestCase):
     def tearDown(self):
         self._delete_all_projects()
 
-    def _create_project(self, project_name: str) -> ProjectId:
+    def _create_project(self, project_name: str) -> EntityId:
         response = self.app.post("/projects", json={"name": project_name})
-        return deserialize(json.loads(response.data), ProjectId)
+        return deserialize(json.loads(response.data), EntityId)
 
     def _delete_all_projects(self):
         response = self.app.get("/projects")
@@ -56,7 +57,7 @@ class TestProjectsAPI(unittest.TestCase):
         )
 
     def test_get_project(self):
-        project_id: ProjectId = self._create_project(self.project_name_1)
+        project_id: EntityId = self._create_project(self.project_name_1)
         response = self.app.get(f"/projects/{project_id.code}")
         self.assertEqual(response.status_code, 200)
         project: Project = deserialize(json.loads(response.data), Project)
@@ -69,7 +70,7 @@ class TestProjectsAPI(unittest.TestCase):
     def test_insert_project(self):
         response = self.app.post("/projects", json={"name": self.project_name_1})
         self.assertEqual(response.status_code, 201)
-        project_id: ProjectId = deserialize(json.loads(response.data), ProjectId)
+        project_id: EntityId = deserialize(json.loads(response.data), EntityId)
         response = self.app.get(f"/projects/{project_id.code}")
         self.assertEqual(response.status_code, 200)
         project: Project = deserialize(json.loads(response.data), Project)
@@ -79,7 +80,7 @@ class TestProjectsAPI(unittest.TestCase):
         )
 
     def test_update_project(self):
-        project_id: ProjectId = self._create_project(self.project_name_1)
+        project_id: EntityId = self._create_project(self.project_name_1)
         project_response = self.app.get(f"/projects/{project_id.code}")
         project: Project = deserialize(json.loads(project_response.data), Project)
         updated_project: Project = project.model_copy().add_to_context("key", "value")
@@ -94,7 +95,7 @@ class TestProjectsAPI(unittest.TestCase):
         self.assertEqual(updated_project.context, expected_project.context)
 
     def test_update_project_context(self):
-        project_id: ProjectId = self._create_project(self.project_name_1)
+        project_id: EntityId = self._create_project(self.project_name_1)
         project_response = self.app.get(f"/projects/{project_id.code}")
         project: Project = deserialize(json.loads(project_response.data), Project)
         expected_project: Project = project.model_copy().add_to_context("key", "value")
@@ -110,7 +111,7 @@ class TestProjectsAPI(unittest.TestCase):
         self.assertEqual(expected_project, updated_project)
 
     def test_delete_project(self):
-        project_id: ProjectId = self._create_project(self.project_name_1)
+        project_id: EntityId = self._create_project(self.project_name_1)
         response = self.app.delete(f"/projects/{project_id.code}")
         self.assertEqual(response.status_code, 200)
         response = self.app.get(f"/projects/{project_id.code}")

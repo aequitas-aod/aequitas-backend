@@ -1,13 +1,11 @@
 from typing_extensions import Self
 
-from domain.common.core import Answer
+from domain.common.core import Answer, EntityId
 
 
 class ProjectAnswer(Answer):
+    id: EntityId
     selected: bool
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
 
     def select(self) -> Self:
         """
@@ -31,4 +29,4 @@ class ProjectAnswer(Answer):
         return f"Answer(\n id={self.id},\n text={self.text},\n description={self.description},\n selected={self.selected}\n)"
 
     def __hash__(self):
-        return hash((self.id.code, self.text, self.selected))
+        return hash((self.id, self.text, self.selected))

@@ -3,23 +3,25 @@ from typing import Optional, List
 from flask import Blueprint, request
 from flask_restful import Api, Resource
 
-from domain.common.core import AnswerId
-from domain.project.core import ProjectId, ProjectQuestion
-from presentation.presentation import serialize
+from domain.common.core import EntityId
+from domain.project.core import ProjectQuestion
+from domain.project.factories import ProjectFactory
+from infrastructure.ws.setup import questionnaire_service
+from presentation.presentation import serialize, deserialize
 from utils.errors import NotFoundError, BadRequestError
 from utils.status_code import StatusCode
-from infrastructure.ws.setup import questionnaire_service
 
 questionnaires_bp = Blueprint("questionnaires", __name__)
 api = Api(questionnaires_bp)
 
 
 class QuestionnaireResource(Resource):
-    def get(self, project_id, index=None):
+    def get(self, project_code, index=None):
+        project_id: EntityId = ProjectFactory.id_of(code=project_code)
         if index:
             try:
                 q: Optional[ProjectQuestion] = questionnaire_service.get_nth_question(
-                    ProjectId(code=project_id), index
+                    project_id, index
                 )
                 return serialize(q), StatusCode.OK
             except NotFoundError as e:
@@ -28,36 +30,40 @@ class QuestionnaireResource(Resource):
                 return e.message, StatusCode.BAD_REQUEST
         else:
             questionnaire: List[ProjectQuestion] = (
-                questionnaire_service.get_questionnaire(ProjectId(code=project_id))
+                questionnaire_service.get_questionnaire(project_id)
             )
             return [serialize(q) for q in questionnaire], StatusCode.OK
 
-    def put(self, project_id, index=None):
+    def put(self, project_code, index=None):
         if index is None:
             return "Missing question index", StatusCode.BAD_REQUEST
         else:
             answer_ids_json = request.get_json()["answer_ids"]
-            answer_ids: List[AnswerId] = [
-                AnswerId(code=code) for code in answer_ids_json
-            ]
             try:
+                answer_ids: List[EntityId] = [
+                    deserialize(project_answer_id, EntityId)
+                    for project_answer_id in answer_ids_json
+                ]
                 questionnaire_service.select_answers(
-                    ProjectId(code=project_id), index, answer_ids
+                    ProjectFactory.id_of(code=project_code), index, answer_ids
                 )
             except ValueError:
                 return (
                     "Answer selected is not in the set of available answers",
                     StatusCode.BAD_REQUEST,
                 )
+            except TypeError:
+                return "Wrong id format", StatusCode.BAD_REQUEST
             return "Answer selected successfully", StatusCode.OK
 
-    def delete(self, project_id, index=None):
+    def delete(self, project_code, index=None):
+        project_id: EntityId = ProjectFactory.id_of(code=project_code)
         if index is None:
-            questionnaire_service.reset_questionnaire(ProjectId(code=project_id))
+            questionnaire_service.reset_questionnaire(project_id)
             return "Questionnaire reset successfully", StatusCode.OK
         else:
             try:
-                questionnaire_service.remove_question(ProjectId(code=project_id), index)
+                questionnaire_service.remove_question(project_id, index)
                 return "Question removed successfully", StatusCode.OK
             except ValueError as e:
                 return (
@@ -68,6 +74,6 @@ class QuestionnaireResource(Resource):
 
 api.add_resource(
     QuestionnaireResource,
-    "/projects/<string:project_id>/questionnaire",
-    "/projects/<string:project_id>/questionnaire/<int:index>",
+    "/projects/<string:project_code>/questionnaire",
+    "/projects/<string:project_code>/questionnaire/<int:index>",
 )

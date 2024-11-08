@@ -3,9 +3,8 @@ from typing import FrozenSet, Any, Optional
 from pydantic import field_serializer, field_validator
 from typing_extensions import Self
 
-from domain.common.core import Question, AnswerId
-from domain.common.core import QuestionId
-from domain.project.core import ProjectAnswer, ProjectId
+from domain.common.core import Question, EntityId
+from domain.project.core import ProjectAnswer
 from domain.project.core.selection import (
     SelectionStrategy,
     SingleSelectionStrategy,
@@ -14,15 +13,12 @@ from domain.project.core.selection import (
 
 
 class ProjectQuestion(Question):
-    project_id: ProjectId
+    id: EntityId
     answers: FrozenSet[ProjectAnswer]
     selection_strategy: SelectionStrategy
-    previous_question_id: Optional[QuestionId]
+    previous_question_id: Optional[EntityId]
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def select_answer(self, answer_id: AnswerId) -> Self:
+    def select_answer(self, answer_id: EntityId) -> Self:
         answers: FrozenSet[ProjectAnswer] = self.selection_strategy.select_answer(
             answer_id, self.answers
         )
@@ -31,20 +27,18 @@ class ProjectQuestion(Question):
             text=self.text,
             type=self.type,
             answers=answers,
-            project_id=self.project_id,
             created_at=self.created_at,
             selection_strategy=self.selection_strategy,
             previous_question_id=self.previous_question_id,
         )
 
-    def deselect_answer(self, answer_id: AnswerId) -> Self:
+    def deselect_answer(self, answer_id: EntityId) -> Self:
         answers = self.selection_strategy.deselect_answer(answer_id, self.answers)
         return ProjectQuestion(
             id=self.id,
             text=self.text,
             type=self.type,
             answers=answers,
-            project_id=self.project_id,
             created_at=self.created_at,
             selection_strategy=self.selection_strategy,
             previous_question_id=self.previous_question_id,
@@ -57,7 +51,6 @@ class ProjectQuestion(Question):
             text=self.text,
             type=self.type,
             answers=new_answers,
-            project_id=self.project_id,
             created_at=self.created_at,
             selection_strategy=self.selection_strategy,
             previous_question_id=self.previous_question_id,
@@ -94,7 +87,7 @@ class ProjectQuestion(Question):
     def __str__(self) -> str:
         return (
             f"ProjectQuestion(id={self.id},\n text={self.text},\n type={self.type},\n answers={self.answers},\n "
-            f"project_id={self.project_id},\n created_at={self.created_at},\n selection_strategy={self.selection_strategy},\n "
+            f"created_at={self.created_at},\n selection_strategy={self.selection_strategy},\n "
             f"previous_question_id={self.previous_question_id}\n)"
         )
 

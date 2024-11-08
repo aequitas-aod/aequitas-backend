@@ -1,9 +1,11 @@
 from typing import Optional, List
 
 from application.graph import GraphQuestionService
-from domain.common.core import QuestionId, AnswerId
+from domain.common.core import EntityId
+from domain.common.factories import AnswerFactory
 from domain.graph.core import GraphQuestion
-from domain.project.core import ProjectId, ProjectQuestion
+from domain.graph.factories import GraphQuestionFactory
+from domain.project.core import ProjectQuestion
 from domain.project.factories import ProjectQuestionFactory
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
 from utils.errors import BadRequestError, NotFoundError
@@ -19,7 +21,7 @@ class QuestionnaireService:
         self.questionnaire_repository = questionnaire_repository
         self.question_service = question_service
 
-    def get_questionnaire(self, project_id: ProjectId) -> List[ProjectQuestion]:
+    def get_questionnaire(self, project_id: EntityId) -> List[ProjectQuestion]:
         """
         Gets all questions in the project questionnaire
         :param project_id: the project id
@@ -27,7 +29,7 @@ class QuestionnaireService:
         """
         return self.questionnaire_repository.get_questionnaire(project_id)
 
-    def get_nth_question(self, project_id: ProjectId, nth: int) -> ProjectQuestion:
+    def get_nth_question(self, project_id: EntityId, nth: int) -> ProjectQuestion:
         """
         Gets the nth question of a project. If nth is 1, it will create and return the first question,
         otherwise it will return the nth question (if it exists).
@@ -64,7 +66,7 @@ class QuestionnaireService:
                     raise NotFoundError("Question not found")
 
     def select_answers(
-        self, project_id: ProjectId, index: int, answer_ids: List[AnswerId]
+        self, project_id: EntityId, index: int, answer_ids: List[EntityId]
     ) -> None:
         """
         Updates a question with the selected answers, and inserts the next question in the questionnaire.
@@ -78,13 +80,15 @@ class QuestionnaireService:
         for answer_id in answer_ids:
             question = question.select_answer(answer_id)
         self.questionnaire_repository.update_project_question(question.id, question)
-        graph_q_id: QuestionId = QuestionId(
+        graph_q_id: EntityId = GraphQuestionFactory.id_of(
             code=question.id.code.replace(project_id.code + "-", "")
         )
-        graph_answer_ids: List[AnswerId] = [
-            AnswerId(code=answer_id.code.replace(project_id.code + "-", ""))
-            for answer_id in answer_ids
-        ]
+
+        def map_to_graph_answer_id(answer_id: EntityId) -> EntityId:
+            del answer_id.project_code
+            return answer_id
+
+        graph_answer_ids: List[EntityId] = list(map(map_to_graph_answer_id, answer_ids))
         enabled_question: Optional[GraphQuestion] = (
             self.question_service.get_enabled_question(graph_q_id, graph_answer_ids)
         )
@@ -94,14 +98,14 @@ class QuestionnaireService:
             )
             self.questionnaire_repository.insert_project_question(new_q)
 
-    def reset_questionnaire(self, project_id: ProjectId) -> None:
+    def reset_questionnaire(self, project_id: EntityId) -> None:
         """
         Removes all questions from the questionnaire.
         :param project_id: the project id
         """
         self.questionnaire_repository.delete_questionnaire(project_id)
 
-    def remove_question(self, project_id: ProjectId, index: int) -> None:
+    def remove_question(self, project_id: EntityId, index: int) -> None:
         """
         Removes a question from the questionnaire only if it is the last question.
         :param project_id: the project id

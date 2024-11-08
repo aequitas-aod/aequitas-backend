@@ -4,12 +4,13 @@ import yaml
 from flask import Blueprint, request
 from flask_restful import Api, Resource
 
-from domain.common.core import QuestionId
+from domain.common.core import EntityId
 from domain.graph.core import GraphQuestion
+from domain.graph.factories import GraphQuestionFactory
+from infrastructure.ws.setup import question_service
 from presentation.presentation import serialize, deserialize
 from utils.errors import BadRequestError, ConflictError, NotFoundError
 from utils.status_code import StatusCode
-from infrastructure.ws.setup import question_service
 
 questions_bp = Blueprint("questions", __name__)
 api = Api(questions_bp)
@@ -17,10 +18,11 @@ api = Api(questions_bp)
 
 class QuestionResource(Resource):
 
-    def get(self, question_id=None):
-        if question_id:
+    def get(self, question_code=None):
+        if question_code:
+            graph_question_id: EntityId = GraphQuestionFactory.id_of(code=question_code)
             question: Optional[GraphQuestion] = question_service.get_question_by_id(
-                QuestionId(code=question_id)
+                graph_question_id
             )
             if question:
                 return serialize(question), StatusCode.OK
@@ -38,15 +40,14 @@ class QuestionResource(Resource):
             return e.message, e.status_code
         return serialize(new_question.id), StatusCode.CREATED
 
-    def put(self, question_id=None):
-        if question_id:
+    def put(self, question_code=None):
+        if question_code:
             updated_question: GraphQuestion = deserialize(
                 request.get_json(), GraphQuestion
             )
+            graph_question_id: EntityId = GraphQuestionFactory.id_of(code=question_code)
             try:
-                question_service.update_question(
-                    QuestionId(code=question_id), updated_question
-                )
+                question_service.update_question(graph_question_id, updated_question)
                 return "Question updated successfully", StatusCode.OK
             except BadRequestError as e:
                 return e.message, e.status_code
@@ -55,10 +56,11 @@ class QuestionResource(Resource):
         else:
             return "Missing question id", StatusCode.BAD_REQUEST
 
-    def delete(self, question_id=None):
-        if question_id:
+    def delete(self, question_code=None):
+        if question_code:
+            graph_question_id: EntityId = GraphQuestionFactory.id_of(code=question_code)
             try:
-                question_service.delete_question(QuestionId(code=question_id))
+                question_service.delete_question(graph_question_id)
                 return "Question deleted successfully", StatusCode.OK
             except NotFoundError as e:
                 return e.message, e.status_code
@@ -104,7 +106,7 @@ class LoadQuestions(Resource):
             return {"error": "Invalid YAML file"}, StatusCode.BAD_REQUEST
 
 
-api.add_resource(QuestionResource, "/questions", "/questions/<string:question_id>")
+api.add_resource(QuestionResource, "/questions", "/questions/<string:question_code>")
 api.add_resource(NewCandidateID, "/questions/new-candidate-id")
 api.add_resource(LastInsertedQuestion, "/questions/last-inserted")
 api.add_resource(LoadQuestions, "/questions/load")

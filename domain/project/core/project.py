@@ -2,12 +2,12 @@ from copy import deepcopy
 
 from pydantic import BaseModel
 
-from domain.project.core import ProjectId
+from domain.common.core import EntityId
 
 
 class Project(BaseModel):
 
-    id: ProjectId
+    id: EntityId
     name: str
     context: dict[str, str]
 
@@ -27,4 +27,4 @@ class Project(BaseModel):
         return f"Project(id={self.id}, name={self.name}, context={self.context})"
 
     def __hash__(self):
-        return hash(self.id.code)
+        return hash((self.id, self.name, tuple(self.context.items())))
