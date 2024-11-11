@@ -45,7 +45,6 @@ entity ProjectQuestion {
   +id: ProjectQuestionId
   +answers: Set<ProjectAnswer>
   +selectionStrategy: SelectionStrategy
-  +previousQuestionId: Optional<ProjectQuestionId>
   +selectAnswer(answerId: ProjectAnswerId): ProjectQuestion
   +deselectAnswer(answerId: ProjectAnswerId): ProjectQuestion
   +deselectAllAnswers(): ProjectQuestion
@@ -58,9 +57,8 @@ entity AnswerFactory {
 }
 
 entity QuestionFactory {
-  +createQuestion(questionId, text, questionType, availableAnswers,
-  previousQuestionId, enabledBy, actionNeeded): Question
-  +createBooleanQuestion(questionId, text, previousQuestionId,
+  +createQuestion(questionId, text, questionType, availableAnswers, enabledBy, actionNeeded): Question
+  +createBooleanQuestion(questionId, text,
   enabledBy, actionNeeded): Question
 }
 

@@ -16,7 +16,6 @@ class ProjectQuestion(Question):
     id: EntityId
     answers: FrozenSet[ProjectAnswer]
     selection_strategy: SelectionStrategy
-    previous_question_id: Optional[EntityId]
 
     def select_answer(self, answer_id: EntityId) -> Self:
         answers: FrozenSet[ProjectAnswer] = self.selection_strategy.select_answer(
@@ -29,7 +28,6 @@ class ProjectQuestion(Question):
             answers=answers,
             created_at=self.created_at,
             selection_strategy=self.selection_strategy,
-            previous_question_id=self.previous_question_id,
         )
 
     def deselect_answer(self, answer_id: EntityId) -> Self:
@@ -41,7 +39,6 @@ class ProjectQuestion(Question):
             answers=answers,
             created_at=self.created_at,
             selection_strategy=self.selection_strategy,
-            previous_question_id=self.previous_question_id,
         )
 
     def deselect_all_answers(self) -> Self:
@@ -53,7 +50,6 @@ class ProjectQuestion(Question):
             answers=new_answers,
             created_at=self.created_at,
             selection_strategy=self.selection_strategy,
-            previous_question_id=self.previous_question_id,
         )
 
     @field_serializer("selection_strategy", when_used="json")
@@ -87,8 +83,7 @@ class ProjectQuestion(Question):
     def __str__(self) -> str:
         return (
             f"ProjectQuestion(id={self.id},\n text={self.text},\n type={self.type},\n answers={self.answers},\n "
-            f"created_at={self.created_at},\n selection_strategy={self.selection_strategy},\n "
-            f"previous_question_id={self.previous_question_id}\n)"
+            f"created_at={self.created_at},\n selection_strategy={self.selection_strategy})"
         )
 
     def __hash__(self):
@@ -99,6 +94,5 @@ class ProjectQuestion(Question):
                 self.answers,
                 self.created_at,
                 self.selection_strategy,
-                self.previous_question_id,
             )
         )

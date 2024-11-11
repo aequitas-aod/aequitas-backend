@@ -49,7 +49,6 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                 res[0]["available_answers"],
                 res[0]["selected_answers"],
                 res[0]["project"]["code"],
-                None,
             )
             return question
         else:
@@ -78,7 +77,6 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                 res[0]["available_answers"],
                 res[0]["selected_answers"],
                 project_code,
-                res[0]["prev_q"],
             )
             return question
 
@@ -121,7 +119,6 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             res[0]["available_answers"],
             res[0]["selected_answers"],
             project_code,
-            res[0]["prev_q"],
         )
         return question
 
@@ -155,7 +152,15 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                     {"question_code": question.id.code, "answer_code": answer.id.code},
                 )
             )
-        if question.previous_question_id is None:
+
+        res = self.driver.query(
+            Neo4jQuery(
+                "MATCH (q:GraphQuestion {code: $question_code})-[:ENABLED_BY]->(a:Answer)<-[:HAS_ANSWER]-(prev_q:GraphQuestion) "
+                "RETURN prev_q.code AS previous_question_code ",
+                {"question_code": question.id.code},
+            )
+        )
+        if len(res) == 0:
             query_string: str = (
                 "MATCH (p:Project {code: $project_code}) "
                 "MATCH (q:ProjectQuestion {code: $question_code}) "
@@ -167,24 +172,15 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             )
             queries.append(query)
         else:
-            previous_question: Optional[ProjectQuestion] = (
-                self.get_project_question_by_id(question.previous_question_id)
-            )
-            if previous_question is None:
-                raise ValueError(
-                    f"Previous question with id {question.previous_question_id} does not exist"
-                )
             query_string: str = (
-                "MATCH (q:ProjectQuestion {code: $question_code}) "
-                "MATCH (prev_q: ProjectQuestion {code: $prev_question_code}) "
-                "CREATE (prev_q)-[:NEXT]->(q)"
+                "MATCH (project_q:ProjectQuestion {code: $question_code}) "
+                "MATCH (graph_q:GraphQuestion {code: $question_code})-[:ENABLED_BY]->(a:Answer)<-[:HAS_ANSWER]-(graph_prev_q:GraphQuestion) "
+                "MATCH (project_answer:Answer {code: a.code})<-[:HAS_SELECTED]-(project_prev_q:ProjectQuestion {code: graph_prev_q.code}) "
+                "CREATE (project_prev_q)-[:NEXT]->(project_q)"
             )
             query: Neo4jQuery = Neo4jQuery(
                 query_string,
-                {
-                    "question_code": question.id.code,
-                    "prev_question_code": question.previous_question_id.code,
-                },
+                {"question_code": question.id.code},
             )
             queries.append(query)
 
@@ -256,7 +252,6 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         q["created_at"] = question.created_at.isoformat()
         q["selection_strategy"] = question.selection_strategy.__class__.__name__
         del q["answers"]
-        del q["previous_question_id"]
         return q
 
     def _convert_answer_in_node(self, answer: ProjectAnswer) -> dict:
@@ -272,7 +267,6 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         available_answers: List,
         selected_answers: List,
         project_code: str,
-        previous_question: Optional[dict],
     ) -> ProjectQuestion:
         question: dict = q
         question["id"] = {"code": q["code"], "project_code": project_code}
@@ -291,17 +285,6 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             }
             for a in available_answers + selected_answers
         ]
-        if previous_question:
-            question["previous_question_id"] = (
-                {
-                    "code": previous_question["code"],
-                    "project_code": project_code,
-                }
-                if previous_question
-                else None
-            )
-        else:
-            question["previous_question_id"] = None
         return deserialize(question, ProjectQuestion)
 
     def _get_project_code_from_question_code(self, question_code: str):

@@ -28,7 +28,6 @@ class ProjectQuestionFactory:
         question_type: QuestionType,
         answers: FrozenSet[ProjectAnswer],
         created_at: datetime = datetime.now(),
-        previous_question_id: EntityId = None,
     ) -> ProjectQuestion:
         match question_type:
             case QuestionType.BOOLEAN:
@@ -54,7 +53,6 @@ class ProjectQuestionFactory:
             answers=answers,
             created_at=created_at,
             selection_strategy=selection_strategy,
-            previous_question_id=previous_question_id,
         )
 
     @staticmethod
@@ -62,7 +60,6 @@ class ProjectQuestionFactory:
         project_question_id: EntityId,
         text: str,
         created_at: datetime = datetime.now(),
-        previous_question_id: EntityId = None,
     ) -> ProjectQuestion:
         answers: FrozenSet[ProjectAnswer] = frozenset(
             {
@@ -86,14 +83,12 @@ class ProjectQuestionFactory:
             QuestionType.BOOLEAN,
             answers,
             created_at,
-            previous_question_id=previous_question_id,
         )
 
     @staticmethod
     def from_graph_question(
         graph_question: GraphQuestion,
         project_id: EntityId,
-        previous_question_id: Optional[EntityId],
     ) -> ProjectQuestion:
         project_answers: List[ProjectAnswer] = []
         project_question_id: EntityId = ProjectQuestionFactory.id_of(
@@ -116,5 +111,4 @@ class ProjectQuestionFactory:
             graph_question.text,
             graph_question.type,
             frozenset(project_answers),
-            previous_question_id=previous_question_id,
         )
