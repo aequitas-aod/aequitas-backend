@@ -289,7 +289,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
 
     def _get_project_code_from_question_code(self, question_code: str):
         project_query: Neo4jQuery = Neo4jQuery(
-            "MATCH path=(q:ProjectQuestion {code: $question_code})-[*]-(p:Project) RETURN p",
+            "MATCH path=(q:ProjectQuestion {code: $question_code})-[:NEXT|QUESTIONNAIRE*]-(p:Project) RETURN p",
             {"question_code": question_code},
         )
         res: List[dict] = self.driver.query(project_query)
