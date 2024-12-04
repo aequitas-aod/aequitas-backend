@@ -2,33 +2,33 @@
   text: Choose a dataset or load your own.
   type: single
   answers:
-  - id: { code: Custom }
-    text: Custom
-    description: Load your own dataset.
-  - id: { code: AdultDataset }
-    text: Adult Census Income Dataset
-    description: null
-  - id: { code: BankDataset }
-    text: Bank Marketing Dataset
-    description: null
-  - id: { code: CompasDataset }
-    text: ProPublica COMPAS Dataset
-    description: null
-  - id: { code: GermanDataset }
-    text: German credit Dataset
-    description: null
-  - id: { code: LawSchoolGPADataset }
-    text: Law School GPA Dataset
-    description: null
-  - id: { code: MEPSDataset19 }
-    text: Medical Expenditure Panel Survey Dataset 2019
-    description: null
-  - id: { code: MEPSDataset20 }
-    text: Medical Expenditure Panel Survey Dataset 2020
-    description: null
-  - id: { code: MEPSDataset21 }
-    text: Medical Expenditure Panel Survey Dataset 2021
-    description: null
+    - id: { code: Custom }
+      text: Custom
+      description: Load your own dataset.
+    - id: { code: AdultDataset }
+      text: Adult Census Income Dataset
+      description: null
+    - id: { code: BankDataset }
+      text: Bank Marketing Dataset
+      description: null
+    - id: { code: CompasDataset }
+      text: ProPublica COMPAS Dataset
+      description: null
+    - id: { code: GermanDataset }
+      text: German credit Dataset
+      description: null
+    - id: { code: LawSchoolGPADataset }
+      text: Law School GPA Dataset
+      description: null
+    - id: { code: MEPSDataset19 }
+      text: Medical Expenditure Panel Survey Dataset 2019
+      description: null
+    - id: { code: MEPSDataset20 }
+      text: Medical Expenditure Panel Survey Dataset 2020
+      description: null
+    - id: { code: MEPSDataset21 }
+      text: Medical Expenditure Panel Survey Dataset 2021
+      description: null
   enabled_by: []
   action_needed: null
   created_at: 2024-05-31T18:20:23
@@ -65,8 +65,6 @@
   action_needed: null
   created_at: 2024-05-31T18:20:25
 
-# in project question, same content of OutputFeatures question
-
 - id: { code: Proxies }
   text: Specify the proxies for the sensitive features.
   type: multiple
@@ -89,12 +87,6 @@
     - id: { code: DisparateImpact }
       text: Disparate Impact
       description: Disparate Impact (DI) examines the ratio of favorable outcomes for two groups — a majority and a minority. A fair assessment is achieved when this measure equals 1.
-    - id: { code: EqualOpportunity }
-      text: Equal Opportunity
-      description: The Equal Opportunity Difference (EOD) measures the extent to which a model deviates from providing equal opportunity, meaning that an equal proportion of each group receives a favorable outcome. For fairness, this metric should be 0.
-    - id: { code: AverageOdds }
-      text: Average Absolute Odds
-      description: The Average Absolute Odds Difference (AAOD) is a metric used to assess bias in predictive models by analyzing the difference between the false positive rate and the true positive rate across various groups or populations. For a model to be considered fair, this measure should be 0.
   enabled_by:
     - { code: Proxies-features-selected }
   action_needed: null
@@ -110,18 +102,18 @@
     - id: { code: LearningFairRepresentations }
       text: Learning Fair Representations
       description: Learning Fair Representations (LFR) aim to find and create a latent representation that encodes the data well but obfuscates information about protected attributes.
-    - id: { code: OptimizedPreprocessing }
-      text: Optimized Preprocessing
-      description: The Optimized Pre-Processing method applies a probabilistic transformation to modify features and labels in the data, ensuring that group fairness is maintained while minimizing individual distortion and preserving data fidelity.
     - id: { code: Reweighing }
       text: Reweighing
       description: The Reweighing method assigns different weights to training samples for each group and label combination, aiming to ensure fairness before classification.
+    - id: { code: CorrelationRemover }
+      text: Correlation Remover
+      description: The Correlation Remover applies a linear transformation to the non-sensitive feature columns in order to remove their correlation with the sensitive feature columns while retaining as much information as possible (as measured by the least-squares error).
+    - id: { code: NoDataMitigation }
+      text: Do Not Mitigate
+      description: null
   enabled_by:
     - { code: StatisticalParity }
-    - { code: DisparateImpact }
-    - { code: EqualOpportunity }
-    - { code: AverageOdds }
-    - { code: MitigateDataAgain } # note the comeback from the summary
+    - { code: DisparateImpact } # note the comeback from the summary
   action_needed: null
   created_at: 2024-05-31T18:20:28
 
@@ -138,11 +130,14 @@
     - id: { code: Done }
       text: Done
       description: null
+    - id: { code: Test }
+      text: Validate on Test Data
+      description: null
   enabled_by:
     - { code: DisparateImpactRemover }
     - { code: LearningFairRepresentations }
-    - { code: OptimizedPreprocessing }
     - { code: Reweighing }
+    - { code: CorrelationRemover }
   action_needed: null
   created_at: 2024-05-31T18:20:29
 
@@ -155,13 +150,17 @@
       description: Adversarial Debiasing is based on the idea of training one main model (called the classifier), while at the same time training a second model (called the adversary). The goal of the adversary model is to try to predict the sensitive feature (e.g., race or gender) from the classifier's output.
     - id: { code: PrejudiceRemover }
       text: Prejudice Remover
-      description: Prejudice Remover is a method that modifies the objective function of the classifier by inserting a term that penalizes discrimination based on a sensitive feature. This term is added to the loss function of the model, and its weight can be controlled by a parameter that defines the degree of penalty
+      description: Prejudice Remover is a method that modifies the objective function of the classifier by inserting a term that penalizes discrimination based on a sensitive feature. This term is added to the loss function of the model, and its weight can be controlled by a parameter that defines the degree of penalty.
     - id: { code: MetaFairClassifier }
       text: MetaFair Classifier
       description: Meta-Fair Classifier is algorithm that uses an optimization method based on surrogate loss functions to ensure fairness. The idea is to train a classifier that meets specific equity metrics defined during training. This is done by incorporating a surrogate loss function that takes equity metrics into account in the optimization process. Equity metrics are translated into optimization constraints during model training.
+    - id: { code: NoModelMitigation }
+      text: Do Not Mitigate
+      description: null  
   enabled_by:
     - { code: MitigateModel }
-    - { code: MitigateModelAgain } # note the comeback from the summary
+    - { code: MitigateModelAgain }
+    - { code: NoDataMitigation } # note the comeback from the summary
   action_needed: null
   created_at: 2024-05-31T18:20:30
 
@@ -178,14 +177,16 @@
     - id: { code: MitigateOutcome }
       text: Mitigate Outcome
       description: null
+    - id: { code: Test }
+      text: Validate on Test Data
+      description: null
     - id: { code: Done }
       text: Done
       description: null
   enabled_by:
     - { code: AdversarialDebiasing }
-    - { code: GerryFairClassifier }
-    - { code: MetaFairClassifier }
     - { code: PrejudiceRemover }
+    - { code: MetaFairClassifier }
   action_needed: null
   created_at: 2024-05-31T18:20:31
 
@@ -202,9 +203,13 @@
     - id: { code: RejectOptionClassification }
       text: Reject Option Classification
       description: Reject Option Classification (ROC) is a post-processing algorithm used to improve fairness in machine learning models by intervening in areas where the model is less confident in its predictions.
+    - id: { code: NoOutcomeMitigation }
+      text: Do Not Mitigate
+      description: null
   enabled_by:
     - { code: MitigateOutcome }
     - { code: MitigateOutcomeAgain }
+    - { code: NoModelMitigation }
   action_needed: null
   created_at: 2024-05-31T18:20:32
 
@@ -222,7 +227,7 @@
       text: Mitigate Outcome Again
       description: null
     - id: { code: Test }
-      text: Test
+      text: Validate on Test Data
       description: null
     - id: { code: Done }
       text: Done
@@ -235,38 +240,62 @@
   created_at: 2024-05-31T18:20:33
 
 - id: { code: TestSetChoice }
-  text: Choose a test set.
+  text: Choose the Test Data according to your Training Data.
   type: single
   answers:
-    - id: { code: TestSet1 }
-      text: Test Set 1
+    - id: { code: Test-Custom }
+      text: Custom
+      description: Load your own dataset.
+    - id: { code: Test-AdultDataset }
+      text: Adult Census Income Dataset
       description: null
-    - id: { code: TestSet2 }
-      text: Test Set 2
+    - id: { code: Test-BankDataset }
+      text: Bank Marketing Dataset
       description: null
-    - id: { code: TestSet3 }
-      text: Test Set 3
+    - id: { code: Test-CompasDataset }
+      text: ProPublica COMPAS Dataset
+      description: null
+    - id: { code: Test-GermanDataset }
+      text: German credit Dataset
+      description: null
+    - id: { code: Test-LawSchoolGPADataset }
+      text: Law School GPA Dataset
+      description: null
+    - id: { code: Test-MEPSDataset19 }
+      text: Medical Expenditure Panel Survey Dataset 2019
+      description: null
+    - id: { code: Test-MEPSDataset20 }
+      text: Medical Expenditure Panel Survey Dataset 2020
+      description: null
+    - id: { code: Test-MEPSDataset21 }
+      text: Medical Expenditure Panel Survey Dataset 2021
       description: null
   enabled_by:
     - { code: Test }
+    - { code: TestAgain }
   action_needed: null
   created_at: 2024-05-31T18:20:34
 
 - id: { code: Polarization }
-  text: Select the polarization metrics and the features to check.
+  text: Select the polarization algorithm according to your data.
   type: multiple
   answers:
-    - id: { code: DemographicParity }
-      text: Demographic Parity
+    - id: { code: CategoricalPolarization }
+      text: Categorical Polarization
       description: null
-    - id: { code: EqualizedOdds }
-      text: Equalized Odds
+    - id: { code: NumericalPolarization }
+      text: Numerical Polarization
       description: null
-
   enabled_by:
-    - { code: TestSet1 }
-    - { code: TestSet2 }
-    - { code: TestSet3 }
+    - { code: Test-Custom }
+    - { code: Test-AdultDataset }
+    - { code: Test-BankDataset }
+    - { code: Test-CompasDataset }
+    - { code: Test-GermanDataset }
+    - { code: Test-LawSchoolGPADataset }
+    - { code: Test-MEPSDataset19 }
+    - { code: Test-MEPSDataset20 }
+    - { code: Test-MEPSDataset21 }
   action_needed: null
   created_at: 2024-05-31T18:20:35
 
@@ -283,11 +312,14 @@
     - id: { code: MitigateOutcomeAgain }
       text: Mitigate Outcome Again
       description: null
+    - id: { code: TestAgain }
+      text: Validate on Test Data Again
+      description: null
     - id: { code: Done }
       text: Done
       description: null
   enabled_by:
-    - { code: DemographicParity }
-    - { code: EqualizedOdds }
+    - { code: CategoricalPolarization }
+    - { code: NumericalPolarization }
   action_needed: null
   created_at: 2024-05-31T18:20:36

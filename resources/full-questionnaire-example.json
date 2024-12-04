@@ -1,0 +1,661 @@
+// 20241203165546
+// http://localhost:4005/projects/p-1/questionnaire
+
+[
+  {
+    "id": {
+      "code": "DatasetSelection",
+      "project_code": "p-1"
+    },
+    "text": "Choose a dataset or load your own.",
+    "type": "single",
+    "answers": [
+      {
+        "id": {
+          "code": "AdultDataset",
+          "question_code": "DatasetSelection",
+          "project_code": "p-1"
+        },
+        "text": "Adult Census Income Dataset",
+        "description": null,
+        "selected": true
+      },
+      {
+        "id": {
+          "code": "BankDataset",
+          "question_code": "DatasetSelection",
+          "project_code": "p-1"
+        },
+        "text": "Bank Marketing Dataset",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "CompasDataset",
+          "question_code": "DatasetSelection",
+          "project_code": "p-1"
+        },
+        "text": "ProPublica COMPAS Dataset",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "Custom",
+          "question_code": "DatasetSelection",
+          "project_code": "p-1"
+        },
+        "text": "Custom",
+        "description": "Load your own dataset.",
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "GermanDataset",
+          "question_code": "DatasetSelection",
+          "project_code": "p-1"
+        },
+        "text": "German credit Dataset",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "LawSchoolGPADataset",
+          "question_code": "DatasetSelection",
+          "project_code": "p-1"
+        },
+        "text": "Law School GPA Dataset",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "MEPSDataset19",
+          "question_code": "DatasetSelection",
+          "project_code": "p-1"
+        },
+        "text": "Medical Expenditure Panel Survey Dataset 2019",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "MEPSDataset20",
+          "question_code": "DatasetSelection",
+          "project_code": "p-1"
+        },
+        "text": "Medical Expenditure Panel Survey Dataset 2020",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "MEPSDataset21",
+          "question_code": "DatasetSelection",
+          "project_code": "p-1"
+        },
+        "text": "Medical Expenditure Panel Survey Dataset 2021",
+        "description": null,
+        "selected": false
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "SingleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "OutputFeatures",
+      "project_code": "p-1"
+    },
+    "text": "Which are the output features?",
+    "type": "multiple",
+    "answers": [
+      {
+        "id": {
+          "code": "OutputFeatures-features-selected",
+          "question_code": "OutputFeatures",
+          "project_code": "p-1"
+        },
+        "text": "",
+        "description": null,
+        "selected": true
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "MultipleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "SensitiveFeatures",
+      "project_code": "p-1"
+    },
+    "text": "Which are the sensitive features?",
+    "type": "multiple",
+    "answers": [
+      {
+        "id": {
+          "code": "SensitiveFeatures-features-selected",
+          "question_code": "SensitiveFeatures",
+          "project_code": "p-1"
+        },
+        "text": "",
+        "description": null,
+        "selected": true
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "MultipleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "Proxies",
+      "project_code": "p-1"
+    },
+    "text": "Specify the proxies for the sensitive features.",
+    "type": "multiple",
+    "answers": [
+      {
+        "id": {
+          "code": "Proxies-features-selected",
+          "question_code": "Proxies",
+          "project_code": "p-1"
+        },
+        "text": "",
+        "description": null,
+        "selected": true
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "MultipleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "Detection",
+      "project_code": "p-1"
+    },
+    "text": "Select the fairness metrics and the features to check.",
+    "type": "multiple",
+    "answers": [
+      {
+        "id": {
+          "code": "DisparateImpact",
+          "question_code": "Detection",
+          "project_code": "p-1"
+        },
+        "text": "Disparate Impact",
+        "description": "Disparate Impact (DI) examines the ratio of favorable outcomes for two groups — a majority and a minority. A fair assessment is achieved when this measure equals 1.",
+        "selected": true
+      },
+      {
+        "id": {
+          "code": "StatisticalParity",
+          "question_code": "Detection",
+          "project_code": "p-1"
+        },
+        "text": "Statistical Parity",
+        "description": "Statistical Parity Difference (SPD) measures the difference between the probability that a model assigns a positive outcome to a protected group versus an unprotected group, we got fairness when the measure equals 0.",
+        "selected": false
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "MultipleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "DataMitigation",
+      "project_code": "p-1"
+    },
+    "text": "Which data mitigation technique do you want to apply?",
+    "type": "single",
+    "answers": [
+      {
+        "id": {
+          "code": "CorrelationRemover",
+          "question_code": "DataMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Correlation Remover",
+        "description": "The Correlation Remover applies a linear transformation to the non-sensitive feature columns in order to remove their correlation with the sensitive feature columns while retaining as much information as possible (as measured by the least-squares error).",
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "DisparateImpactRemover",
+          "question_code": "DataMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Disparate Impact Remover",
+        "description": "Disparate Impact Remover is a preprocessing technique that edits feature values increase group fairness while preserving rank-ordering within groups.",
+        "selected": true
+      },
+      {
+        "id": {
+          "code": "LearningFairRepresentations",
+          "question_code": "DataMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Learning Fair Representations",
+        "description": "Learning Fair Representations (LFR) aim to find and create a latent representation that encodes the data well but obfuscates information about protected attributes.",
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "NoDataMitigation",
+          "question_code": "DataMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Do Not Mitigate",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "Reweighing",
+          "question_code": "DataMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Reweighing",
+        "description": "The Reweighing method assigns different weights to training samples for each group and label combination, aiming to ensure fairness before classification.",
+        "selected": false
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "SingleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "DataMitigationSummary",
+      "project_code": "p-1"
+    },
+    "text": "What do you want to do next?",
+    "type": "single",
+    "answers": [
+      {
+        "id": {
+          "code": "MitigateModel",
+          "question_code": "DataMitigationSummary",
+          "project_code": "p-1"
+        },
+        "text": "Mitigate Model",
+        "description": null,
+        "selected": true
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "SingleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "ModelMitigation",
+      "project_code": "p-1"
+    },
+    "text": "Which model mitigation technique do you want to apply?",
+    "type": "single",
+    "answers": [
+      {
+        "id": {
+          "code": "AdversarialDebiasing",
+          "question_code": "ModelMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Adversarial Debiasing",
+        "description": "Adversarial Debiasing is based on the idea of training one main model (called the classifier), while at the same time training a second model (called the adversary). The goal of the adversary model is to try to predict the sensitive feature (e.g., race or gender) from the classifier's output.",
+        "selected": true
+      },
+      {
+        "id": {
+          "code": "MetaFairClassifier",
+          "question_code": "ModelMitigation",
+          "project_code": "p-1"
+        },
+        "text": "MetaFair Classifier",
+        "description": "Meta-Fair Classifier is algorithm that uses an optimization method based on surrogate loss functions to ensure fairness. The idea is to train a classifier that meets specific equity metrics defined during training. This is done by incorporating a surrogate loss function that takes equity metrics into account in the optimization process. Equity metrics are translated into optimization constraints during model training.",
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "NoModelMitigation",
+          "question_code": "ModelMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Do Not Mitigate",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "PrejudiceRemover",
+          "question_code": "ModelMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Prejudice Remover",
+        "description": "Prejudice Remover is a method that modifies the objective function of the classifier by inserting a term that penalizes discrimination based on a sensitive feature. This term is added to the loss function of the model, and its weight can be controlled by a parameter that defines the degree of penalty.",
+        "selected": false
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "SingleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "ModelMitigationSummary",
+      "project_code": "p-1"
+    },
+    "text": "What do you want to do next?",
+    "type": "single",
+    "answers": [
+      {
+        "id": {
+          "code": "MitigateOutcome",
+          "question_code": "ModelMitigationSummary",
+          "project_code": "p-1"
+        },
+        "text": "Mitigate Outcome",
+        "description": null,
+        "selected": true
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "SingleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "OutcomeMitigation",
+      "project_code": "p-1"
+    },
+    "text": "Which outcome mitigation technique do you want to apply?",
+    "type": "single",
+    "answers": [
+      {
+        "id": {
+          "code": "CalibratedEqualizedOdds",
+          "question_code": "OutcomeMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Calibrated Equalized Odds",
+        "description": "The Calibrated Equalized Odds algorithm is very similar to the Equalized Odds algorithm by adding a calibration component. It therefore respects 2 key concepts. Equalized Odds, the distribution of errors (false positives and false negatives) should be equal for all groups; Calibration, the predicted probabilities should correctly reflect the reality for each group.",
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "EqualizedOdds",
+          "question_code": "OutcomeMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Equalized Odds",
+        "description": "Equalized Odds is a post-processing algorithm designed to correct bias in the results of a machine learning model, ensuring that false positive rates (FPR) and false negative rates (FNR) are equal among different sensitive groups (e.g., groups based on race, gender, ethnicity). The main goal is to achieve fairness in the results predicted by the model, regardless of membership in a specific group.",
+        "selected": true
+      },
+      {
+        "id": {
+          "code": "NoOutcomeMitigation",
+          "question_code": "OutcomeMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Do Not Mitigate",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "RejectOptionClassification",
+          "question_code": "OutcomeMitigation",
+          "project_code": "p-1"
+        },
+        "text": "Reject Option Classification",
+        "description": "Reject Option Classification (ROC) is a post-processing algorithm used to improve fairness in machine learning models by intervening in areas where the model is less confident in its predictions.",
+        "selected": false
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "SingleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "OutcomeMitigationSummary",
+      "project_code": "p-1"
+    },
+    "text": "What do you want to do next?",
+    "type": "single",
+    "answers": [
+      {
+        "id": {
+          "code": "Test",
+          "question_code": "OutcomeMitigationSummary",
+          "project_code": "p-1"
+        },
+        "text": "Validate on Test Data",
+        "description": null,
+        "selected": true
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "SingleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "TestSetChoice",
+      "project_code": "p-1"
+    },
+    "text": "Choose the Test Data according to your Training Data.",
+    "type": "single",
+    "answers": [
+      {
+        "id": {
+          "code": "Test-AdultDataset",
+          "question_code": "TestSetChoice",
+          "project_code": "p-1"
+        },
+        "text": "Adult Census Income Dataset",
+        "description": null,
+        "selected": true
+      },
+      {
+        "id": {
+          "code": "Test-BankDataset",
+          "question_code": "TestSetChoice",
+          "project_code": "p-1"
+        },
+        "text": "Bank Marketing Dataset",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "Test-CompasDataset",
+          "question_code": "TestSetChoice",
+          "project_code": "p-1"
+        },
+        "text": "ProPublica COMPAS Dataset",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "Test-Custom",
+          "question_code": "TestSetChoice",
+          "project_code": "p-1"
+        },
+        "text": "Custom",
+        "description": "Load your own dataset.",
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "Test-GermanDataset",
+          "question_code": "TestSetChoice",
+          "project_code": "p-1"
+        },
+        "text": "German credit Dataset",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "Test-LawSchoolGPADataset",
+          "question_code": "TestSetChoice",
+          "project_code": "p-1"
+        },
+        "text": "Law School GPA Dataset",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "Test-MEPSDataset19",
+          "question_code": "TestSetChoice",
+          "project_code": "p-1"
+        },
+        "text": "Medical Expenditure Panel Survey Dataset 2019",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "Test-MEPSDataset20",
+          "question_code": "TestSetChoice",
+          "project_code": "p-1"
+        },
+        "text": "Medical Expenditure Panel Survey Dataset 2020",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "Test-MEPSDataset21",
+          "question_code": "TestSetChoice",
+          "project_code": "p-1"
+        },
+        "text": "Medical Expenditure Panel Survey Dataset 2021",
+        "description": null,
+        "selected": false
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "SingleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "Polarization",
+      "project_code": "p-1"
+    },
+    "text": "Select the polarization algorithm according to your data.",
+    "type": "multiple",
+    "answers": [
+      {
+        "id": {
+          "code": "CategoricalPolarization",
+          "question_code": "Polarization",
+          "project_code": "p-1"
+        },
+        "text": "Categorical Polarization",
+        "description": null,
+        "selected": true
+      },
+      {
+        "id": {
+          "code": "NumericalPolarization",
+          "question_code": "Polarization",
+          "project_code": "p-1"
+        },
+        "text": "Numerical Polarization",
+        "description": null,
+        "selected": false
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "MultipleSelectionStrategy"
+    }
+  },
+  {
+    "id": {
+      "code": "TestSummary",
+      "project_code": "p-1"
+    },
+    "text": "What do you want to do next?",
+    "type": "single",
+    "answers": [
+      {
+        "id": {
+          "code": "Done",
+          "question_code": "TestSummary",
+          "project_code": "p-1"
+        },
+        "text": "Done",
+        "description": null,
+        "selected": true
+      },
+      {
+        "id": {
+          "code": "MitigateDataAgain",
+          "question_code": "TestSummary",
+          "project_code": "p-1"
+        },
+        "text": "Mitigate Data Again",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "MitigateModelAgain",
+          "question_code": "TestSummary",
+          "project_code": "p-1"
+        },
+        "text": "Mitigate Model Again",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "MitigateOutcomeAgain",
+          "question_code": "TestSummary",
+          "project_code": "p-1"
+        },
+        "text": "Mitigate Outcome Again",
+        "description": null,
+        "selected": false
+      },
+      {
+        "id": {
+          "code": "TestAgain",
+          "question_code": "TestSummary",
+          "project_code": "p-1"
+        },
+        "text": "Validate on Test Data Again",
+        "description": null,
+        "selected": false
+      }
+    ],
+    "created_at": "2024-12-03T16:41:16.362530",
+    "selection_strategy": {
+      "type": "SingleSelectionStrategy"
+    }
+  }
+]
