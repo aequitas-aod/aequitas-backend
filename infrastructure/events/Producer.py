@@ -10,13 +10,16 @@ from infrastructure.ws.utils import logger
 class Producer:
 
     def __init__(self):
-        brokers: List[KafkaBroker] = get_brokers_from_env()
-        logger.info(f"Connecting to Kafka brokers: {brokers}")
+        self._brokers: List[KafkaBroker] = get_brokers_from_env()
+        logger.info(f"Connecting to Kafka brokers: {self._brokers}")
         self._producer = KafkaProducer(
+            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
             bootstrap_servers=list(
-                map(lambda broker: f"{broker.host}:{broker.port}", brokers)
+                map(lambda broker: f"{broker.host}:{broker.port}", self._brokers)
             ),
         )
 
-    def produce(self, topic: str, message: dict):
-        self._producer.send(topic, json.dumps(message).encode("utf-8"))
+    def produce(self, topic: str, message: dict | str):
+        print(f"Producing message to topic '{topic}':\n{message}")
+        self._producer.send(topic, message) # json.dumps(message).encode("utf-8"))
+        self._producer.flush()
