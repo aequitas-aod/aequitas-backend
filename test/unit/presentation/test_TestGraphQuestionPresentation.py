@@ -23,6 +23,7 @@ class TestGraphQuestionPresentation(unittest.TestCase):
         self.question: GraphQuestion = GraphQuestionFactory.create_boolean_question(
             self.graph_question_id,
             "Do you practice TDD?",
+            "Question description",
             created_at=self.question_timestamp,
             enabled_by=frozenset({self.answer_id}),
             action_needed=Action.METRICS_CHECK,
@@ -30,6 +31,7 @@ class TestGraphQuestionPresentation(unittest.TestCase):
         self.question_dict: dict = {
             "id": {"code": "boolean_question_id"},
             "text": "Do you practice TDD?",
+            "description": "Question description",
             "type": QuestionType.BOOLEAN.value,
             "answers": [
                 {

@@ -1,5 +1,6 @@
 - id: { code: DatasetSelection }
   text: Choose a dataset or load your own.
+  description: Choose or provide a dataset which will be subject to the fairness process.
   type: single
   answers:
     - id: { code: Custom }
@@ -35,6 +36,7 @@
 
 - id: { code: OutputFeatures }
   text: Which are the output features?
+  description: Mark the features that will be used as the output of the model.
   type: multiple
   answers:
     - id: { code: OutputFeatures-features-selected }
@@ -55,6 +57,7 @@
 
 - id: { code: SensitiveFeatures }
   text: Which are the sensitive features?
+  description: null
   type: multiple
   answers:
     - id: { code: SensitiveFeatures-features-selected }
@@ -67,6 +70,7 @@
 
 - id: { code: Proxies }
   text: Specify the proxies for the sensitive features.
+  description: Proxies are features that are correlated with the sensitive features but are not themselves sensitive.
   type: multiple
   answers:
     - id: { code: Proxies-features-selected }
@@ -79,6 +83,7 @@
 
 - id: { code: Detection }
   text: Select the fairness metrics and the features to check.
+  description: The selected metrics will be mitigated in the next steps.
   type: multiple
   answers:
     - id: { code: StatisticalParity }
@@ -94,6 +99,7 @@
 
 - id: { code: DataMitigation }
   text: Which data mitigation technique do you want to apply?
+  description: null
   type: single
   answers:
     - id: { code: DisparateImpactRemover }
@@ -119,6 +125,7 @@
 
 - id: { code: DataMitigationSummary }
   text: What do you want to do next?
+  description: null
   type: single
   answers:
     - id: { code: MitigateDataAgain}
@@ -143,6 +150,7 @@
 
 - id: { code: ModelMitigation }
   text: Which model mitigation technique do you want to apply?
+  description: null
   type: single
   answers:
     - id: { code: AdversarialDebiasing }
@@ -166,6 +174,7 @@
 
 - id: { code: ModelMitigationSummary }
   text: What do you want to do next?
+  description: null
   type: single
   answers:
     - id: { code: MitigateDataAgain }
@@ -192,6 +201,7 @@
 
 - id: { code: OutcomeMitigation }
   text: Which outcome mitigation technique do you want to apply?
+  description: null
   type: single
   answers:
     - id: { code: EqualizedOdds }
@@ -215,6 +225,7 @@
 
 - id: { code: OutcomeMitigationSummary }
   text: What do you want to do next?
+  description: null
   type: single
   answers:
     - id: { code: MitigateDataAgain}
@@ -241,6 +252,7 @@
 
 - id: { code: TestSetChoice }
   text: Choose the Test Data according to your Training Data.
+  description: null
   type: single
   answers:
     - id: { code: Test-Custom }
@@ -278,6 +290,7 @@
 
 - id: { code: Polarization }
   text: Select the polarization algorithm according to your data.
+  description: null
   type: multiple
   answers:
     - id: { code: CategoricalPolarization }
@@ -301,6 +314,7 @@
 
 - id: { code: TestSummary }
   text: What do you want to do next?
+  description: null
   type: single
   answers:
     - id: { code: MitigateDataAgain }

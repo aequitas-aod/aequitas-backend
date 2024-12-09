@@ -38,6 +38,7 @@ class TestGraphQuestionsAPI(unittest.TestCase):
         cls.question: GraphQuestion = GraphQuestionFactory.create_question(
             cls.graph_question_id,
             "Test question",
+            "Question description",
             QuestionType.SINGLE_CHOICE,
             frozenset(
                 {
@@ -58,6 +59,7 @@ class TestGraphQuestionsAPI(unittest.TestCase):
         cls.question2: GraphQuestion = GraphQuestionFactory.create_boolean_question(
             cls.graph_question_id_2,
             "Test question 2",
+            "Question description 2",
             created_at=cls.question_timestamp_2,
         )
 

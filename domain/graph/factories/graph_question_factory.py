@@ -18,6 +18,7 @@ class GraphQuestionFactory:
     def create_question(
         question_id: EntityId,
         text: str,
+        description: Optional[str],
         question_type: QuestionType,
         answers: FrozenSet[Answer],
         created_at: datetime = datetime.now(),
@@ -27,6 +28,7 @@ class GraphQuestionFactory:
         return GraphQuestion(
             id=question_id,
             text=text,
+            description=description,
             type=question_type,
             answers=answers,
             created_at=created_at,
@@ -38,6 +40,7 @@ class GraphQuestionFactory:
     def create_boolean_question(
         question_id: EntityId,
         text: str,
+        description: Optional[str],
         created_at: datetime = datetime.now(),
         enabled_by: FrozenSet[EntityId] = frozenset(),
         action_needed: Optional[Action] = None,
@@ -61,6 +64,7 @@ class GraphQuestionFactory:
         return GraphQuestionFactory.create_question(
             question_id,
             text,
+            description,
             QuestionType.BOOLEAN,
             answers,
             created_at,

@@ -1,5 +1,6 @@
 - id: { code: q1 }
   text: Do you have some AI system already in place, or are you developing an AI system?
+  description: Question description
   type: single
   answers:
       - id: { code: q1-a1, question_code: q1 }
@@ -14,6 +15,7 @@
 
 - id: { code: q2 }
   text: In what area / sector is the AI system intended to be used?
+  description: null
   type: multiple
   answers:
       - id: { code: q2-a1, question_code: q2 }
@@ -72,6 +74,7 @@
 
 - id: { code: "q3" }
   text: "Which AI methods will the AI system adopt?"
+  description: Question description
   type: multiple
   answers:
       - id: { code: q3-a1, question_code: q3 }
@@ -162,6 +165,7 @@
 
 - id: { code: q4 }
   text: Is the AI model developed using techniques that involve the model's training with data?
+  description: Question description
   type: single
   answers:
       - id: { code: q4-a1, question_code: q4 }
@@ -198,6 +202,7 @@
 
 - id: { code: "q5" }
   text: "Are you using readily-available data sets?"
+  description: Question description
   type: single
   answers:
       - id: { code: "q5-a1", question_code: q5 }
@@ -214,6 +219,7 @@
 
 - id: { code: "q6" }
   text: "Was the readily available dataset obtained by sampling the same population that where the system is going to be used?"
+  description: Question description
   type: single
   answers:
       - id: { code: "q6-a1", question_code: q6 }
@@ -230,6 +236,7 @@
 
 - id: { code: "q7" }
   text: "Is the data set sufficiently representative of the population where the system will be used?"
+  description: Question description
   type: single
   answers:
       - id: { code: "q7-a1", question_code: q7 }
@@ -246,6 +253,7 @@
 
 - id: { code: "q8" }
   text: "Which sensitive attributes are included in the dataset (or inferrable from the included ones)?"
+  description: Question description
   type: multiple
   answers:
       - id: { code: "q8-a1", question_code: q8 }

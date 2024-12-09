@@ -27,6 +27,7 @@ class TestProjectQuestionSingleChoice(unittest.TestCase):
         self.question: ProjectQuestion = ProjectQuestionFactory.create_project_question(
             self.project_question_id,
             "Do you practice TDD?",
+            None,
             QuestionType.MULTIPLE_CHOICE,
             frozenset(
                 {
@@ -131,6 +132,7 @@ class TestBooleanProjectQuestion(unittest.TestCase):
             ProjectQuestionFactory.create_project_boolean_question(
                 self.project_question_id,
                 "Do you practice TDD?",
+                None,
             )
         )
 

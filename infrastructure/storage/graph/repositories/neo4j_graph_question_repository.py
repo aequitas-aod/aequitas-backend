@@ -211,6 +211,7 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
     def _convert_node_in_question(self, q: dict, answers: List) -> GraphQuestion:
         question: dict = q
         question["id"] = {"code": question["code"]}
+        question["description"] = question["description"] if "description" in question else None
         question["created_at"] = question["created_at"]
         question["answers"] = [
             {

@@ -25,6 +25,7 @@ class ProjectQuestionFactory:
     def create_project_question(
         question_id: EntityId,
         text: str,
+        description: Optional[str],
         question_type: QuestionType,
         answers: FrozenSet[ProjectAnswer],
         created_at: datetime = datetime.now(),
@@ -49,6 +50,7 @@ class ProjectQuestionFactory:
         return ProjectQuestion(
             id=question_id,
             text=text,
+            description=description,
             type=question_type,
             answers=answers,
             created_at=created_at,
@@ -59,6 +61,7 @@ class ProjectQuestionFactory:
     def create_project_boolean_question(
         project_question_id: EntityId,
         text: str,
+        description: Optional[str],
         created_at: datetime = datetime.now(),
     ) -> ProjectQuestion:
         answers: FrozenSet[ProjectAnswer] = frozenset(
@@ -80,6 +83,7 @@ class ProjectQuestionFactory:
         return ProjectQuestionFactory.create_project_question(
             project_question_id,
             text,
+            description,
             QuestionType.BOOLEAN,
             answers,
             created_at,
@@ -109,6 +113,7 @@ class ProjectQuestionFactory:
         return ProjectQuestionFactory.create_project_question(
             project_question_id,
             graph_question.text,
+            graph_question.description,
             graph_question.type,
             frozenset(project_answers),
         )

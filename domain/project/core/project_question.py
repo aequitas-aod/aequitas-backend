@@ -24,6 +24,7 @@ class ProjectQuestion(Question):
         return ProjectQuestion(
             id=self.id,
             text=self.text,
+            description=self.description,
             type=self.type,
             answers=answers,
             created_at=self.created_at,
@@ -35,6 +36,7 @@ class ProjectQuestion(Question):
         return ProjectQuestion(
             id=self.id,
             text=self.text,
+            description=self.description,
             type=self.type,
             answers=answers,
             created_at=self.created_at,
@@ -46,6 +48,7 @@ class ProjectQuestion(Question):
         return ProjectQuestion(
             id=self.id,
             text=self.text,
+            description=self.description,
             type=self.type,
             answers=new_answers,
             created_at=self.created_at,
@@ -82,8 +85,8 @@ class ProjectQuestion(Question):
 
     def __str__(self) -> str:
         return (
-            f"ProjectQuestion(id={self.id},\n text={self.text},\n type={self.type},\n answers={self.answers},\n "
-            f"created_at={self.created_at},\n selection_strategy={self.selection_strategy})"
+            f"ProjectQuestion(id={self.id},\n text={self.text},\n description={self.description},\n type={self.type},\n"
+            f"answers={self.answers},\n created_at={self.created_at},\n selection_strategy={self.selection_strategy})"
         )
 
     def __hash__(self):
@@ -91,6 +94,7 @@ class ProjectQuestion(Question):
             (
                 self.text,
                 self.type,
+                self.description,
                 self.answers,
                 self.created_at,
                 self.selection_strategy,

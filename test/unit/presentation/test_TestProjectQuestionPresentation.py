@@ -23,6 +23,7 @@ class TestProjectQuestionPresentation(unittest.TestCase):
         self.question: ProjectQuestion = ProjectQuestionFactory.create_project_question(
             project_question_id,
             "Do you practice TDD?",
+            None,
             QuestionType.SINGLE_CHOICE,
             frozenset(
                 {
@@ -46,6 +47,7 @@ class TestProjectQuestionPresentation(unittest.TestCase):
         self.question_dict: dict = {
             "id": {"code": "project_question_id", "project_code": "project_id"},
             "text": "Do you practice TDD?",
+            "description": None,
             "type": QuestionType.SINGLE_CHOICE.value,
             "answers": [
                 {

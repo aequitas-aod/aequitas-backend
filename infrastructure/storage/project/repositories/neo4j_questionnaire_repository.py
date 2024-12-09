@@ -271,6 +271,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         question: dict = q
         question["id"] = {"code": q["code"], "project_code": project_code}
         del question["code"]
+        question["description"] = q["description"] if "description" in q else None
         question["selection_strategy"] = {"type": q["selection_strategy"]}
         question["answers"] = [
             {

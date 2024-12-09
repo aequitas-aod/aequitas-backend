@@ -1,5 +1,6 @@
 - id: { code: q1 }
   text: First question
+  description: null
   type: single
   answers:
     - id: { code: q1-a1, question_code: q1 }
@@ -14,6 +15,7 @@
 
 - id: { code: q2 }
   text: Second question
+  description: Question description
   type: multiple
   answers:
     - id: { code: q2-a1, question_code: q2 }
@@ -33,6 +35,7 @@
 
 - id: { code: q3 }
   text: Third question
+  description: Question description
   type: multiple
   answers:
     - id: { code: q3-a1, question_code: q3 }
