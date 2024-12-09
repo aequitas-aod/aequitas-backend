@@ -1,1 +1,4 @@
-from KafkaOptions import get_brokers_from_env, KafkaBroker
+from infrastructure.events.kafka_options import get_brokers_from_env, KafkaBroker
+from infrastructure.events.consumer import Consumer
+from infrastructure.events.producer import Producer
+from infrastructure.events.kafka_events_service import EventsService

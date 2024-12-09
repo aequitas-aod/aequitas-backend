@@ -1,9 +1,11 @@
+from application.events import EventsService
 from application.graph import GraphQuestionService
 from application.project.project_service import ProjectService
 from application.project.questionnaire_service import QuestionnaireService
 from domain.graph.repositories import GraphQuestionRepository
 from domain.project.repositories import ProjectRepository
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
+from infrastructure.events.kafka_events_service import KafkaEventsService
 from infrastructure.storage.graph.repositories import Neo4JGraphQuestionRepository
 from infrastructure.storage.project.repositories.neo4j_project_repository import (
     Neo4jProjectRepository,
@@ -23,3 +25,4 @@ questionnaire_service: QuestionnaireService = QuestionnaireService(
 
 project_repository: ProjectRepository = Neo4jProjectRepository()
 project_service: ProjectService = ProjectService(project_repository)
+events_service: EventsService = KafkaEventsService()
