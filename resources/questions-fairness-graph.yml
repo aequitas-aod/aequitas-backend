@@ -9,26 +9,11 @@
     - id: { code: AdultDataset }
       text: Adult Census Income Dataset
       description: null
-    - id: { code: BankDataset }
-      text: Bank Marketing Dataset
-      description: null
     - id: { code: CompasDataset }
       text: ProPublica COMPAS Dataset
       description: null
     - id: { code: GermanDataset }
       text: German credit Dataset
-      description: null
-    - id: { code: LawSchoolGPADataset }
-      text: Law School GPA Dataset
-      description: null
-    - id: { code: MEPSDataset19 }
-      text: Medical Expenditure Panel Survey Dataset 2019
-      description: null
-    - id: { code: MEPSDataset20 }
-      text: Medical Expenditure Panel Survey Dataset 2020
-      description: null
-    - id: { code: MEPSDataset21 }
-      text: Medical Expenditure Panel Survey Dataset 2021
       description: null
   enabled_by: []
   action_needed: null
