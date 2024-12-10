@@ -87,11 +87,18 @@ services:
       NEO4J_AUTH: neo4j/${DB_PASSWORD}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      NEO4JLABS_PLUGINS: '["apoc", "apoc-extended"]'
+      NEO4J_apoc_export_file_enabled: true
+      NEO4J_apoc_import_file_enabled: true
+      NEO4J_apoc_import_file_use__neo4j__config: false
+      NEO4J_apoc_initializer_neo4j: CALL apoc.cypher.runFile("init.cypher")
     ports:
       - '7474:7474'
       - '7687:7687'
     volumes:
       - data:/data
+      - ./volumes/plugins:/plugins
+      - ./resources/db/init.cypher:/var/lib/neo4j/init.cypher  # init script
       - type: bind
         source: ./neo4j-healthcheck.sh
         target: /neo4j-healthcheck.sh

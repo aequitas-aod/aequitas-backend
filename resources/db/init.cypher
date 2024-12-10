@@ -1,0 +1,77 @@
+CREATE (:PublicContext {
+  datasets: '[
+    {
+        "id": "adult",
+        "name": "Adult Census Income Dataset",
+        "size": 4.8,
+        "rows": 48842,
+        "columns": 15,
+        "description": "This is a custom dataset uploaded by the user.",
+        "created-at": "2024-11-12T10:00:09.611719"
+    },
+    {
+        "id": "bank",
+        "name": "Bank Marketing Dataset",
+        "size": 4.6,
+        "rows": 41188,
+        "columns": 17,
+        "description": "This dataset contains information on marketing campaigns of a Portuguese banking institution.",
+        "created-at": "2024-11-12T10:00:09.611719"
+    },
+    {
+        "id": "compas",
+        "name": "ProPublica COMPAS Dataset",
+        "size": 2.3,
+        "rows": 7214,
+        "columns": 12,
+        "description": "This dataset contains criminal justice data used to analyze biases in the COMPAS risk assessment algorithm.",
+        "created-at": "2024-11-12T10:00:09.611719"
+    },
+    {
+        "id": "credit",
+        "name": "German Credit Dataset",
+        "size": 1.2,
+        "rows": 1000,
+        "columns": 20,
+        "description": "This dataset provides data on credit risk classification based on personal and financial characteristics.",
+        "created-at": "2024-11-12T10:00:09.611719"
+    },
+    {
+        "id": "law_school",
+        "name": "Law School GPA Dataset",
+        "size": 0.8,
+        "rows": 2145,
+        "columns": 7,
+        "description": "This dataset examines the relationship between law school GPAs, LSAT scores, and other demographic factors.",
+        "created-at": "2024-11-12T10:00:09.611719"
+    },
+    {
+        "id": "meps_2019",
+        "name": "Medical Expenditure Panel Survey Dataset 2019",
+        "size": 15.4,
+        "rows": 24578,
+        "columns": 120,
+        "description": "This dataset includes healthcare usage, expenditures, and insurance data for 2019.",
+        "created-at": "2024-11-12T10:00:09.611719"
+    },
+    {
+        "id": "meps_2020",
+        "name": "Medical Expenditure Panel Survey Dataset 2020",
+        "size": 16.0,
+        "rows": 25234,
+        "columns": 122,
+        "description": "This dataset includes healthcare usage, expenditures, and insurance data for 2020.",
+        "created-at": "2024-11-12T10:00:09.611719"
+    },
+    {
+        "id": "meps_2021",
+        "name": "Medical Expenditure Panel Survey Dataset 2021",
+        "size": 16.8,
+        "rows": 26000,
+        "columns": 125,
+        "description": "This dataset includes healthcare usage, expenditures, and insurance data for 2021.",
+        "created-at": "2024-11-12T10:00:09.611719"
+    }
+  ]',
+  dataset_adult: ''
+})
