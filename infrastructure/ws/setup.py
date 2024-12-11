@@ -14,7 +14,6 @@ from infrastructure.storage.project.repositories.neo4j_project_repository import
 from infrastructure.storage.project.repositories.neo4j_questionnaire_repository import (
     Neo4jQuestionnaireRepository,
 )
-from infrastructure.ws.utils import logger
 from utils.env import ENV
 
 graph_question_repository: GraphQuestionRepository = Neo4JGraphQuestionRepository()

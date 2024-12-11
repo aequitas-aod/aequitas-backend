@@ -2,7 +2,6 @@ from typing import Optional, List
 
 from application.graph import GraphQuestionService
 from domain.common.core import EntityId
-from domain.common.factories import AnswerFactory
 from domain.graph.core import GraphQuestion
 from domain.graph.factories import GraphQuestionFactory
 from domain.project.core import ProjectQuestion

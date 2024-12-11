@@ -73,20 +73,22 @@ class ProjectResource(Resource):
 
 class ProjectContextResource(Resource):
 
-    def get(self, project_id):
-        project: Optional[Project] = project_service.get_project_by_id(
-            ProjectFactory.id_of(code=project_id)
-        )
-        if project:
-            key = request.args.get("key")
-            if not key:
-                return project.get_context(), StatusCode.OK
+    def get(self, project_id=None):
+        key = request.args.get("key")
+        try:
+            if key:
+                value = project_service.get_from_context(
+                    ProjectFactory.id_of(code=project_id), request.args.get("key")
+                )
             else:
-                return project.get_from_context(key), StatusCode.OK
-        else:
+                value = project_service.get_context(
+                    ProjectFactory.id_of(code=project_id)
+                )
+            return value, StatusCode.OK
+        except NotFoundError:
             return "Project not found", StatusCode.NOT_FOUND
 
-    def put(self, project_id):
+    def put(self, project_id=None):
         project: Optional[Project] = project_service.get_project_by_id(
             ProjectFactory.id_of(code=project_id)
         )

@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional
 from pydantic import BaseModel
 
 from domain.common.core import EntityId
+from infrastructure.ws.utils import logger
 from utils.encodings import encode, decode
 
 
@@ -61,10 +62,3 @@ class Project(BaseModel):
 
     def __hash__(self):
         return hash((self.id, self.name, tuple(self.context.items())))
-
-
-if __name__ == "__main__":
-    p = Project(id=EntityId(code="p-1"), name="Project 1")
-    p = p.add_to_context("key", "value")
-
-    print(p.get_context())

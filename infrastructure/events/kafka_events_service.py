@@ -18,4 +18,3 @@ class KafkaEventsService(EventsService):
         self, topics: List[str], handler: Callable[[dict], None]
     ) -> None:
         Consumer(topics, handler).start_consuming()
-

@@ -5,6 +5,7 @@ from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from domain.project.repositories.project_repository import ProjectRepository
 from presentation.presentation import deserialize, serialize
+from utils.encodings import decode
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
 from utils.errors import NotFoundError, ConflictError
 from utils.neo4j_driver import Neo4jDriver, Credentials, Neo4jQuery
@@ -95,6 +96,15 @@ class Neo4jProjectRepository(ProjectRepository):
             )
         )
 
+    def get_public_context(self) -> dict:
+        query_string: str = "MATCH (p:PublicContext) RETURN p"
+        query: Neo4jQuery = Neo4jQuery(query_string, {})
+        res: List[Dict] = self.driver.query(query)
+        if len(res) == 0:
+            return {}
+        context: Dict[str, str] = res[0]["p"]
+        return {key: decode(value) for key, value in context.items()}
+
     def _check_project_exists(self, project_id: EntityId) -> bool:
         p: Project = self.get_project_by_id(project_id)
         return p is not None
@@ -121,8 +131,7 @@ class Neo4jProjectRepository(ProjectRepository):
 
 
 if __name__ == "__main__":
-    Neo4jProjectRepository().insert_project(
-        ProjectFactory().create_project(
-            EntityId(code="p-1"), "Project 1", {"key": "value"}
-        )
+    repo = Neo4jProjectRepository()
+    repo.insert_project(
+        ProjectFactory().create_project(EntityId(code="p-1"), "Project 1")
     )

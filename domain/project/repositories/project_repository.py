@@ -42,3 +42,9 @@ class ProjectRepository(ABC):
         :param project_id: the id of the project to delete
         :raises NotFoundError: if the project does not exist"""
         pass
+
+    @abstractmethod
+    def get_public_context(self) -> dict:
+        """Gets the public context
+        :return: the public context"""
+        pass

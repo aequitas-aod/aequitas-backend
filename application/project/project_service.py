@@ -6,7 +6,7 @@ from domain.common.core import EntityId
 from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from domain.project.repositories import ProjectRepository
-from utils.errors import BadRequestError
+from utils.errors import BadRequestError, NotFoundError
 
 
 class ProjectService:
@@ -60,3 +60,31 @@ class ProjectService:
         :raises NotFoundError: if the project does not exist
         """
         self.project_repository.delete_project(project_id)
+
+    def get_context(self, project_id: EntityId) -> Optional[dict]:
+        """
+        Gets the context of a project by its id, if the project does not exist returns None
+        :param project_id: the project id
+        :return: the project context or None if the project does not exist
+        :raises NotFoundError: if the project does not exist
+        """
+        project: Optional[Project] = self.get_project_by_id(project_id)
+        if project is not None:
+            return project.get_context()
+        raise NotFoundError("Project does not exist")
+
+    def get_from_context(self, project_id: EntityId, key: str) -> Optional[str]:
+        """
+        Gets a value from the project context, if it is not found tries to get it from the public context
+        :param project_id: the project id
+        :param key: the key to get
+        :return: the value or None if it does not exist
+        """
+        project: Optional[Project] = self.get_project_by_id(project_id)
+        if project is not None:
+            try:
+                value: str = project.get_from_context(key)
+            except ValueError:
+                value: str = self.project_repository.get_public_context().get(key)
+            return value
+        raise NotFoundError("Project does not exist")

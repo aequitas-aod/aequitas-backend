@@ -22,7 +22,9 @@ class Consumer:
         consumer = KafkaConsumer(
             *self._topics,
             value_deserializer=lambda v: json.loads(v.decode("utf-8")),
-            bootstrap_servers=[f"{broker.host}:{broker.port}" for broker in self._brokers],
+            bootstrap_servers=[
+                f"{broker.host}:{broker.port}" for broker in self._brokers
+            ],
             auto_offset_reset="latest",  # Start consuming from the end of the topic.
         )
 
