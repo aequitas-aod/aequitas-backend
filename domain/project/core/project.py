@@ -4,7 +4,6 @@ from typing import Any, Dict, Optional
 from pydantic import BaseModel
 
 from domain.common.core import EntityId
-from infrastructure.ws.utils import logger
 from utils.encodings import encode, decode
 
 
