@@ -6,8 +6,9 @@ from flask_restful import Api, Resource
 from domain.common.core import EntityId
 from domain.project.core import Project
 from domain.project.factories import ProjectFactory
-from infrastructure.ws.setup import project_service
+from infrastructure.ws.setup import project_service, events_service
 from presentation.presentation import serialize, deserialize
+from utils.env import ENV
 from utils.errors import ConflictError, NotFoundError, BadRequestError
 from utils.status_code import StatusCode
 
@@ -38,6 +39,10 @@ class ProjectResource(Resource):
             project_id: EntityId = project_service.add_project(body["name"])
         except ConflictError as e:
             return e.message, e.status_code
+        if ENV != "test":
+            events_service.publish_message(
+                "projects.created", {"project_id": serialize(project_id)}
+            )
         return serialize(project_id), StatusCode.CREATED
 
     def put(self, project_id=None):
@@ -75,9 +80,9 @@ class ProjectContextResource(Resource):
         if project:
             key = request.args.get("key")
             if not key:
-                return project.context, StatusCode.OK
+                return project.get_context(), StatusCode.OK
             else:
-                return project.context.get(key), StatusCode.OK
+                return project.get_from_context(key), StatusCode.OK
         else:
             return "Project not found", StatusCode.NOT_FOUND
 

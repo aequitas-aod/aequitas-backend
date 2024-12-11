@@ -37,10 +37,10 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
-test = "python -m unittest discover -v -t . -s test -p 'test_*.py'"
-unit-test = "python -m unittest discover -v -t . -s test/unit -p 'test_*.py'"
-integration-test = "python -m unittest discover -v -t . -s test/integration -p 'test_*.py'"
-coverage = "coverage run -m unittest discover -v -t . -s test -p 'test_*.py'"
+test = { cmd = "python -m unittest discover -v -t . -s test -p 'test_*.py'", env = { ENV = "test" } }
+unit-test = { cmd = "python -m unittest discover -v -t . -s test/unit -p 'test_*.py'", env = { ENV = "test" } }
+integration-test = { cmd = "python -m unittest discover -v -t . -s test/integration -p 'test_*.py'", env = { ENV = "test" } }
+coverage = { cmd = "coverage run -m unittest discover -v -t . -s test -p 'test_*.py'", env = { ENV = "test" } }
 coverage-report = "coverage report"
 format-check = "black --check ."
 format = "black ."

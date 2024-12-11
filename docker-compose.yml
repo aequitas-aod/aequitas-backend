@@ -99,7 +99,6 @@ services:
       - data:/data
       - plugins:/plugins
       - ./resources/db/init.cypher:/var/lib/neo4j/init.cypher  # init script
-#      - ./resources/db/datasets:/var/lib/neo4j/datasets  # default datasets
       - type: bind
         source: ./neo4j-healthcheck.sh
         target: /neo4j-healthcheck.sh
@@ -107,8 +106,6 @@ services:
       test: bash /neo4j-healthcheck.sh
       start_period: 5s
       interval: 10s
-#    command: ./init.sh && neo4j
-
 
 volumes:
   data:
