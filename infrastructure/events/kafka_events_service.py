@@ -12,7 +12,8 @@ class KafkaEventsService(EventsService):
     def publish_message(self, topic: str, message: str) -> None:
         self._producer.produce(topic, message)
 
-
-    def start_consuming(self, topics: List[str], handler: Callable[[dict], None]) -> None:
+    def start_consuming(
+        self, topics: List[str], handler: Callable[[dict], None]
+    ) -> None:
         Consumer(topics, handler).start_consuming()
 
