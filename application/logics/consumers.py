@@ -3,12 +3,9 @@ import os
 from importlib import import_module
 
 from application.events import EventsService
-from application.project import ProjectService
 
 
-def setup_consumers(
-    events_service: EventsService, project_service: ProjectService
-) -> None:
+def setup_consumers(events_service: EventsService) -> None:
     scripts_path = os.path.join(os.path.dirname(__file__), "scripts")
     script_files = glob.glob(os.path.join(scripts_path, "*.py"))
 

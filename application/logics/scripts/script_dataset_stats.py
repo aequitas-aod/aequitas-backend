@@ -11,8 +11,6 @@ from presentation.presentation import deserialize
 
 __topics__: List[str] = ["datasets.created"]
 
-ctx = None
-
 
 def on_event(message):
     project_id: dict = message["value"]["project_id"]

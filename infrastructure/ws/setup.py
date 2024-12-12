@@ -30,4 +30,4 @@ project_service: ProjectService = ProjectService(project_repository)
 events_service: EventsService = KafkaEventsService()
 
 if ENV != "test":
-    setup_consumers(events_service, project_service)
+    setup_consumers(events_service)

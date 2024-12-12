@@ -46,9 +46,9 @@ format-check = "black --check ."
 format = "black ."
 
 [tool.poe.tasks.dev]
-shell = "FLASK_ENV=develop flask --app infrastructure/ws/main.py run -h localhost -p $port"
+shell = "ENV=develop flask --app infrastructure/ws/main.py run -h localhost -p $port"
 args = ["port"]
 
 [tool.poe.tasks.serve]
-shell = "waitress-serve --port $port --call infrastructure.ws.main:create_app"
+shell = "ENV=production waitress-serve --port $port --call infrastructure.ws.main:create_app"
 args = ["port"]

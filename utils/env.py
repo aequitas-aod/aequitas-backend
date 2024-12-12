@@ -24,8 +24,7 @@ for path in _descending_priority_env_paths:
 
 ENV = _get_env_var_or_fail("ENV")
 
-FLASK_ENV = os.getenv("FLASK_ENV")
-DB_HOST = _get_env_var_or_fail("DB_HOST") if FLASK_ENV == "production" else "localhost"
+DB_HOST = _get_env_var_or_fail("DB_HOST") if ENV == "production" else "localhost"
 DB_USER = _get_env_var_or_fail("DB_USER")
 
 if DB_USER != "neo4j":

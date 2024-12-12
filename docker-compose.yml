@@ -69,6 +69,14 @@ services:
       - ${KAFKA_HOST_1}
       - ${KAFKA_HOST_2}
 
+  aequitas-frontend:
+    image: aequitas-frontend
+    container_name: ${AEQUITAS_FRONTEND_HOST}
+    ports:
+      - "3123:80"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=xyp
+
   aequitas-backend:
     image: aequitas-backend
     container_name: ${AEQUITAS_BACKEND_HOST}
