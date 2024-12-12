@@ -1,95 +1,93 @@
 services:
 
-  zookeeper-1:
+  zookeeper:
     image: bitnami/zookeeper:latest
-    container_name: zookeeper-1
+    container_name: aequitas-zookeeper
     ports:
-      - ${ZOOKEEPER_PORT_1}:2181
+      - ${ZOOKEEPER_PORT}:2181
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+    healthcheck:
+      test: ["CMD-SHELL", "echo mntr | nc localhost 2181 | grep zk_version | grep -q zk_version"]
+      interval: 1m
+      timeout: 2s
+      retries: 5
+      start_period: 5s
 
-  zookeeper-2:
-    image: bitnami/zookeeper:latest
-    container_name: zookeeper-2
-    ports:
-      - ${ZOOKEEPER_PORT_2}:2181
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-
-  kafka-1:
+  kafka:
     image: bitnami/kafka:latest
-    container_name: ${KAFKA_HOST_1}
+    container_name: ${KAFKA_HOST}
     ports:
-      - ${KAFKA_PORT_1}:${KAFKA_PORT_1}
-      - ${KAFKA_EXTERNAL_PORT_1}:${KAFKA_EXTERNAL_PORT_1}
+      - ${KAFKA_PORT}:${KAFKA_PORT}
+      - ${KAFKA_EXTERNAL_PORT}:${KAFKA_EXTERNAL_PORT}
     environment:
       - KAFKA_BROKER_ID=1
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:${KAFKA_PORT_1},EXTERNAL://:${KAFKA_EXTERNAL_PORT_1}
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:${KAFKA_PORT},EXTERNAL://:${KAFKA_EXTERNAL_PORT}
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST_1}:${KAFKA_PORT_1},EXTERNAL://localhost:${KAFKA_EXTERNAL_PORT_1}
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST}:${KAFKA_PORT},EXTERNAL://${KAFKA_EXTERNAL_HOST}:${KAFKA_EXTERNAL_PORT}
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_DEFAULT_REPLICATION_FACTOR=1
       - KAFKA_MESSAGE_MAX_BYTES=200000000
       - KAFKA_DELETE_TOPIC_ENABLE=true
+    healthcheck:
+      test: ["CMD", "kafka-topics.sh", "--list", "--bootstrap-server", "localhost:${KAFKA_PORT}"]
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     depends_on:
-      - zookeeper-1
-      - zookeeper-2
-
-  kafka-2:
-    image: bitnami/kafka:latest
-    container_name: ${KAFKA_HOST_2}
-    ports:
-      - ${KAFKA_PORT_2}:${KAFKA_PORT_2}
-      - ${KAFKA_EXTERNAL_PORT_2}:${KAFKA_EXTERNAL_PORT_2}
-    environment:
-      - KAFKA_BROKER_ID=2
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:${KAFKA_PORT_2},EXTERNAL://:${KAFKA_EXTERNAL_PORT_2}
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST_2}:${KAFKA_PORT_2},EXTERNAL://localhost:${KAFKA_EXTERNAL_PORT_2}
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_DEFAULT_REPLICATION_FACTOR=1
-      - KAFKA_MESSAGE_MAX_BYTES=200000000
-      - KAFKA_DELETE_TOPIC_ENABLE=true
-    depends_on:
-      - zookeeper-1
-      - zookeeper-2
+      zookeeper:
+        condition: service_healthy
 
   kafka-ui:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
     ports:
-      - "8082:8080"
+      - "${KAFKA_UI_PORT}:8080"
     environment:
       DYNAMIC_CONFIG_ENABLED: 'true'
       KAFKA_CLUSTERS_0_NAME: cluster
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_HOST_1}:${KAFKA_PORT_1},${KAFKA_HOST_2}:${KAFKA_PORT_2}
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_HOST}:${KAFKA_PORT}
     depends_on:
-      - ${KAFKA_HOST_1}
-      - ${KAFKA_HOST_2}
+      kafka:
+        condition: service_healthy
 
-  aequitas-frontend:
-    image: aequitas-frontend
+  frontend:
+    image: aequitaseu/frontend:latest
     container_name: ${AEQUITAS_FRONTEND_HOST}
     ports:
-      - "3123:80"
+      - "${AEQUITAS_FRONTEND_PORT}:80"
     environment:
-      - NEXT_PUBLIC_BACKEND_URL=xyp
+      NEXT_PUBLIC_BACKEND_URL: localhost:${AEQUITAS_BACKEND_PORT}
+    depends_on:
+      backend:
+        condition: service_healthy
 
-  aequitas-backend:
-    image: aequitas-backend
-    container_name: ${AEQUITAS_BACKEND_HOST}
+  backend:
     build: .
+    image: aequitaseu/backend:latest
+    container_name: ${AEQUITAS_BACKEND_HOST}
     restart: on-failure
     ports:
       - ${AEQUITAS_BACKEND_PORT}:${AEQUITAS_BACKEND_PORT}
     environment:
-      - AEQUITAS_BACKEND_PORT=${AEQUITAS_BACKEND_PORT}
+      AEQUITAS_BACKEND_PORT: ${AEQUITAS_BACKEND_PORT}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; assert requests.get('http://localhost:${AEQUITAS_BACKEND_PORT}/questions').status_code == 200"]
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
 
   db:
     image: neo4j:latest
-    container_name: aequitas-backend-db
+    container_name: ${DB_HOST}
     restart: always
     environment:
       NEO4J_AUTH: neo4j/${DB_PASSWORD}
@@ -112,8 +110,10 @@ services:
         target: /neo4j-healthcheck.sh
     healthcheck:
       test: bash /neo4j-healthcheck.sh
-      start_period: 5s
-      interval: 10s
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
 volumes:
   data:
