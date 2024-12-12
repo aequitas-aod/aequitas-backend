@@ -2,7 +2,7 @@ import json
 from multiprocessing import Process
 from typing import List, Dict
 
-from kafka3 import KafkaConsumer
+from kafka import KafkaConsumer
 from typing_extensions import Callable
 
 from infrastructure.events import KafkaBroker, get_brokers_from_env
