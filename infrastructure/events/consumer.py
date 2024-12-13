@@ -2,7 +2,9 @@ import json
 from multiprocessing import Process
 from typing import List, Dict
 
+import backoff
 from kafka import KafkaConsumer
+from kafka.errors import NoBrokersAvailable, UnrecognizedBrokerVersion
 from typing_extensions import Callable
 
 from infrastructure.events import KafkaBroker, get_brokers_from_env
@@ -17,6 +19,10 @@ class Consumer:
         self._handler: Callable[[Dict], None] = handler
         self._topics = topics
         logger.info(f"Connected to Kafka brokers: {self._brokers}")
+
+    @backoff.on_exception(
+        backoff.expo, (NoBrokersAvailable, UnrecognizedBrokerVersion), max_tries=10
+    )
 
     def _consume_messages(self) -> None:
         consumer = KafkaConsumer(
