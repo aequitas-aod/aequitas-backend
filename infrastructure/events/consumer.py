@@ -1,9 +1,10 @@
 import json
 from multiprocessing import Process
-from typing import List, Dict
+from typing import List
 
 import backoff
 from kafka import KafkaConsumer
+from kafka.consumer.fetcher import ConsumerRecord
 from kafka.errors import NoBrokersAvailable, UnrecognizedBrokerVersion
 from typing_extensions import Callable
 
@@ -13,10 +14,10 @@ from infrastructure.ws.utils import logger
 
 class Consumer:
 
-    def __init__(self, topics: List[str], handler: Callable[[Dict], None]) -> None:
+    def __init__(self, topics: List[str], handler: Callable[[ConsumerRecord], None]) -> None:
         self.is_consuming: bool = False
         self._brokers: List[KafkaBroker] = get_brokers_from_env()
-        self._handler: Callable[[Dict], None] = handler
+        self._handler: Callable[[ConsumerRecord], None] = handler
         self._topics = topics
         logger.info(f"Connected to Kafka brokers: {self._brokers}")
 

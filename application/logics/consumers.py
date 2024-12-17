@@ -1,11 +1,15 @@
 import glob
 import os
 from importlib import import_module
+from typing import Optional
 
 from application.events import EventsService
+from application.project import ProjectService
+from infrastructure.ws.utils import logger
 
+consumers_project_service: Optional[ProjectService] = None
 
-def setup_consumers(events_service: EventsService) -> None:
+def setup_consumers(events_service: EventsService, project_service: ProjectService) -> None:
     scripts_path = os.path.join(os.path.dirname(__file__), "scripts")
     script_files = glob.glob(os.path.join(scripts_path, "*.py"))
 
@@ -14,6 +18,9 @@ def setup_consumers(events_service: EventsService) -> None:
         module = import_module(f"application.logics.scripts.{module_name}")
         topics = getattr(module, "__topics__", [])
         on_event = getattr(module, "on_event", None)
+        # on_load = getattr(module, "on_load", None)
+        # if on_load:
+        #     on_load(project_service=project_service)
         if on_event:
             print(f"Setting up consumer for {module_name} and topics {topics}")
             events_service.start_consuming(topics, on_event)

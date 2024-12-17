@@ -7,6 +7,7 @@ from domain.common.core import EntityId
 from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from infrastructure.ws.setup import project_service, events_service
+from infrastructure.ws.utils import logger
 from presentation.presentation import serialize, deserialize
 from utils.env import ENV
 from utils.errors import ConflictError, NotFoundError, BadRequestError
@@ -39,10 +40,6 @@ class ProjectResource(Resource):
             project_id: EntityId = project_service.add_project(body["name"])
         except ConflictError as e:
             return e.message, e.status_code
-        if ENV != "test":
-            events_service.publish_message(
-                "projects.created", {"project_id": serialize(project_id)}
-            )
         return serialize(project_id), StatusCode.CREATED
 
     def put(self, project_id=None):
@@ -96,13 +93,14 @@ class ProjectContextResource(Resource):
             key = request.args.get("key")
             if not key:
                 return "Missing key", StatusCode.BAD_REQUEST
-            value: str = request.get_json()
+            value: str = request.get_data(as_text=True)
             if not value:
                 return "Missing value", StatusCode.BAD_REQUEST
             updated_project = project.add_to_context(key, value)
             project_service.update_project(
                 ProjectFactory.id_of(code=project_id), updated_project
             )
+            trigger_event(key, ProjectFactory.id_of(code=project_id))
             return "Project context updated successfully", StatusCode.OK
         else:
             return "Project not found", StatusCode.NOT_FOUND
@@ -110,3 +108,15 @@ class ProjectContextResource(Resource):
 
 api.add_resource(ProjectResource, "/projects", "/projects/<string:project_id>")
 api.add_resource(ProjectContextResource, "/projects/<string:project_id>/context")
+
+
+def trigger_event(context_key: str, project_id: EntityId) -> None:
+    if ENV != "test":
+        message = {"project_id": serialize(project_id)}
+        if "dataset__" in context_key:
+            message["context_key"] = context_key
+            logger.error("PUBLISH DATASET " + str(message))
+            events_service.publish_message("datasets.created", message)
+        elif "features__" in context_key:
+            # TODO: Implement the feature creation event
+            events_service.publish_message("features.created", message)
