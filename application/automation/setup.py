@@ -82,16 +82,16 @@ def setup_consumers(events_service: EventsService, components: dict) -> None:
                 obj = getattr(module, name)
                 try:
                     if isinstance(obj, type) and issubclass(obj, Automator) and obj != Automator:
-                        automator = obj(components=components)
+                        automator = obj()
                         logger.error("Setting up an instance of class %s.%s as a consumer of topics %s", module_name, name,
                                      automator.topics)
                     elif isinstance(obj, Automator):
                         automator = obj
-                        automator.components = components
                         logger.error("Setting up object %s.%s as a consumer of topics %s", module_name, name,
                                      automator.topics)
                     else:
                         continue
+                    automator.components = components
                     events_service.start_consuming(list(automator.topics), automator._on_event)
                 except Exception as e:
                     logger.error("Error while configuring consumer %s.%s: %s", module_name, name, e)
