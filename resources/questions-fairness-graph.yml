@@ -12,46 +12,28 @@
     - id: { code: CompasDataset }
       text: ProPublica COMPAS Dataset
       description: null
-    - id: { code: GermanDataset }
+    - id: { code: CreditDataset }
       text: German credit Dataset
       description: null
   enabled_by: []
   action_needed: null
   created_at: 2024-05-31T18:20:23
 
-- id: { code: OutputFeatures }
-  text: Which are the output features?
-  description: Mark the features that will be used as the output of the model.
+- id: { code: FeaturesSelection }
+  text: Which are the sensitive and output features?
+  description: Mark the features that are sensitive and the ones that are the output of the model.
   type: multiple
   answers:
-    - id: { code: OutputFeatures-features-selected }
+    - id: { code: FeaturesSelection-features-selected }
       text: ""
       description: null
   enabled_by:
     - { code: Custom }
     - { code: AdultDataset }
-    - { code: BankDataset }
     - { code: CompasDataset }
-    - { code: GermanDataset }
-    - { code: LawSchoolGPADataset }
-    - { code: MEPSDataset19 }
-    - { code: MEPSDataset20 }
-    - { code: MEPSDataset21 }
+    - { code: CreditDataset }
   action_needed: null
   created_at: 2024-05-31T18:20:24
-
-- id: { code: SensitiveFeatures }
-  text: Which are the sensitive features?
-  description: null
-  type: multiple
-  answers:
-    - id: { code: SensitiveFeatures-features-selected }
-      text: ""
-      description: null
-  enabled_by:
-    - { code: OutputFeatures-features-selected }
-  action_needed: null
-  created_at: 2024-05-31T18:20:25
 
 - id: { code: Proxies }
   text: Specify the proxies for the sensitive features.
@@ -62,7 +44,7 @@
       text: ""
       description: null
   enabled_by:
-    - { code: SensitiveFeatures-features-selected }
+    - { code: FeaturesSelection-features-selected }
   action_needed: null
   created_at: 2024-05-31T18:20:26
 
@@ -252,7 +234,7 @@
     - id: { code: Test-CompasDataset }
       text: ProPublica COMPAS Dataset
       description: null
-    - id: { code: Test-GermanDataset }
+    - id: { code: Test-CreditDataset }
       text: German credit Dataset
       description: null
     - id: { code: Test-LawSchoolGPADataset }
@@ -289,7 +271,7 @@
     - { code: Test-AdultDataset }
     - { code: Test-BankDataset }
     - { code: Test-CompasDataset }
-    - { code: Test-GermanDataset }
+    - { code: Test-CreditDataset }
     - { code: Test-LawSchoolGPADataset }
     - { code: Test-MEPSDataset19 }
     - { code: Test-MEPSDataset20 }
