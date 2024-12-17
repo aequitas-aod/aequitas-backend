@@ -12,11 +12,44 @@ from presentation.presentation import serialize, deserialize
 from utils.env import ENV
 from utils.errors import ConflictError, NotFoundError, BadRequestError
 from utils.status_code import StatusCode
+from typing import Iterable, Dict
+
 
 projects_bp = Blueprint("projects", __name__)
 api = Api(projects_bp)
 
 projects: Set = set()
+
+
+class EventGenerator:
+    __primitive_types = (int, str, float, bool)
+
+    def __serialize(self, obj):
+        try:
+            return serialize(obj)
+        except ValueError as e:
+            if any(isinstance(obj, t) for t in self.__primitive_types):
+                return obj
+            elif isinstance(obj, Dict):
+                return {k: self.__serialize(v) for k, v in obj.items()}
+            elif isinstance(obj, Iterable):
+                return [self.__serialize(v) for v in obj]
+            raise e
+
+    @staticmethod
+    def __wrap_notable_keys(**kwargs) -> Dict:
+        data = dict(kwargs)
+        if "project_id" in data:
+            data["project_id"] = ProjectFactory.id_of(code=data["project_id"])
+        return data
+
+    def trigger_event(self, topic: str, **kwargs):
+        message = self.__serialize(self.__wrap_notable_keys(**kwargs))
+        if ENV == "test":
+            logger.debug(f"Skip triggering of event on topic {topic} with message {message}")
+            return
+        events_service.publish_message(topic, message)
+        logger.info(f"Trigger event on topic {topic} with message {message}")
 
 
 class ProjectResource(Resource):
@@ -68,7 +101,7 @@ class ProjectResource(Resource):
             return "Missing project id", StatusCode.BAD_REQUEST
 
 
-class ProjectContextResource(Resource):
+class ProjectContextResource(Resource, EventGenerator):
 
     def get(self, project_id=None):
         key = request.args.get("key")
@@ -100,7 +133,7 @@ class ProjectContextResource(Resource):
             project_service.update_project(
                 ProjectFactory.id_of(code=project_id), updated_project
             )
-            trigger_event(key, ProjectFactory.id_of(code=project_id))
+            self.trigger_event("datasets.created", project_id=project_id, context_key=key)
             return "Project context updated successfully", StatusCode.OK
         else:
             return "Project not found", StatusCode.NOT_FOUND
@@ -108,15 +141,3 @@ class ProjectContextResource(Resource):
 
 api.add_resource(ProjectResource, "/projects", "/projects/<string:project_id>")
 api.add_resource(ProjectContextResource, "/projects/<string:project_id>/context")
-
-
-def trigger_event(context_key: str, project_id: EntityId) -> None:
-    if ENV != "test":
-        message = {"project_id": serialize(project_id)}
-        if "dataset__" in context_key:
-            message["context_key"] = context_key
-            logger.error("PUBLISH DATASET " + str(message))
-            events_service.publish_message("datasets.created", message)
-        elif "features__" in context_key:
-            # TODO: Implement the feature creation event
-            events_service.publish_message("features.created", message)
