@@ -86,7 +86,9 @@ class TestProjectsAPI(DockerComposeBasedTestCase):
         project_id: EntityId = self._create_project(self.project_name_1)
         project_response = self.app.get(f"/projects/{project_id.code}")
         project: Project = deserialize(json.loads(project_response.data), Project)
-        expected_project: Project = project.model_copy().add_to_context("key", json.dumps("value"))
+        expected_project: Project = project.model_copy().add_to_context(
+            "key", json.dumps("value")
+        )
         response = self.app.put(
             f"/projects/{project_id.code}/context?key=key",
             json="value",
