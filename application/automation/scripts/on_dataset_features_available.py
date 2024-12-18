@@ -1,15 +1,27 @@
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 from typing import Iterable, Union
 import io
 import json
+import copy
 
 from application.automation.setup import Automator
 from application.automation.scripts import get_context_key
 from domain.common.core import EntityId
 from domain.project.core import Project
 
+from sklearn.preprocessing import OrdinalEncoder
 
 THRESHOLD_PROXY = 0.8
+
+FIG_WIDTH_SIZE = 12
+FIG_HEIGHT_SIZE = 10
+FIG_MAX_FEATS = 25
+FIG_MIN_CORR = -1
+FIG_MAX_CORR = 1
+FIG_DPI = 300
 
 
 class AbstractDatasetFeaturesAvailableReaction(Automator):
@@ -58,12 +70,30 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
 
 class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
 
+    def __discretize_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+        encoded_df = copy.deepcopy(df)
+        categorical_features = encoded_df.select_dtypes(include=['object', 'category']).columns
+
+        # Apply Ordinal Encoding
+        encoder = OrdinalEncoder()
+        encoded_df[categorical_features] = encoder.fit_transform(encoded_df[categorical_features])
+        return encoded_df
+
     def generate_correlation_matrix_picture(
         self, dataset: pd.DataFrame, file: io.IOBase
     ):
-        raise NotImplementedError(
-            "TODO: use matplotlib's plt.savefig to generate a picture of the correlation matrix into file"
+        plt.figure(figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE))
+        encoded_df =  self.__discretize_columns(dataset)
+        ax = sns.heatmap(
+           encoded_df.corr(),
+            annot=len(encoded_df.columns) < FIG_MAX_FEATS,
+            cmap='coolwarm',
+            fmt=".2f"
         )
+        ax.collections[0].set_clim(FIG_MIN_CORR, FIG_MAX_CORR)
+        plt.title("Correlation Matrix Heatmap")
+        plt.gcf().savefig(file, dpi=FIG_DPI)
+        
 
     def correlation_matrix_picture(self, dataset: pd.DataFrame) -> bytes:
         buffer = io.BytesIO()
@@ -71,22 +101,30 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         return buffer.getvalue()
 
     def generate_proxy_suggestions(
-        self, dataset: pd.DataFrame, sensitive: list[str]
+        self, dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
     ) -> dict:
-        # TODO: @josephgiovanelli review this code, and possibly replace it with your own
+        
         result = dict()
+        encoded_df = self.__discretize_columns(dataset[
+            [
+                feature 
+                for feature in dataset.columns 
+                if feature not in targets
+            ]
+        ])
         for sensitive_feature in sensitive:
             result[sensitive_feature] = dict()
-            for feature in dataset.columns:
-                # TODO this assumes that features are numeric, @josephgiovanelli please ensure this is the case
-                correlation = dataset[sensitive_feature].corr(dataset[feature])
+            for feature in [f for f in encoded_df.columns if f != sensitive_feature]:
+                correlation = encoded_df[sensitive_feature].corr(encoded_df[feature])
                 suggested_proxy = abs(correlation) >= THRESHOLD_PROXY
-                result[sensitive_feature][feature]["correlation"] = correlation
-                result[sensitive_feature][feature]["suggested_proxy"] = suggested_proxy
+                result[sensitive_feature][feature] = {
+                    "correlation": correlation,
+                    "suggested_proxy": suggested_proxy
+                }
         return result
 
-    def proxy_suggestions(self, dataset: pd.DataFrame, sensitive: list[str]) -> str:
-        return json.dumps(self.generate_proxy_suggestions(dataset, sensitive))
+    def proxy_suggestions(self, dataset: pd.DataFrame, sensitive: list[str], targets: list[str]) -> str:
+        return json.dumps(self.generate_proxy_suggestions(dataset, sensitive, targets))
 
     def produce_info(
         self,
@@ -98,6 +136,10 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         yield f"correlation_matrix__{dataset_id}", self.correlation_matrix_picture(
             dataset
         )
-        yield f"suggested_proxies__{dataset_id}", self.generate_proxy_suggestions(
-            dataset, sensitive
+        # @gciatto qua era sbagliato, no? Dovrei aver risolto
+        # yield f"suggested_proxies__{dataset_id}", self.generate_proxy_suggestions(
+        #     dataset, sensitive, targets
+        # )
+        yield f"suggested_proxies__{dataset_id}", self.proxy_suggestions(
+            dataset, sensitive, targets
         )
