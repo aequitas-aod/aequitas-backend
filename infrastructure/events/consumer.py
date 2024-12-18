@@ -42,5 +42,5 @@ class Consumer:
         if self.is_consuming:
             raise ValueError("Consumer is already consuming")
         self.is_consuming = True
-        consumer_thread = Thread(target=self._consume_messages)
+        consumer_thread = Thread(target=self._consume_messages, daemon=True)
         consumer_thread.start()
