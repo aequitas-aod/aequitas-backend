@@ -9,7 +9,7 @@ from domain.graph.core import GraphQuestion
 from domain.graph.factories import GraphQuestionFactory
 from infrastructure.ws.main import create_app
 from presentation.presentation import serialize, deserialize
-from test.utils.utils import get_file_path
+from test import example_questions_load
 from test.integration import DockerComposeBasedTestCase
 
 
@@ -161,14 +161,12 @@ class TestGraphQuestionsAPI(DockerComposeBasedTestCase):
         self.assertEqual(expected_question, json.loads(response.data))
 
     def test_questions_load(self):
-        yaml_file_path = get_file_path("test/resources/questions-load-example.yml")
-        with yaml_file_path.open("r") as file:
-            questions_yaml: str = file.read()
-            response = self.app.post(
-                "/questions/load", content_type="text/yaml", data=questions_yaml
-            )
-            self.assertEqual(response.status_code, 201)
-            response = self.app.get("/questions")
-            self.assertEqual(response.status_code, 200)
-            expected_questions: dict = yaml.safe_load(questions_yaml)
-            self.assertEqual(expected_questions, json.loads(response.data))
+        questions_yaml: str = example_questions_load()
+        response = self.app.post(
+            "/questions/load", content_type="text/yaml", data=questions_yaml
+        )
+        self.assertEqual(response.status_code, 201)
+        response = self.app.get("/questions")
+        self.assertEqual(response.status_code, 200)
+        expected_questions: dict = yaml.safe_load(questions_yaml)
+        self.assertEqual(expected_questions, json.loads(response.data))

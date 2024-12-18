@@ -6,7 +6,7 @@ from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectQuestion
 from infrastructure.ws.main import create_app
 from presentation.presentation import deserialize, serialize
-from test.utils.utils import get_file_path
+from test import example_question_graph
 from test.integration import DockerComposeBasedTestCase
 
 
@@ -19,15 +19,11 @@ class TestQuestionnairesAPI(DockerComposeBasedTestCase):
         cls.project_name: str = "Project name"
         res = cls.app.post("/projects", json={"name": cls.project_name})
         cls.project_id: EntityId = deserialize(json.loads(res.data), EntityId)
-        yaml_file_path = get_file_path("test/resources/question-graph-example.yml")
-        with yaml_file_path.open("r") as file:
-            questions_yaml: str = file.read()
-            cls.app.post(
-                "/questions/load", content_type="text/yaml", data=questions_yaml
-            )
-            cls.questions: list[GraphQuestion] = [
-                deserialize(q, GraphQuestion) for q in yaml.safe_load(questions_yaml)
-            ]
+        questions_yaml: str = example_question_graph()
+        cls.app.post("/questions/load", content_type="text/yaml", data=questions_yaml)
+        cls.questions: list[GraphQuestion] = [
+            deserialize(q, GraphQuestion) for q in yaml.safe_load(questions_yaml)
+        ]
 
     def tearDown(self):
         self._reset_questionnaire()
