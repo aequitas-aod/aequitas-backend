@@ -14,7 +14,9 @@ from infrastructure.ws.utils import logger
 
 class Consumer:
 
-    def __init__(self, topics: List[str], handler: Callable[[ConsumerRecord], None]) -> None:
+    def __init__(
+        self, topics: List[str], handler: Callable[[ConsumerRecord], None]
+    ) -> None:
         self.is_consuming: bool = False
         self._brokers: List[KafkaBroker] = get_brokers_from_env()
         self._handler: Callable[[ConsumerRecord], None] = handler
@@ -24,7 +26,6 @@ class Consumer:
     @backoff.on_exception(
         backoff.expo, (NoBrokersAvailable, UnrecognizedBrokerVersion), max_tries=10
     )
-
     def _consume_messages(self) -> None:
         consumer = KafkaConsumer(
             *self._topics,

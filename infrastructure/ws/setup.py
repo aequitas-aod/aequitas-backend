@@ -30,5 +30,9 @@ project_service: ProjectService = ProjectService(project_repository)
 events_service: EventsService = KafkaEventsService()
 
 if ENV != "test":
-    components = {k: v for k, v in locals().items() if k.endswith("_service") or k.endswith("_repository")}
+    components = {
+        k: v
+        for k, v in locals().items()
+        if k.endswith("_service") or k.endswith("_repository")
+    }
     setup_consumers(events_service, components)

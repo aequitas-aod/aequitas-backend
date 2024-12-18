@@ -45,8 +45,10 @@ class Automator:
         data = dict(kwargs)
         if "project_id" in data:
             data["project_id"] = deserialize(data["project_id"], EntityId)
-            if hasattr(self.components, 'project_service'):
-                data["project"] = self.components.project_service.get_project_by_id(data["project_id"])
+            if hasattr(self.components, "project_service"):
+                data["project"] = self.components.project_service.get_project_by_id(
+                    data["project_id"]
+                )
         return data
 
     def _on_event(self, message: ConsumerRecord) -> None:
@@ -55,7 +57,9 @@ class Automator:
             data = self.__deserialize_notable_keys(**message.value)
             self.on_event(message.topic, **data)
         except Exception as e:
-            self.logger.error("Uncaught error while processing event %s: %s", message, e)
+            self.logger.error(
+                "Uncaught error while processing event %s: %s", message, e
+            )
 
     def on_event(self, topic: str, **kwargs) -> None:
         raise NotImplementedError
@@ -81,19 +85,38 @@ def setup_consumers(events_service: EventsService, components: dict) -> None:
                     continue
                 obj = getattr(module, name)
                 try:
-                    if isinstance(obj, type) and issubclass(obj, Automator) and obj != Automator:
+                    if (
+                        isinstance(obj, type)
+                        and issubclass(obj, Automator)
+                        and obj != Automator
+                    ):
                         automator = obj()
-                        logger.error("Setting up an instance of class %s.%s as a consumer of topics %s", module_name, name,
-                                     automator.topics)
+                        logger.error(
+                            "Setting up an instance of class %s.%s as a consumer of topics %s",
+                            module_name,
+                            name,
+                            automator.topics,
+                        )
                     elif isinstance(obj, Automator):
                         automator = obj
-                        logger.error("Setting up object %s.%s as a consumer of topics %s", module_name, name,
-                                     automator.topics)
+                        logger.error(
+                            "Setting up object %s.%s as a consumer of topics %s",
+                            module_name,
+                            name,
+                            automator.topics,
+                        )
                     else:
                         continue
                     automator.components = components
-                    events_service.start_consuming(list(automator.topics), automator._on_event)
+                    events_service.start_consuming(
+                        list(automator.topics), automator._on_event
+                    )
                 except Exception as e:
-                    logger.error("Error while configuring consumer %s.%s: %s", module_name, name, e)
+                    logger.error(
+                        "Error while configuring consumer %s.%s: %s",
+                        module_name,
+                        name,
+                        e,
+                    )
         except Exception as e:
             logger.error("Error while importing module %s: %s", module_name, e)
