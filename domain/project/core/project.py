@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from pydantic import BaseModel
 
@@ -22,7 +22,7 @@ class Project(BaseModel):
         """Returns the decoded context"""
         return {k: decode(v) for k, v in self.context.items()}
 
-    def add_to_context(self, key: str, value: str) -> "Project":
+    def add_to_context(self, key: str, value: Union[str, bytes]) -> "Project":
         """
         Add a key-value pair to the context. The value is encoded before adding it to the context.
         :param key: The key to add
