@@ -9,7 +9,7 @@ from kafka.errors import NoBrokersAvailable, UnrecognizedBrokerVersion
 from typing_extensions import Callable
 
 from infrastructure.events import KafkaBroker, get_brokers_from_env
-from infrastructure.ws.utils import logger
+from utils.logs import logger
 
 
 class Consumer:

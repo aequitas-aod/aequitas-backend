@@ -7,10 +7,10 @@ from domain.common.core import EntityId
 from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from infrastructure.ws.setup import project_service, events_service
-from infrastructure.ws.utils import logger
 from presentation.presentation import serialize, deserialize
 from utils.env import ENV
 from utils.errors import ConflictError, NotFoundError, BadRequestError
+from utils.logs import logger
 from utils.status_code import StatusCode
 from typing import Iterable, Dict
 
