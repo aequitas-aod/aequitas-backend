@@ -229,14 +229,21 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
     def delete_questionnaire(self, project_id: EntityId):
         query_string = (
             "CALL {"
-            "    MATCH (p:Project {code: $project_code})-[*]-(nodeToDelete)"
-            "    WITH nodeToDelete LIMIT 1000"
-            "    DETACH DELETE nodeToDelete"
+            "    OPTIONAL MATCH (p:Project {code: $project_code})-[:QUESTIONNAIRE]->(initial:ProjectQuestion)"
+            "    OPTIONAL MATCH (initial)-[*]->(nodeToDelete)"
+            "    WITH nodeToDelete, initial LIMIT 1000"
+            "    DETACH DELETE initial, nodeToDelete"
             "}"
         )
         self.driver.query(
             Neo4jQuery(
                 query_string,
+                {"project_code": project_id.code},
+            )
+        )
+        self.driver.query(
+            Neo4jQuery(
+                "MATCH (p:Project {code: $project_code})-[:HAS_CONTEXT]->(c:ProjectContext) SET c = {}",
                 {"project_code": project_id.code},
             )
         )
