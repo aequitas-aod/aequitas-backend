@@ -4,6 +4,13 @@ from kafka.consumer.fetcher import ConsumerRecord
 
 from application.events import EventsService
 from infrastructure.events import Producer, Consumer
+from utils.logs import set_other_loggers_level
+import utils.env
+
+
+# if testing, lowers the visibility of non-aequitas logs
+if utils.env.is_testing():
+    set_other_loggers_level()
 
 
 class KafkaEventsService(EventsService):

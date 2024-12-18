@@ -24,6 +24,11 @@ for path in _descending_priority_env_paths:
 
 ENV = _get_env_var_or_fail("ENV")
 
+
+def is_testing() -> bool:
+    return any(s in ENV for s in ["dev", "test"])
+
+
 DB_HOST = _get_env_var_or_fail("DB_HOST") if ENV == "production" else "localhost"
 DB_USER = _get_env_var_or_fail("DB_USER")
 

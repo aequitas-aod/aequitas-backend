@@ -3,6 +3,13 @@ from typing import List
 import backoff
 from neo4j import GraphDatabase, Driver
 from neo4j.exceptions import ServiceUnavailable, SessionExpired
+from utils.logs import set_other_loggers_level
+import utils.env
+
+
+# if testing, lowers the visibility of non-aequitas logs
+if utils.env.is_testing():
+    set_other_loggers_level()
 
 
 class Credentials:
