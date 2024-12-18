@@ -4,7 +4,7 @@ from typing import List
 from kafka import KafkaProducer
 
 from infrastructure.events import KafkaBroker, get_brokers_from_env
-from infrastructure.ws.utils import logger
+from utils.logs import logger
 
 
 class Producer:

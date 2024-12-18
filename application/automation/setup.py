@@ -3,10 +3,10 @@ from importlib import import_module
 from kafka.consumer.fetcher import ConsumerRecord
 from presentation.presentation import deserialize
 from application.events import EventsService
-from infrastructure.ws.utils import logger
 from typing import Iterable
 from domain.common.core import EntityId
 from domain.project.core import Project
+from utils.logs import logger
 
 
 class DynamicObject:
@@ -110,7 +110,7 @@ def setup_consumers(events_service: EventsService, components: dict) -> None:
                         and obj != Automator
                     ):
                         automator = obj()
-                        logger.error(
+                        logger.info(
                             "Setting up an instance of class %s.%s as a consumer of topics %s",
                             module_name,
                             name,
@@ -118,7 +118,7 @@ def setup_consumers(events_service: EventsService, components: dict) -> None:
                         )
                     elif isinstance(obj, Automator):
                         automator = obj
-                        logger.error(
+                        logger.info(
                             "Setting up object %s.%s as a consumer of topics %s",
                             module_name,
                             name,
