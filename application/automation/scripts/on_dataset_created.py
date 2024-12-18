@@ -1,9 +1,8 @@
-import io
 import pandas as pd
 import numpy as np
 
-
 from application.automation.setup import Automator
+from application.automation.scripts import get_context_key
 from domain.common.core import EntityId
 from domain.project.core import Project
 from typing import Iterable
@@ -16,23 +15,11 @@ class AbstractDatasetCreationReaction(Automator):
     # noinspection PyMethodOverriding
     def on_event(
         self, topic: str, project_id: EntityId, project: Project, context_key: str
-    ) -> None:
+    ):
         dataset_id: str = context_key.split("__")[1]
-        if project is not None:
-            dataset_csv: str = project.get_from_context(context_key)
-            dataset: pd.DataFrame = pd.read_csv(io.StringIO(dataset_csv))
-            for key, value in self.produce_info(dataset_id, dataset):
-                updated_project: Project = project.add_to_context(key, value)
-                # noinspection PyUnresolvedReferences
-                self.components.project_service.update_project(
-                    updated_project.id, updated_project
-                )
-                self.logger.error(
-                    "Set key %s of project %s to value %s",
-                    key,
-                    updated_project.id,
-                    value.replace("\n", "\\n"),
-                )
+        dataset: pd.DataFrame = get_context_key(project, context_key, "csv")
+        for key, value in self.produce_info(dataset_id, dataset):
+            self.update_context(project, key, value)
 
     def produce_info(
         self, dataset_id: str, dataset: pd.DataFrame
@@ -43,8 +30,6 @@ class AbstractDatasetCreationReaction(Automator):
 WORDS_SENSITIVE = ("sex", "race", "gender")
 WORDS_TARGETS = ("class", "target", "output", "outcome")
 DEFAULT_DISCRETIZATION_BINS = 10
-outcome_feature = "class"
-dataset = "adult"
 
 
 def get_stats(

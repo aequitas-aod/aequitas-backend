@@ -6,6 +6,7 @@ from application.events import EventsService
 from infrastructure.ws.utils import logger
 from typing import Iterable
 from domain.common.core import EntityId
+from domain.project.core import Project
 
 
 class DynamicObject:
@@ -63,6 +64,24 @@ class Automator:
 
     def on_event(self, topic: str, **kwargs) -> None:
         raise NotImplementedError
+
+    def update_context(self, project: Project, *args, **kwargs):
+        id = project.id
+        updates = dict(kwargs)
+        for i in range(0, len(args), 2):
+            key = args[i]
+            value = args[i + 1]
+            updates[key] = value
+        for key, value in updates.items():
+            project = project.add_to_context(key, value)
+            self.logger.error(
+                "Set key %s of project %s to value %s",
+                key,
+                project.id,
+                value.replace("\n", "\\n"),
+            )
+        # noinspection PyUnresolvedReferences
+        self.components.project_service.update_project(id, updated_project)
 
 
 PACKAGE_ROOT = f"{__package__}.scripts"
