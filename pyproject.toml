@@ -27,6 +27,7 @@ shortuuid = "1.0.13"
 coverage = "^7.6.1"
 pandas = "^2.2.3"
 kafka-python-ng = "^2.2.3"
+matplotlib = "^3.10.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "24.10.0"
