@@ -1,33 +1,21 @@
 import json
-import unittest
 from typing import Set
-
-from python_on_whales import DockerClient
 
 from domain.common.core import EntityId
 from domain.project.core import Project
 from presentation.presentation import deserialize, serialize
 from infrastructure.ws.main import create_app
+from test.integration import DockerComposeBasedTestCase
 
 
-class TestProjectsAPI(unittest.TestCase):
-
-    @classmethod
-    def startDocker(cls):
-        cls.docker = DockerClient()
-        cls.docker.compose.down(services=["db"], volumes=True)
-        cls.docker.compose.up(services=["db"], detach=True, wait=True)
+class TestProjectsAPI(DockerComposeBasedTestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.startDocker()
+        super().setUpClass()
         cls.app = create_app().test_client()
         cls.project_name_1: str = "Project name 1"
         cls.project_name_2: str = "Project name 2"
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.docker.compose.down(services=["db"], volumes=True)
 
     def tearDown(self):
         self._delete_all_projects()

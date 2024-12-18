@@ -1,8 +1,5 @@
 import json
-import unittest
-
 import yaml
-from python_on_whales import DockerClient
 
 from domain.common.core import EntityId
 from domain.graph.core import GraphQuestion
@@ -10,19 +7,14 @@ from domain.project.core import ProjectQuestion
 from infrastructure.ws.main import create_app
 from presentation.presentation import deserialize, serialize
 from test.utils.utils import get_file_path
+from test.integration import DockerComposeBasedTestCase
 
 
-class TestQuestionnairesAPI(unittest.TestCase):
-
-    @classmethod
-    def startDocker(cls):
-        cls.docker = DockerClient()
-        cls.docker.compose.down(services=["db"], volumes=True)
-        cls.docker.compose.up(services=["db"], detach=True, wait=True)
+class TestQuestionnairesAPI(DockerComposeBasedTestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.startDocker()
+        super().setUpClass()
         cls.app = create_app().test_client()
         cls.project_name: str = "Project name"
         res = cls.app.post("/projects", json={"name": cls.project_name})
@@ -36,10 +28,6 @@ class TestQuestionnairesAPI(unittest.TestCase):
             cls.questions: list[GraphQuestion] = [
                 deserialize(q, GraphQuestion) for q in yaml.safe_load(questions_yaml)
             ]
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.docker.compose.down(services=["db"], volumes=True)
 
     def tearDown(self):
         self._reset_questionnaire()

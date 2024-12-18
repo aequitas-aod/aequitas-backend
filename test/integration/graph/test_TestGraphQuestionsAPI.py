@@ -1,11 +1,7 @@
 import json
-import unittest
 from datetime import datetime
 from typing import Set
-
 import yaml
-from python_on_whales import DockerClient
-
 from domain.common.core import EntityId
 from domain.common.core.enum import QuestionType
 from domain.common.factories import AnswerFactory
@@ -14,20 +10,13 @@ from domain.graph.factories import GraphQuestionFactory
 from infrastructure.ws.main import create_app
 from presentation.presentation import serialize, deserialize
 from test.utils.utils import get_file_path
+from test.integration import DockerComposeBasedTestCase
 
 
-class TestGraphQuestionsAPI(unittest.TestCase):
-
-    @classmethod
-    def startDocker(cls):
-        cls.docker = DockerClient()
-        cls.docker.compose.down(services=["db"], volumes=True)
-        cls.docker.compose.up(services=["db"], detach=True, wait=True)
-
+class TestGraphQuestionsAPI(DockerComposeBasedTestCase):
     @classmethod
     def setUpClass(cls):
-        cls.maxDiff = None
-        cls.startDocker()
+        super().setUpClass()
         cls.app = create_app().test_client()
         cls.question_timestamp = datetime.now()
         cls.question_timestamp_2 = datetime.now()
@@ -62,10 +51,6 @@ class TestGraphQuestionsAPI(unittest.TestCase):
             "Question description 2",
             created_at=cls.question_timestamp_2,
         )
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.docker.compose.down(services=["db"], volumes=True)
 
     def tearDown(self):
         self._delete_all_questions()
