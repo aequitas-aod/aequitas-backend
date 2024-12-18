@@ -1,22 +1,18 @@
 import logging
 import utils.env
 
-
 if utils.env.is_testing():
     DEFAULT_LOG_LEVEL = logging.DEBUG
     logging.basicConfig(level=DEFAULT_LOG_LEVEL)
 else:
     DEFAULT_LOG_LEVEL = logging.ERROR
 
-
 logger = logging.getLogger("aequitas.backend")
 logger.setLevel(DEFAULT_LOG_LEVEL)
 
 
 def _all_loggers(root=logging.root):
-    yield root
-    for child in root.getChildren():
-        yield from _all_loggers(child)
+    return {root} | {logging.getLogger(l) for l in root.manager.loggerDict}
 
 
 def _our_loggers():
