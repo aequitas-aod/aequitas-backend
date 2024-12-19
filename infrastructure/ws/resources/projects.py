@@ -1,3 +1,4 @@
+from pydoc_data.topics import topics
 from typing import List, Set, Optional
 
 from flask import Blueprint, request
@@ -43,13 +44,17 @@ class EventGenerator:
             data["project_id"] = ProjectFactory.id_of(code=data["project_id"])
         return data
 
-    def trigger_event(self, topic: str, **kwargs):
-        message = self.__serialize(self.__wrap_notable_keys(**kwargs))
+    def trigger_event(self, event_key: str, **kwargs):
         if ENV == "test":
-            logger.debug(
-                f"Skip triggering of event on topic {topic} with message {message}"
-            )
+            logger.debug(f"Skip triggering of event")
             return
+        message = self.__serialize(self.__wrap_notable_keys(**kwargs))
+        if "dataset__" in event_key:
+            topic = "datasets.created"
+        elif "features__" in event_key:
+            topic = "features.created"
+        else:
+            raise ValueError(f"Unknown event key: {event_key}")
         events_service.publish_message(topic, message)
         logger.info(f"Trigger event on topic {topic} with message {message}")
 
@@ -135,9 +140,7 @@ class ProjectContextResource(Resource, EventGenerator):
             project_service.update_project(
                 ProjectFactory.id_of(code=project_id), updated_project
             )
-            self.trigger_event(
-                "datasets.created", project_id=project_id, context_key=key
-            )
+            self.trigger_event(key, project_id=project_id, context_key=key)
             return "Project context updated successfully", StatusCode.OK
         else:
             return "Project not found", StatusCode.NOT_FOUND
