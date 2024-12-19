@@ -29,8 +29,6 @@ class Project(BaseModel):
         :param value: The value to add
         :return: A new instance of the project with the key-value pair added to the context
         """
-        if key in self.context:
-            raise ValueError(f"Key {key} already exists in context")
         new_project = deepcopy(self)
         new_project.context[key] = encode(value)
         return new_project
