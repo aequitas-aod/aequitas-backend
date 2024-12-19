@@ -142,5 +142,5 @@ class DatasetInfoCreator(AbstractDatasetCreationReaction):
     def produce_info(
         self, dataset_id: str, dataset: pd.DataFrame
     ) -> Iterable[tuple[str, str]]:
-        yield f"heads__{dataset_id}", dataset.head(100).to_csv()
+        yield f"dataset_head__{dataset_id}", dataset.head(100).to_csv()
         yield f"stats__{dataset_id}", get_stats(dataset).to_csv()
