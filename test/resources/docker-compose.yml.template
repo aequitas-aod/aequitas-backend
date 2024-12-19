@@ -1,0 +1,96 @@
+services:
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    ports:
+      - __ZOOKEEPER_PORT__:2181
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    healthcheck:
+      test: ["CMD-SHELL", "echo mntr | nc localhost 2181 | grep zk_version | grep -q zk_version"]
+      interval: 1m
+      timeout: 2s
+      retries: 5
+      start_period: 5s
+
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - __KAFKA_PORT__:__KAFKA_PORT__
+      - __KAFKA_EXTERNAL_PORT__:__KAFKA_EXTERNAL_PORT__
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:__KAFKA_PORT__,EXTERNAL://:__KAFKA_EXTERNAL_PORT__
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:__KAFKA_PORT__,EXTERNAL://__KAFKA_EXTERNAL_HOST__:__KAFKA_EXTERNAL_PORT__
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=1
+      - KAFKA_MESSAGE_MAX_BYTES=200000000
+      - KAFKA_DELETE_TOPIC_ENABLE=true
+    healthcheck:
+      test: ["CMD", "kafka-topics.sh", "--list", "--bootstrap-server", "localhost:__KAFKA_PORT__"]
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+
+  backend:
+    build: .
+    image: aequitaseu/backend:latest
+    restart: on-failure
+    ports:
+      - __AEQUITAS_BACKEND_PORT__:__AEQUITAS_BACKEND_PORT__
+    environment:
+      AEQUITAS_BACKEND_PORT: __AEQUITAS_BACKEND_PORT__
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; assert requests.get('http://localhost:__AEQUITAS_BACKEND_PORT__/questions').status_code == 200"]
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  db:
+    image: neo4j:latest
+    restart: always
+    environment:
+      NEO4J_AUTH: neo4j/__DB_PASSWORD__
+      DB_USER: __DB_USER__
+      DB_PASSWORD: __DB_PASSWORD__
+      NEO4JLABS_PLUGINS: '["apoc", "apoc-extended"]'
+      NEO4J_apoc_export_file_enabled: true
+      NEO4J_apoc_import_file_enabled: true
+      NEO4J_apoc_import_file_use__neo4j__config: false
+      # CALL apoc.cypher.runFile("init.cypher")
+      NEO4J_apoc_initializer_neo4j: "__NEO4J_INITIALIZATION_CODE__"
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+    volumes:
+      - data:/data
+      - plugins:/plugins
+      - ./init.cypher:/var/lib/neo4j/init.cypher  # init script
+      - type: bind
+        source: ./neo4j-healthcheck.sh
+        target: /neo4j-healthcheck.sh
+    healthcheck:
+      test: bash /neo4j-healthcheck.sh
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  data:
+    driver: local
+
+  plugins:
+    driver: local

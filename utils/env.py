@@ -36,3 +36,7 @@ if DB_USER != "neo4j":
     raise ValueError("Only neo4j is supported as database user")
 
 DB_PASSWORD = _get_env_var_or_fail("DB_PASSWORD")
+
+
+def environ():
+    return os.environ.copy()
