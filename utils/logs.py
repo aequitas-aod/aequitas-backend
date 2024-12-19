@@ -33,5 +33,4 @@ def set_loggers_level(selector, level: int | str = DEFAULT_LOG_LEVEL):
 
 
 def set_other_loggers_level(level: int | str = logging.ERROR):
-    critical_loggers = _our_loggers()
-    set_loggers_level(lambda l: l not in critical_loggers, level)
+    set_loggers_level(lambda l: l not in _our_loggers(), level)

@@ -1,18 +1,19 @@
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-from typing import Iterable, Union
+import copy
 import io
 import json
-import copy
+from typing import Iterable, Union
 
-from application.automation.setup import Automator
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+from sklearn.preprocessing import OrdinalEncoder
+
+import utils.env
 from application.automation.scripts import get_context_key
+from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
-
-from sklearn.preprocessing import OrdinalEncoder
+from utils.logs import set_other_loggers_level
 
 THRESHOLD_PROXY = 0.8
 
@@ -22,6 +23,10 @@ FIG_MAX_FEATS = 25
 FIG_MIN_CORR = -1
 FIG_MAX_CORR = 1
 FIG_DPI = 300
+
+# if testing, lowers the visibility of non-aequitas logs
+if utils.env.is_testing():
+    set_other_loggers_level()
 
 
 class AbstractDatasetFeaturesAvailableReaction(Automator):

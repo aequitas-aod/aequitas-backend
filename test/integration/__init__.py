@@ -16,7 +16,7 @@ DIR_INTEGRATION_TESTS = Path(
 logger.info(f"Integration tests directory: {DIR_INTEGRATION_TESTS}")
 
 PATH_DOCKER_COMPOSE_SPEC = DIR_INTEGRATION_TESTS / "docker-compose.yml"
-CODE_NEO4J_INIT = ""  # do nothing
+CODE_NEO4J_INIT = ""  # do not initialize the database
 
 PATH_DOCKER_COMPOSE_SPEC.write_text(
     test.docker_compose_spec(NEO4J_INITIALIZATION_CODE=CODE_NEO4J_INIT)
