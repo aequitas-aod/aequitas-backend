@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from domain.common.core import EntityId
 from utils.encodings import encode, decode
+from utils.logs import logger
 
 
 class Project(BaseModel):
@@ -22,15 +23,18 @@ class Project(BaseModel):
         """Returns the decoded context"""
         return {k: decode(v) for k, v in self.context.items()}
 
-    def add_to_context(self, key: str, value: Union[str, bytes]) -> "Project":
+    def add_to_context(self, key: str, value: str) -> "Project":
         """
         Add a key-value pair to the context. The value is encoded before adding it to the context.
         :param key: The key to add
         :param value: The value to add
         :return: A new instance of the project with the key-value pair added to the context
         """
+        if type(value) != str:
+            raise ValueError(f"Value must be a string, got {type(value)}")
         new_project = deepcopy(self)
         new_project.context[key] = encode(value)
+        logger.info(f"Added key {key} to context")
         return new_project
 
     def get_from_context(self, key: str) -> str:

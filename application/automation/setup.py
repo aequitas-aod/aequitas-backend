@@ -1,5 +1,7 @@
 import pathlib
 from importlib import import_module
+
+import pandas as pd
 from kafka.consumer.fetcher import ConsumerRecord
 from presentation.presentation import deserialize
 from application.events import EventsService
@@ -74,14 +76,30 @@ class Automator:
             updates[key] = value
         for key, value in updates.items():
             project = project.add_to_context(key, value)
-            self.logger.error(
-                "Set key %s of project %s to value %s",
+            self.logger.info(
+                "Set key %s of project %s",
                 key,
                 project.id,
-                value.replace("\n", "\\n"),
             )
         # noinspection PyUnresolvedReferences
-        self.components.project_service.update_project(id, updated_project)
+        self.components.project_service.update_project(id, project)
+
+    def get_from_context(
+        self, project: Project, key: str, parse_as: str
+    ) -> dict | pd.DataFrame:
+        setup_module = "application.automation.parsing"
+        module = import_module(setup_module)
+        parsing_function = getattr(module, f"parse_{parse_as}", None)
+        if parsing_function is None:
+            raise ValueError(
+                f"Parsing function 'parse_{parse_as}' not found in module '{setup_module}'"
+            )
+        if hasattr(self.components, "project_service"):
+            return parsing_function(
+                self.components.project_service.get_from_context(project.id, key)
+            )
+        else:
+            raise ValueError("Project service not found in components")
 
 
 PACKAGE_ROOT = f"{__package__}.scripts"

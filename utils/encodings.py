@@ -1,11 +1,14 @@
 import base64
 from typing import Union
 
+from utils.logs import logger
 
-def encode(value: Union[str, bytes]) -> str:
-    if isinstance(value, str):
-        value = value.encode("utf-8")
-    encoded_bytes = base64.b64encode(value)
+
+def encode(value: str) -> str:
+    logger.info("Encoding value")
+    logger.info(type(value))
+    encoded_bytes = base64.b64encode(value.encode("utf-8"))
+    logger.info("ENCODED")
     return encoded_bytes.decode("utf-8")
 
 

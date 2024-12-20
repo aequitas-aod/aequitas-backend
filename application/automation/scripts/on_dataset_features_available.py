@@ -1,20 +1,22 @@
+import base64
 import copy
 import io
 import json
 from typing import Iterable, Union
 
+import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from sklearn.preprocessing import OrdinalEncoder
 
 import utils.env
-from application.automation.scripts import get_context_key
 from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
-from utils.logs import set_other_loggers_level
+from utils.logs import set_other_loggers_level, logger
 
+matplotlib.use("agg")
 THRESHOLD_PROXY = 0.8
 
 FIG_WIDTH_SIZE = 12
@@ -35,28 +37,28 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
 
     @staticmethod
     def check_dataset_and_features(
-        features_key: str, features: object, dataset_key: str, dataset: pd.DataFrame
+        context_key: str, features: object, dataset_key: str, dataset: pd.DataFrame
     ):
         assert isinstance(
             features, dict
         ), f"Expected a dictionary, got {type(features)}"
         assert (x := set(features.keys())) == (y := set(dataset.columns)), (
-            f"The features mentioned in {features_key} ({', '.join(x)}) "
+            f"The features mentioned in {context_key} ({', '.join(x)}) "
             f"do not match the columns in {dataset_key} ({', '.join(y)})"
         )
 
     # noinspection PyMethodOverriding
     def on_event(
-        self, topic: str, project_id: EntityId, project: Project, features_key: str
+        self, topic: str, project_id: EntityId, project: Project, context_key: str
     ):
-        dataset_id: str = features_key.split("__")[1]
+        dataset_id: str = context_key.split("__")[1]
         dataset_key: str = f"dataset__{dataset_id}"
-        dataset: pd.DataFrame = get_context_key(project, dataset_key, "csv")
-        features = get_context_key(project, features_key, "json")
-        self.check_dataset_and_features(features_key, features, dataset_key, dataset)
-        targets = [feature for feature in features if feature["target"]]
-        sensitive = [feature for feature in features if feature["sensitive"]]
-        drops = [feature for feature in features if feature["drop"]]
+        dataset: pd.DataFrame = self.get_from_context(project, dataset_key, "csv")
+        features: dict = self.get_from_context(project, context_key, "json")
+        self.check_dataset_and_features(context_key, features, dataset_key, dataset)
+        targets = [key for key, value in features.items() if value["target"]]
+        sensitive = [key for key, value in features.items() if value["sensitive"]]
+        drops = [key for key, value in features.items() if value["drop"]]
         actual_dataset = dataset.drop(columns=drops, axis=1)
         for key, value in self.produce_info(
             dataset_id, actual_dataset, targets, sensitive
@@ -103,10 +105,10 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         plt.title("Correlation Matrix Heatmap")
         plt.gcf().savefig(file, dpi=FIG_DPI)
 
-    def correlation_matrix_picture(self, dataset: pd.DataFrame) -> bytes:
+    def correlation_matrix_picture(self, dataset: pd.DataFrame) -> str:
         buffer = io.BytesIO()
         self.generate_correlation_matrix_picture(dataset, buffer)
-        return buffer.getvalue()
+        return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
     def generate_proxy_suggestions(
         self, dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
@@ -123,7 +125,7 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
                 suggested_proxy = abs(correlation) >= THRESHOLD_PROXY
                 result[sensitive_feature][feature] = {
                     "correlation": correlation,
-                    "suggested_proxy": suggested_proxy,
+                    "suggested_proxy": bool(suggested_proxy),
                 }
         return result
 

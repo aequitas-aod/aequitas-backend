@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 
 from application.automation.setup import Automator
-from application.automation.scripts import get_context_key
 from domain.common.core import EntityId
 from domain.project.core import Project
 from typing import Iterable
@@ -17,7 +16,7 @@ class AbstractDatasetCreationReaction(Automator):
         self, topic: str, project_id: EntityId, project: Project, context_key: str
     ):
         dataset_id: str = context_key.split("__")[1]
-        dataset: pd.DataFrame = get_context_key(project, context_key, "csv")
+        dataset: pd.DataFrame = self.get_from_context(project, context_key, "csv")
         for key, value in self.produce_info(dataset_id, dataset):
             self.update_context(project, key, value)
 
