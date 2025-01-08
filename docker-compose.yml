@@ -3,6 +3,8 @@ services:
   zookeeper:
     image: bitnami/zookeeper:latest
     container_name: aequitas-zookeeper
+    platform: &platform 
+      linux/x86_64
     ports:
       - ${ZOOKEEPER_PORT}:2181
     environment:
@@ -17,6 +19,7 @@ services:
   kafka:
     image: bitnami/kafka:latest
     container_name: ${KAFKA_HOST}
+    platform: *platform
     ports:
       - ${KAFKA_PORT}:${KAFKA_PORT}
       - ${KAFKA_EXTERNAL_PORT}:${KAFKA_EXTERNAL_PORT}
@@ -43,6 +46,7 @@ services:
   kafka-ui:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
+    platform: *platform
     ports:
       - "${KAFKA_UI_PORT}:8080"
     environment:
@@ -67,6 +71,7 @@ services:
   backend:
     build: .
     image: aequitaseu/backend:latest
+    platform: *platform
     container_name: ${AEQUITAS_BACKEND_HOST}
     restart: on-failure
     ports:
@@ -87,6 +92,7 @@ services:
 
   db:
     image: neo4j:latest
+    platform: *platform
     container_name: ${DB_HOST}
     restart: always
     environment:
