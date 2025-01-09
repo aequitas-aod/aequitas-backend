@@ -3,7 +3,7 @@ services:
   zookeeper:
     image: bitnami/zookeeper:latest
     container_name: aequitas-zookeeper
-    platform: &platform 
+    platform: &platform
       linux/x86_64
     ports:
       - ${ZOOKEEPER_PORT}:2181
@@ -103,14 +103,14 @@ services:
       NEO4J_apoc_export_file_enabled: true
       NEO4J_apoc_import_file_enabled: true
       NEO4J_apoc_import_file_use__neo4j__config: false
-      NEO4J_apoc_initializer_neo4j: CALL apoc.cypher.runFile("init.cypher")
+      NEO4J_apoc_initializer_neo4j: CALL apoc.cypher.runFile("/neo4j-init.cypher")
     ports:
       - '7474:7474'
       - '7687:7687'
     volumes:
       - data:/data
       - plugins:/plugins
-      - ./resources/db/init.cypher:/var/lib/neo4j/init.cypher  # init script
+      - ./resources/db/init.cypher:/neo4j-init.cypher
       - type: bind
         source: ./neo4j-healthcheck.sh
         target: /neo4j-healthcheck.sh
