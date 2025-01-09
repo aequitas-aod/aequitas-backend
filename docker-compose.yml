@@ -14,7 +14,9 @@ services:
       interval: 1m
       timeout: 2s
       retries: 5
-      start_period: 5s
+      start_period: 10s
+    networks:
+      - internal
 
   kafka:
     image: bitnami/kafka:latest
@@ -38,10 +40,12 @@ services:
       interval: 1m
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 1m
     depends_on:
       zookeeper:
         condition: service_healthy
+    networks:
+      - internal
 
   kafka-ui:
     container_name: kafka-ui
@@ -56,6 +60,8 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+    networks:
+      - internal
 
 #  frontend:
 #    image: aequitaseu/frontend:latest
@@ -78,17 +84,20 @@ services:
       - ${AEQUITAS_BACKEND_PORT}:${AEQUITAS_BACKEND_PORT}
     environment:
       AEQUITAS_BACKEND_PORT: ${AEQUITAS_BACKEND_PORT}
+      ENV: production
     healthcheck:
       test: ["CMD", "python", "-c", "import requests; assert requests.get('http://localhost:${AEQUITAS_BACKEND_PORT}/questions').status_code == 200"]
-      interval: 1m
+      interval: 5s
       timeout: 5s
-      retries: 5
-      start_period: 5s
+      retries: 3
+      start_period: 10s
     depends_on:
       db:
         condition: service_healthy
       kafka:
         condition: service_healthy
+    networks:
+      - internal
 
   db:
     image: neo4j:latest
@@ -119,7 +128,9 @@ services:
       interval: 1m
       timeout: 5s
       retries: 5
-      start_period: 15s
+      start_period: 45s
+    networks:
+      - internal
 
 volumes:
   data:
@@ -127,3 +138,7 @@ volumes:
 
   plugins:
     driver: local
+
+networks:
+  internal:
+    driver: bridge
