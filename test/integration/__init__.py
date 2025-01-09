@@ -1,5 +1,6 @@
 import unittest
 from python_on_whales import DockerClient
+import utils.env
 from utils.logs import logger
 from pathlib import Path
 import test
@@ -48,16 +49,26 @@ atexit.register(_cleanup)
 
 class DockerComposeBasedTestCase(unittest.TestCase):
     services = {"db"}
+    up_services_before = True
+    down_services_after = True
 
     @classmethod
-    def startDocker(cls):
-        cls.docker = docker_client
-        cls.docker.compose.up(services=list(cls.services), detach=True, wait=True)
+    def startDockerServices(cls):
+        cls.docker.compose.up(
+            services=list(cls.services), detach=True, wait=True, build=True
+        )
+
+    @classmethod
+    def stopDockerServices(cls):
+        cls.docker.compose.down(services=list(cls.services), volumes=True)
 
     @classmethod
     def setUpClass(cls):
-        cls.startDocker()
+        cls.docker = docker_client
+        if cls.up_services_before:
+            cls.startDockerServices()
 
     @classmethod
     def tearDownClass(cls):
-        cls.docker.compose.down(volumes=True)
+        if cls.down_services_after:
+            cls.stopDockerServices()
