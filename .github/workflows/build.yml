@@ -37,19 +37,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install poetry and poethepoet
-        run: |
-          pipx install poetry
-          pipx install poethepoet
-
-      - name: Check poetry
-        run: poetry check
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'poetry'
+
+      - name: Install poetry and poethepoet
+        run: pip install -r requirements.txt
+
+      - name: Check poetry
+        run: |
+          poetry check -V
+          poetry check
 
       - name: Install dependencies
         run: poetry install
@@ -75,19 +74,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install poetry and poethepoet
-        run: |
-          pipx install poetry
-          pipx install poethepoet
-
-      - name: Check poetry
-        run: poetry check
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'poetry'
+
+      - name: Install poetry and poethepoet
+        run: pip install -r requirements.txt
+
+      - name: Check poetry
+        run: |
+          poetry check -V
+          poetry check
 
       - name: Install dependencies
         run: poetry install
@@ -110,16 +108,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install poetry and poethepoet
-        run: |
-          pipx install poetry
-          pipx install poethepoet
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          cache: 'poetry'
+
+      - name: Install poetry and poethepoet
+        run: pip install -r requirements.txt
+
+      - name: Check poetry
+        run: |
+          poetry check -V
+          poetry check
 
       - name: Install dependencies
         run: poetry install
