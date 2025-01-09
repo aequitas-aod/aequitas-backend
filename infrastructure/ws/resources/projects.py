@@ -1,7 +1,7 @@
 from pydoc_data.topics import topics
 from typing import List, Set, Optional
 
-from flask import Blueprint, request
+from flask import Blueprint, request, Response
 from flask_restful import Api, Resource
 
 from domain.common.core import EntityId
@@ -117,11 +117,12 @@ class ProjectContextResource(Resource, EventGenerator):
                 value = project_service.get_from_context(
                     ProjectFactory.id_of(code=project_id), request.args.get("key")
                 )
-            else:
-                value = project_service.get_context(
-                    ProjectFactory.id_of(code=project_id)
-                )
-            return value, StatusCode.OK
+                if value:
+                    return Response(value, status=StatusCode.OK, content_type="plain/text")
+                else:
+                    return "Key not found", StatusCode.NOT_FOUND
+            value = project_service.get_context(ProjectFactory.id_of(code=project_id))
+            return value, StatusCode.OK, {"Content-Type": "application/json"}
         except NotFoundError:
             return "Project not found", StatusCode.NOT_FOUND
 
