@@ -14,7 +14,7 @@ import utils.env
 from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
-from utils.logs import set_other_loggers_level, logger
+from utils.logs import set_other_loggers_level
 
 matplotlib.use("agg")
 THRESHOLD_PROXY = 0.8
