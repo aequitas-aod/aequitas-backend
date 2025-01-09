@@ -4,31 +4,16 @@ from typing import Set
 from domain.common.core import EntityId
 from domain.project.core import Project
 from presentation.presentation import deserialize, serialize
-from infrastructure.ws.main import create_app
-from test.integration import DockerComposeBasedTestCase
+from test.integration.project import ProjectRelatedTestCase
 
 
-class TestProjectsAPI(DockerComposeBasedTestCase):
+class TestProjectsAPI(ProjectRelatedTestCase):
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.app = create_app().test_client()
         cls.project_name_1: str = "Project name 1"
         cls.project_name_2: str = "Project name 2"
-
-    def tearDown(self):
-        self._delete_all_projects()
-
-    def _create_project(self, project_name: str) -> EntityId:
-        response = self.app.post("/projects", json={"name": project_name})
-        return deserialize(json.loads(response.data), EntityId)
-
-    def _delete_all_projects(self):
-        response = self.app.get("/projects")
-        projects_dict = json.loads(response.data)
-        for project in projects_dict:
-            self.app.delete(f"/projects/{project['id']['code']}")
 
     def test_get_all_projects(self):
         self.app.post("/projects", json={"name": self.project_name_1})

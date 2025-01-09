@@ -7,18 +7,16 @@ from domain.project.core import ProjectQuestion
 from infrastructure.ws.main import create_app
 from presentation.presentation import deserialize, serialize
 from test import example_question_graph
-from test.integration import DockerComposeBasedTestCase
+from test.integration.project import ProjectRelatedTestCase
 
 
-class TestQuestionnairesAPI(DockerComposeBasedTestCase):
+class TestQuestionnairesAPI(ProjectRelatedTestCase):
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.app = create_app().test_client()
         cls.project_name: str = "Project name"
-        res = cls.app.post("/projects", json={"name": cls.project_name})
-        cls.project_id: EntityId = deserialize(json.loads(res.data), EntityId)
+        cls.project_id: EntityId = cls._create_project(cls.project_name)
         questions_yaml: str = example_question_graph()
         cls.app.post("/questions/load", content_type="text/yaml", data=questions_yaml)
         cls.questions: list[GraphQuestion] = [
