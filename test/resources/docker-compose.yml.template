@@ -13,7 +13,9 @@ services:
       interval: 1m
       timeout: 2s
       retries: 5
-      start_period: 5s
+      start_period: 10s
+    networks:
+      - internal
 
   kafka:
     image: bitnami/kafka:latest
@@ -36,10 +38,12 @@ services:
       interval: 1m
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 1m
     depends_on:
       zookeeper:
         condition: service_healthy
+    networks:
+      - internal
 
   backend:
     build: .
@@ -50,17 +54,20 @@ services:
       - __AEQUITAS_BACKEND_PORT__:__AEQUITAS_BACKEND_PORT__
     environment:
       AEQUITAS_BACKEND_PORT: __AEQUITAS_BACKEND_PORT__
+      ENV: test
     healthcheck:
       test: ["CMD", "python", "-c", "import requests; assert requests.get('http://localhost:__AEQUITAS_BACKEND_PORT__/questions').status_code == 200"]
-      interval: 1m
+      interval: 5s
       timeout: 5s
-      retries: 5
-      start_period: 5s
+      retries: 3
+      start_period: 10s
     depends_on:
       db:
         condition: service_healthy
       kafka:
         condition: service_healthy
+    networks:
+      - internal
 
   db:
     image: neo4j:latest
@@ -91,7 +98,9 @@ services:
       interval: 1m
       timeout: 5s
       retries: 5
-      start_period: 15s
+      start_period: 45s
+    networks:
+      - internal
 
 volumes:
   data:
@@ -99,3 +108,7 @@ volumes:
 
   plugins:
     driver: local
+
+networks:
+  internal:
+    driver: bridge
