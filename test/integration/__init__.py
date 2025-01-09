@@ -50,7 +50,7 @@ atexit.register(_cleanup)
 class DockerComposeBasedTestCase(unittest.TestCase):
     services = {"db"}
     up_services_before = True
-    down_services_after = True
+    down_services_after = False
 
     @classmethod
     def startDockerServices(cls):
