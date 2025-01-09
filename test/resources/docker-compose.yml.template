@@ -34,11 +34,11 @@ services:
       - KAFKA_MESSAGE_MAX_BYTES=200000000
       - KAFKA_DELETE_TOPIC_ENABLE=true
     healthcheck:
-      test: ["CMD", "kafka-topics.sh", "--list", "--bootstrap-server", "localhost:__KAFKA_PORT__"]
-      interval: 1m
-      timeout: 5s
+      test: ["CMD", "kafka-broker-api-versions.sh", "--bootstrap-server", "localhost:${KAFKA_PORT}"]
+      interval: 10s
+      timeout: 10s
       retries: 5
-      start_period: 1m
+      start_period: 30s
     depends_on:
       zookeeper:
         condition: service_healthy
