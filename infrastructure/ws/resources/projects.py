@@ -118,7 +118,9 @@ class ProjectContextResource(Resource, EventGenerator):
                     ProjectFactory.id_of(code=project_id), request.args.get("key")
                 )
                 if value:
-                    return Response(value, status=StatusCode.OK, content_type="plain/text")
+                    return Response(
+                        value, status=StatusCode.OK, content_type="plain/text"
+                    )
                 else:
                     return "Key not found", StatusCode.NOT_FOUND
             value = project_service.get_context(ProjectFactory.id_of(code=project_id))

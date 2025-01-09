@@ -38,4 +38,6 @@ class ProjectRelatedTestCase(DockerComposeBasedTestCase):
         projects_dict = json.loads(response.data)
         for project in projects_dict:
             cls.app.delete(f"/projects/{project['id']['code']}")
-            logger.info(f"Deleted project {project['name']} with id {project['id']['code']}")
+            logger.info(
+                f"Deleted project {project['name']} with id {project['id']['code']}"
+            )
