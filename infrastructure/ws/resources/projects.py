@@ -114,12 +114,16 @@ class ProjectContextResource(Resource, EventGenerator):
         key = request.args.get("key")
         try:
             if key:
-                value = project_service.get_from_context(
+                value, base64 = project_service.get_from_context(
                     ProjectFactory.id_of(code=project_id), request.args.get("key")
                 )
                 if value:
                     return Response(
-                        value, status=StatusCode.OK, content_type="plain/text"
+                        value,
+                        status=StatusCode.OK,
+                        content_type=(
+                            "application/binary-octet" if base64 else "plain/text"
+                        ),
                     )
                 else:
                     return "Key not found", StatusCode.NOT_FOUND
@@ -136,7 +140,7 @@ class ProjectContextResource(Resource, EventGenerator):
             key = request.args.get("key")
             if not key:
                 return "Missing key", StatusCode.BAD_REQUEST
-            value: str = request.get_data(as_text=True)
+            value: bytes = request.get_data()
             if not value:
                 return "Missing value", StatusCode.BAD_REQUEST
             updated_project = project.add_to_context(key, value)

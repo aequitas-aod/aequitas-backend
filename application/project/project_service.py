@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 
 import shortuuid
 
@@ -7,6 +7,8 @@ from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from domain.project.repositories import ProjectRepository
 from utils.errors import BadRequestError, NotFoundError
+
+import utils.encodings as base64
 
 
 class ProjectService:
@@ -73,18 +75,32 @@ class ProjectService:
             return project.get_context()
         raise NotFoundError("Project does not exist")
 
-    def get_from_context(self, project_id: EntityId, key: str) -> Optional[str]:
+    @staticmethod
+    def __bytes_to_string(value: bytes) -> tuple[str, bool]:
+        try:
+            return value.decode("utf-8"), False
+        except UnicodeDecodeError:
+            return base64.encode(value), True
+
+    def get_from_context(
+        self, project_id: EntityId, key: str
+    ) -> Optional[tuple[str, bool]]:
         """
         Gets a value from the project context, if it is not found tries to get it from the public context
         :param project_id: the project id
         :param key: the key to get
-        :return: the value or None if it does not exist
+        :return: the (value, binary) tuple where value is a string and binary is true if value represents a binary file in base64, or None if it does not exist
         """
         project: Optional[Project] = self.get_project_by_id(project_id)
         if project is not None:
             try:
-                value: str = project.get_from_context(key)
+                value: Union[str, bytes] = project.get_from_context(key)
             except ValueError:
-                value: str = self.project_repository.get_public_context().get(key)
-            return value
+                value: Union[str, bytes] = (
+                    self.project_repository.get_public_context().get(key)
+                )
+            binary = isinstance(value, bytes)
+            if binary:
+                value, binary = self.__bytes_to_string(value)
+            return value, binary
         raise NotFoundError("Project does not exist")

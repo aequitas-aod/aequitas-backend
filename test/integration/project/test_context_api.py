@@ -51,3 +51,25 @@ class TestContextAPI(ProjectRelatedTestCase):
         self.assertIn(self.key, response.json)
         self.assertIsInstance(response.json[self.key], str)
         self.assertEqual(json.loads(response.json[self.key]), self.value)
+
+    def test_post_dataset(self):
+        from resources.db.datasets import dataset_path
+        from pandas import read_csv
+        from io import BytesIO
+
+        self.dataset_path = dataset_path("adult")
+        self.dataset = read_csv(self.dataset_path)
+        response = self.app.put(
+            f"/projects/{self.project_id.code}/context?key=dataset__adult",
+            data=self.dataset_path.read_bytes(),
+            content_type="plain/text",
+        )
+        self.assertEqual(response.status_code, 200)
+        response = self.app.get(
+            f"/projects/{self.project_id.code}/context?key=dataset__adult"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("plain/text", response.headers["Content-Type"])
+        raw_dataset = response.data
+        dataset = read_csv(BytesIO(raw_dataset))
+        self.assertTrue(self.dataset.equals(dataset))
