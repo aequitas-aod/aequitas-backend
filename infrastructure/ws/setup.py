@@ -29,10 +29,22 @@ project_repository: ProjectRepository = Neo4jProjectRepository()
 project_service: ProjectService = ProjectService(project_repository)
 events_service: EventsService = KafkaEventsService()
 
-if ENV != "test":
+
+AUTOMATION_ENABLED = False
+
+
+def enable_automation():
+    global AUTOMATION_ENABLED
+    if AUTOMATION_ENABLED:
+        return
     components = {
         k: v
-        for k, v in locals().items()
+        for k, v in globals().items()
         if k.endswith("_service") or k.endswith("_repository")
     }
     setup_consumers(events_service, components)
+    AUTOMATION_ENABLED = True
+
+
+if ENV != "test":
+    enable_automation()
