@@ -1,15 +1,14 @@
-from pydoc_data.topics import topics
 from typing import List, Set, Optional
 
 from flask import Blueprint, request, Response
 from flask_restful import Api, Resource
 
+import infrastructure.ws.setup
 from domain.common.core import EntityId
 from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from infrastructure.ws.setup import project_service, events_service
 from presentation.presentation import serialize, deserialize
-from utils.env import ENV
 from utils.errors import ConflictError, NotFoundError, BadRequestError
 from utils.logs import logger
 from utils.status_code import StatusCode
@@ -45,9 +44,6 @@ class EventGenerator:
         return data
 
     def trigger_event(self, event_key: str, **kwargs):
-        if ENV == "test":
-            logger.debug(f"Skip triggering of event")
-            return
         message = self.__serialize(self.__wrap_notable_keys(**kwargs))
         if "dataset__" in event_key:
             topic = "datasets.created"
@@ -55,8 +51,14 @@ class EventGenerator:
             topic = "features.created"
         else:
             raise ValueError(f"Unknown event key: {event_key}")
+        if not infrastructure.ws.setup.AUTOMATION_ENABLED:
+            logger.warn(
+                f"Skip production of event %s, because automation is disabled. Message was:\n\t%s",
+                topic,
+                message,
+            )
+            return
         events_service.publish_message(topic, message)
-        logger.info(f"Trigger event on topic {topic} with message {message}")
 
 
 class ProjectResource(Resource):

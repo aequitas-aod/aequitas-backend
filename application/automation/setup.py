@@ -1,5 +1,6 @@
 import pathlib
 from importlib import import_module
+import traceback
 
 import pandas as pd
 from kafka.consumer.fetcher import ConsumerRecord
@@ -52,16 +53,24 @@ class Automator:
                 data["project"] = self.components.project_service.get_project_by_id(
                     data["project_id"]
                 )
+            else:
+                logger.warn(
+                    "project_service not found in components: this may be a bug"
+                )
         return data
 
     def _on_event(self, message: ConsumerRecord) -> None:
-        self.logger.error("Consumed event: %s", message)
+        self.logger.info("Consumed event: %s", message)
         try:
             data = self.__deserialize_notable_keys(**message.value)
             self.on_event(message.topic, **data)
         except Exception as e:
             self.logger.error(
-                "Uncaught error while processing event %s: %s", message, e
+                "Uncaught error in %s while processing event on topic %s: %s\n%s",
+                type(self),
+                message.topic,
+                e,
+                traceback.format_exc(),
             )
 
     def on_event(self, topic: str, **kwargs) -> None:
