@@ -32,12 +32,22 @@ class TestContextAPI(ProjectRelatedTestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_get_key(self):
-        self.app.put(
-            f"/projects/{self.project_id.code}/context?key={self.key}", json=self.value
-        )
+        self.test_put_key()
         response = self.app.get(
             f"/projects/{self.project_id.code}/context?key={self.key}"
         )
         self.assertEqual(response.status_code, 200)
+        self.assertIn("plain/text", response.headers["Content-Type"])
         response = json.loads(response.data)
         self.assertEqual(response, self.value)
+
+    def test_get_all(self):
+        self.test_put_key()
+        self.app.get(f"/projects/{self.project_id.code}/context")
+        response = self.app.get(f"/projects/{self.project_id.code}/context")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("application/json", response.headers["Content-Type"])
+        self.assertIsInstance(response.json, dict)
+        self.assertIn(self.key, response.json)
+        self.assertIsInstance(response.json[self.key], str)
+        self.assertEqual(json.loads(response.json[self.key]), self.value)
