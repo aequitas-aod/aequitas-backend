@@ -76,25 +76,29 @@ class Automator:
     def on_event(self, topic: str, **kwargs) -> None:
         raise NotImplementedError
 
-    def update_context(self, project: Project, *args, **kwargs):
-        id = project.id
+    def update_context(self, project_id: EntityId, *args, **kwargs):
         updates = dict(kwargs)
         for i in range(0, len(args), 2):
             key = args[i]
             value = args[i + 1]
             updates[key] = value
         for key, value in updates.items():
+            # FIXME: loading and storing the whole context multiple times is inefficient
+            assert hasattr(
+                self.components, "project_service"
+            ), "project_service not found in components"
+            project = self.components.project_service.get_project_by_id(project_id)
             project = project.add_to_context(key, value)
             self.logger.info(
                 "Set key %s of project %s",
                 key,
                 project.id,
             )
-        # noinspection PyUnresolvedReferences
-        self.components.project_service.update_project(id, project)
+            # noinspection PyUnresolvedReferences
+            self.components.project_service.update_project(project_id, project)
 
     def get_from_context(
-        self, project: Project, key: str, parse_as: str
+        self, project_id: Project, key: str, parse_as: str
     ) -> dict | pd.DataFrame:
         setup_module = "application.automation.parsing"
         module = import_module(setup_module)
@@ -105,7 +109,7 @@ class Automator:
             )
         if hasattr(self.components, "project_service"):
             return parsing_function(
-                self.components.project_service.get_from_context(project.id, key)
+                self.components.project_service.get_from_context(project_id, key)[0]
             )
         else:
             raise ValueError("Project service not found in components")
