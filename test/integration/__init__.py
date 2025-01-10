@@ -1,6 +1,5 @@
 import unittest
 from python_on_whales import DockerClient
-import utils.env
 from utils.logs import logger
 from pathlib import Path
 import test
