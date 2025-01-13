@@ -34,3 +34,15 @@ class EntityId(BaseModel):
     @property
     def values(self):
         return self.model_extra.values()
+
+    def __lt__(self, other):
+        return self.model_dump_json() < other.model_dump_json()
+
+    def __le__(self, other):
+        return self == other or self < other
+
+    def __gt__(self, other):
+        return self.model_dump_json() > other.model_dump_json()
+
+    def __ge__(self, other):
+        return self == other or self > other

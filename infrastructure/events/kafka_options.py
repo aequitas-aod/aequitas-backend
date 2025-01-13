@@ -1,7 +1,6 @@
 import os
+import re
 from typing import List
-
-from utils.env import ENV
 
 
 class KafkaBroker:
@@ -13,17 +12,18 @@ class KafkaBroker:
         return f"KafkaBroker(host='{self.host}', port='{self.port}')"
 
 
+PATTERN_KAFKA_HOST = re.compile(r"^KAFKA(_EXTERNAL)?_HOST")
+PATTERN_KAFKA_PORT = re.compile(r"^KAFKA(_EXTERNAL)?_PORT")
+
+
 def get_brokers_from_env() -> List[KafkaBroker]:
     broker_hosts = []
     broker_ports = []
 
-    host_prefix = "KAFKA_EXTERNAL_HOST" if ENV == "develop" else "KAFKA_HOST"
-    port_prefix = "KAFKA_EXTERNAL_PORT" if ENV == "develop" else "KAFKA_PORT"
-
     for variable, value in os.environ.items():
-        if variable.startswith(host_prefix):
+        if PATTERN_KAFKA_HOST.match(variable):
             broker_hosts.append(value)
-        elif variable.startswith(port_prefix):
+        elif PATTERN_KAFKA_PORT.match(variable):
             broker_ports.append(value)
 
     if len(broker_hosts) != len(broker_ports):

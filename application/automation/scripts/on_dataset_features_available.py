@@ -14,7 +14,7 @@ import utils.env
 from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
-from utils.logs import set_other_loggers_level, logger
+from utils.logs import set_other_loggers_level
 
 matplotlib.use("agg")
 THRESHOLD_PROXY = 0.8
@@ -53,8 +53,8 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
     ):
         dataset_id: str = context_key.split("__")[1]
         dataset_key: str = f"dataset__{dataset_id}"
-        dataset: pd.DataFrame = self.get_from_context(project, dataset_key, "csv")
-        features: dict = self.get_from_context(project, context_key, "json")
+        dataset: pd.DataFrame = self.get_from_context(project_id, dataset_key, "csv")
+        features: dict = self.get_from_context(project_id, context_key, "json")
         self.check_dataset_and_features(context_key, features, dataset_key, dataset)
         targets = [key for key, value in features.items() if value["target"]]
         sensitive = [key for key, value in features.items() if value["sensitive"]]
@@ -63,7 +63,7 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         for key, value in self.produce_info(
             dataset_id, actual_dataset, targets, sensitive
         ):
-            self.update_context(project, key, value)
+            self.update_context(project_id, key, value)
 
     def produce_info(
         self,

@@ -20,6 +20,6 @@ class Producer:
         )
 
     def produce(self, topic: str, message: dict | str):
-        print(f"Producing message to topic '{topic}':\n{message}")
+        logger.info(f"Producing message to topic '{topic}':\n\t{message}")
         self._producer.send(topic, message)
         self._producer.flush()

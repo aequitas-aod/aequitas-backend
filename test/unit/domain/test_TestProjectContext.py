@@ -22,7 +22,7 @@ class TestProjectContext(unittest.TestCase):
     def test_add_to_context(self):
         p = self.project.add_to_context("key", "value")
         self.assertEqual(p.context["key"], encode("value"))
-        self.assertEqual(p.get_from_context("key"), "value")
+        self.assertEqual(p.get_from_context("key"), b"value")
 
     def test_remove_from_context(self):
         p1 = self.project.add_to_context("key", "value")

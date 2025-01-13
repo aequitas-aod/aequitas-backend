@@ -1,5 +1,6 @@
 import pathlib
 from importlib import import_module
+import traceback
 
 import pandas as pd
 from kafka.consumer.fetcher import ConsumerRecord
@@ -52,40 +53,52 @@ class Automator:
                 data["project"] = self.components.project_service.get_project_by_id(
                     data["project_id"]
                 )
+            else:
+                logger.warn(
+                    "project_service not found in components: this may be a bug"
+                )
         return data
 
     def _on_event(self, message: ConsumerRecord) -> None:
-        self.logger.error("Consumed event: %s", message)
+        self.logger.info("Consumed event: %s", message)
         try:
             data = self.__deserialize_notable_keys(**message.value)
             self.on_event(message.topic, **data)
         except Exception as e:
             self.logger.error(
-                "Uncaught error while processing event %s: %s", message, e
+                "Uncaught error in %s while processing event on topic %s: %s\n%s",
+                type(self),
+                message.topic,
+                e,
+                traceback.format_exc(),
             )
 
     def on_event(self, topic: str, **kwargs) -> None:
         raise NotImplementedError
 
-    def update_context(self, project: Project, *args, **kwargs):
-        id = project.id
+    def update_context(self, project_id: EntityId, *args, **kwargs):
         updates = dict(kwargs)
         for i in range(0, len(args), 2):
             key = args[i]
             value = args[i + 1]
             updates[key] = value
         for key, value in updates.items():
+            # FIXME: loading and storing the whole context multiple times is inefficient
+            assert hasattr(
+                self.components, "project_service"
+            ), "project_service not found in components"
+            project = self.components.project_service.get_project_by_id(project_id)
             project = project.add_to_context(key, value)
             self.logger.info(
                 "Set key %s of project %s",
                 key,
                 project.id,
             )
-        # noinspection PyUnresolvedReferences
-        self.components.project_service.update_project(id, project)
+            # noinspection PyUnresolvedReferences
+            self.components.project_service.update_project(project_id, project)
 
     def get_from_context(
-        self, project: Project, key: str, parse_as: str
+        self, project_id: Project, key: str, parse_as: str
     ) -> dict | pd.DataFrame:
         setup_module = "application.automation.parsing"
         module = import_module(setup_module)
@@ -96,7 +109,7 @@ class Automator:
             )
         if hasattr(self.components, "project_service"):
             return parsing_function(
-                self.components.project_service.get_from_context(project.id, key)
+                self.components.project_service.get_from_context(project_id, key)[0]
             )
         else:
             raise ValueError("Project service not found in components")
