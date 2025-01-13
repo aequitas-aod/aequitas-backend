@@ -105,15 +105,14 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         plt.title("Correlation Matrix Heatmap")
         plt.gcf().savefig(file, dpi=FIG_DPI)
 
-    def correlation_matrix_picture(self, dataset: pd.DataFrame) -> str:
+    def correlation_matrix_picture(self, dataset: pd.DataFrame) -> bytes:
         buffer = io.BytesIO()
         self.generate_correlation_matrix_picture(dataset, buffer)
-        return base64.b64encode(buffer.getvalue()).decode("utf-8")
+        return buffer.getvalue()
 
     def generate_proxy_suggestions(
         self, dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
     ) -> dict:
-
         result = dict()
         encoded_df = self.__discretize_columns(
             dataset[[feature for feature in dataset.columns if feature not in targets]]
@@ -140,14 +139,10 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         dataset: pd.DataFrame,
         targets: list[str],
         sensitive: list[str],
-    ) -> Iterable[tuple[str, str]]:
+    ) -> Iterable[tuple[str, Union[str, bytes]]]:
         yield f"correlation_matrix__{dataset_id}", self.correlation_matrix_picture(
             dataset
         )
-        # @gciatto qua era sbagliato, no? Dovrei aver risolto
-        # yield f"suggested_proxies__{dataset_id}", self.generate_proxy_suggestions(
-        #     dataset, sensitive, targets
-        # )
         yield f"suggested_proxies__{dataset_id}", self.proxy_suggestions(
             dataset, sensitive, targets
         )
