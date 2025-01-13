@@ -30,6 +30,7 @@ class QuestionResource(Resource):
                 return "Question not found", StatusCode.NOT_FOUND
         else:
             all_questions: List = question_service.get_all_questions()
+            all_questions.sort(key=lambda q: q.id)
             return [serialize(question) for question in all_questions], StatusCode.OK
 
     def post(self):

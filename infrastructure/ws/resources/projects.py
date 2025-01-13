@@ -76,6 +76,7 @@ class ProjectResource(Resource):
                 return "Project not found", StatusCode.NOT_FOUND
         else:
             all_projects = project_service.get_all_projects()
+            all_projects.sort(key=lambda p: p.id)
             logger.info("All projects retrieved: %s", [p.id.code for p in all_projects])
             return [serialize(project) for project in all_projects], StatusCode.OK
 
