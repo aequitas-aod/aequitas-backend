@@ -21,7 +21,6 @@ class ProjectRelatedTestCase(DockerComposeBasedTestCase):
         for project_name in self.projects_to_create:
             proj_id = self._create_project(project_name)
             self.projects_by_name[project_name] = proj_id
-            logger.info(f"Created project {project_name} with id {proj_id}")
 
     def tearDown(self):
         super().tearDown()
@@ -38,6 +37,3 @@ class ProjectRelatedTestCase(DockerComposeBasedTestCase):
         projects_dict = json.loads(response.data)
         for project in projects_dict:
             cls.app.delete(f"/projects/{project['id']['code']}")
-            logger.info(
-                f"Deleted project {project['name']} with id {project['id']['code']}"
-            )

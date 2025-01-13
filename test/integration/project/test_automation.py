@@ -44,7 +44,6 @@ class TestContextAutomation(AutomationRelatedTestCase):
             content_type="plain/text",
         )
         self.assertEqual(response.status_code, 200)
-        sleep(10)  # FIXME: make GET suspensive on context
         for key_prefix in ["dataset_head", "stats"]:
             key = f"{key_prefix}__{self.dataset_id}"
             with self.subTest(key=key):

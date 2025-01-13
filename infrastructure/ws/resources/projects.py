@@ -1,4 +1,6 @@
-from typing import List, Set, Optional
+import time
+from datetime import datetime, timedelta
+from typing import Set, Optional
 
 from flask import Blueprint, request, Response
 from flask_restful import Api, Resource
@@ -50,7 +52,7 @@ class EventGenerator:
         elif "features__" in event_key:
             topic = "features.created"
         else:
-            raise ValueError(f"Unknown event key: {event_key}")
+            return
         if not infrastructure.ws.setup.AUTOMATION_ENABLED:
             logger.warn(
                 f"Skip production of event %s, because automation is disabled. Message was:\n\t%s",
@@ -73,7 +75,8 @@ class ProjectResource(Resource):
             else:
                 return "Project not found", StatusCode.NOT_FOUND
         else:
-            all_projects: List = project_service.get_all_projects()
+            all_projects = project_service.get_all_projects()
+            logger.info("All projects retrieved: %s", [p.id.code for p in all_projects])
             return [serialize(project) for project in all_projects], StatusCode.OK
 
     def post(self):
@@ -82,15 +85,16 @@ class ProjectResource(Resource):
             project_id: EntityId = project_service.add_project(body["name"])
         except ConflictError as e:
             return e.message, e.status_code
+        logger.info("Project '%s' created with id %s", body["name"], project_id.code)
         return serialize(project_id), StatusCode.CREATED
 
     def put(self, project_id=None):
         if project_id:
             updated_project: Project = deserialize(request.get_json(), Project)
+            project_id = ProjectFactory.id_of(code=project_id)
             try:
-                project_service.update_project(
-                    ProjectFactory.id_of(code=project_id), updated_project
-                )
+                project_service.update_project(project_id, updated_project)
+                logger.info("Project '%s' updated", project_id.code)
                 return "Project updated successfully", StatusCode.OK
             except BadRequestError as e:
                 return e.message, e.status_code
@@ -101,8 +105,10 @@ class ProjectResource(Resource):
 
     def delete(self, project_id=None):
         if project_id:
+            project_id = ProjectFactory.id_of(code=project_id)
             try:
-                project_service.delete_project(ProjectFactory.id_of(code=project_id))
+                project_service.delete_project(project_id)
+                logger.info("Project '%s' deleted", project_id.code)
                 return "Project deleted successfully", StatusCode.OK
             except NotFoundError as e:
                 return e.message, e.status_code
@@ -111,33 +117,81 @@ class ProjectResource(Resource):
 
 
 class ProjectContextResource(Resource, EventGenerator):
+    SLEEP_TIME = timedelta(milliseconds=100)
+    DEFAULT_TIMEOUT = timedelta(hours=1)
+
+    def _try_get_key(
+        self, project_id: EntityId, key: str, silent_miss=False
+    ) -> Response:
+        value, base64 = project_service.get_from_context(project_id, key)
+        if value:
+            logger.info("Key '%s' found in project '%s'", key, project_id.code)
+            return Response(
+                value,
+                status=StatusCode.OK,
+                content_type=("application/binary-octet" if base64 else "plain/text"),
+            )
+        else:
+            if not silent_miss:
+                logger.warn("Key '%s' not found in project '%s'", key, project_id.code)
+            return Response("Key not found", StatusCode.NOT_FOUND)
+
+    def _get_key(self, project_id: EntityId, key: str, timeout: timedelta) -> Response:
+        # FIXME this is blocking implementation. better would be to use async programming,
+        #  and tracking suspended, resuming then upon put
+        waiting_unlogged = True
+        init = datetime.now()
+        while datetime.now() - init < timeout:
+            response = self._try_get_key(project_id, key, silent_miss=True)
+            if response.status_code == StatusCode.OK:
+                return response
+            elif waiting_unlogged:
+                logger.info(
+                    "Start waiting for key '%s' in project '%s', timeout in %g seconds",
+                    key,
+                    project_id.code,
+                    timeout.total_seconds(),
+                )
+                waiting_unlogged = False
+            time.sleep(self.SLEEP_TIME.total_seconds())
+        return Response("Key not found in time", StatusCode.REQUEST_TIMEOUT)
+
+    def _get_all(self, project_id: EntityId) -> tuple:
+        value = project_service.get_context(project_id)
+        logger.info("Context of project '%s' retrieved", project_id.code)
+        return value, StatusCode.OK, {"Content-Type": "application/json"}
+
+    def _parse_optional_bool(self, name: str, default: bool) -> bool:
+        raw = request.args.get(name, default=str(default)).lower()
+        if raw in ("true", "1"):
+            return True
+        elif raw in ("false", "0"):
+            return False
+        else:
+            raise BadRequestError(f"Invalid value for parameter {name}: {raw}")
 
     def get(self, project_id=None):
         key = request.args.get("key")
+        project_id = ProjectFactory.id_of(code=project_id)
         try:
             if key:
-                value, base64 = project_service.get_from_context(
-                    ProjectFactory.id_of(code=project_id), request.args.get("key")
-                )
-                if value:
-                    return Response(
-                        value,
-                        status=StatusCode.OK,
-                        content_type=(
-                            "application/binary-octet" if base64 else "plain/text"
-                        ),
-                    )
-                else:
-                    return "Key not found", StatusCode.NOT_FOUND
-            value = project_service.get_context(ProjectFactory.id_of(code=project_id))
-            return value, StatusCode.OK, {"Content-Type": "application/json"}
+                wait = self._parse_optional_bool("wait", default=True)
+                if wait:
+                    timeout = request.args.get("timeout", default=0.0, type=float)
+                    if timeout <= 0.0:
+                        timeout = self.DEFAULT_TIMEOUT
+                    else:
+                        timeout = timedelta(seconds=timeout)
+                    return self._get_key(project_id, key, timeout)
+                return self._try_get_key(project_id, key)
+            else:
+                return self._get_all(project_id)
         except NotFoundError:
             return "Project not found", StatusCode.NOT_FOUND
 
     def put(self, project_id=None):
-        project: Optional[Project] = project_service.get_project_by_id(
-            ProjectFactory.id_of(code=project_id)
-        )
+        project_id = ProjectFactory.id_of(code=project_id)
+        project = project_service.get_project_by_id(project_id)
         if project:
             key = request.args.get("key")
             if not key:
@@ -146,10 +200,9 @@ class ProjectContextResource(Resource, EventGenerator):
             if not value:
                 return "Missing value", StatusCode.BAD_REQUEST
             updated_project = project.add_to_context(key, value)
-            project_service.update_project(
-                ProjectFactory.id_of(code=project_id), updated_project
-            )
-            self.trigger_event(key, project_id=project_id, context_key=key)
+            project_service.update_project(project_id, updated_project)
+            logger.info("Key '%s' updated in project '%s'", key, project_id.code)
+            self.trigger_event(key, project_id=project_id.code, context_key=key)
             return "Project context updated successfully", StatusCode.OK
         else:
             return "Project not found", StatusCode.NOT_FOUND
