@@ -40,18 +40,14 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
+dev = { cmd = "flask --app infrastructure/ws/main.py run -h localhost -p $port", args = ["port"], env = { ENV = "develop", DB_HOST = "localhost" } }
+serve = { cmd = "waitress-serve --port $port --call infrastructure.ws.main:create_app", args = ["port"], env = { ENV = "production", DB_HOST = "aequitas-db" } }
+###
 test = { cmd = "python -m unittest discover -v -t . -s test -p 'test_*.py'", env = { ENV = "test" } }
 unit-test = { cmd = "python -m unittest discover -v -t . -s test/unit -p 'test_*.py'", env = { ENV = "test" } }
 integration-test = { cmd = "python -m unittest discover -v -t . -s test/integration -p 'test_*.py'", env = { ENV = "test", DB_HOST = "localhost" } }
 coverage = { cmd = "coverage run -m unittest discover -v -t . -s test -p 'test_*.py'", env = { ENV = "test", DB_HOST = "localhost" } }
 coverage-report = "coverage report"
+###
 format-check = "black --check ."
 format = "black ."
-
-[tool.poe.tasks.dev]
-shell = "ENV=develop flask --app infrastructure/ws/main.py run -h localhost -p $port"
-args = ["port"]
-
-[tool.poe.tasks.serve]
-shell = "ENV=production waitress-serve --port $port --call infrastructure.ws.main:create_app"
-args = ["port"]
