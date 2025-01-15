@@ -50,7 +50,7 @@ class QuestionnaireResource(Resource, EventGenerator):
                 questionnaire_service.select_answers(project_id, index, answer_ids)
                 self.trigger_event(
                     "questionnaire.answered",
-                    project_id=project_id,
+                    project_id=project_id.code,
                     question_index=index,
                     selected_answers_ids=list(answer_ids),
                 )
