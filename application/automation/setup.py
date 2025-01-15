@@ -100,12 +100,12 @@ class Automator:
     def get_from_context(
         self, project_id: Project, key: str, parse_as: str
     ) -> dict | pd.DataFrame:
-        setup_module = "application.automation.parsing"
-        module = import_module(setup_module)
-        parsing_function = getattr(module, f"parse_{parse_as}", None)
+        import application.automation.parsing as parsing
+
+        parsing_function = getattr(parsing, f"parse_{parse_as}", None)
         if parsing_function is None:
             raise ValueError(
-                f"Parsing function 'parse_{parse_as}' not found in module '{setup_module}'"
+                f"Parsing function 'parse_{parse_as}' not found in module '{parsing.__name__}'"
             )
         if hasattr(self.components, "project_service"):
             return parsing_function(
