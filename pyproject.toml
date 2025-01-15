@@ -43,7 +43,7 @@ build-backend = "poetry.core.masonry.api"
 dev = { cmd = "flask --app infrastructure/ws/main.py run -h localhost -p $port", args = ["port"], env = { ENV = "develop", DB_HOST = "localhost" } }
 serve = { cmd = "waitress-serve --port $port --call infrastructure.ws.main:create_app", args = ["port"], env = { ENV = "production", DB_HOST = "aequitas-db" } }
 ###
-test = { cmd = "python -m unittest discover -v -t . -s test -p 'test_*.py'", env = { ENV = "test" } }
+test = { cmd = "python -m unittest discover -v -t . -s test -p 'test_*.py'", env = { ENV = "test", DB_HOST = "localhost" } }
 unit-test = { cmd = "python -m unittest discover -v -t . -s test/unit -p 'test_*.py'", env = { ENV = "test" } }
 integration-test = { cmd = "python -m unittest discover -v -t . -s test/integration -p 'test_*.py'", env = { ENV = "test", DB_HOST = "localhost" } }
 coverage = { cmd = "coverage run -m unittest discover -v -t . -s test -p 'test_*.py'", env = { ENV = "test", DB_HOST = "localhost" } }
