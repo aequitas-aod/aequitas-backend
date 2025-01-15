@@ -11,6 +11,7 @@ from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from infrastructure.ws.setup import project_service, events_service
 from presentation.presentation import serialize, deserialize
+from utils.encodings import encode
 from utils.errors import ConflictError, NotFoundError, BadRequestError
 from utils.logs import logger
 from utils.status_code import StatusCode
@@ -160,6 +161,7 @@ class ProjectContextResource(Resource, EventGenerator):
     def _get_all(self, project_id: EntityId) -> tuple:
         value = project_service.get_context(project_id)
         logger.info("Context of project '%s' retrieved", project_id.code)
+        value = {k: v if isinstance(v, str) else encode(v) for k, v in value.items()}
         return value, StatusCode.OK, {"Content-Type": "application/json"}
 
     def _parse_optional_bool(self, name: str, default: bool) -> bool:
