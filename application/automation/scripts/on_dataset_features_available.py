@@ -103,7 +103,7 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         )
         ax.collections[0].set_clim(FIG_MIN_CORR, FIG_MAX_CORR)
         plt.title("Correlation Matrix Heatmap")
-        plt.gcf().savefig(file, dpi=FIG_DPI)
+        plt.gcf().savefig(file, format='svg', dpi=FIG_DPI)
 
     def correlation_matrix_picture(self, dataset: pd.DataFrame) -> bytes:
         buffer = io.BytesIO()
