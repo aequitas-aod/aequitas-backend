@@ -15,6 +15,8 @@ from utils.encodings import encode
 from utils.errors import ConflictError, NotFoundError, BadRequestError
 from utils.logs import logger
 from utils.status_code import StatusCode
+import threading
+
 
 projects_bp = Blueprint("projects", __name__)
 api = Api(projects_bp)
@@ -78,6 +80,7 @@ class ProjectResource(Resource):
 
 class ProjectContextResource(Resource, EventGenerator):
     SLEEP_TIME = timedelta(milliseconds=100)
+    LOG_ONCE_EVERY = 10  # seconds
     DEFAULT_TIMEOUT = timedelta(hours=1)
 
     def _try_get_key(
@@ -101,18 +104,30 @@ class ProjectContextResource(Resource, EventGenerator):
         #  and tracking suspended, resuming then upon put
         waiting_unlogged = True
         init = datetime.now()
-        while datetime.now() - init < timeout:
+        next_log_at = self.LOG_ONCE_EVERY
+        while (elapsed := datetime.now() - init) < timeout:
             response = self._try_get_key(project_id, key, silent_miss=True)
             if response.status_code == StatusCode.OK:
                 return response
             elif waiting_unlogged:
                 logger.info(
-                    "Start waiting for key '%s' in project '%s', timeout in %g seconds",
+                    "On thread %s, start waiting for key '%s' in project '%s', timeout in %g seconds",
+                    threading.current_thread().name,
                     key,
                     project_id.code,
                     timeout.total_seconds(),
                 )
                 waiting_unlogged = False
+            elif elapsed.total_seconds() / self.LOG_ONCE_EVERY >= next_log_at:
+                logger.debug(
+                    "On thread %s, still waiting for key '%s' in project '%s', %g seconds elapsed over %g",
+                    threading.current_thread().name,
+                    key,
+                    project_id.code,
+                    elapsed.total_seconds(),
+                    timeout.total_seconds(),
+                )
+                next_log_at += self.LOG_ONCE_EVERY
             time.sleep(self.SLEEP_TIME.total_seconds())
         return Response("Key not found in time", StatusCode.REQUEST_TIMEOUT)
 

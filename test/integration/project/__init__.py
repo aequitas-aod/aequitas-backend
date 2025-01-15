@@ -1,5 +1,5 @@
 import json
-from utils.logs import logger
+from flask import Response
 
 from domain.common.core import EntityId
 from presentation.presentation import deserialize, serialize
@@ -37,3 +37,14 @@ class ProjectRelatedTestCase(DockerComposeBasedTestCase):
         projects_dict = json.loads(response.data)
         for project in projects_dict:
             cls.app.delete(f"/projects/{project['id']['code']}")
+
+    def assertResponseIs(self, response: Response, expected_status_codes):
+        if response.status_code not in set(expected_status_codes):
+            raise AssertionError(
+                f"Response status code is {response.status_code}, expected was in {expected_status_codes}.\n"
+                f"    body: {response.data}\n"
+                f"    headers: {'; '.join(f'{k}: {v}' for k, v in response.headers.items()) }"
+            )
+
+    def assertResponseIsSuccessful(self, response: Response):
+        self.assertResponseIs(response, {200, 201, 204})

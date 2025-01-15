@@ -2,7 +2,7 @@ import unittest
 from python_on_whales import DockerClient
 from utils.logs import logger
 from pathlib import Path
-import test
+import test.resources
 import tempfile
 from resources.db import PATH_INIT_CYPHER as RESOURCE_INIT_CYPHER
 import atexit
@@ -19,7 +19,7 @@ PATH_DOCKER_COMPOSE_SPEC = DIR_INTEGRATION_TESTS / "docker-compose.yml"
 CODE_NEO4J_INIT = ""  # do not initialize the database
 
 PATH_DOCKER_COMPOSE_SPEC.write_text(
-    test.docker_compose_spec(NEO4J_INITIALIZATION_CODE=CODE_NEO4J_INIT)
+    test.resources.docker_compose_spec(NEO4J_INITIALIZATION_CODE=CODE_NEO4J_INIT)
 )
 
 PATH_INIT_CYPHER = DIR_INTEGRATION_TESTS / "init.cypher"

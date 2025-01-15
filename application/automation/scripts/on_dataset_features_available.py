@@ -10,9 +10,11 @@ import seaborn as sns
 from sklearn.preprocessing import OrdinalEncoder
 
 import utils.env
+from application.automation.parsing import to_csv
 from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
+from utils.errors import BadRequestError
 from utils.logs import set_other_loggers_level
 
 matplotlib.use("agg")
@@ -55,9 +57,12 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         dataset: pd.DataFrame = self.get_from_context(project_id, dataset_key, "csv")
         features: dict = self.get_from_context(project_id, context_key, "json")
         self.check_dataset_and_features(context_key, features, dataset_key, dataset)
-        targets = [key for key, value in features.items() if value["target"]]
-        sensitive = [key for key, value in features.items() if value["sensitive"]]
-        drops = [key for key, value in features.items() if value["drop"]]
+        try:
+            targets = [key for key, value in features.items() if value["target"]]
+            sensitive = [key for key, value in features.items() if value["sensitive"]]
+            drops = [key for key, value in features.items() if value["drop"]]
+        except KeyError as e:
+            raise BadRequestError("Missing key in features") from e
         actual_dataset = dataset.drop(columns=drops, axis=1)
         for key, value in self.produce_info(
             dataset_id, actual_dataset, targets, sensitive
@@ -74,7 +79,7 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         raise NotImplementedError("Subclasses must implement this method")
 
 
-def discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
+def _discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
     encoded_df = copy.deepcopy(df)
     categorical_features = encoded_df.select_dtypes(
         include=["object", "category"]
@@ -90,7 +95,7 @@ def discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 def generate_correlation_matrix_picture(dataset: pd.DataFrame, file: io.IOBase):
     plt.figure(figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE))
-    encoded_df = discretize_columns(dataset)
+    encoded_df = _discretize_columns(dataset)
     ax = sns.heatmap(
         encoded_df.corr(),
         annot=len(encoded_df.columns) < FIG_MAX_FEATS,
@@ -106,7 +111,7 @@ def generate_proxy_suggestions(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
 ) -> dict:
     result = dict()
-    encoded_df = discretize_columns(
+    encoded_df = _discretize_columns(
         dataset[[feature for feature in dataset.columns if feature not in targets]]
     )
     for sensitive_feature in sensitive:
@@ -142,7 +147,7 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         targets: list[str],
         sensitive: list[str],
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
-        yield f"actual_dataset__{dataset_id}", dataset.to_csv()
+        yield f"actual_dataset__{dataset_id}", to_csv(dataset)
         yield f"correlation_matrix__{dataset_id}", self.correlation_matrix_picture(
             dataset
         )

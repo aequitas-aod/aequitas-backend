@@ -23,8 +23,17 @@ def to_csv(df: pd.DataFrame, path=None) -> Union[str, None]:
         return df.to_csv(**params)
 
 
+def to_json(obj) -> str:
+    return json.dumps(obj, indent=4)
+
+
 def parse_json(text: str) -> dict:
     return json.loads(text)
+
+
+def read_json(path) -> object:
+    with open(path, "r") as file:
+        return json.load(file)
 
 
 def _upack_json_strings(df: pd.DataFrame) -> pd.DataFrame:
