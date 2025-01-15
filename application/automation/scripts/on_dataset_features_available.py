@@ -126,6 +126,29 @@ def generate_proxy_suggestions(
     return result
 
 
+def compute_metrics(
+    dataset: pd.DataFrame, sensitives: list[str], targets: list[str]
+) -> dict:
+    # TODO @josephgiovanelli implement this function, this is just a placeholder
+    import random
+
+    metrics = {"DisparateImpact", "StatisticalParityDifference", "EqualizedOdds"}
+    domains = {k: sorted(dataset[k].unique()) for k in dataset.columns}
+    result = dict()
+    for metric in metrics:
+        result[metric] = []
+        for sensitive in sensitives:
+            for sensitive_value in domains[sensitive]:
+                for target in targets:
+                    for target_value in domains[target]:
+                        case = {
+                            "when": {sensitive: sensitive_value, target: target_value},
+                            "value": random.random(),
+                        }
+                        result[metric].append(case)
+    return result
+
+
 class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
 
     @staticmethod
@@ -139,6 +162,10 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
     ) -> str:
         return json.dumps(generate_proxy_suggestions(dataset, sensitive, targets))
+
+    @staticmethod
+    def metrics(dataset: pd.DataFrame, sensitive: list[str], targets: list[str]) -> str:
+        return json.dumps(compute_metrics(dataset, sensitive, targets))
 
     def produce_info(
         self,
@@ -154,3 +181,4 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         yield f"suggested_proxies__{dataset_id}", self.proxy_suggestions(
             dataset, sensitive, targets
         )
+        yield f"metrics__{dataset_id}", self.metrics(dataset, sensitive, targets)

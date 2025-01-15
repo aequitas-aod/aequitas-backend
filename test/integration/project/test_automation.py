@@ -77,6 +77,7 @@ class TestContextAutomation(AutomationRelatedTestCase):
             "actual_dataset": self.assertIsNonEmptyDataFrameInCsvFormat,
             "correlation_matrix": self.asserIsSvg,
             "suggested_proxies": self.assertIsJson,
+            "metrics": self.assertIsJson,
         }
         for key_prefix, assertion in key_results.items():
             key = f"{key_prefix}__{self.dataset_id}"

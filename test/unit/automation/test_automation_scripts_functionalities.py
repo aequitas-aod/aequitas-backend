@@ -6,6 +6,7 @@ from application.automation.scripts.on_dataset_created import get_stats
 from application.automation.scripts.on_dataset_features_available import (
     generate_correlation_matrix_picture,
     generate_proxy_suggestions,
+    compute_metrics,
 )
 
 
@@ -72,7 +73,6 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         self.assertContainersAreAlmostEqual(result, expected)
 
     def test_correlation_matrix_picture(self):
-        self.maxDiff = None
         import io
         from test.resources.adult import PATH_CORRELATION_MATRIX_SVG
 
@@ -82,3 +82,12 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         expected_svg = PATH_CORRELATION_MATRIX_SVG.read_text().splitlines()
         self.assertEqual(len(actual_svg), len(expected_svg))
         self.assertEqual(actual_svg[:4], expected_svg[:4])
+
+    def test_compute_metrics(self):
+        # TODO @josephgiovanelli implement this test, possibly changing the tolerance and the content of the metrics file
+        from test.resources.adult import PATH_ACTUAL_DATASET_CSV, PATH_METRICS_JSON
+
+        dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
+        actual = compute_metrics(dataset, self.sensitives, self.targets)
+        expected = read_json(PATH_METRICS_JSON)
+        self.assertContainersAreAlmostEqual(actual, expected, tolerance=2.0)
