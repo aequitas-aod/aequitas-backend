@@ -5,7 +5,7 @@ from typing import Set, Optional
 from flask import Blueprint, request, Response
 from flask_restful import Api, Resource
 
-import infrastructure.ws.setup
+from infrastructure.ws.resources import EventGenerator
 from domain.common.core import EntityId
 from domain.project.core import Project
 from domain.project.factories import ProjectFactory
@@ -15,53 +15,11 @@ from utils.encodings import encode
 from utils.errors import ConflictError, NotFoundError, BadRequestError
 from utils.logs import logger
 from utils.status_code import StatusCode
-from typing import Iterable, Dict
-
 
 projects_bp = Blueprint("projects", __name__)
 api = Api(projects_bp)
 
 projects: Set = set()
-
-
-class EventGenerator:
-    __primitive_types = (int, str, float, bool)
-
-    def __serialize(self, obj):
-        try:
-            return serialize(obj)
-        except ValueError as e:
-            if any(isinstance(obj, t) for t in self.__primitive_types):
-                return obj
-            elif isinstance(obj, Dict):
-                return {k: self.__serialize(v) for k, v in obj.items()}
-            elif isinstance(obj, Iterable):
-                return [self.__serialize(v) for v in obj]
-            raise e
-
-    @staticmethod
-    def __wrap_notable_keys(**kwargs) -> Dict:
-        data = dict(kwargs)
-        if "project_id" in data:
-            data["project_id"] = ProjectFactory.id_of(code=data["project_id"])
-        return data
-
-    def trigger_event(self, event_key: str, **kwargs):
-        message = self.__serialize(self.__wrap_notable_keys(**kwargs))
-        if "dataset__" in event_key:
-            topic = "datasets.created"
-        elif "features__" in event_key:
-            topic = "features.created"
-        else:
-            return
-        if not infrastructure.ws.setup.AUTOMATION_ENABLED:
-            logger.warn(
-                f"Skip production of event %s, because automation is disabled. Message was:\n\t%s",
-                topic,
-                message,
-            )
-            return
-        events_service.publish_message(topic, message)
 
 
 class ProjectResource(Resource):
@@ -205,7 +163,7 @@ class ProjectContextResource(Resource, EventGenerator):
             updated_project = project.add_to_context(key, value)
             project_service.update_project(project_id, updated_project)
             logger.info("Key '%s' updated in project '%s'", key, project_id.code)
-            self.trigger_event(key, project_id=project_id.code, context_key=key)
+            self.trigger_context_event(key, project_id=project_id.code, context_key=key)
             return "Project context updated successfully", StatusCode.OK
         else:
             return "Project not found", StatusCode.NOT_FOUND
