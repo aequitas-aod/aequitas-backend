@@ -133,8 +133,6 @@ def generate_proxy_suggestions(
 def compute_metrics(
     dataset: pd.DataFrame, sensitives: list[str], targets: list[str]
 ) -> dict:
-    # TODO @josephgiovanelli implement this function, this is just a placeholder
-
     metrics = {"DisparateImpact", "StatisticalParityDifference"}
     domains = {k: sorted(dataset[k].unique()) for k in dataset.columns}
     result = {m: [] for m in metrics}
