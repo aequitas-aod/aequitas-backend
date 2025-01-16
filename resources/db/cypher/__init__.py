@@ -39,11 +39,12 @@ def generate_general_context(**kwargs):
 
 def generate_actual_general_context():
     from resources.db import PATH_DATASETS
-    from resources.db.context import context_data_json, DIR as CONTEXT_DIR
+    from resources.db.context import context_data, DIR as CONTEXT_DIR
     from resources.db.datasets import dataset_path, DIR as DATASETS_DIR
     from application.automation.scripts.on_dataset_created import get_stats, get_heads
     from application.automation.parsing import read_csv, to_csv
     from utils.encodings import encode as base64encode
+    import json
 
     data = dict()
 
@@ -63,8 +64,10 @@ def generate_actual_general_context():
 
     for context_file in CONTEXT_DIR.glob("*.yml"):
         key_name = context_file.stem
-        value = context_data_json(key_name)
-        data[key_name] = value
+        value = context_data(key_name)
+        data[key_name] = json.dumps(value, indent=4)
+        for algo in value:
+            data[f"{key_name}__{algo}"] = json.dumps(value[algo], indent=4)
 
     for k in sorted(data.keys()):
         print("Add key", k, "to general context")
