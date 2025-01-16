@@ -90,4 +90,4 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
         actual = compute_metrics(dataset, self.sensitives, self.targets)
         expected = read_json(PATH_METRICS_JSON)
-        self.assertContainersAreAlmostEqual(actual, expected, tolerance=2.0)
+        self.assertContainersAreAlmostEqual(actual, expected, tolerance=0.1)
