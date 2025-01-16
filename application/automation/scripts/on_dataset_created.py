@@ -32,6 +32,10 @@ WORDS_TARGETS = ("class", "target", "output", "outcome")
 DEFAULT_DISCRETIZATION_BINS = 10
 
 
+def get_heads(df: pd.DataFrame) -> pd.DataFrame:
+    return df.head(100)
+
+
 def get_stats(
     df: pd.DataFrame, discretization_bins: int = DEFAULT_DISCRETIZATION_BINS
 ) -> pd.DataFrame:
@@ -153,5 +157,5 @@ class DatasetInfoCreator(AbstractDatasetCreationReaction):
     def produce_info(
         self, dataset_id: str, dataset: pd.DataFrame
     ) -> Iterable[tuple[str, str]]:
-        yield f"dataset_head__{dataset_id}", to_csv(dataset.head(100))
+        yield f"dataset_head__{dataset_id}", to_csv(get_heads(dataset))
         yield f"stats__{dataset_id}", to_csv(get_stats(dataset))
