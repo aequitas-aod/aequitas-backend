@@ -7,7 +7,10 @@ PATH_GENERAL_CONTEXT_CYPHER = DIR / "general-context.cypher"
 PATH_PROJECT_P1 = DIR / "project-p1.cypher"
 
 
-def _generate_kv_pair(key, value, indent=2, chunk_size=75):
+_MAX_LINE_LENGTH = 10_000
+
+
+def _generate_kv_pair(key, value, indent=2, chunk_size=_MAX_LINE_LENGTH):
     def _indent(s, level=1):
         return " " * indent * level + s
 
@@ -36,12 +39,15 @@ def generate_general_context(**kwargs):
 
 def generate_actual_general_context():
     from resources.db import PATH_DATASETS
+    from resources.db.context import context_data_json, DIR as CONTEXT_DIR
     from resources.db.datasets import dataset_path, DIR as DATASETS_DIR
     from application.automation.scripts.on_dataset_created import get_stats, get_heads
     from application.automation.parsing import read_csv, to_csv
     from utils.encodings import encode as base64encode
 
     data = dict()
+
+    data["datasets"] = PATH_DATASETS.read_text()
 
     for dataset_name in DATASETS_DIR.glob("*.csv"):
         dataset_name = dataset_name.stem
@@ -55,7 +61,10 @@ def generate_actual_general_context():
         data[f"stats__{key_name}"] = to_csv(stats)
         data[f"dataset_head__{key_name}"] = to_csv(heads)
 
-    data["datasets"] = PATH_DATASETS.read_text()
+    for context_file in CONTEXT_DIR.glob("*.yml"):
+        key_name = context_file.stem
+        value = context_data_json(key_name)
+        data[key_name] = value
 
     for k in sorted(data.keys()):
         print("Add key", k, "to general context")
