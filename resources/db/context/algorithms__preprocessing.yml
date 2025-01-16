@@ -1,0 +1,57 @@
+# https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.preprocessing.LFR.html#aif360.algorithms.preprocessing.LFR
+LearnFairRepresentation:
+  k:
+    label: Number of Prototypes
+    description: Size of the set of prototypes
+    type: integer
+    default: 5
+    values: [2, 100]
+  Ax:
+    label:  Input recontruction quality term weight
+    description: Weight coefficient on the reconstruct loss term
+    type: float
+    default: 0.01
+    values: [0, 1]
+  Ay:
+    label: Fairness weight
+    description: Weight coefficient on the fairness loss term
+    type: float
+    default: 1
+    values: [0, 1]
+  Az:
+    label: Output prediction error
+    description: Weight coefficient on the prediction error loss term
+    type: float
+    default: 50
+    values: [0, 1]
+  random_state:
+    label: Random State
+    description: Seed for reproducibility
+    type: categorical
+    default: 42
+    values:
+      - 0
+      - 1
+      - 42
+      - 999
+
+# https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.preprocessing.DisparateImpactRemover.html#aif360.algorithms.preprocessing.DisparateImpactRemover
+DisparateImpactRemover:
+  repair_level:
+    label: Repair Level
+    description: Repair level for the disparate impact remover
+    type: float
+    default: 1.0
+    values: [0, 1]
+
+# https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.preprocessing.Reweighing.html#aif360.algorithms.preprocessing.Reweighing
+Reweighing: {}
+
+# https://fairlearn.org/main/api_reference/generated/fairlearn.preprocessing.CorrelationRemover.html
+CorrelationRemover:
+  alpha:
+    label: Filter percentage
+    description: Parameter to control how much to filter, for alpha=1.0 we filter out all information while for alpha=0.0 we don’t apply any.
+    type: float
+    default: 0.5
+    values: [0, 1]

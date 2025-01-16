@@ -1,0 +1,57 @@
+# https://github.com/psykei/psyki-python/blob/main/psyki/fairness/fauci/__init__.py
+FaUCI:
+  lambda:
+    label: Regularization weight
+    description: Relative weight of the regularization term w.r.t. the loss
+    type: float
+    default: 0.5
+    values: [0, 1]
+
+# https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.inprocessing.PrejudiceRemover.html
+PrejudiceRemover:
+  eta:
+    label: Regularization weight
+    description: Relative weight of the regularization term w.r.t. the loss
+    type: float
+    default: 0.5
+    values: [0, 1]
+
+# https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.inprocessing.GerryFairClassifier.html
+GerryFairClassifier:
+  C:
+      label: Maximum L1 Norm for the Dual Variables
+      description: Maximum L1 Norm for the Dual Variables
+      type: integer
+      default: 10
+      values: [1, 100]
+  max_iters:
+    label: Max iterations
+    description: Time Horizon for the fictitious play dynamic
+    type: integer
+    default: 10
+    values: [1, 1000]
+  gamma:
+    label: Approximation
+    description: Parameter to control the fairness approximation
+    type: float
+    default: 0.01
+    values: [0, 1]
+  fairness_def:
+    label: Fairness notion
+    description: Fairness notion to be used in the optimization
+    type: categorical
+    default: FP
+    values:
+      - FP
+      - FN
+      - SP
+  predictor:
+    label: Hypothesis class for the Learner
+    description: Hypothesis class to be used in the optimization
+    type: categorical
+    default: LR
+    values:
+      - LR
+      - SVM
+      - KR
+      - Trees
