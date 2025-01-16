@@ -71,7 +71,7 @@ services:
 
   db:
     image: neo4j:latest
-    platform: *platform
+#    platform: *platform
     restart: always
     environment:
       NEO4J_AUTH: neo4j/__DB_PASSWORD__
