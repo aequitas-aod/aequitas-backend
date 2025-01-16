@@ -101,7 +101,7 @@ services:
 
   db:
     image: neo4j:latest
-    platform: *platform
+#    platform: *platform
     container_name: ${DB_HOST}
     restart: always
     environment:
