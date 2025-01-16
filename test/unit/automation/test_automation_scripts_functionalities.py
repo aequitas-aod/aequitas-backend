@@ -84,10 +84,9 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         self.assertEqual(actual_svg[:4], expected_svg[:4])
 
     def test_compute_metrics(self):
-        # TODO @josephgiovanelli implement this test, possibly changing the tolerance and the content of the metrics file
         from test.resources.adult import PATH_ACTUAL_DATASET_CSV, PATH_METRICS_JSON
 
         dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
         actual = compute_metrics(dataset, self.sensitives, self.targets)
         expected = read_json(PATH_METRICS_JSON)
-        self.assertContainersAreAlmostEqual(actual, expected, tolerance=2.0)
+        self.assertContainersAreAlmostEqual(actual, expected, tolerance=0.1)

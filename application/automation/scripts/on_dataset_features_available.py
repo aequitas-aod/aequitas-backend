@@ -6,6 +6,7 @@ from typing import Iterable, Union
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import seaborn as sns
 from sklearn.preprocessing import OrdinalEncoder
 
@@ -16,6 +17,9 @@ from domain.common.core import EntityId
 from domain.project.core import Project
 from utils.errors import BadRequestError
 from utils.logs import set_other_loggers_level
+
+from aif360.datasets import BinaryLabelDataset
+from aif360.metrics import BinaryLabelDatasetMetric
 
 matplotlib.use("agg")
 THRESHOLD_PROXY = 0.8
@@ -129,23 +133,66 @@ def generate_proxy_suggestions(
 def compute_metrics(
     dataset: pd.DataFrame, sensitives: list[str], targets: list[str]
 ) -> dict:
-    # TODO @josephgiovanelli implement this function, this is just a placeholder
-    import random
-
-    metrics = {"DisparateImpact", "StatisticalParityDifference", "EqualizedOdds"}
+    metrics = {"DisparateImpact", "StatisticalParityDifference"}
     domains = {k: sorted(dataset[k].unique()) for k in dataset.columns}
-    result = dict()
-    for metric in metrics:
-        result[metric] = []
-        for sensitive in sensitives:
-            for sensitive_value in domains[sensitive]:
-                for target in targets:
-                    for target_value in domains[target]:
-                        case = {
-                            "when": {sensitive: sensitive_value, target: target_value},
-                            "value": random.random(),
+    result = {m: [] for m in metrics}
+
+    for sensitive in sensitives:
+        for sensitive_value in domains[sensitive]:
+            for target in targets:
+                for target_value in domains[target]:
+
+                    df = dataset[[sensitive, target]]
+
+                    for col, val in {
+                        sensitive: sensitive_value,
+                        target: target_value,
+                    }.items():
+                        if pd.api.types.is_integer_dtype(df[col]):
+                            df[col] = df[col].astype(str)
+                        df[col] = df[col].apply(lambda x: 1 if x == val else 0)
+
+                    bld = BinaryLabelDataset(
+                        df=df,
+                        label_names=[target],
+                        protected_attribute_names=[sensitive],
+                        favorable_label=1,
+                        unfavorable_label=0,
+                    )
+
+                    unprivileged_groups = [{sensitive: 0}]
+                    privileged_groups = [{sensitive: 1}]
+
+                    metric = BinaryLabelDatasetMetric(
+                        bld,
+                        unprivileged_groups=unprivileged_groups,
+                        privileged_groups=privileged_groups,
+                    )
+
+                    try:
+                        disparate_impact = metric.disparate_impact()
+                    except ZeroDivisionError:
+                        # If the privileged group has zero positives, ratio is undefined
+                        disparate_impact = np.nan
+
+                    stat_parity_diff = metric.mean_difference()
+
+                    when_clause = {sensitive: sensitive_value, target: target_value}
+
+                    result["DisparateImpact"].append(
+                        {
+                            "when": when_clause,
+                            "value": float(disparate_impact),
                         }
-                        result[metric].append(case)
+                    )
+
+                    result["StatisticalParityDifference"].append(
+                        {
+                            "when": when_clause,
+                            "value": float(stat_parity_diff),
+                        }
+                    )
+
     return result
 
 

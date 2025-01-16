@@ -16,7 +16,7 @@ def to_csv(df: pd.DataFrame, path=None) -> Union[str, None]:
     for col in df.columns:
         df[col] = df[col].apply(_convert_to_json)
 
-    params = {"index": False, "quotechar": "'"}
+    params = {"index": False, "quotechar": "'", "lineterminator": "\n"}
     if path:
         df.to_csv(path, **params)
     else:
