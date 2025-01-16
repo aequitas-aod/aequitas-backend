@@ -1,4 +1,3 @@
-import base64
 import copy
 import io
 import json
@@ -11,9 +10,11 @@ import seaborn as sns
 from sklearn.preprocessing import OrdinalEncoder
 
 import utils.env
+from application.automation.parsing import to_csv
 from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
+from utils.errors import BadRequestError
 from utils.logs import set_other_loggers_level
 
 matplotlib.use("agg")
@@ -56,9 +57,12 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         dataset: pd.DataFrame = self.get_from_context(project_id, dataset_key, "csv")
         features: dict = self.get_from_context(project_id, context_key, "json")
         self.check_dataset_and_features(context_key, features, dataset_key, dataset)
-        targets = [key for key, value in features.items() if value["target"]]
-        sensitive = [key for key, value in features.items() if value["sensitive"]]
-        drops = [key for key, value in features.items() if value["drop"]]
+        try:
+            targets = [key for key, value in features.items() if value["target"]]
+            sensitive = [key for key, value in features.items() if value["sensitive"]]
+            drops = [key for key, value in features.items() if value["drop"]]
+        except KeyError as e:
+            raise BadRequestError("Missing key in features") from e
         actual_dataset = dataset.drop(columns=drops, axis=1)
         for key, value in self.produce_info(
             dataset_id, actual_dataset, targets, sensitive
@@ -75,63 +79,93 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         raise NotImplementedError("Subclasses must implement this method")
 
 
+def _discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
+    encoded_df = copy.deepcopy(df)
+    categorical_features = encoded_df.select_dtypes(
+        include=["object", "category"]
+    ).columns
+
+    # Apply Ordinal Encoding
+    encoder = OrdinalEncoder()
+    encoded_df[categorical_features] = encoder.fit_transform(
+        encoded_df[categorical_features]
+    )
+    return encoded_df
+
+
+def generate_correlation_matrix_picture(dataset: pd.DataFrame, file: io.IOBase):
+    plt.figure(figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE))
+    encoded_df = _discretize_columns(dataset)
+    ax = sns.heatmap(
+        encoded_df.corr(),
+        annot=len(encoded_df.columns) < FIG_MAX_FEATS,
+        cmap="coolwarm",
+        fmt=".2f",
+    )
+    ax.collections[0].set_clim(FIG_MIN_CORR, FIG_MAX_CORR)
+    plt.title("Correlation Matrix Heatmap")
+    plt.gcf().savefig(file, format="svg", dpi=FIG_DPI)
+
+
+def generate_proxy_suggestions(
+    dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
+) -> dict:
+    result = dict()
+    encoded_df = _discretize_columns(
+        dataset[[feature for feature in dataset.columns if feature not in targets]]
+    )
+    for sensitive_feature in sensitive:
+        result[sensitive_feature] = dict()
+        for feature in [f for f in encoded_df.columns if f != sensitive_feature]:
+            correlation = encoded_df[sensitive_feature].corr(encoded_df[feature])
+            suggested_proxy = abs(correlation) >= THRESHOLD_PROXY
+            result[sensitive_feature][feature] = {
+                "correlation": correlation,
+                "suggested_proxy": bool(suggested_proxy),
+            }
+    return result
+
+
+def compute_metrics(
+    dataset: pd.DataFrame, sensitives: list[str], targets: list[str]
+) -> dict:
+    # TODO @josephgiovanelli implement this function, this is just a placeholder
+    import random
+
+    metrics = {"DisparateImpact", "StatisticalParityDifference", "EqualizedOdds"}
+    domains = {k: sorted(dataset[k].unique()) for k in dataset.columns}
+    result = dict()
+    for metric in metrics:
+        result[metric] = []
+        for sensitive in sensitives:
+            for sensitive_value in domains[sensitive]:
+                for target in targets:
+                    for target_value in domains[target]:
+                        case = {
+                            "when": {sensitive: sensitive_value, target: target_value},
+                            "value": random.random(),
+                        }
+                        result[metric].append(case)
+    return result
+
+
 class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
 
-    def __discretize_columns(self, df: pd.DataFrame) -> pd.DataFrame:
-        encoded_df = copy.deepcopy(df)
-        categorical_features = encoded_df.select_dtypes(
-            include=["object", "category"]
-        ).columns
-
-        # Apply Ordinal Encoding
-        encoder = OrdinalEncoder()
-        encoded_df[categorical_features] = encoder.fit_transform(
-            encoded_df[categorical_features]
-        )
-        return encoded_df
-
-    def generate_correlation_matrix_picture(
-        self, dataset: pd.DataFrame, file: io.IOBase
-    ):
-        plt.figure(figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE))
-        encoded_df = self.__discretize_columns(dataset)
-        ax = sns.heatmap(
-            encoded_df.corr(),
-            annot=len(encoded_df.columns) < FIG_MAX_FEATS,
-            cmap="coolwarm",
-            fmt=".2f",
-        )
-        ax.collections[0].set_clim(FIG_MIN_CORR, FIG_MAX_CORR)
-        plt.title("Correlation Matrix Heatmap")
-        plt.gcf().savefig(file, format="svg", dpi=FIG_DPI)
-
-    def correlation_matrix_picture(self, dataset: pd.DataFrame) -> bytes:
+    @staticmethod
+    def correlation_matrix_picture(dataset: pd.DataFrame) -> bytes:
         buffer = io.BytesIO()
-        self.generate_correlation_matrix_picture(dataset, buffer)
+        generate_correlation_matrix_picture(dataset, buffer)
         return buffer.getvalue()
 
-    def generate_proxy_suggestions(
-        self, dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
-    ) -> dict:
-        result = dict()
-        encoded_df = self.__discretize_columns(
-            dataset[[feature for feature in dataset.columns if feature not in targets]]
-        )
-        for sensitive_feature in sensitive:
-            result[sensitive_feature] = dict()
-            for feature in [f for f in encoded_df.columns if f != sensitive_feature]:
-                correlation = encoded_df[sensitive_feature].corr(encoded_df[feature])
-                suggested_proxy = abs(correlation) >= THRESHOLD_PROXY
-                result[sensitive_feature][feature] = {
-                    "correlation": correlation,
-                    "suggested_proxy": bool(suggested_proxy),
-                }
-        return result
-
+    @staticmethod
     def proxy_suggestions(
-        self, dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
+        dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
     ) -> str:
-        return json.dumps(self.generate_proxy_suggestions(dataset, sensitive, targets))
+        return json.dumps(generate_proxy_suggestions(dataset, sensitive, targets))
+
+    @staticmethod
+    def metrics(dataset: pd.DataFrame, sensitive: list[str], targets: list[str]) -> str:
+        return json.dumps(compute_metrics(dataset, sensitive, targets))
 
     def produce_info(
         self,
@@ -140,9 +174,11 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         targets: list[str],
         sensitive: list[str],
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
+        yield f"actual_dataset__{dataset_id}", to_csv(dataset)
         yield f"correlation_matrix__{dataset_id}", self.correlation_matrix_picture(
             dataset
         )
         yield f"suggested_proxies__{dataset_id}", self.proxy_suggestions(
             dataset, sensitive, targets
         )
+        yield f"metrics__{dataset_id}", self.metrics(dataset, sensitive, targets)

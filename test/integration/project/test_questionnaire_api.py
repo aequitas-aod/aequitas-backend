@@ -4,9 +4,8 @@ import yaml
 from domain.common.core import EntityId
 from domain.graph.core import GraphQuestion
 from domain.project.core import ProjectQuestion
-from infrastructure.ws.main import create_app
 from presentation.presentation import deserialize, serialize
-from test import example_question_graph
+from test.resources import example_question_graph
 from test.integration.project import ProjectRelatedTestCase
 
 

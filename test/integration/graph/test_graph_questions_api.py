@@ -9,7 +9,7 @@ from domain.graph.core import GraphQuestion
 from domain.graph.factories import GraphQuestionFactory
 from infrastructure.ws.main import create_app
 from presentation.presentation import serialize, deserialize
-from test import example_questions_load
+from test.resources import example_questions_load
 from test.integration import DockerComposeBasedTestCase
 
 

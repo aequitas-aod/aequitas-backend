@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 
 from application.automation.setup import Automator
+from application.automation.parsing import to_csv
 from domain.common.core import EntityId
 from domain.project.core import Project
 from typing import Iterable
@@ -34,6 +35,14 @@ DEFAULT_DISCRETIZATION_BINS = 10
 def get_stats(
     df: pd.DataFrame, discretization_bins: int = DEFAULT_DISCRETIZATION_BINS
 ) -> pd.DataFrame:
+    def _pythonize(obj):
+        if isinstance(obj, list) or isinstance(obj, np.ndarray):
+            return [_pythonize(x) for x in obj]
+        if isinstance(obj, dict):
+            return {k: _pythonize(v) for k, v in obj.items()}
+        if hasattr(obj, "item"):
+            return obj.item()
+        return obj
 
     def _maybe_target(name: str):
         name = name.lower().strip()
@@ -134,6 +143,9 @@ def get_stats(
         ]
     ]
 
+    for col in features_view.columns:
+        features_view[col] = features_view[col].apply(_pythonize)
+
     return features_view
 
 
@@ -141,5 +153,5 @@ class DatasetInfoCreator(AbstractDatasetCreationReaction):
     def produce_info(
         self, dataset_id: str, dataset: pd.DataFrame
     ) -> Iterable[tuple[str, str]]:
-        yield f"dataset_head__{dataset_id}", dataset.head(100).to_csv()
-        yield f"stats__{dataset_id}", get_stats(dataset).to_csv()
+        yield f"dataset_head__{dataset_id}", to_csv(dataset.head(100))
+        yield f"stats__{dataset_id}", to_csv(get_stats(dataset))
