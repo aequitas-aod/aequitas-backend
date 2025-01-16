@@ -98,7 +98,7 @@ class Automator:
             self.components.project_service.update_project(project_id, project)
 
     def get_from_context(
-        self, project_id: Project, key: str, parse_as: str
+        self, project_id: EntityId, key: str, parse_as: str
     ) -> dict | pd.DataFrame:
         import application.automation.parsing as parsing
 

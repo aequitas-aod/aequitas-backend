@@ -9,6 +9,9 @@ from utils.logs import logger
 from typing import Iterable, Dict
 
 
+_prefixes = ["pre", "in", "post"]
+
+
 class EventGenerator:
     __primitive_types = (int, str, float, bool)
 
@@ -43,10 +46,14 @@ class EventGenerator:
         events_service.publish_message(topic, message)
 
     def trigger_context_event(self, event_key: str, **kwargs):
-        if "dataset__" in event_key:
+        if event_key.startswith("dataset__"):
             topic = "datasets.created"
-        elif "features__" in event_key:
+        elif event_key.startswith("features__"):
             topic = "features.created"
+        elif any(event_key.startswith(f"{prefix}processing__") for prefix in _prefixes):
+            topic = "processing.requested"
+            phase = event_key.split("processing__")[0]
+            kwargs.update(phase=phase)
         else:
             return
         self.trigger_event(topic, **kwargs)

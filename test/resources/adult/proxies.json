@@ -1,0 +1,652 @@
+{
+  "workclass": {
+    "marital-status": {
+      "proxy": true,
+      "correlation": 0.8368915379727176
+    },
+    "relationship": {
+      "proxy": false,
+      "correlation": 0.4908567113570912
+    },
+    "capitalgain": {
+      "proxy": true,
+      "correlation": 0.649714010006885
+    },
+    "native-country": {
+      "proxy": false,
+      "correlation": 0.2075506638326201
+    },
+    "sex": {
+      "proxy": true,
+      "correlation": 0.9449882564134566
+    },
+    "race": {
+      "proxy": false,
+      "correlation": 0.47312886890647865
+    },
+    "occupation": {
+      "proxy": true,
+      "correlation": 0.6802570069175249
+    },
+    "capitalloss": {
+      "proxy": true,
+      "correlation": 0.7255755447180321
+    },
+    "hoursperweek": {
+      "proxy": true,
+      "correlation": 0.573236972392365
+    },
+    "age": {
+      "proxy": true,
+      "correlation": 0.9552566681464822
+    },
+    "education": {
+      "proxy": false,
+      "correlation": 0.4665593081652507
+    },
+    "class": {
+      "proxy": false,
+      "correlation": 0.21658401846248254
+    }
+  },
+  "marital-status": {
+    "workclass": {
+      "proxy": false,
+      "correlation": 0.31319999571928736
+    },
+    "relationship": {
+      "proxy": true,
+      "correlation": 0.502707810212259
+    },
+    "capitalgain": {
+      "proxy": false,
+      "correlation": 0.38683568605847973
+    },
+    "native-country": {
+      "proxy": false,
+      "correlation": 0.39013703964372914
+    },
+    "sex": {
+      "proxy": true,
+      "correlation": 0.9478698289556756
+    },
+    "race": {
+      "proxy": true,
+      "correlation": 0.7139429411336966
+    },
+    "occupation": {
+      "proxy": false,
+      "correlation": 0.08769007455011801
+    },
+    "capitalloss": {
+      "proxy": false,
+      "correlation": 0.2782774131895075
+    },
+    "hoursperweek": {
+      "proxy": true,
+      "correlation": 0.813548903223839
+    },
+    "age": {
+      "proxy": false,
+      "correlation": 0.020204136842389864
+    },
+    "education": {
+      "proxy": true,
+      "correlation": 0.7488275969440635
+    },
+    "class": {
+      "proxy": false,
+      "correlation": 0.048323351670367165
+    }
+  },
+  "relationship": {
+    "workclass": {
+      "proxy": true,
+      "correlation": 0.5753465472449052
+    },
+    "marital-status": {
+      "proxy": true,
+      "correlation": 0.5883947609742082
+    },
+    "capitalgain": {
+      "proxy": false,
+      "correlation": 0.38392909063616765
+    },
+    "native-country": {
+      "proxy": true,
+      "correlation": 0.9798497247179726
+    },
+    "sex": {
+      "proxy": true,
+      "correlation": 0.6659212576958717
+    },
+    "race": {
+      "proxy": false,
+      "correlation": 0.0563587206670938
+    },
+    "occupation": {
+      "proxy": false,
+      "correlation": 0.3613323294699725
+    },
+    "capitalloss": {
+      "proxy": true,
+      "correlation": 0.9203297750003084
+    },
+    "hoursperweek": {
+      "proxy": true,
+      "correlation": 0.5770057776562572
+    },
+    "age": {
+      "proxy": true,
+      "correlation": 0.769585954382921
+    },
+    "education": {
+      "proxy": true,
+      "correlation": 0.9136098111372755
+    },
+    "class": {
+      "proxy": true,
+      "correlation": 0.8400964671365944
+    }
+  },
+  "capitalgain": {
+    "workclass": {
+      "proxy": false,
+      "correlation": 0.060802186679042136
+    },
+    "marital-status": {
+      "proxy": true,
+      "correlation": 0.5951106455612933
+    },
+    "relationship": {
+      "proxy": true,
+      "correlation": 0.6266634422433364
+    },
+    "native-country": {
+      "proxy": false,
+      "correlation": 0.12940387113631646
+    },
+    "sex": {
+      "proxy": false,
+      "correlation": 0.007073072332756114
+    },
+    "race": {
+      "proxy": false,
+      "correlation": 0.43002137022275355
+    },
+    "occupation": {
+      "proxy": true,
+      "correlation": 0.6492758205660343
+    },
+    "capitalloss": {
+      "proxy": false,
+      "correlation": 0.2782158861436268
+    },
+    "hoursperweek": {
+      "proxy": false,
+      "correlation": 0.20294175804268866
+    },
+    "age": {
+      "proxy": false,
+      "correlation": 0.027124559132757797
+    },
+    "education": {
+      "proxy": true,
+      "correlation": 0.774471080322102
+    },
+    "class": {
+      "proxy": true,
+      "correlation": 0.5805758596299376
+    }
+  },
+  "native-country": {
+    "workclass": {
+      "proxy": false,
+      "correlation": 0.03315876921117855
+    },
+    "marital-status": {
+      "proxy": false,
+      "correlation": 0.41946388213973074
+    },
+    "relationship": {
+      "proxy": true,
+      "correlation": 0.5175952574300755
+    },
+    "capitalgain": {
+      "proxy": false,
+      "correlation": 0.34351078480449626
+    },
+    "sex": {
+      "proxy": true,
+      "correlation": 0.8275693978107946
+    },
+    "race": {
+      "proxy": false,
+      "correlation": 0.0419522257677416
+    },
+    "occupation": {
+      "proxy": false,
+      "correlation": 0.40363059150849945
+    },
+    "capitalloss": {
+      "proxy": false,
+      "correlation": 0.3717186015128471
+    },
+    "hoursperweek": {
+      "proxy": true,
+      "correlation": 0.8510236572558959
+    },
+    "age": {
+      "proxy": true,
+      "correlation": 0.5304517003218813
+    },
+    "education": {
+      "proxy": true,
+      "correlation": 0.7536346854846823
+    },
+    "class": {
+      "proxy": true,
+      "correlation": 0.9407811923822539
+    }
+  },
+  "sex": {
+    "workclass": {
+      "proxy": true,
+      "correlation": 0.7277689540339636
+    },
+    "marital-status": {
+      "proxy": true,
+      "correlation": 0.598342557511182
+    },
+    "relationship": {
+      "proxy": false,
+      "correlation": 0.03205946161558182
+    },
+    "capitalgain": {
+      "proxy": true,
+      "correlation": 0.5452890883060791
+    },
+    "native-country": {
+      "proxy": true,
+      "correlation": 0.6301463717607763
+    },
+    "race": {
+      "proxy": false,
+      "correlation": 0.008836910124740638
+    },
+    "occupation": {
+      "proxy": false,
+      "correlation": 0.28678162072445235
+    },
+    "capitalloss": {
+      "proxy": false,
+      "correlation": 0.08197837788700413
+    },
+    "hoursperweek": {
+      "proxy": false,
+      "correlation": 0.47124289394191543
+    },
+    "age": {
+      "proxy": true,
+      "correlation": 0.9566394260301005
+    },
+    "education": {
+      "proxy": false,
+      "correlation": 0.029602016905622697
+    },
+    "class": {
+      "proxy": false,
+      "correlation": 0.13410707717786297
+    }
+  },
+  "race": {
+    "workclass": {
+      "proxy": false,
+      "correlation": 0.056712366120079905
+    },
+    "marital-status": {
+      "proxy": false,
+      "correlation": 0.26652324816127637
+    },
+    "relationship": {
+      "proxy": true,
+      "correlation": 0.9782520256464065
+    },
+    "capitalgain": {
+      "proxy": false,
+      "correlation": 0.4641168039053102
+    },
+    "native-country": {
+      "proxy": false,
+      "correlation": 0.2646307397828659
+    },
+    "sex": {
+      "proxy": false,
+      "correlation": 0.3162652760810043
+    },
+    "occupation": {
+      "proxy": true,
+      "correlation": 0.8849792140438308
+    },
+    "capitalloss": {
+      "proxy": false,
+      "correlation": 0.2117679361752577
+    },
+    "hoursperweek": {
+      "proxy": false,
+      "correlation": 0.34198874869596785
+    },
+    "age": {
+      "proxy": false,
+      "correlation": 0.041491885887603885
+    },
+    "education": {
+      "proxy": true,
+      "correlation": 0.8203254549911588
+    },
+    "class": {
+      "proxy": false,
+      "correlation": 0.4874163541071733
+    }
+  },
+  "occupation": {
+    "workclass": {
+      "proxy": false,
+      "correlation": 0.4013545460040594
+    },
+    "marital-status": {
+      "proxy": false,
+      "correlation": 0.12707634509664456
+    },
+    "relationship": {
+      "proxy": true,
+      "correlation": 0.6403213742214352
+    },
+    "capitalgain": {
+      "proxy": true,
+      "correlation": 0.6808452394104921
+    },
+    "native-country": {
+      "proxy": true,
+      "correlation": 0.7918373095273321
+    },
+    "sex": {
+      "proxy": false,
+      "correlation": 0.2535488278789402
+    },
+    "race": {
+      "proxy": true,
+      "correlation": 0.7551940968627284
+    },
+    "capitalloss": {
+      "proxy": true,
+      "correlation": 0.8292747781281233
+    },
+    "hoursperweek": {
+      "proxy": true,
+      "correlation": 0.506059080211688
+    },
+    "age": {
+      "proxy": true,
+      "correlation": 0.6458746165895392
+    },
+    "education": {
+      "proxy": true,
+      "correlation": 0.9151679571223016
+    },
+    "class": {
+      "proxy": false,
+      "correlation": 0.4351705181417792
+    }
+  },
+  "capitalloss": {
+    "workclass": {
+      "proxy": false,
+      "correlation": 0.2657455617530716
+    },
+    "marital-status": {
+      "proxy": true,
+      "correlation": 0.6184642241665673
+    },
+    "relationship": {
+      "proxy": true,
+      "correlation": 0.5127107847046654
+    },
+    "capitalgain": {
+      "proxy": false,
+      "correlation": 0.09632536775461331
+    },
+    "native-country": {
+      "proxy": true,
+      "correlation": 0.8969028983835489
+    },
+    "sex": {
+      "proxy": false,
+      "correlation": 0.3863944837832084
+    },
+    "race": {
+      "proxy": true,
+      "correlation": 0.8862943715863865
+    },
+    "occupation": {
+      "proxy": true,
+      "correlation": 0.505859945710447
+    },
+    "hoursperweek": {
+      "proxy": true,
+      "correlation": 0.6696685905713229
+    },
+    "age": {
+      "proxy": true,
+      "correlation": 0.5253640107584416
+    },
+    "education": {
+      "proxy": false,
+      "correlation": 0.0321310914731564
+    },
+    "class": {
+      "proxy": true,
+      "correlation": 0.7384758578669905
+    }
+  },
+  "hoursperweek": {
+    "workclass": {
+      "proxy": false,
+      "correlation": 0.050983632623325725
+    },
+    "marital-status": {
+      "proxy": true,
+      "correlation": 0.7595374852184725
+    },
+    "relationship": {
+      "proxy": false,
+      "correlation": 0.06748934690000374
+    },
+    "capitalgain": {
+      "proxy": false,
+      "correlation": 0.11652606196380033
+    },
+    "native-country": {
+      "proxy": false,
+      "correlation": 0.3017278561556904
+    },
+    "sex": {
+      "proxy": true,
+      "correlation": 0.7299766675828036
+    },
+    "race": {
+      "proxy": true,
+      "correlation": 0.7644052599188416
+    },
+    "occupation": {
+      "proxy": true,
+      "correlation": 0.5048198251527006
+    },
+    "capitalloss": {
+      "proxy": false,
+      "correlation": 0.144755911435818
+    },
+    "age": {
+      "proxy": true,
+      "correlation": 0.8776463747849244
+    },
+    "education": {
+      "proxy": true,
+      "correlation": 0.6829854083040767
+    },
+    "class": {
+      "proxy": true,
+      "correlation": 0.6303001337923092
+    }
+  },
+  "age": {
+    "workclass": {
+      "proxy": true,
+      "correlation": 0.8121284043472812
+    },
+    "marital-status": {
+      "proxy": false,
+      "correlation": 0.06569080311080555
+    },
+    "relationship": {
+      "proxy": false,
+      "correlation": 0.2928985022526419
+    },
+    "capitalgain": {
+      "proxy": true,
+      "correlation": 0.5517193285124847
+    },
+    "native-country": {
+      "proxy": false,
+      "correlation": 0.33271388363845755
+    },
+    "sex": {
+      "proxy": true,
+      "correlation": 0.8290642492204425
+    },
+    "race": {
+      "proxy": false,
+      "correlation": 0.1315636729008104
+    },
+    "occupation": {
+      "proxy": true,
+      "correlation": 0.9654287072202086
+    },
+    "capitalloss": {
+      "proxy": true,
+      "correlation": 0.705368922802436
+    },
+    "hoursperweek": {
+      "proxy": false,
+      "correlation": 0.3655869402037236
+    },
+    "education": {
+      "proxy": true,
+      "correlation": 0.5605816171475325
+    },
+    "class": {
+      "proxy": true,
+      "correlation": 0.6429113644167977
+    }
+  },
+  "education": {
+    "workclass": {
+      "proxy": false,
+      "correlation": 0.38214301897551173
+    },
+    "marital-status": {
+      "proxy": true,
+      "correlation": 0.5592848466623749
+    },
+    "relationship": {
+      "proxy": true,
+      "correlation": 0.7338546535671661
+    },
+    "capitalgain": {
+      "proxy": true,
+      "correlation": 0.6139427981432458
+    },
+    "native-country": {
+      "proxy": true,
+      "correlation": 0.886201092034098
+    },
+    "sex": {
+      "proxy": true,
+      "correlation": 0.9334586012815387
+    },
+    "race": {
+      "proxy": false,
+      "correlation": 0.296508627712572
+    },
+    "occupation": {
+      "proxy": false,
+      "correlation": 0.1380855150046314
+    },
+    "capitalloss": {
+      "proxy": false,
+      "correlation": 0.11074379331883966
+    },
+    "hoursperweek": {
+      "proxy": true,
+      "correlation": 0.5849677342245067
+    },
+    "age": {
+      "proxy": true,
+      "correlation": 0.6926398473064245
+    },
+    "class": {
+      "proxy": false,
+      "correlation": 0.4287116417162006
+    }
+  },
+  "class": {
+    "workclass": {
+      "proxy": true,
+      "correlation": 0.7937339823895003
+    },
+    "marital-status": {
+      "proxy": true,
+      "correlation": 0.5288452247906672
+    },
+    "relationship": {
+      "proxy": true,
+      "correlation": 0.5750612333248555
+    },
+    "capitalgain": {
+      "proxy": false,
+      "correlation": 0.39719305275099004
+    },
+    "native-country": {
+      "proxy": true,
+      "correlation": 0.9141980247879569
+    },
+    "sex": {
+      "proxy": true,
+      "correlation": 0.7388293815146083
+    },
+    "race": {
+      "proxy": true,
+      "correlation": 0.6628600488509538
+    },
+    "occupation": {
+      "proxy": true,
+      "correlation": 0.6043548158909781
+    },
+    "capitalloss": {
+      "proxy": false,
+      "correlation": 0.22893631431769146
+    },
+    "hoursperweek": {
+      "proxy": true,
+      "correlation": 0.9086567074891949
+    },
+    "age": {
+      "proxy": true,
+      "correlation": 0.8203563956103257
+    },
+    "education": {
+      "proxy": true,
+      "correlation": 0.8853284227054387
+    }
+  }
+}

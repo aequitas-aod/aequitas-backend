@@ -94,3 +94,40 @@ class TestContextAutomation(AutomationRelatedTestCase):
                 self.assertResponseIsSuccessful(response)
                 self.assertIn("plain/text", response.headers["Content-Type"])
                 assertion(response.data)
+
+    def test_processing_requested_produces(self):
+        from test.resources.adult import get_json
+
+        self.dataset_id = "adult-1"
+        self.result_id = "adult-2"
+
+        self.test_features_created_produces()
+        response = self.app.put(
+            f"/projects/{self.project_id.code}/context?key=features__{self.dataset_id}",
+            json=self.features,
+        )
+        self.assertResponseIsSuccessful(response)
+        response = self.app.put(
+            f"/projects/{self.project_id.code}/context?key=proxies__{self.dataset_id}",
+            json=get_json("proxies"),
+        )
+        self.assertResponseIsSuccessful(response)
+        response = self.app.put(
+            f"/projects/{self.project_id.code}/context?key=detected__{self.dataset_id}",
+            json=get_json("detected"),
+        )
+        self.assertResponseIsSuccessful(response)
+        key_results = {
+            "dataset": self.assertIsNonEmptyDataFrameInCsvFormat,
+            "correlation_matrix": self.asserIsSvg,
+            "metrics": self.assertIsJson,
+        }
+        for key_prefix, assertion in key_results.items():
+            key = f"{key_prefix}__{self.result_id}"
+            with self.subTest(key=key):
+                response = self.app.get(
+                    f"/projects/{self.project_id.code}/context?key={key}"
+                )
+                self.assertResponseIsSuccessful(response)
+                self.assertIn("plain/text", response.headers["Content-Type"])
+                assertion(response.data)

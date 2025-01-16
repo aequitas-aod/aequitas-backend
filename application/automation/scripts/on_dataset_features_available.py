@@ -149,23 +149,23 @@ def compute_metrics(
     return result
 
 
+def correlation_matrix_picture(dataset: pd.DataFrame) -> bytes:
+    buffer = io.BytesIO()
+    generate_correlation_matrix_picture(dataset, buffer)
+    return buffer.getvalue()
+
+
+def proxy_suggestions(
+    dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
+) -> str:
+    return json.dumps(generate_proxy_suggestions(dataset, sensitive, targets))
+
+
+def metrics(dataset: pd.DataFrame, sensitive: list[str], targets: list[str]) -> str:
+    return json.dumps(compute_metrics(dataset, sensitive, targets))
+
+
 class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
-
-    @staticmethod
-    def correlation_matrix_picture(dataset: pd.DataFrame) -> bytes:
-        buffer = io.BytesIO()
-        generate_correlation_matrix_picture(dataset, buffer)
-        return buffer.getvalue()
-
-    @staticmethod
-    def proxy_suggestions(
-        dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
-    ) -> str:
-        return json.dumps(generate_proxy_suggestions(dataset, sensitive, targets))
-
-    @staticmethod
-    def metrics(dataset: pd.DataFrame, sensitive: list[str], targets: list[str]) -> str:
-        return json.dumps(compute_metrics(dataset, sensitive, targets))
 
     def produce_info(
         self,
@@ -175,10 +175,8 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         sensitive: list[str],
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
         yield f"actual_dataset__{dataset_id}", to_csv(dataset)
-        yield f"correlation_matrix__{dataset_id}", self.correlation_matrix_picture(
-            dataset
-        )
-        yield f"suggested_proxies__{dataset_id}", self.proxy_suggestions(
+        yield f"correlation_matrix__{dataset_id}", correlation_matrix_picture(dataset)
+        yield f"suggested_proxies__{dataset_id}", proxy_suggestions(
             dataset, sensitive, targets
         )
-        yield f"metrics__{dataset_id}", self.metrics(dataset, sensitive, targets)
+        yield f"metrics__{dataset_id}", metrics(dataset, sensitive, targets)
