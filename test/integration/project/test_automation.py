@@ -19,6 +19,12 @@ class AutomationRelatedTestCase(ProjectRelatedTestCase):
         super().setUp()
         self.project_id = self.projects_by_name["Project name 1"]
 
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        # TODO docker compose down kafka (and only kafka)
+        # TODO disable automation scripts and shut down the ones who are running (to be implemented)
+
 
 class TestContextAutomation(AutomationRelatedTestCase):
 
