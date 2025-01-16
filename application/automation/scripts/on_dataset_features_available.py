@@ -138,36 +138,39 @@ def compute_metrics(
     metrics = {"DisparateImpact", "StatisticalParityDifference"}
     domains = {k: sorted(dataset[k].unique()) for k in dataset.columns}
     result = {m: [] for m in metrics}
-    
+
     for sensitive in sensitives:
         for sensitive_value in domains[sensitive]:
             for target in targets:
                 for target_value in domains[target]:
-                    
+
                     df = dataset[[sensitive, target]]
-                    
-                    for col, val in {sensitive: sensitive_value, target: target_value}.items():
+
+                    for col, val in {
+                        sensitive: sensitive_value,
+                        target: target_value,
+                    }.items():
                         if pd.api.types.is_integer_dtype(df[col]):
                             df[col] = df[col].astype(str)
                         df[col] = df[col].apply(lambda x: 1 if x == val else 0)
-                    
+
                     bld = BinaryLabelDataset(
                         df=df,
                         label_names=[target],
                         protected_attribute_names=[sensitive],
                         favorable_label=1,
-                        unfavorable_label=0
+                        unfavorable_label=0,
                     )
-                    
+
                     unprivileged_groups = [{sensitive: 0}]
-                    privileged_groups   = [{sensitive: 1}]
+                    privileged_groups = [{sensitive: 1}]
 
                     metric = BinaryLabelDatasetMetric(
                         bld,
                         unprivileged_groups=unprivileged_groups,
-                        privileged_groups=privileged_groups
+                        privileged_groups=privileged_groups,
                     )
-                    
+
                     try:
                         disparate_impact = metric.disparate_impact()
                     except ZeroDivisionError:
@@ -175,18 +178,22 @@ def compute_metrics(
                         disparate_impact = np.nan
 
                     stat_parity_diff = metric.mean_difference()
-                    
+
                     when_clause = {sensitive: sensitive_value, target: target_value}
-                        
-                    result["DisparateImpact"].append({
-                        "when": when_clause,
-                        "value": float(disparate_impact),
-                    })
-                    
-                    result["StatisticalParityDifference"].append({
-                        "when": when_clause,
-                        "value": float(stat_parity_diff),
-                    })
+
+                    result["DisparateImpact"].append(
+                        {
+                            "when": when_clause,
+                            "value": float(disparate_impact),
+                        }
+                    )
+
+                    result["StatisticalParityDifference"].append(
+                        {
+                            "when": when_clause,
+                            "value": float(stat_parity_diff),
+                        }
+                    )
 
     return result
 
