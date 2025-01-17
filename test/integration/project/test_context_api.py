@@ -63,7 +63,7 @@ class TestContextAPI(ProjectRelatedTestCase):
         from pandas import read_csv
         from io import BytesIO
 
-        self.dataset_path = dataset_path("adult")
+        self.dataset_path = dataset_path("AdultDataset")
         self.dataset = read_csv(self.dataset_path)
         response = self.app.put(
             f"/projects/{self.project_id.code}/context?key=dataset__adult",

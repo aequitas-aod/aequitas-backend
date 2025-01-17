@@ -34,13 +34,13 @@ class TestContextAutomation(AutomationRelatedTestCase):
         from resources.db.datasets import dataset_path
         from test.resources.adult import PATH_FEATURES_JSON
 
-        cls.dataset_path = dataset_path("adult")
+        cls.dataset_path = dataset_path("AdultDataset")
         cls.dataset = read_csv(cls.dataset_path)
         cls.features = json.loads(PATH_FEATURES_JSON.read_text())
 
     def setUp(self):
         super().setUp()
-        self.dataset_id = "adult"
+        self.dataset_id = "AdultDataset"
         response = self.app.put(
             f"/projects/{self.project_id.code}/context?key=dataset__{self.dataset_id}",
             data=self.dataset_path.read_bytes(),

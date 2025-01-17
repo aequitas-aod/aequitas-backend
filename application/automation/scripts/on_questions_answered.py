@@ -13,9 +13,17 @@ class CurrentDatasetUpdate(Automator):
 
     # noinspection PyMethodOverriding
     def on_event(
-        self, topic: str, project_id: EntityId, project: Project, question_index: int, selected_answers_ids: List[EntityId]
+        self,
+        topic: str,
+        project_id: EntityId,
+        project: Project,
+        question_index: int,
+        selected_answers_ids: List[EntityId],
     ):
-        logger.info(f"Topic: {topic}, project: {project}, question_index: {question_index}, selected_answers_ids: {selected_answers_ids}")
+        logger.info(
+            f"Topic: {topic}, project: {project}, question_index: {question_index}, selected_answers_ids: {selected_answers_ids}"
+        )
         if question_index == 1:
-            self.update_context(project_id, "current_dataset", selected_answers_ids[0]['code'] + "-1")
-
+            self.update_context(
+                project_id, "current_dataset", selected_answers_ids[0]["code"] + "-1"
+            )

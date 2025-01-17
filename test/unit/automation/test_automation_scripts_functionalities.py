@@ -16,7 +16,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         import resources.db.datasets as datasets
         from test.resources.adult import PATH_FEATURES_JSON
 
-        self.dataset = read_csv(datasets.dataset_path("adult"))
+        self.dataset = read_csv(datasets.dataset_path("AdultDataset"))
         self.features = read_json(PATH_FEATURES_JSON)
         assert isinstance(self.features, dict)
         self.sensitives = [
@@ -37,7 +37,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         pd.testing.assert_frame_equal(df1, df2)
 
     def test_get_stats(self):
-        with self.subTest("adult"):
+        with self.subTest("AdultDataset"):
             from test.resources.adult import PATH_STATS_CSV
 
             result = get_stats(self.dataset)
