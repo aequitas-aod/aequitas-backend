@@ -5,6 +5,7 @@ from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from domain.project.repositories.project_repository import ProjectRepository
 from presentation.presentation import deserialize, serialize
+from infrastructure.storage import db_log
 from utils.encodings import decode
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
 from utils.errors import NotFoundError, ConflictError
@@ -17,6 +18,7 @@ class Neo4jProjectRepository(ProjectRepository):
         self.driver: Neo4jDriver = Neo4jDriver(
             DB_HOST, Credentials(DB_USER, DB_PASSWORD)
         )
+        db_log("Configure driver to connect to %s, with user %s", DB_HOST, DB_USER)
 
     def get_all_projects(self) -> List[Project]:
         query_string: str = (
@@ -30,6 +32,11 @@ class Neo4jProjectRepository(ProjectRepository):
         for r in res:
             project: Project = self._convert_node_in_project(r["p"], r["pc"])
             projects.append(project)
+        db_log(
+            "Retrieved %s projects: %s",
+            len(projects),
+            [project.id.code for project in projects],
+        )
         return projects
 
     def get_project_by_id(self, project_id: EntityId) -> Optional[Project]:
@@ -43,6 +50,11 @@ class Neo4jProjectRepository(ProjectRepository):
         if len(r) == 0:
             return None
         project: Project = self._convert_node_in_project(r[0]["p"], r[0]["pc"])
+        db_log(
+            "Retrieved project %s: Context contains key: %s.",
+            project.id.code,
+            sorted(list(project.context.keys())),
+        )
         return project
 
     def insert_project(self, project: Project) -> EntityId:
@@ -58,6 +70,11 @@ class Neo4jProjectRepository(ProjectRepository):
                 "CREATE (p)-[:HAS_CONTEXT]->(pc)",
                 {"project": p, "context": context},
             )
+        )
+        db_log(
+            "Inserted project with id %s. Context contains keys: %s",
+            project.id.code,
+            sorted(list(context.keys())),
         )
         return project.id
 
@@ -80,6 +97,11 @@ class Neo4jProjectRepository(ProjectRepository):
                 {"project_code": project_id.code, "project": p, "context": context},
             )
         )
+        db_log(
+            "Updated project with id %s. New context contains keys: %s",
+            project.id.code,
+            sorted(list(context.keys())),
+        )
 
     def delete_project(self, project_id: EntityId) -> None:
         if not self._check_project_exists(project_id):
@@ -95,6 +117,7 @@ class Neo4jProjectRepository(ProjectRepository):
                 {"project_code": project_id.code},
             )
         )
+        db_log("Deleted project with id %s", project_id.code)
 
     def get_public_context(self) -> dict:
         query_string: str = "MATCH (p:PublicContext) RETURN p"
@@ -103,7 +126,12 @@ class Neo4jProjectRepository(ProjectRepository):
         if len(res) == 0:
             return {}
         context: Dict[str, str] = res[0]["p"]
-        return {key: decode(value) for key, value in context.items()}
+        result = {key: decode(value) for key, value in context.items()}
+        db_log(
+            "Retrieved public context. It contains the following keys %s",
+            sorted(list(result.keys())),
+        )
+        return result
 
     def _check_project_exists(self, project_id: EntityId) -> bool:
         p: Project = self.get_project_by_id(project_id)
