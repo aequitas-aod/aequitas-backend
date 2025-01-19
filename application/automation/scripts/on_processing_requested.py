@@ -7,6 +7,7 @@ from domain.common.core import EntityId
 from domain.project.core import Project
 from utils.logs import set_other_loggers_level
 from .on_dataset_features_available import metrics, correlation_matrix_picture
+from utils.logs import logger
 
 import pandas as pd
 
@@ -38,10 +39,11 @@ class AbstractProcessingRequestedReaction(Automator):
                 self.__supported_phases,
             )
         dataset_id: str = context_key.split("__")[1]
-        dataset_key: str = f"actual_dataset__{dataset_id}"
-        dataset: pd.DataFrame = self.get_from_context(project_id, dataset_key, "csv")
+        dataset: pd.DataFrame = self.get_from_context(
+            project_id, f"actual_dataset__{dataset_id}", "csv"
+        )
         features: dict = self.get_from_context(
-            project_id, f"features__{dataset_key}", "json"
+            project_id, f"features__{dataset_id}", "json"
         )
         drops = {key for key, value in features.items() if value["drop"]}
         targets = [
@@ -56,8 +58,8 @@ class AbstractProcessingRequestedReaction(Automator):
             if value["sensitive"]
             if key not in drops
         ]
-        proxies = self.get_from_context(project_id, f"proxies__{dataset_key}", "json")
-        detected = self.get_from_context(project_id, f"detected__{dataset_key}", "json")
+        proxies = self.get_from_context(project_id, f"proxies__{dataset_id}", "json")
+        detected = self.get_from_context(project_id, f"detected__{dataset_id}", "json")
         hyperparameters = self.get_from_context(project_id, context_key, "json")
         for key, value in self.produce_info(
             phase,
@@ -100,6 +102,17 @@ def preprocessing_algorithm_LearnFairRepresentation(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
     # TODO: @josephgiovanelli add implementation
+    logger.warning(
+        "Executing LearnFairRepresentation: \n"
+        "\ton dataset of shape %s\n"
+        "\twith sensitive attributes %s\n"
+        "\tand targets %s\n"
+        "\twith hyperparameters %s",
+        dataset.shape,
+        sensitive,
+        targets,
+        kwargs,
+    )
     return dataset
 
 
@@ -107,6 +120,17 @@ def preprocessing_algorithm_DisparateImpactRemover(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
     # TODO: @josephgiovanelli add implementation
+    logger.warning(
+        "Executing DisparateImpactRemover: \n"
+        "\ton dataset of shape %s\n"
+        "\twith sensitive attributes %s\n"
+        "\tand targets %s\n"
+        "\twith hyperparameters %s",
+        dataset.shape,
+        sensitive,
+        targets,
+        kwargs,
+    )
     return dataset
 
 
@@ -114,6 +138,17 @@ def preprocessing_algorithm_Reweighing(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
     # TODO: @josephgiovanelli add implementation
+    logger.warning(
+        "Executing Reweighing: \n"
+        "\ton dataset of shape %s\n"
+        "\twith sensitive attributes %s\n"
+        "\tand targets %s\n"
+        "\twith hyperparameters %s",
+        dataset.shape,
+        sensitive,
+        targets,
+        kwargs,
+    )
     return dataset
 
 
@@ -121,6 +156,17 @@ def preprocessing_algorithm_CorrelationRemover(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
     # TODO: @josephgiovanelli add implementation
+    logger.warning(
+        "Executing CorrelationRemover: \n"
+        "\ton dataset of shape %s\n"
+        "\twith sensitive attributes %s\n"
+        "\tand targets %s\n"
+        "\twith hyperparameters %s",
+        dataset.shape,
+        sensitive,
+        targets,
+        kwargs,
+    )
     return dataset
 
 

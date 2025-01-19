@@ -1,0 +1,8 @@
+{
+  "$algorithm": "LearnFairRepresentation",
+  "k": 5,
+  "Ax": 0.01,
+  "Ay": 1,
+  "Az": 50,
+  "random_state": 42
+}

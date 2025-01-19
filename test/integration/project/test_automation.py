@@ -4,6 +4,7 @@ import pandas as pd
 from application.automation.parsing import read_csv, parse_json
 import infrastructure.ws.setup
 from test.integration.project import ProjectRelatedTestCase
+from test.resources.adult import *
 
 
 class AutomationRelatedTestCase(ProjectRelatedTestCase):
@@ -40,7 +41,7 @@ class TestContextAutomation(AutomationRelatedTestCase):
 
     def setUp(self):
         super().setUp()
-        self.dataset_id = "adult"
+        self.dataset_id = "adult-1"
         response = self.app.put(
             f"/projects/{self.project_id.code}/context?key=dataset__{self.dataset_id}",
             data=self.dataset_path.read_bytes(),
@@ -51,7 +52,7 @@ class TestContextAutomation(AutomationRelatedTestCase):
     def test_dataset_created_produces(self):
         for key_prefix in ["dataset_head", "stats"]:
             key = f"{key_prefix}__{self.dataset_id}"
-            with self.subTest(key=key):
+            with self.subTest(get=key):
                 response = self.app.get(
                     f"/projects/{self.project_id.code}/context?key={key}"
                 )
@@ -87,7 +88,7 @@ class TestContextAutomation(AutomationRelatedTestCase):
         }
         for key_prefix, assertion in key_results.items():
             key = f"{key_prefix}__{self.dataset_id}"
-            with self.subTest(key=key):
+            with self.subTest(get=key):
                 response = self.app.get(
                     f"/projects/{self.project_id.code}/context?key={key}"
                 )
@@ -96,27 +97,37 @@ class TestContextAutomation(AutomationRelatedTestCase):
                 assertion(response.data)
 
     def test_processing_requested_produces(self):
-        from test.resources.adult import get_json
-
-        self.dataset_id = "adult-1"
         self.result_id = "adult-2"
 
         self.test_features_created_produces()
-        response = self.app.put(
-            f"/projects/{self.project_id.code}/context?key=features__{self.dataset_id}",
-            json=self.features,
-        )
-        self.assertResponseIsSuccessful(response)
-        response = self.app.put(
-            f"/projects/{self.project_id.code}/context?key=proxies__{self.dataset_id}",
-            json=get_json("proxies"),
-        )
-        self.assertResponseIsSuccessful(response)
-        response = self.app.put(
-            f"/projects/{self.project_id.code}/context?key=detected__{self.dataset_id}",
-            json=get_json("detected"),
-        )
-        self.assertResponseIsSuccessful(response)
+        key = f"features__{self.dataset_id}"
+        with self.subTest(put=key):
+            response = self.app.put(
+                f"/projects/{self.project_id.code}/context?key={key}",
+                json=self.features,
+            )
+            self.assertResponseIsSuccessful(response)
+        key = f"proxies__{self.dataset_id}"
+        with self.subTest(put=key):
+            response = self.app.put(
+                f"/projects/{self.project_id.code}/context?key={key}",
+                json=get_json(PATH_PROXIES_JSON),
+            )
+            self.assertResponseIsSuccessful(response)
+        key = f"detected__{self.dataset_id}"
+        with self.subTest(put=key):
+            response = self.app.put(
+                f"/projects/{self.project_id.code}/context?key={key}",
+                json=get_json(PATH_DETECTED_JSON),
+            )
+            self.assertResponseIsSuccessful(response)
+        key = f"preprocessing__{self.dataset_id}"
+        with self.subTest(put=key):
+            response = self.app.put(
+                f"/projects/{self.project_id.code}/context?key={key}",
+                json=get_json(PATH_PREPROCESSING_JSON),
+            )
+            self.assertResponseIsSuccessful(response)
         key_results = {
             "dataset": self.assertIsNonEmptyDataFrameInCsvFormat,
             "correlation_matrix": self.asserIsSvg,
@@ -124,7 +135,7 @@ class TestContextAutomation(AutomationRelatedTestCase):
         }
         for key_prefix, assertion in key_results.items():
             key = f"{key_prefix}__{self.result_id}"
-            with self.subTest(key=key):
+            with self.subTest(get=key):
                 response = self.app.get(
                     f"/projects/{self.project_id.code}/context?key={key}"
                 )

@@ -13,8 +13,13 @@ PATH_ACTUAL_DATASET_CSV = DIR / "actual-dataset.csv"
 PATH_METRICS_JSON = DIR / "metrics.json"
 PATH_DETECTED_JSON = DIR / "detected.json"
 PATH_PROXIES_JSON = DIR / "proxies.json"
+PATH_PREPROCESSING_JSON = DIR / "preprocessing.json"
 
 
-def get_json(name: str) -> dict:
-    with open(DIR / f"{name}.json") as f:
+def get_json(name: str | Path) -> dict:
+    if isinstance(name, str):
+        path = DIR / f"{name}.json"
+    else:
+        path = name
+    with path.open() as f:
         return json.load(f)

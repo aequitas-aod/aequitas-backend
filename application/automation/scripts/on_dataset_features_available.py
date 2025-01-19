@@ -57,12 +57,9 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         dataset: pd.DataFrame = self.get_from_context(project_id, dataset_key, "csv")
         features: dict = self.get_from_context(project_id, context_key, "json")
         self.check_dataset_and_features(context_key, features, dataset_key, dataset)
-        try:
-            targets = [key for key, value in features.items() if value["target"]]
-            sensitive = [key for key, value in features.items() if value["sensitive"]]
-            drops = [key for key, value in features.items() if value["drop"]]
-        except KeyError as e:
-            raise BadRequestError("Missing key in features") from e
+        targets = [key for key, value in features.items() if value["target"]]
+        sensitive = [key for key, value in features.items() if value["sensitive"]]
+        drops = [key for key, value in features.items() if value["drop"]]
         actual_dataset = dataset.drop(columns=drops, axis=1)
         for key, value in self.produce_info(
             dataset_id, actual_dataset, targets, sensitive

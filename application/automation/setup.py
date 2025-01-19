@@ -6,9 +6,8 @@ import pandas as pd
 from kafka.consumer.fetcher import ConsumerRecord
 from presentation.presentation import deserialize
 from application.events import EventsService
-from typing import Iterable
+from typing import Iterable, Union
 from domain.common.core import EntityId
-from domain.project.core import Project
 from utils.logs import logger
 
 
@@ -99,7 +98,7 @@ class Automator:
 
     def get_from_context(
         self, project_id: EntityId, key: str, parse_as: str
-    ) -> dict | pd.DataFrame:
+    ) -> Union[dict, pd.DataFrame]:
         import application.automation.parsing as parsing
 
         parsing_function = getattr(parsing, f"parse_{parse_as}", None)
@@ -108,9 +107,19 @@ class Automator:
                 f"Parsing function 'parse_{parse_as}' not found in module '{parsing.__name__}'"
             )
         if hasattr(self.components, "project_service"):
-            return parsing_function(
-                self.components.project_service.get_from_context(project_id, key)[0]
-            )
+            value = self.components.project_service.get_from_context(project_id, key)[0]
+            if value is None:
+                logger.warning(
+                    f"Key '%s' not found in context of project '%s'", key, project_id
+                )
+                return None
+            try:
+                return parsing_function(value)
+            except Exception as e:
+                raise ValueError(
+                    f"Error while parsing key '{key}' of project '{project_id}'. "
+                    f"Value was {value}"
+                ) from e
         else:
             raise ValueError("Project service not found in components")
 
