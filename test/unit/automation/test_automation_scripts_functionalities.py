@@ -101,7 +101,8 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         result = preprocessing_algorithm_LearnFairRepresentation(dataset, ["sex"], ["class"])
         expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
         
-        logger.debug(expected)
+        logger.debug("LFR result", result)
+        logger.debug("LFR expected", expected)
 
         self.assertDataFramesAreEqual(result, expected)
         
@@ -112,8 +113,9 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         result = preprocessing_algorithm_CorrelationRemover(dataset, ["sex"], ["class"])
         expected = read_csv(PATH_PREPROCESSING_CR_CSV)
         
-        logger.debug(expected)
-        
+        logger.debug("CR result", result)
+        logger.debug("CR expected", expected)    
+            
         self.assertDataFramesAreEqual(result, expected)
 
     # TODO @josephgiovanelli test here the algorithms that you will implement in on_processing_requested.py

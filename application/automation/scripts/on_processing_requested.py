@@ -311,8 +311,6 @@ def preprocessing_algorithm_LearnFairRepresentation(
         axis=1,
     )
     
-    logger.debug(transformed_df)
-
     return transformed_df
 
 
