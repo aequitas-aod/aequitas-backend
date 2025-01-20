@@ -98,8 +98,9 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         from test.resources.adult import PATH_ACTUAL_DATASET_CSV, PATH_PREPROCESSING_LFR_CSV
 
         dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
-        result = preprocessing_algorithm_LearnFairRepresentation(dataset, self.sensitives, self.targets)
+        result = preprocessing_algorithm_LearnFairRepresentation(dataset, ["sex"], ["class"])
         expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
+        
         logger.debug(expected)
 
         self.assertDataFramesAreEqual(result, expected)
@@ -108,7 +109,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         from test.resources.adult import PATH_ACTUAL_DATASET_CSV, PATH_PREPROCESSING_CR_CSV
 
         dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
-        result = preprocessing_algorithm_CorrelationRemover(dataset, self.sensitives, self.targets)
+        result = preprocessing_algorithm_CorrelationRemover(dataset, ["sex"], ["class"])
         expected = read_csv(PATH_PREPROCESSING_CR_CSV)
         
         logger.debug(expected)
