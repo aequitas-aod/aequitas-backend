@@ -20,8 +20,6 @@ class AbstractDatasetCreationReaction(Automator):
         dataset: pd.DataFrame = self.get_from_context(project_id, context_key, "csv")
         new_keys = {k: v for k, v in self.produce_info(dataset_id, dataset)}
         self.update_context(project_id, **new_keys)
-        for key, value in self.produce_info(dataset_id, dataset):
-            self.update_context(project_id, key, value)
 
     def produce_info(
         self, dataset_id: str, dataset: pd.DataFrame
