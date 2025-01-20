@@ -79,3 +79,23 @@ class TestContextAPI(ProjectRelatedTestCase):
         raw_dataset = response.data
         dataset = read_csv(BytesIO(raw_dataset))
         self.assertTrue(self.dataset.equals(dataset))
+
+    def test_concurrent_context_writes_do_not_overwrite_each_others(self):
+        N = 1000
+        responses = []
+        with self.subTest(put=f"issue concurrent requests"):
+            for i in range(N):
+                response = self.app.put(
+                    f"/projects/{self.project_id.code}/context?key=k{i}",
+                    json={"value": i},
+                )
+                responses.append(response)
+            for response in responses:
+                self.assertResponseIsSuccessful(response)
+        with self.subTest("get full context"):
+            response = self.app.get(f"/projects/{self.project_id.code}/context")
+            self.assertResponseIsSuccessful(response)
+        for i in range(N):
+            with self.subTest(check=f"k{i}"):
+                self.assertIn(f"k{i}", response.json)
+                self.assertEqual('{"value": %d}' % i, response.json[f"k{i}"])
