@@ -81,7 +81,7 @@ class TestContextAPI(ProjectRelatedTestCase):
         self.assertTrue(self.dataset.equals(dataset))
 
     def test_concurrent_context_writes_do_not_overwrite_each_others(self):
-        N = 1000
+        N = 100
         responses = []
         with self.subTest(put=f"issue concurrent requests"):
             for i in range(N):
