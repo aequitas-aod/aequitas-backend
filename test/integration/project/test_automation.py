@@ -96,9 +96,6 @@ class TestContextAutomation(AutomationRelatedTestCase):
                 self.assertIn("plain/text", response.headers["Content-Type"])
                 assertion(response.data)
 
-    @unittest.skip(
-        "This currently suffers because of suspensive semantics and incorrect DB updates"
-    )
     def test_processing_requested_produces(self):
         self.result_id = "adult-2"
 
