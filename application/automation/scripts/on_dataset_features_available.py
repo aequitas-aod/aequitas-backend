@@ -15,7 +15,6 @@ from application.automation.parsing import to_csv
 from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
-from utils.errors import BadRequestError
 from utils.logs import set_other_loggers_level
 
 from aif360.datasets import BinaryLabelDataset
@@ -65,10 +64,13 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         sensitive = [key for key, value in features.items() if value["sensitive"]]
         drops = [key for key, value in features.items() if value["drop"]]
         actual_dataset = dataset.drop(columns=drops, axis=1)
-        for key, value in self.produce_info(
-            dataset_id, actual_dataset, targets, sensitive
-        ):
-            self.update_context(project_id, key, value)
+        new_keys = {
+            k: v
+            for k, v in self.produce_info(
+                dataset_id, actual_dataset, targets, sensitive
+            )
+        }
+        self.update_context(project_id, **new_keys)
 
     def produce_info(
         self,

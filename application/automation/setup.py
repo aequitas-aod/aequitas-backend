@@ -75,26 +75,31 @@ class Automator:
     def on_event(self, topic: str, **kwargs) -> None:
         raise NotImplementedError
 
+    # noinspection PyUnresolvedReferences
     def update_context(self, project_id: EntityId, *args, **kwargs):
         updates = dict(kwargs)
         for i in range(0, len(args), 2):
             key = args[i]
             value = args[i + 1]
             updates[key] = value
+        # FIXME: loading and storing the whole context multiple times is inefficient
+        assert hasattr(
+            self.components, "project_service"
+        ), "project_service not found in components"
+        project = self.components.project_service.get_project_by_id(project_id)
         for key, value in updates.items():
-            # FIXME: loading and storing the whole context multiple times is inefficient
-            assert hasattr(
-                self.components, "project_service"
-            ), "project_service not found in components"
-            project = self.components.project_service.get_project_by_id(project_id)
             project = project.add_to_context(key, value)
             self.logger.info(
-                "Set key %s of project %s",
+                "About to add key %s of project %s",
                 key,
                 project.id,
             )
-            # noinspection PyUnresolvedReferences
-            self.components.project_service.update_project(project_id, project)
+        self.components.project_service.update_project(project_id, project)
+        self.logger.info(
+            "Updated context of project %s with new keys: %s",
+            project_id,
+            sorted(list(updates.keys())),
+        )
 
     def get_from_context(
         self, project_id: EntityId, key: str, parse_as: str

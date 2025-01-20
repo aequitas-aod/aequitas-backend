@@ -1,6 +1,5 @@
 import unittest
 from io import BytesIO
-import json
 import pandas as pd
 from application.automation.parsing import read_csv, parse_json
 import infrastructure.ws.setup

@@ -61,17 +61,20 @@ class AbstractProcessingRequestedReaction(Automator):
         proxies = self.get_from_context(project_id, f"proxies__{dataset_id}", "json")
         detected = self.get_from_context(project_id, f"detected__{dataset_id}", "json")
         hyperparameters = self.get_from_context(project_id, context_key, "json")
-        for key, value in self.produce_info(
-            phase,
-            dataset_id,
-            dataset,
-            targets,
-            sensitive,
-            proxies,
-            detected,
-            hyperparameters,
-        ):
-            self.update_context(project_id, key, value)
+        new_keys = {
+            k: v
+            for k, v in self.produce_info(
+                phase,
+                dataset_id,
+                dataset,
+                targets,
+                sensitive,
+                proxies,
+                detected,
+                hyperparameters,
+            )
+        }
+        self.update_context(project_id, **new_keys)
 
     def produce_info(
         self,
