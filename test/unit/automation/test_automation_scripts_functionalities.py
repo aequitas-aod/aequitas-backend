@@ -99,11 +99,11 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
 
     def test_preprocessing_algorithm_LearnFairRepresentation(self):
         from test.resources.adult import (
-            PATH_ACTUAL_DATASET_CSV,
+            PATH_ACTUAL_DATASET_ADULT_CSV,
             PATH_PREPROCESSING_LFR_CSV,
         )
 
-        dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
+        dataset = read_csv(PATH_ACTUAL_DATASET_ADULT_CSV)
         result = preprocessing_algorithm_LearnFairRepresentation(
             dataset, ["sex"], ["class"]
         )
@@ -116,11 +116,11 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
 
     def test_preprocessing_algorithm_CorrelationRemover(self):
         from test.resources.adult import (
-            PATH_ACTUAL_DATASET_CSV,
+            PATH_ACTUAL_DATASET_ADULT_CSV,
             PATH_PREPROCESSING_CR_CSV,
         )
 
-        dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
+        dataset = read_csv(PATH_ACTUAL_DATASET_ADULT_CSV)
         result = preprocessing_algorithm_CorrelationRemover(dataset, ["sex"], ["class"])
         expected = read_csv(PATH_PREPROCESSING_CR_CSV)
 
