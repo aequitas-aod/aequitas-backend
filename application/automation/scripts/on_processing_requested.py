@@ -310,7 +310,7 @@ def preprocessing_algorithm_LearnFairRepresentation(
         [X_t.reset_index(drop=True).drop("label", axis=1), y.reset_index(drop=True)],
         axis=1,
     )
-    
+
     return transformed_df
 
 

@@ -10,7 +10,10 @@ from application.automation.scripts.on_dataset_features_available import (
     generate_proxy_suggestions,
     compute_metrics,
 )
-from application.automation.scripts.on_processing_requested import preprocessing_algorithm_CorrelationRemover, preprocessing_algorithm_LearnFairRepresentation
+from application.automation.scripts.on_processing_requested import (
+    preprocessing_algorithm_CorrelationRemover,
+    preprocessing_algorithm_LearnFairRepresentation,
+)
 
 
 class TestDatasetRelatedFunctionalities(unittest.TestCase):
@@ -95,27 +98,35 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         self.assertContainersAreAlmostEqual(actual, expected, tolerance=0.1)
 
     def test_preprocessing_algorithm_LearnFairRepresentation(self):
-        from test.resources.adult import PATH_ACTUAL_DATASET_CSV, PATH_PREPROCESSING_LFR_CSV
+        from test.resources.adult import (
+            PATH_ACTUAL_DATASET_CSV,
+            PATH_PREPROCESSING_LFR_CSV,
+        )
 
         dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
-        result = preprocessing_algorithm_LearnFairRepresentation(dataset, ["sex"], ["class"])
+        result = preprocessing_algorithm_LearnFairRepresentation(
+            dataset, ["sex"], ["class"]
+        )
         expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
-        
+
         logger.debug("LFR result", result)
         logger.debug("LFR expected", expected)
 
         self.assertDataFramesAreEqual(result, expected)
-        
+
     def test_preprocessing_algorithm_CorrelationRemover(self):
-        from test.resources.adult import PATH_ACTUAL_DATASET_CSV, PATH_PREPROCESSING_CR_CSV
+        from test.resources.adult import (
+            PATH_ACTUAL_DATASET_CSV,
+            PATH_PREPROCESSING_CR_CSV,
+        )
 
         dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
         result = preprocessing_algorithm_CorrelationRemover(dataset, ["sex"], ["class"])
         expected = read_csv(PATH_PREPROCESSING_CR_CSV)
-        
+
         logger.debug("CR result", result)
-        logger.debug("CR expected", expected)    
-            
+        logger.debug("CR expected", expected)
+
         self.assertDataFramesAreEqual(result, expected)
 
     # TODO @josephgiovanelli test here the algorithms that you will implement in on_processing_requested.py
