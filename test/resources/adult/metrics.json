@@ -5,770 +5,770 @@
                 "workclass": "Federal-gov",
                 "class": "<=50K"
             },
-            "value": 0.3229295516059063
+            "value": 1.2415007896605494
         },
         {
             "when": {
                 "workclass": "Federal-gov",
                 "class": ">50K"
             },
-            "value": 0.5073434041811273
+            "value": 0.6230124285262464
         },
         {
             "when": {
                 "workclass": "Local-gov",
                 "class": "<=50K"
             },
-            "value": 0.31424363590286164
+            "value": 1.0720727641197407
         },
         {
             "when": {
                 "workclass": "Local-gov",
                 "class": ">50K"
             },
-            "value": 0.005575900322849048
+            "value": 0.8278918146430236
         },
         {
             "when": {
                 "workclass": "Private",
                 "class": "<=50K"
             },
-            "value": 0.9055787017403725
+            "value": 0.8537636487395172
         },
         {
             "when": {
                 "workclass": "Private",
                 "class": ">50K"
             },
-            "value": 0.23206682454713767
+            "value": 1.5254908796639275
         },
         {
             "when": {
                 "workclass": "Self-emp-inc",
                 "class": "<=50K"
             },
-            "value": 0.5372015226919995
+            "value": 1.7126543671515806
         },
         {
             "when": {
                 "workclass": "Self-emp-inc",
                 "class": ">50K"
             },
-            "value": 0.6657218791498517
+            "value": 0.426438261524934
         },
         {
             "when": {
                 "workclass": "Self-emp-not-inc",
                 "class": "<=50K"
             },
-            "value": 0.38243336158515207
+            "value": 1.0471369763651086
         },
         {
             "when": {
                 "workclass": "Self-emp-not-inc",
                 "class": ">50K"
             },
-            "value": 0.8241503618428587
+            "value": 0.8781738391772408
         },
         {
             "when": {
                 "workclass": "State-gov",
                 "class": "<=50K"
             },
-            "value": 0.5972701878604691
+            "value": 1.027623212863661
         },
         {
             "when": {
                 "workclass": "State-gov",
                 "class": ">50K"
             },
-            "value": 0.3462492089415242
+            "value": 0.9242486508777293
         },
         {
             "when": {
                 "workclass": "Without-pay",
                 "class": "<=50K"
             },
-            "value": 0.5216095554185801
+            "value": 0.8312519867399302
         },
         {
             "when": {
                 "workclass": "Without-pay",
                 "class": ">50K"
             },
-            "value": 0.17507820311971212
+            "value": 2.6031061259706645
         },
         {
             "when": {
                 "race": "Amer-Indian-Eskimo",
                 "class": "<=50K"
             },
-            "value": 0.9250184576525137
+            "value": 0.8551191170493214
         },
         {
             "when": {
                 "race": "Amer-Indian-Eskimo",
                 "class": ">50K"
             },
-            "value": 0.6647061854274687
+            "value": 2.044235797870929
         },
         {
             "when": {
                 "race": "Asian-Pac-Islander",
                 "class": "<=50K"
             },
-            "value": 0.3514662875672281
+            "value": 1.0507770948592194
         },
         {
             "when": {
                 "race": "Asian-Pac-Islander",
                 "class": ">50K"
             },
-            "value": 0.4495520580080361
+            "value": 0.8714747788658241
         },
         {
             "when": {
                 "race": "Black",
                 "class": "<=50K"
             },
-            "value": 0.6180083557258107
+            "value": 0.846539032915113
         },
         {
             "when": {
                 "race": "Black",
                 "class": ">50K"
             },
-            "value": 0.04633842675896305
+            "value": 2.0615820457145553
         },
         {
             "when": {
                 "race": "Other",
                 "class": "<=50K"
             },
-            "value": 0.9168158389487183
+            "value": 0.8609636479992405
         },
         {
             "when": {
                 "race": "Other",
                 "class": ">50K"
             },
-            "value": 0.09799523386599363
+            "value": 1.9516265870274205
         },
         {
             "when": {
                 "race": "White",
                 "class": "<=50K"
             },
-            "value": 0.7249952589899284
+            "value": 1.1409371125434804
         },
         {
             "when": {
                 "race": "White",
                 "class": ">50K"
             },
-            "value": 0.5444959173901075
+            "value": 0.6037688467181627
         },
         {
             "when": {
                 "sex": "Female",
                 "class": "<=50K"
             },
-            "value": 0.8964556337215495
+            "value": 0.7756136532154777
         },
         {
             "when": {
                 "sex": "Female",
                 "class": ">50K"
             },
-            "value": 0.7887568477655199
+            "value": 2.7512621648982543
         },
         {
             "when": {
                 "sex": "Male",
                 "class": "<=50K"
             },
-            "value": 0.6154598786578314
+            "value": 1.2893016978933767
         },
         {
             "when": {
                 "sex": "Male",
                 "class": ">50K"
             },
-            "value": 0.9575719077278892
+            "value": 0.3634695423643793
         },
         {
             "when": {
                 "native-country": "Cambodia",
                 "class": "<=50K"
             },
-            "value": 0.265525936953506
+            "value": 1.1504427773410453
         },
         {
             "when": {
                 "native-country": "Cambodia",
                 "class": ">50K"
             },
-            "value": 0.9111959737167344
+            "value": 0.7158303094669145
         },
         {
             "when": {
                 "native-country": "Canada",
                 "class": "<=50K"
             },
-            "value": 0.6212001465899673
+            "value": 1.1909935991150329
         },
         {
             "when": {
                 "native-country": "Canada",
                 "class": ">50K"
             },
-            "value": 0.29214663225535276
+            "value": 0.6721276548525268
         },
         {
             "when": {
                 "native-country": "China",
                 "class": "<=50K"
             },
-            "value": 0.9494059074497893
+            "value": 1.1040734520971283
         },
         {
             "when": {
                 "native-country": "China",
                 "class": ">50K"
             },
-            "value": 0.668457863609802
+            "value": 0.7773984496811427
         },
         {
             "when": {
                 "native-country": "Columbia",
                 "class": "<=50K"
             },
-            "value": 0.7645887575246699
+            "value": 0.7903479772332231
         },
         {
             "when": {
                 "native-country": "Columbia",
                 "class": ">50K"
             },
-            "value": 0.420102676170936
+            "value": 5.088214443952149
         },
         {
             "when": {
                 "native-country": "Cuba",
                 "class": "<=50K"
             },
-            "value": 0.3792471247620187
+            "value": 1.0105031328611358
         },
         {
             "when": {
                 "native-country": "Cuba",
                 "class": ">50K"
             },
-            "value": 0.5495237573235677
+            "value": 0.9694173484337514
         },
         {
             "when": {
                 "native-country": "Dominican-Republic",
                 "class": "<=50K"
             },
-            "value": 0.5960328656492682
+            "value": 0.7925891846320607
         },
         {
             "when": {
                 "native-country": "Dominican-Republic",
                 "class": ">50K"
             },
-            "value": 0.04565413766540294
+            "value": 4.816359002770083
         },
         {
             "when": {
                 "native-country": "Ecuador",
                 "class": "<=50K"
             },
-            "value": 0.41482041026852956
+            "value": 0.8740074765661875
         },
         {
             "when": {
                 "native-country": "Ecuador",
                 "class": ">50K"
             },
-            "value": 0.4159048932819007
+            "value": 1.7769538945085106
         },
         {
             "when": {
                 "native-country": "El-Salvador",
                 "class": "<=50K"
             },
-            "value": 0.8042383112500194
+            "value": 0.8123823040031319
         },
         {
             "when": {
                 "native-country": "El-Salvador",
                 "class": ">50K"
             },
-            "value": 0.6246881246623375
+            "value": 3.3196369686885494
         },
         {
             "when": {
                 "native-country": "England",
                 "class": "<=50K"
             },
-            "value": 0.9845358918900158
+            "value": 1.2437882919835341
         },
         {
             "when": {
                 "native-country": "England",
                 "class": ">50K"
             },
-            "value": 0.7739489590695567
+            "value": 0.6265370846209692
         },
         {
             "when": {
                 "native-country": "France",
                 "class": "<=50K"
             },
-            "value": 0.13794394478434324
+            "value": 1.3541627937856857
         },
         {
             "when": {
                 "native-country": "France",
                 "class": ">50K"
             },
-            "value": 0.965975373665307
+            "value": 0.5572965077678927
         },
         {
             "when": {
                 "native-country": "Germany",
                 "class": "<=50K"
             },
-            "value": 0.9109162336991395
+            "value": 1.07562731178179
         },
         {
             "when": {
                 "native-country": "Germany",
                 "class": ">50K"
             },
-            "value": 0.5138561004427677
+            "value": 0.8239709122320404
         },
         {
             "when": {
                 "native-country": "Greece",
                 "class": "<=50K"
             },
-            "value": 0.9436425818662318
+            "value": 1.189096684216878
         },
         {
             "when": {
                 "native-country": "Greece",
                 "class": ">50K"
             },
-            "value": 0.6757227887602462
+            "value": 0.6743334882931544
         },
         {
             "when": {
                 "native-country": "Guatemala",
                 "class": "<=50K"
             },
-            "value": 0.9718271797096996
+            "value": 0.7789219622196691
         },
         {
             "when": {
                 "native-country": "Guatemala",
                 "class": ">50K"
             },
-            "value": 0.5076850289717875
+            "value": 7.116492378589153
         },
         {
             "when": {
                 "native-country": "Haiti",
                 "class": "<=50K"
             },
-            "value": 0.7421327444975268
+            "value": 0.8647731047770912
         },
         {
             "when": {
                 "native-country": "Haiti",
                 "class": ">50K"
             },
-            "value": 0.5270270616859857
+            "value": 1.901512634819392
         },
         {
             "when": {
                 "native-country": "Holand-Netherlands",
                 "class": "<=50K"
             },
-            "value": 0.8035969071556274
+            "value": 0.7521505495234515
         },
         {
             "when": {
                 "native-country": "Holand-Netherlands",
                 "class": ">50K"
             },
-            "value": 0.9447175202047708
+            "value": Infinity
         },
         {
             "when": {
                 "native-country": "Honduras",
                 "class": "<=50K"
             },
-            "value": 0.5232896764559548
+            "value": 0.840577993912429
         },
         {
             "when": {
                 "native-country": "Honduras",
                 "class": ">50K"
             },
-            "value": 0.04326884719055313
+            "value": 2.3550870517443534
         },
         {
             "when": {
                 "native-country": "Hong",
                 "class": "<=50K"
             },
-            "value": 0.4038117663031833
+            "value": 1.053051289994247
         },
         {
             "when": {
                 "native-country": "Hong",
                 "class": ">50K"
             },
-            "value": 0.9569590363328044
+            "value": 0.8673717750143825
         },
         {
             "when": {
                 "native-country": "Hungary",
                 "class": "<=50K"
             },
-            "value": 0.34755187113588226
+            "value": 1.1282851075126097
         },
         {
             "when": {
                 "native-country": "Hungary",
                 "class": ">50K"
             },
-            "value": 0.36907493433786276
+            "value": 0.743429784974781
         },
         {
             "when": {
                 "native-country": "India",
                 "class": "<=50K"
             },
-            "value": 0.8974571528734169
+            "value": 1.3017684251737303
         },
         {
             "when": {
                 "native-country": "India",
                 "class": ">50K"
             },
-            "value": 0.8202885573294271
+            "value": 0.5862852235521443
         },
         {
             "when": {
                 "native-country": "Iran",
                 "class": "<=50K"
             },
-            "value": 0.9589003272388132
+            "value": 1.2391413634931014
         },
         {
             "when": {
                 "native-country": "Iran",
                 "class": ">50K"
             },
-            "value": 0.602611111497561
+            "value": 0.630417892783389
         },
         {
             "when": {
                 "native-country": "Ireland",
                 "class": "<=50K"
             },
-            "value": 0.49408283319295476
+            "value": 1.0414798320786902
         },
         {
             "when": {
                 "native-country": "Ireland",
                 "class": ">50K"
             },
-            "value": 0.9546255709551537
+            "value": 0.8921524365954057
         },
         {
             "when": {
                 "native-country": "Italy",
                 "class": "<=50K"
             },
-            "value": 0.4876871512840987
+            "value": 1.1228926948961586
         },
         {
             "when": {
                 "native-country": "Italy",
                 "class": ">50K"
             },
-            "value": 0.06558145786238956
+            "value": 0.7504905891502229
         },
         {
             "when": {
                 "native-country": "Jamaica",
                 "class": "<=50K"
             },
-            "value": 0.6303779062944771
+            "value": 0.8701770175299228
         },
         {
             "when": {
                 "native-country": "Jamaica",
                 "class": ">50K"
             },
-            "value": 0.6365882717070982
+            "value": 1.8253032457026341
         },
         {
             "when": {
                 "native-country": "Japan",
                 "class": "<=50K"
             },
-            "value": 0.4194922148768937
+            "value": 1.1544744765852952
         },
         {
             "when": {
                 "native-country": "Japan",
                 "class": ">50K"
             },
-            "value": 0.8053792216111015
+            "value": 0.710983237356544
         },
         {
             "when": {
                 "native-country": "Laos",
                 "class": "<=50K"
             },
-            "value": 0.3238826393166737
+            "value": 0.8312519867399302
         },
         {
             "when": {
                 "native-country": "Laos",
                 "class": ">50K"
             },
-            "value": 0.5270713221594261
+            "value": 2.6031061259706645
         },
         {
             "when": {
                 "native-country": "Mexico",
                 "class": "<=50K"
             },
-            "value": 0.32883961218492985
+            "value": 0.7892459469188233
         },
         {
             "when": {
                 "native-country": "Mexico",
                 "class": ">50K"
             },
-            "value": 0.9298871897187583
+            "value": 4.838414243350793
         },
         {
             "when": {
                 "native-country": "Nicaragua",
                 "class": "<=50K"
             },
-            "value": 0.4396396908893253
+            "value": 0.8020896976136717
         },
         {
             "when": {
                 "native-country": "Nicaragua",
                 "class": ">50K"
             },
-            "value": 0.008586352239120187
+            "value": 3.968654535794926
         },
         {
             "when": {
                 "native-country": "Outlying-US(Guam-USVI-etc)",
                 "class": "<=50K"
             },
-            "value": 0.2157228990956115
+            "value": 0.7878697850821744
         },
         {
             "when": {
                 "native-country": "Outlying-US(Guam-USVI-etc)",
                 "class": ">50K"
             },
-            "value": 0.2266763654422982
+            "value": 5.454734513274336
         },
         {
             "when": {
                 "native-country": "Peru",
                 "class": "<=50K"
             },
-            "value": 0.5850790307217327
+            "value": 0.8253633270113165
         },
         {
             "when": {
                 "native-country": "Peru",
                 "class": ">50K"
             },
-            "value": 0.4420389883357031
+            "value": 2.7900258981340063
         },
         {
             "when": {
                 "native-country": "Philippines",
                 "class": "<=50K"
             },
-            "value": 0.9461940681515776
+            "value": 1.0700876375021373
         },
         {
             "when": {
                 "native-country": "Philippines",
                 "class": ">50K"
             },
-            "value": 0.610084253600236
+            "value": 0.8339590492508893
         },
         {
             "when": {
                 "native-country": "Poland",
                 "class": "<=50K"
             },
-            "value": 0.8820471925053103
+            "value": 0.9371896263502564
         },
         {
             "when": {
                 "native-country": "Poland",
                 "class": ">50K"
             },
-            "value": 0.578897569445058
+            "value": 1.2551671429520834
         },
         {
             "when": {
                 "native-country": "Portugal",
                 "class": "<=50K"
             },
-            "value": 0.1195154936258579
+            "value": 0.9325810451727193
         },
         {
             "when": {
                 "native-country": "Portugal",
                 "class": ">50K"
             },
-            "value": 0.9621626742578243
+            "value": 1.2809123117803365
         },
         {
             "when": {
                 "native-country": "Puerto-Rico",
                 "class": "<=50K"
             },
-            "value": 0.04083883576868985
+            "value": 0.8486226213911349
         },
         {
             "when": {
                 "native-country": "Puerto-Rico",
                 "class": ">50K"
             },
-            "value": 0.8056133185357314
+            "value": 2.1731746842187047
         },
         {
             "when": {
                 "native-country": "Scotland",
                 "class": "<=50K"
             },
-            "value": 0.9861017210444291
+            "value": 0.8356562393994366
         },
         {
             "when": {
                 "native-country": "Scotland",
                 "class": ">50K"
             },
-            "value": 0.7069685128467232
+            "value": 2.4790938454050706
         },
         {
             "when": {
                 "native-country": "South",
                 "class": "<=50K"
             },
-            "value": 0.20743375027327116
+            "value": 0.9150845531012595
         },
         {
             "when": {
                 "native-country": "South",
                 "class": ">50K"
             },
-            "value": 0.27488080497934275
+            "value": 1.3915545606997481
         },
         {
             "when": {
                 "native-country": "Taiwan",
                 "class": "<=50K"
             },
-            "value": 0.40238918943705726
+            "value": 1.379414174065136
         },
         {
             "when": {
                 "native-country": "Taiwan",
                 "class": ">50K"
             },
-            "value": 0.3140169115161162
+            "value": 0.5447029911218367
         },
         {
             "when": {
                 "native-country": "Thailand",
                 "class": "<=50K"
             },
-            "value": 0.49499444889535393
+            "value": 0.9087967163056225
         },
         {
             "when": {
                 "native-country": "Thailand",
                 "class": ">50K"
             },
-            "value": 0.6159842566406681
+            "value": 1.4377757617330116
         },
         {
             "when": {
                 "native-country": "Trinadad&Tobago",
                 "class": "<=50K"
             },
-            "value": 0.8297494669552801
+            "value": 0.8147291795734135
         },
         {
             "when": {
                 "native-country": "Trinadad&Tobago",
                 "class": ">50K"
             },
-            "value": 0.4999836714946828
+            "value": 3.223249845119037
         },
         {
             "when": {
                 "native-country": "United-States",
                 "class": "<=50K"
             },
-            "value": 0.28294924659824483
+            "value": 1.079846278885819
         },
         {
             "when": {
                 "native-country": "United-States",
                 "class": ">50K"
             },
-            "value": 0.3041975264732941
+            "value": 0.7642822907777376
         },
         {
             "when": {
                 "native-country": "Vietnam",
                 "class": "<=50K"
             },
-            "value": 0.18937225544075098
+            "value": 0.8211052176843224
         },
         {
             "when": {
                 "native-country": "Vietnam",
                 "class": ">50K"
             },
-            "value": 0.43594819304896915
+            "value": 2.9422862079987846
         },
         {
             "when": {
                 "native-country": "Yugoslavia",
                 "class": "<=50K"
             },
-            "value": 0.12349312106963306
+            "value": 1.1533839244231066
         },
         {
             "when": {
                 "native-country": "Yugoslavia",
                 "class": ">50K"
             },
-            "value": 0.43016737256845394
+            "value": 0.7124051417066749
         }
     ],
     "StatisticalParityDifference": [
@@ -777,1542 +777,770 @@
                 "workclass": "Federal-gov",
                 "class": "<=50K"
             },
-            "value": 0.03572090338552192
+            "value": 0.14720211716862786
         },
         {
             "when": {
                 "workclass": "Federal-gov",
                 "class": ">50K"
             },
-            "value": 0.620985834505755
+            "value": -0.14720211716862783
         },
         {
             "when": {
                 "workclass": "Local-gov",
                 "class": "<=50K"
             },
-            "value": 0.6259042223924279
+            "value": 0.05079967406504304
         },
         {
             "when": {
                 "workclass": "Local-gov",
                 "class": ">50K"
             },
-            "value": 0.4652309826469503
+            "value": -0.050799674065043016
         },
         {
             "when": {
                 "workclass": "Private",
                 "class": "<=50K"
             },
-            "value": 0.43530498258116956
+            "value": -0.11440040737512058
         },
         {
             "when": {
                 "workclass": "Private",
                 "class": ">50K"
             },
-            "value": 0.11391996374934776
+            "value": 0.1144004073751205
         },
         {
             "when": {
                 "workclass": "Self-emp-inc",
                 "class": "<=50K"
             },
-            "value": 0.5466370698575975
+            "value": 0.3177936242340584
         },
         {
             "when": {
                 "workclass": "Self-emp-inc",
                 "class": ">50K"
             },
-            "value": 0.7498253204960803
+            "value": -0.31779362423405844
         },
         {
             "when": {
                 "workclass": "Self-emp-not-inc",
                 "class": "<=50K"
             },
-            "value": 0.27536323009058383
+            "value": 0.03398680303248214
         },
         {
             "when": {
                 "workclass": "Self-emp-not-inc",
                 "class": ">50K"
             },
-            "value": 0.2856610976051037
+            "value": -0.03398680303248208
         },
         {
             "when": {
                 "workclass": "State-gov",
                 "class": "<=50K"
             },
-            "value": 0.32120932187545004
+            "value": 0.020241881574296294
         },
         {
             "when": {
                 "workclass": "State-gov",
                 "class": ">50K"
             },
-            "value": 0.16763455479372547
+            "value": -0.020241881574296378
         },
         {
             "when": {
                 "workclass": "Without-pay",
                 "class": "<=50K"
             },
-            "value": 0.14814302851095973
+            "value": -0.152676773901968
         },
         {
             "when": {
                 "workclass": "Without-pay",
                 "class": ">50K"
             },
-            "value": 0.060612400271263245
+            "value": 0.15267677390196804
         },
         {
             "when": {
                 "race": "Amer-Indian-Eskimo",
                 "class": "<=50K"
             },
-            "value": 0.988310784957356
+            "value": -0.12722872939576835
         },
         {
             "when": {
                 "race": "Amer-Indian-Eskimo",
                 "class": ">50K"
             },
-            "value": 0.11247086626309033
+            "value": 0.12722872939576835
         },
         {
             "when": {
                 "race": "Asian-Pac-Islander",
                 "class": "<=50K"
             },
-            "value": 0.2898776632985405
+            "value": 0.0363973957010828
         },
         {
             "when": {
                 "race": "Asian-Pac-Islander",
                 "class": ">50K"
             },
-            "value": 0.19076910189995488
+            "value": -0.0363973957010828
         },
         {
             "when": {
                 "race": "Black",
                 "class": "<=50K"
             },
-            "value": 0.9784871215161399
+            "value": -0.1340787162752064
         },
         {
             "when": {
                 "race": "Black",
                 "class": ">50K"
             },
-            "value": 0.35830610024674636
+            "value": 0.13407871627520637
         },
         {
             "when": {
                 "race": "Other",
                 "class": "<=50K"
             },
-            "value": 0.1762742481681323
+            "value": -0.12131217115080428
         },
         {
             "when": {
                 "race": "Other",
                 "class": ">50K"
             },
-            "value": 0.6066552069096082
+            "value": 0.12131217115080431
         },
         {
             "when": {
                 "race": "White",
                 "class": "<=50K"
             },
-            "value": 0.10436125130544249
+            "value": 0.10395937026830093
         },
         {
             "when": {
                 "race": "White",
                 "class": ">50K"
             },
-            "value": 0.24224053437336857
+            "value": -0.10395937026830099
         },
         {
             "when": {
                 "sex": "Female",
                 "class": "<=50K"
             },
-            "value": 0.04248162620239393
+            "value": -0.1989014326788151
         },
         {
             "when": {
                 "sex": "Female",
                 "class": ">50K"
             },
-            "value": 0.1268922746365
+            "value": 0.198901432678815
         },
         {
             "when": {
                 "sex": "Male",
                 "class": "<=50K"
             },
-            "value": 0.6134257105816858
+            "value": 0.1989014326788151
         },
         {
             "when": {
                 "sex": "Male",
                 "class": ">50K"
             },
-            "value": 0.8670507954838858
+            "value": -0.198901432678815
         },
         {
             "when": {
                 "native-country": "Cambodia",
                 "class": "<=50K"
             },
-            "value": 0.49868440183404206
+            "value": 0.09836643133837575
         },
         {
             "when": {
                 "native-country": "Cambodia",
                 "class": ">50K"
             },
-            "value": 0.2630179528400348
+            "value": -0.09836643133837575
         },
         {
             "when": {
                 "native-country": "Canada",
                 "class": "<=50K"
             },
-            "value": 0.3764907519416407
+            "value": 0.12068920680275086
         },
         {
             "when": {
                 "native-country": "Canada",
                 "class": ">50K"
             },
-            "value": 0.4913715051795209
+            "value": -0.12068920680275089
         },
         {
             "when": {
                 "native-country": "China",
                 "class": "<=50K"
             },
-            "value": 0.9699426919791342
+            "value": 0.07091730806618468
         },
         {
             "when": {
                 "native-country": "China",
                 "class": ">50K"
             },
-            "value": 0.7865726254486067
+            "value": -0.07091730806618463
         },
         {
             "when": {
                 "native-country": "Columbia",
                 "class": "<=50K"
             },
-            "value": 0.6417091844592917
+            "value": -0.19942509482693405
         },
         {
             "when": {
                 "native-country": "Columbia",
                 "class": ">50K"
             },
-            "value": 0.9710582274573958
+            "value": 0.1994250948269341
         },
         {
             "when": {
                 "native-country": "Cuba",
                 "class": "<=50K"
             },
-            "value": 0.30823591530487426
+            "value": 0.007818121453025961
         },
         {
             "when": {
                 "native-country": "Cuba",
                 "class": ">50K"
             },
-            "value": 0.5134242397227237
+            "value": -0.007818121453025961
         },
         {
             "when": {
                 "native-country": "Dominican-Republic",
                 "class": "<=50K"
             },
-            "value": 0.28796499635952244
+            "value": -0.19671953622526195
         },
         {
             "when": {
                 "native-country": "Dominican-Republic",
                 "class": ">50K"
             },
-            "value": 0.5015202437639414
+            "value": 0.196719536225262
         },
         {
             "when": {
                 "native-country": "Ecuador",
                 "class": "<=50K"
             },
-            "value": 0.254348240972775
+            "value": -0.10841217132676895
         },
         {
             "when": {
                 "native-country": "Ecuador",
                 "class": ">50K"
             },
-            "value": 0.8079478569149622
+            "value": 0.10841217132676892
         },
         {
             "when": {
                 "native-country": "El-Salvador",
                 "class": "<=50K"
             },
-            "value": 0.7132920360509023
+            "value": -0.17357827656853098
         },
         {
             "when": {
                 "native-country": "El-Salvador",
                 "class": ">50K"
             },
-            "value": 0.22678399994396004
+            "value": 0.17357827656853092
         },
         {
             "when": {
                 "native-country": "England",
                 "class": "<=50K"
             },
-            "value": 0.7300445869598922
+            "value": 0.14750215985558368
         },
         {
             "when": {
                 "native-country": "England",
                 "class": ">50K"
             },
-            "value": 0.6590890381532475
+            "value": -0.14750215985558357
         },
         {
             "when": {
                 "native-country": "France",
                 "class": "<=50K"
             },
-            "value": 0.2287497992868135
+            "value": 0.19675710765871435
         },
         {
             "when": {
                 "native-country": "France",
                 "class": ">50K"
             },
-            "value": 0.45793175637869443
+            "value": -0.19675710765871432
         },
         {
             "when": {
                 "native-country": "Germany",
                 "class": "<=50K"
             },
-            "value": 0.9260294154437928
+            "value": 0.05289993311161478
         },
         {
             "when": {
                 "native-country": "Germany",
                 "class": ">50K"
             },
-            "value": 0.06313075335596197
+            "value": -0.05289993311161478
         },
         {
             "when": {
                 "native-country": "Greece",
                 "class": "<=50K"
             },
-            "value": 0.45344072695303694
+            "value": 0.11963259613720856
         },
         {
             "when": {
                 "native-country": "Greece",
                 "class": ">50K"
             },
-            "value": 0.8240391460569532
+            "value": -0.11963259613720859
         },
         {
             "when": {
                 "native-country": "Guatemala",
                 "class": "<=50K"
             },
-            "value": 0.19839306371969467
+            "value": -0.21336601320659843
         },
         {
             "when": {
                 "native-country": "Guatemala",
                 "class": ">50K"
             },
-            "value": 0.999497054190183
+            "value": 0.21336601320659834
         },
         {
             "when": {
                 "native-country": "Haiti",
                 "class": "<=50K"
             },
-            "value": 0.25416187552053304
+            "value": -0.11758860454165976
         },
         {
             "when": {
                 "native-country": "Haiti",
                 "class": ">50K"
             },
-            "value": 0.4766600400244181
+            "value": 0.11758860454165981
         },
         {
             "when": {
                 "native-country": "Holand-Netherlands",
                 "class": "<=50K"
             },
-            "value": 0.6439617901153434
+            "value": -0.2478494504765485
         },
         {
             "when": {
                 "native-country": "Holand-Netherlands",
                 "class": ">50K"
             },
-            "value": 0.46453817309356693
+            "value": 0.2478494504765485
         },
         {
             "when": {
                 "native-country": "Honduras",
                 "class": "<=50K"
             },
-            "value": 0.235408472999582
+            "value": -0.14264074228887924
         },
         {
             "when": {
                 "native-country": "Honduras",
                 "class": ">50K"
             },
-            "value": 0.13099003502048556
+            "value": 0.1426407422888793
         },
         {
             "when": {
                 "native-country": "Hong",
                 "class": "<=50K"
             },
-            "value": 0.18925593094340698
+            "value": 0.037893778567319236
         },
         {
             "when": {
                 "native-country": "Hong",
                 "class": ">50K"
             },
-            "value": 0.6188880335046115
+            "value": -0.03789377856731929
         },
         {
             "when": {
                 "native-country": "Hungary",
                 "class": "<=50K"
             },
-            "value": 0.23562952398478165
+            "value": 0.08552340500840638
         },
         {
             "when": {
                 "native-country": "Hungary",
                 "class": ">50K"
             },
-            "value": 0.5761652871121549
+            "value": -0.08552340500840633
         },
         {
             "when": {
                 "native-country": "India",
                 "class": "<=50K"
             },
-            "value": 0.7643673385528081
+            "value": 0.17449194652902766
         },
         {
             "when": {
                 "native-country": "India",
                 "class": ">50K"
             },
-            "value": 0.17595610428587172
+            "value": -0.1744919465290276
         },
         {
             "when": {
                 "native-country": "Iran",
                 "class": "<=50K"
             },
-            "value": 0.8083128431124993
+            "value": 0.14519297069224013
         },
         {
             "when": {
                 "native-country": "Iran",
                 "class": ">50K"
             },
-            "value": 0.6689230303658967
+            "value": -0.14519297069224005
         },
         {
             "when": {
                 "native-country": "Ireland",
                 "class": "<=50K"
             },
-            "value": 0.7903962932094263
+            "value": 0.029957656501276242
         },
         {
             "when": {
                 "native-country": "Ireland",
                 "class": ">50K"
             },
-            "value": 0.437879658162744
+            "value": -0.029957656501276214
         },
         {
             "when": {
                 "native-country": "Italy",
                 "class": "<=50K"
             },
-            "value": 0.7873315632085355
+            "value": 0.08233810558042631
         },
         {
             "when": {
                 "native-country": "Italy",
                 "class": ">50K"
             },
-            "value": 0.8668436616196357
+            "value": -0.08233810558042642
         },
         {
             "when": {
                 "native-country": "Jamaica",
                 "class": "<=50K"
             },
-            "value": 0.001252936732884291
+            "value": -0.11217714019259095
         },
         {
             "when": {
                 "native-country": "Jamaica",
                 "class": ">50K"
             },
-            "value": 0.8584056185622956
+            "value": 0.11217714019259103
         },
         {
             "when": {
                 "native-country": "Japan",
                 "class": "<=50K"
             },
-            "value": 0.429046865677458
+            "value": 0.10066876002187786
         },
         {
             "when": {
                 "native-country": "Japan",
                 "class": ">50K"
             },
-            "value": 0.07162947796548058
+            "value": -0.10066876002187794
         },
         {
             "when": {
                 "native-country": "Laos",
                 "class": "<=50K"
             },
-            "value": 0.6973101585526331
+            "value": -0.152676773901968
         },
         {
             "when": {
                 "native-country": "Laos",
                 "class": ">50K"
             },
-            "value": 0.7782790096213367
+            "value": 0.15267677390196804
         },
         {
             "when": {
                 "native-country": "Mexico",
                 "class": "<=50K"
             },
-            "value": 0.8018929064579857
+            "value": -0.19978457302047314
         },
         {
             "when": {
                 "native-country": "Mexico",
                 "class": ">50K"
             },
-            "value": 0.39623545919615755
+            "value": 0.1997845730204732
         },
         {
             "when": {
                 "native-country": "Nicaragua",
                 "class": "<=50K"
             },
-            "value": 0.7565961183972021
+            "value": -0.18554090848718285
         },
         {
             "when": {
                 "native-country": "Nicaragua",
                 "class": ">50K"
             },
-            "value": 0.890877583134794
+            "value": 0.18554090848718288
         },
         {
             "when": {
                 "native-country": "Outlying-US(Guam-USVI-etc)",
                 "class": "<=50K"
             },
-            "value": 0.47030107925408526
+            "value": -0.20248793242156082
         },
         {
             "when": {
                 "native-country": "Outlying-US(Guam-USVI-etc)",
                 "class": ">50K"
             },
-            "value": 0.4983508844376322
+            "value": 0.2024879324215607
         },
         {
             "when": {
                 "native-country": "Peru",
                 "class": "<=50K"
             },
-            "value": 0.9093596797252163
+            "value": -0.1591134131674672
         },
         {
             "when": {
                 "native-country": "Peru",
                 "class": ">50K"
             },
-            "value": 0.17093988936793125
+            "value": 0.15911341316746724
         },
         {
             "when": {
                 "native-country": "Philippines",
                 "class": "<=50K"
             },
-            "value": 0.2688839111114584
+            "value": 0.04928423979832264
         },
         {
             "when": {
                 "native-country": "Philippines",
                 "class": ">50K"
             },
-            "value": 0.7399474284849014
+            "value": -0.04928423979832261
         },
         {
             "when": {
                 "native-country": "Poland",
                 "class": "<=50K"
             },
-            "value": 0.4801864508087803
+            "value": -0.050403386262139915
         },
         {
             "when": {
                 "native-country": "Poland",
                 "class": ">50K"
             },
-            "value": 0.9086135107905466
+            "value": 0.05040338626213994
         },
         {
             "when": {
                 "native-country": "Portugal",
                 "class": "<=50K"
             },
-            "value": 0.5717358971554631
+            "value": -0.054370124860710245
         },
         {
             "when": {
                 "native-country": "Portugal",
                 "class": ">50K"
             },
-            "value": 0.21175340119873098
+            "value": 0.0543701248607103
         },
         {
             "when": {
                 "native-country": "Puerto-Rico",
                 "class": "<=50K"
             },
-            "value": 0.5552878147336359
+            "value": -0.134077106767852
         },
         {
             "when": {
                 "native-country": "Puerto-Rico",
                 "class": ">50K"
             },
-            "value": 0.02730886641597552
+            "value": 0.134077106767852
         },
         {
             "when": {
                 "native-country": "Scotland",
                 "class": "<=50K"
             },
-            "value": 0.9401287175438818
+            "value": -0.14790938454050706
         },
         {
             "when": {
                 "native-country": "Scotland",
                 "class": ">50K"
             },
-            "value": 0.5912702682423615
+            "value": 0.14790938454050706
         },
         {
             "when": {
                 "native-country": "South",
                 "class": "<=50K"
             },
-            "value": 0.5598704872066752
+            "value": -0.06978200091678677
         },
         {
             "when": {
                 "native-country": "South",
                 "class": ">50K"
             },
-            "value": 0.5598897213989775
+            "value": 0.0697820009167868
         },
         {
             "when": {
                 "native-country": "Taiwan",
                 "class": "<=50K"
             },
-            "value": 0.9459831848542384
+            "value": 0.2069531858537106
         },
         {
             "when": {
                 "native-country": "Taiwan",
                 "class": ">50K"
             },
-            "value": 0.5775564766570874
+            "value": -0.20695318585371056
         },
         {
             "when": {
                 "native-country": "Thailand",
                 "class": "<=50K"
             },
-            "value": 0.6099545465087879
+            "value": -0.07547857960913995
         },
         {
             "when": {
                 "native-country": "Thailand",
                 "class": ">50K"
             },
-            "value": 0.6072048845879234
+            "value": 0.07547857960913995
         },
         {
             "when": {
                 "native-country": "Trinadad&Tobago",
                 "class": "<=50K"
             },
-            "value": 0.43083429462182055
+            "value": -0.17101921885531057
         },
         {
             "when": {
                 "native-country": "Trinadad&Tobago",
                 "class": ">50K"
             },
-            "value": 0.8480927646112387
+            "value": 0.17101921885531055
         },
         {
             "when": {
                 "native-country": "United-States",
                 "class": "<=50K"
             },
-            "value": 0.48234944961224313
+            "value": 0.059642996850581276
         },
         {
             "when": {
                 "native-country": "United-States",
                 "class": ">50K"
             },
-            "value": 0.5838324615505306
+            "value": -0.059642996850581165
         },
         {
             "when": {
                 "native-country": "Vietnam",
                 "class": "<=50K"
             },
-            "value": 0.14989920028995152
+            "value": -0.16380727055411437
         },
         {
             "when": {
                 "native-country": "Vietnam",
                 "class": ">50K"
             },
-            "value": 0.285620078929654
+            "value": 0.16380727055411437
         },
         {
             "when": {
                 "native-country": "Yugoslavia",
                 "class": "<=50K"
             },
-            "value": 0.8157953154546171
+            "value": 0.1000329941889826
         },
         {
             "when": {
                 "native-country": "Yugoslavia",
                 "class": ">50K"
             },
-            "value": 0.3549242983306211
-        }
-    ],
-    "EqualizedOdds": [
-        {
-            "when": {
-                "workclass": "Federal-gov",
-                "class": "<=50K"
-            },
-            "value": 0.39841400913568736
-        },
-        {
-            "when": {
-                "workclass": "Federal-gov",
-                "class": ">50K"
-            },
-            "value": 0.9029074828723904
-        },
-        {
-            "when": {
-                "workclass": "Local-gov",
-                "class": "<=50K"
-            },
-            "value": 0.36744766421110986
-        },
-        {
-            "when": {
-                "workclass": "Local-gov",
-                "class": ">50K"
-            },
-            "value": 0.9737478350976622
-        },
-        {
-            "when": {
-                "workclass": "Private",
-                "class": "<=50K"
-            },
-            "value": 0.14952252908386743
-        },
-        {
-            "when": {
-                "workclass": "Private",
-                "class": ">50K"
-            },
-            "value": 0.39833070082009714
-        },
-        {
-            "when": {
-                "workclass": "Self-emp-inc",
-                "class": "<=50K"
-            },
-            "value": 0.7627767765983525
-        },
-        {
-            "when": {
-                "workclass": "Self-emp-inc",
-                "class": ">50K"
-            },
-            "value": 0.28960521356733215
-        },
-        {
-            "when": {
-                "workclass": "Self-emp-not-inc",
-                "class": "<=50K"
-            },
-            "value": 0.22271773314759458
-        },
-        {
-            "when": {
-                "workclass": "Self-emp-not-inc",
-                "class": ">50K"
-            },
-            "value": 0.5331012946076241
-        },
-        {
-            "when": {
-                "workclass": "State-gov",
-                "class": "<=50K"
-            },
-            "value": 0.39908726995948396
-        },
-        {
-            "when": {
-                "workclass": "State-gov",
-                "class": ">50K"
-            },
-            "value": 0.5619799131244724
-        },
-        {
-            "when": {
-                "workclass": "Without-pay",
-                "class": "<=50K"
-            },
-            "value": 0.9777131891188247
-        },
-        {
-            "when": {
-                "workclass": "Without-pay",
-                "class": ">50K"
-            },
-            "value": 0.16739185703071202
-        },
-        {
-            "when": {
-                "race": "Amer-Indian-Eskimo",
-                "class": "<=50K"
-            },
-            "value": 0.8234735352784642
-        },
-        {
-            "when": {
-                "race": "Amer-Indian-Eskimo",
-                "class": ">50K"
-            },
-            "value": 0.7885606370782836
-        },
-        {
-            "when": {
-                "race": "Asian-Pac-Islander",
-                "class": "<=50K"
-            },
-            "value": 0.18822488441526686
-        },
-        {
-            "when": {
-                "race": "Asian-Pac-Islander",
-                "class": ">50K"
-            },
-            "value": 0.601574282432158
-        },
-        {
-            "when": {
-                "race": "Black",
-                "class": "<=50K"
-            },
-            "value": 0.3485301864964129
-        },
-        {
-            "when": {
-                "race": "Black",
-                "class": ">50K"
-            },
-            "value": 0.9730103676161425
-        },
-        {
-            "when": {
-                "race": "Other",
-                "class": "<=50K"
-            },
-            "value": 0.47558635801065896
-        },
-        {
-            "when": {
-                "race": "Other",
-                "class": ">50K"
-            },
-            "value": 0.5631560116422422
-        },
-        {
-            "when": {
-                "race": "White",
-                "class": "<=50K"
-            },
-            "value": 0.30461594651476853
-        },
-        {
-            "when": {
-                "race": "White",
-                "class": ">50K"
-            },
-            "value": 0.8972533409613292
-        },
-        {
-            "when": {
-                "sex": "Female",
-                "class": "<=50K"
-            },
-            "value": 0.5185123776482359
-        },
-        {
-            "when": {
-                "sex": "Female",
-                "class": ">50K"
-            },
-            "value": 0.5646217629048945
-        },
-        {
-            "when": {
-                "sex": "Male",
-                "class": "<=50K"
-            },
-            "value": 0.8915312457578829
-        },
-        {
-            "when": {
-                "sex": "Male",
-                "class": ">50K"
-            },
-            "value": 0.497113500265135
-        },
-        {
-            "when": {
-                "native-country": "Cambodia",
-                "class": "<=50K"
-            },
-            "value": 0.7978695787589268
-        },
-        {
-            "when": {
-                "native-country": "Cambodia",
-                "class": ">50K"
-            },
-            "value": 0.06669139053999174
-        },
-        {
-            "when": {
-                "native-country": "Canada",
-                "class": "<=50K"
-            },
-            "value": 0.5361632191879911
-        },
-        {
-            "when": {
-                "native-country": "Canada",
-                "class": ">50K"
-            },
-            "value": 0.06257583491277341
-        },
-        {
-            "when": {
-                "native-country": "China",
-                "class": "<=50K"
-            },
-            "value": 0.6950940322761376
-        },
-        {
-            "when": {
-                "native-country": "China",
-                "class": ">50K"
-            },
-            "value": 0.5543934229913527
-        },
-        {
-            "when": {
-                "native-country": "Columbia",
-                "class": "<=50K"
-            },
-            "value": 0.17116972935068597
-        },
-        {
-            "when": {
-                "native-country": "Columbia",
-                "class": ">50K"
-            },
-            "value": 0.07538633663420424
-        },
-        {
-            "when": {
-                "native-country": "Cuba",
-                "class": "<=50K"
-            },
-            "value": 0.2460607010174024
-        },
-        {
-            "when": {
-                "native-country": "Cuba",
-                "class": ">50K"
-            },
-            "value": 0.8974521587365725
-        },
-        {
-            "when": {
-                "native-country": "Dominican-Republic",
-                "class": "<=50K"
-            },
-            "value": 0.6695938216805283
-        },
-        {
-            "when": {
-                "native-country": "Dominican-Republic",
-                "class": ">50K"
-            },
-            "value": 0.7551952190760088
-        },
-        {
-            "when": {
-                "native-country": "Ecuador",
-                "class": "<=50K"
-            },
-            "value": 0.938713321476879
-        },
-        {
-            "when": {
-                "native-country": "Ecuador",
-                "class": ">50K"
-            },
-            "value": 0.054921640872905075
-        },
-        {
-            "when": {
-                "native-country": "El-Salvador",
-                "class": "<=50K"
-            },
-            "value": 0.7816784196104017
-        },
-        {
-            "when": {
-                "native-country": "El-Salvador",
-                "class": ">50K"
-            },
-            "value": 0.9408575825795131
-        },
-        {
-            "when": {
-                "native-country": "England",
-                "class": "<=50K"
-            },
-            "value": 0.4353173355587876
-        },
-        {
-            "when": {
-                "native-country": "England",
-                "class": ">50K"
-            },
-            "value": 0.3989762096058417
-        },
-        {
-            "when": {
-                "native-country": "France",
-                "class": "<=50K"
-            },
-            "value": 0.8981234562955779
-        },
-        {
-            "when": {
-                "native-country": "France",
-                "class": ">50K"
-            },
-            "value": 0.616373461849579
-        },
-        {
-            "when": {
-                "native-country": "Germany",
-                "class": "<=50K"
-            },
-            "value": 0.5729680345732586
-        },
-        {
-            "when": {
-                "native-country": "Germany",
-                "class": ">50K"
-            },
-            "value": 0.7623686151239446
-        },
-        {
-            "when": {
-                "native-country": "Greece",
-                "class": "<=50K"
-            },
-            "value": 0.7330179729298457
-        },
-        {
-            "when": {
-                "native-country": "Greece",
-                "class": ">50K"
-            },
-            "value": 0.2972094486245772
-        },
-        {
-            "when": {
-                "native-country": "Guatemala",
-                "class": "<=50K"
-            },
-            "value": 0.5196274472627481
-        },
-        {
-            "when": {
-                "native-country": "Guatemala",
-                "class": ">50K"
-            },
-            "value": 0.1152598246390808
-        },
-        {
-            "when": {
-                "native-country": "Haiti",
-                "class": "<=50K"
-            },
-            "value": 0.08427694659246288
-        },
-        {
-            "when": {
-                "native-country": "Haiti",
-                "class": ">50K"
-            },
-            "value": 0.9985334362197572
-        },
-        {
-            "when": {
-                "native-country": "Holand-Netherlands",
-                "class": "<=50K"
-            },
-            "value": 0.8922996915089156
-        },
-        {
-            "when": {
-                "native-country": "Holand-Netherlands",
-                "class": ">50K"
-            },
-            "value": 0.8821830413189999
-        },
-        {
-            "when": {
-                "native-country": "Honduras",
-                "class": "<=50K"
-            },
-            "value": 0.5037424900968195
-        },
-        {
-            "when": {
-                "native-country": "Honduras",
-                "class": ">50K"
-            },
-            "value": 0.7996974528124647
-        },
-        {
-            "when": {
-                "native-country": "Hong",
-                "class": "<=50K"
-            },
-            "value": 0.43881165566901903
-        },
-        {
-            "when": {
-                "native-country": "Hong",
-                "class": ">50K"
-            },
-            "value": 0.19470187895240776
-        },
-        {
-            "when": {
-                "native-country": "Hungary",
-                "class": "<=50K"
-            },
-            "value": 0.4972371691006332
-        },
-        {
-            "when": {
-                "native-country": "Hungary",
-                "class": ">50K"
-            },
-            "value": 0.48403392336969175
-        },
-        {
-            "when": {
-                "native-country": "India",
-                "class": "<=50K"
-            },
-            "value": 0.146630893622836
-        },
-        {
-            "when": {
-                "native-country": "India",
-                "class": ">50K"
-            },
-            "value": 0.14782174956775906
-        },
-        {
-            "when": {
-                "native-country": "Iran",
-                "class": "<=50K"
-            },
-            "value": 0.9152829613150106
-        },
-        {
-            "when": {
-                "native-country": "Iran",
-                "class": ">50K"
-            },
-            "value": 0.2776038050385532
-        },
-        {
-            "when": {
-                "native-country": "Ireland",
-                "class": "<=50K"
-            },
-            "value": 0.10409633240004879
-        },
-        {
-            "when": {
-                "native-country": "Ireland",
-                "class": ">50K"
-            },
-            "value": 0.30463033998467437
-        },
-        {
-            "when": {
-                "native-country": "Italy",
-                "class": "<=50K"
-            },
-            "value": 0.03223139825324928
-        },
-        {
-            "when": {
-                "native-country": "Italy",
-                "class": ">50K"
-            },
-            "value": 0.7485511318934677
-        },
-        {
-            "when": {
-                "native-country": "Jamaica",
-                "class": "<=50K"
-            },
-            "value": 0.2182522690046097
-        },
-        {
-            "when": {
-                "native-country": "Jamaica",
-                "class": ">50K"
-            },
-            "value": 0.9033249350520451
-        },
-        {
-            "when": {
-                "native-country": "Japan",
-                "class": "<=50K"
-            },
-            "value": 0.505736292373864
-        },
-        {
-            "when": {
-                "native-country": "Japan",
-                "class": ">50K"
-            },
-            "value": 0.30888659127356244
-        },
-        {
-            "when": {
-                "native-country": "Laos",
-                "class": "<=50K"
-            },
-            "value": 0.8854070254228407
-        },
-        {
-            "when": {
-                "native-country": "Laos",
-                "class": ">50K"
-            },
-            "value": 0.7045778344990057
-        },
-        {
-            "when": {
-                "native-country": "Mexico",
-                "class": "<=50K"
-            },
-            "value": 0.4225253353776611
-        },
-        {
-            "when": {
-                "native-country": "Mexico",
-                "class": ">50K"
-            },
-            "value": 0.18076524549693973
-        },
-        {
-            "when": {
-                "native-country": "Nicaragua",
-                "class": "<=50K"
-            },
-            "value": 0.005118860235155731
-        },
-        {
-            "when": {
-                "native-country": "Nicaragua",
-                "class": ">50K"
-            },
-            "value": 0.5104334139267813
-        },
-        {
-            "when": {
-                "native-country": "Outlying-US(Guam-USVI-etc)",
-                "class": "<=50K"
-            },
-            "value": 0.6380670022002045
-        },
-        {
-            "when": {
-                "native-country": "Outlying-US(Guam-USVI-etc)",
-                "class": ">50K"
-            },
-            "value": 0.8149950694008066
-        },
-        {
-            "when": {
-                "native-country": "Peru",
-                "class": "<=50K"
-            },
-            "value": 0.3163644969086198
-        },
-        {
-            "when": {
-                "native-country": "Peru",
-                "class": ">50K"
-            },
-            "value": 0.3106196844306487
-        },
-        {
-            "when": {
-                "native-country": "Philippines",
-                "class": "<=50K"
-            },
-            "value": 0.14339016731804655
-        },
-        {
-            "when": {
-                "native-country": "Philippines",
-                "class": ">50K"
-            },
-            "value": 0.9589253003653828
-        },
-        {
-            "when": {
-                "native-country": "Poland",
-                "class": "<=50K"
-            },
-            "value": 0.48476055033463517
-        },
-        {
-            "when": {
-                "native-country": "Poland",
-                "class": ">50K"
-            },
-            "value": 0.43146809717959755
-        },
-        {
-            "when": {
-                "native-country": "Portugal",
-                "class": "<=50K"
-            },
-            "value": 0.10996913471717817
-        },
-        {
-            "when": {
-                "native-country": "Portugal",
-                "class": ">50K"
-            },
-            "value": 0.6942636808847142
-        },
-        {
-            "when": {
-                "native-country": "Puerto-Rico",
-                "class": "<=50K"
-            },
-            "value": 0.25858393441762473
-        },
-        {
-            "when": {
-                "native-country": "Puerto-Rico",
-                "class": ">50K"
-            },
-            "value": 0.4726654576930971
-        },
-        {
-            "when": {
-                "native-country": "Scotland",
-                "class": "<=50K"
-            },
-            "value": 0.09709450570084432
-        },
-        {
-            "when": {
-                "native-country": "Scotland",
-                "class": ">50K"
-            },
-            "value": 0.014788608639657252
-        },
-        {
-            "when": {
-                "native-country": "South",
-                "class": "<=50K"
-            },
-            "value": 0.1746862249085106
-        },
-        {
-            "when": {
-                "native-country": "South",
-                "class": ">50K"
-            },
-            "value": 0.32459455014316474
-        },
-        {
-            "when": {
-                "native-country": "Taiwan",
-                "class": "<=50K"
-            },
-            "value": 0.7151433639398548
-        },
-        {
-            "when": {
-                "native-country": "Taiwan",
-                "class": ">50K"
-            },
-            "value": 0.02715629177492873
-        },
-        {
-            "when": {
-                "native-country": "Thailand",
-                "class": "<=50K"
-            },
-            "value": 0.7174405770956842
-        },
-        {
-            "when": {
-                "native-country": "Thailand",
-                "class": ">50K"
-            },
-            "value": 0.8997488993644847
-        },
-        {
-            "when": {
-                "native-country": "Trinadad&Tobago",
-                "class": "<=50K"
-            },
-            "value": 0.1730306005633857
-        },
-        {
-            "when": {
-                "native-country": "Trinadad&Tobago",
-                "class": ">50K"
-            },
-            "value": 0.9014400788050121
-        },
-        {
-            "when": {
-                "native-country": "United-States",
-                "class": "<=50K"
-            },
-            "value": 0.39181715600232536
-        },
-        {
-            "when": {
-                "native-country": "United-States",
-                "class": ">50K"
-            },
-            "value": 0.9905322802555292
-        },
-        {
-            "when": {
-                "native-country": "Vietnam",
-                "class": "<=50K"
-            },
-            "value": 0.5820836126917004
-        },
-        {
-            "when": {
-                "native-country": "Vietnam",
-                "class": ">50K"
-            },
-            "value": 0.41245788509319414
-        },
-        {
-            "when": {
-                "native-country": "Yugoslavia",
-                "class": "<=50K"
-            },
-            "value": 0.13328899917786186
-        },
-        {
-            "when": {
-                "native-country": "Yugoslavia",
-                "class": ">50K"
-            },
-            "value": 0.29410148753720733
+            "value": -0.10003299418898262
         }
     ]
 }
