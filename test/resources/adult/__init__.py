@@ -14,6 +14,8 @@ PATH_METRICS_JSON = DIR / "metrics.json"
 PATH_DETECTED_JSON = DIR / "detected.json"
 PATH_PROXIES_JSON = DIR / "proxies.json"
 PATH_PREPROCESSING_JSON = DIR / "preprocessing.json"
+PATH_PREPROCESSING_LFR_CSV = DIR / "preprocessed_lfr.csv"
+PATH_PREPROCESSING_CR_CSV = DIR / "preprocessed_cr.csv"
 
 
 def get_json(name: str | Path) -> dict:
