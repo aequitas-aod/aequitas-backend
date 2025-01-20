@@ -100,9 +100,11 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
         result = preprocessing_algorithm_LearnFairRepresentation(dataset, self.sensitives, self.targets)
         expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
+        logger.debug(expected)
+
         self.assertDataFramesAreEqual(result, expected)
         
-    def test_preprocessing_algorithm_LearnFairRepresentation(self):
+    def test_preprocessing_algorithm_CorrelationRemover(self):
         from test.resources.adult import PATH_ACTUAL_DATASET_CSV, PATH_PREPROCESSING_CR_CSV
 
         dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
