@@ -148,8 +148,8 @@ def compute_metrics(
                         target: target_value,
                     }.items():
                         if pd.api.types.is_integer_dtype(df[col]):
-                            df[col] = df[col].astype(str)
-                        df[col] = df[col].apply(lambda x: 1 if x == val else 0)
+                            df.loc[:, col] = df[col].astype(str)
+                        df.loc[:, col] = df[col].apply(lambda x: 1 if x == val else 0)
 
                     bld = BinaryLabelDataset(
                         df=df,
