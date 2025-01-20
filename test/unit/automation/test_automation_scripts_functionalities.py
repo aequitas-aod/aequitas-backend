@@ -1,6 +1,8 @@
 import unittest
 import pandas as pd
 
+from utils.logs import logger
+
 from application.automation.parsing import to_csv, read_csv, to_json, read_json
 from application.automation.scripts.on_dataset_created import get_stats
 from application.automation.scripts.on_dataset_features_available import (
@@ -106,6 +108,9 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
         result = preprocessing_algorithm_CorrelationRemover(dataset, self.sensitives, self.targets)
         expected = read_csv(PATH_PREPROCESSING_CR_CSV)
+        
+        logger.debug(expected)
+        
         self.assertDataFramesAreEqual(result, expected)
 
     # TODO @josephgiovanelli test here the algorithms that you will implement in on_processing_requested.py
