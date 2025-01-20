@@ -280,7 +280,6 @@ def preprocessing_algorithm_LearnFairRepresentation(
     )
 
     default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
-    my_conf = {"k": 5, "Ax": 0.01, "Ay": 1.0, "Az": 50.0}
 
     X, y = (
         dataset[
@@ -292,7 +291,7 @@ def preprocessing_algorithm_LearnFairRepresentation(
     mitigator = LFR(
         unprivileged_groups=[{default_settings["sensitive_feat"]: 0}],
         privileged_groups=[{default_settings["sensitive_feat"]: 1}],
-        **my_conf,
+        **kwargs,
         seed=0,
     )
     wrapper = AIF360PreprocWrapper(
@@ -367,7 +366,7 @@ def preprocessing_algorithm_CorrelationRemover(
     )
 
     default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
-    my_conf = {"alpha": 0.5}
+    
     X, y = (
         dataset[
             [col for col in dataset.columns if col != default_settings["target_feat"]]
@@ -382,7 +381,7 @@ def preprocessing_algorithm_CorrelationRemover(
         if default_settings["sensitive_feat"] == elem
     ]
     corr_remover = CorrelationRemover(
-        sensitive_feature_ids=selected_sensitive_index, **my_conf
+        sensitive_feature_ids=selected_sensitive_index, **kwargs
     )
     X_t = corr_remover.fit_transform(_discretize_columns(X).to_numpy(), y.to_numpy)
     transformed_df = pd.concat(
