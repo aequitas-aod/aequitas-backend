@@ -51,7 +51,7 @@ def _upack_json_strings(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def read_csv(path) -> pd.DataFrame:
-    df = pd.read_csv(path, quotechar="'", index=False)
+    df = pd.read_csv(path, quotechar="'")
     return _upack_json_strings(df)
 
 
