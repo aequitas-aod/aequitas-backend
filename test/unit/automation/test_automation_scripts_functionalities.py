@@ -104,8 +104,9 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         )
 
         dataset = read_csv(PATH_ACTUAL_DATASET_ADULT_CSV)
+        my_conf = {"k": 5, "Ax": 0.01, "Ay": 1.0, "Az": 50.0}
         result = preprocessing_algorithm_LearnFairRepresentation(
-            dataset, ["sex"], ["class"]
+            dataset, ["sex"], ["class"], **my_conf
         )
         expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
 
@@ -121,7 +122,10 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         )
 
         dataset = read_csv(PATH_ACTUAL_DATASET_ADULT_CSV)
-        result = preprocessing_algorithm_CorrelationRemover(dataset, ["sex"], ["class"])
+        my_conf = {"alpha": 0.5}
+        result = preprocessing_algorithm_CorrelationRemover(
+            dataset, ["sex"], ["class"], **my_conf
+        )
         expected = read_csv(PATH_PREPROCESSING_CR_CSV)
 
         self.assertDataFramesAreEqual(result, expected)
