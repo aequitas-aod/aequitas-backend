@@ -290,8 +290,8 @@ def preprocessing_algorithm_LearnFairRepresentation(
     )
 
     mitigator = LFR(
-        unprivileged_groups=[{default_settings["sensitive_feat"]: 1}],
-        privileged_groups=[{default_settings["sensitive_feat"]: 0}],
+        unprivileged_groups=[{default_settings["sensitive_feat"]: 0}],
+        privileged_groups=[{default_settings["sensitive_feat"]: 1}],
         **my_conf,
         seed=0,
     )
