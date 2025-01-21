@@ -56,7 +56,7 @@
           "question_code": "DatasetSelection",
           "project_code": "p-1"
         },
-        "text": "German credit Dataset",
+        "text": "German Credit Dataset",
         "description": null,
         "selected": false
       },
@@ -510,7 +510,7 @@
           "question_code": "TestSetChoice",
           "project_code": "p-1"
         },
-        "text": "German credit Dataset",
+        "text": "German Credit Dataset",
         "description": null,
         "selected": false
       },
