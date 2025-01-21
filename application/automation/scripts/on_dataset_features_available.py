@@ -64,13 +64,8 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         sensitive = [key for key, value in features.items() if value["sensitive"]]
         drops = [key for key, value in features.items() if value["drop"]]
         actual_dataset = dataset.drop(columns=drops, axis=1)
-        new_keys = {
-            k: v
-            for k, v in self.produce_info(
-                dataset_id, actual_dataset, targets, sensitive
-            )
-        }
-        self.update_context(project_id, **new_keys)
+        for k, v in self.produce_info(dataset_id, actual_dataset, targets, sensitive):
+            self.update_context(project_id, k, v)
 
     def produce_info(
         self,

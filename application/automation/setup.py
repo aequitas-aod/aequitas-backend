@@ -92,20 +92,16 @@ class Automator:
         assert hasattr(
             self.components, "project_service"
         ), "project_service not found in components"
-        project = self.components.project_service.get_project_by_id(project_id)
         for key, value in updates.items():
+            project = self.components.project_service.get_project_by_id(project_id)
             project = project.add_to_context(key, value)
+            self.components.project_service.update_project(project_id, project)
             self.log(
-                "About to add key %s of project %s",
+                "Add key %s to context of project %s. Keys are now: %s",
                 key,
-                project.id,
+                project_id,
+                sorted(list(project.context.keys())),
             )
-        self.components.project_service.update_project(project_id, project)
-        self.log(
-            "Updated context of project %s with new keys: %s",
-            project_id,
-            sorted(list(updates.keys())),
-        )
 
     def get_from_context(
         self, project_id: EntityId, key: str, parse_as: str
