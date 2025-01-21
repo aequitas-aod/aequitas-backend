@@ -70,20 +70,17 @@ class AbstractProcessingRequestedReaction(Automator):
         hyperparameters = self.get_from_context(project_id, context_key, "json")
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            new_keys = {
-                k: v
-                for k, v in self.produce_info(
-                    phase,
-                    dataset_id,
-                    dataset,
-                    targets,
-                    sensitive,
-                    proxies,
-                    detected,
-                    hyperparameters,
-                )
-            }
-            self.update_context(project_id, **new_keys)
+            for k, v in self.produce_info(
+                phase,
+                dataset_id,
+                dataset,
+                targets,
+                sensitive,
+                proxies,
+                detected,
+                hyperparameters,
+            ):
+                self.update_context(project_id, k, v)
 
     def produce_info(
         self,
