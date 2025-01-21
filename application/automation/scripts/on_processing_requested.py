@@ -47,7 +47,7 @@ class AbstractProcessingRequestedReaction(Automator):
             )
         dataset_id: str = context_key.split("__")[1]
         dataset: pd.DataFrame = self.get_from_context(
-            project_id, f"actual_dataset__{dataset_id}", "csv"
+            project_id, f"dataset__{dataset_id}", "csv"
         )
         features: dict = self.get_from_context(
             project_id, f"features__{dataset_id}", "json"
