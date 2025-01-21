@@ -366,7 +366,7 @@ def preprocessing_algorithm_CorrelationRemover(
     )
 
     default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
-    
+
     X, y = (
         dataset[
             [col for col in dataset.columns if col != default_settings["target_feat"]]
