@@ -42,7 +42,7 @@ class AbstractQuestionAnsweredReaction(Automator):
         raise NotImplementedError("Subclasses must implement this method")
 
 
-def FirstQuestionAnsweredReaction(AbstractQuestionAnsweredReaction):
+class FirstQuestionAnsweredReaction(AbstractQuestionAnsweredReaction):
     def __init__(self):
         super().__init__({1})
 
