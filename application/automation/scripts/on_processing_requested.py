@@ -12,11 +12,9 @@ from utils.logs import logger
 
 from aif360.algorithms.preprocessing import LFR
 from fairlearn.preprocessing import CorrelationRemover
-from fairlearn import metrics
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
+from sklearn.preprocessing import OrdinalEncoder
 from aif360.datasets import BinaryLabelDataset
-from aif360.metrics import BinaryLabelDatasetMetric
 
 import pandas as pd
 
@@ -263,10 +261,14 @@ def _discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
     return encoded_df
 
 
+def _filter_keys(data: dict, *keys):
+    keys = set(keys)
+    return {k: v for k, v in data.items() if k in keys}
+
+
 def preprocessing_algorithm_LearnFairRepresentation(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
-    # TODO: @josephgiovanelli add implementation
     logger.warning(
         "Executing LearnFairRepresentation: \n"
         "\ton dataset of shape %s\n"
@@ -291,7 +293,7 @@ def preprocessing_algorithm_LearnFairRepresentation(
     mitigator = LFR(
         unprivileged_groups=[{default_settings["sensitive_feat"]: 0}],
         privileged_groups=[{default_settings["sensitive_feat"]: 1}],
-        **kwargs,
+        **_filter_keys(kwargs, "k", "Ax", "Ay", "Az", "seed"),
         seed=0,
     )
     wrapper = AIF360PreprocWrapper(
@@ -352,7 +354,6 @@ def preprocessing_algorithm_Reweighing(
 def preprocessing_algorithm_CorrelationRemover(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
-    # TODO: @josephgiovanelli add implementation
     logger.warning(
         "Executing CorrelationRemover: \n"
         "\ton dataset of shape %s\n"
@@ -381,7 +382,7 @@ def preprocessing_algorithm_CorrelationRemover(
         if default_settings["sensitive_feat"] == elem
     ]
     corr_remover = CorrelationRemover(
-        sensitive_feature_ids=selected_sensitive_index, **kwargs
+        sensitive_feature_ids=selected_sensitive_index, **_filter_keys(kwargs, "alpha")
     )
     X_t = corr_remover.fit_transform(_discretize_columns(X).to_numpy(), y.to_numpy)
     transformed_df = pd.concat(
