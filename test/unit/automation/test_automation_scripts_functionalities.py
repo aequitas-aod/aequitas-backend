@@ -111,10 +111,9 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         expected = read_json(PATH_METRICS_JSON)
         self.assertContainersAreAlmostEqual(actual, expected, tolerance=0.5)
 
-    def test_preprocessing_algorithm_LearnFairRepresentation(self):
+    def __preprocessing_algorithm_LearnFairRepresentation(self):
         from resources.db.datasets import dataset_path
         from resources.db.context import context_data
-        from test.resources.adult import PATH_PREPROCESSING_LFR_CSV
 
         hyperparameters = context_data("preprocessing-hyperparameters")[
             "LearnFairRepresentation"
@@ -128,8 +127,28 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
             targets=["class"],
             **hyperparameters
         )
+        return result
+
+    def test_preprocessing_algorithm_LearnFairRepresentation(self):
+        from test.resources.adult import PATH_PREPROCESSING_LFR_CSV
+
+        result = self.__preprocessing_algorithm_LearnFairRepresentation()
         expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
         self.assertDataFramesHaveSameStructure(result, expected)
+
+    def test_metrics_after_LFR(self):
+        result = self.__preprocessing_algorithm_LearnFairRepresentation()
+        compute_metrics(
+            result,
+            sensitives=["native-country", "race", "sex", "workclass"],
+            targets=["class"],
+        )
+        # FIXME: @josephgiovanelli, this computation taks too much time.
+        # I believe that the problem is a consequence of the fact that LFR
+        # outputs a dataset with numeric columns, so the computation of fairness metrics
+        # has too many values to consider... is this intended?
+        # If yes, then we should possibly discretize the result of LFR before computing the metrics.
+        # If not, then there may be a bug in the implementation of LFR.
 
     def test_preprocessing_algorithm_CorrelationRemover(self):
         from resources.db.datasets import dataset_path
@@ -144,8 +163,6 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         expected = read_csv(PATH_PREPROCESSING_CR_CSV)
 
         self.assertDataFramesAreEqual(result, expected)
-
-    # TODO @josephgiovanelli test here the algorithms that you will implement in on_processing_requested.py
 
 
 if __name__ == "__main__":
