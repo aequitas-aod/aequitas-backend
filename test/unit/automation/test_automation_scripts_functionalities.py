@@ -112,31 +112,31 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         self.assertContainersAreAlmostEqual(actual, expected, tolerance=0.5)
 
     def test_preprocessing_algorithm_LearnFairRepresentation(self):
+        from resources.db.datasets import dataset_path
         from resources.db.context import context_data
-        from test.resources.adult import (
-            PATH_ACTUAL_DATASET_ADULT_CSV,
-            PATH_PREPROCESSING_LFR_CSV,
-        )
+        from test.resources.adult import PATH_PREPROCESSING_LFR_CSV
 
         hyperparameters = context_data("preprocessing-hyperparameters")[
             "LearnFairRepresentation"
         ]
         hyperparameters = {k: hyperparameters[k]["default"] for k in hyperparameters}
 
-        dataset = read_csv(PATH_ACTUAL_DATASET_ADULT_CSV)
+        dataset = read_csv(dataset_path("adult"))
         result = preprocessing_algorithm_LearnFairRepresentation(
-            dataset, ["sex"], ["class"], **hyperparameters
+            dataset,
+            sensitive=["native-country", "race", "sex", "workclass"],
+            targets=["class"],
+            **hyperparameters
         )
         expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
         self.assertDataFramesHaveSameStructure(result, expected)
 
     def test_preprocessing_algorithm_CorrelationRemover(self):
-        from test.resources.adult import (
-            PATH_ACTUAL_DATASET_ADULT_CSV,
-            PATH_PREPROCESSING_CR_CSV,
-        )
+        from resources.db.datasets import dataset_path
 
-        dataset = read_csv(PATH_ACTUAL_DATASET_ADULT_CSV)
+        from test.resources.adult import PATH_PREPROCESSING_CR_CSV
+
+        dataset = read_csv(dataset_path("adult"))
         my_conf = {"alpha": 0.5}
         result = preprocessing_algorithm_CorrelationRemover(
             dataset, ["sex"], ["class"], **my_conf
