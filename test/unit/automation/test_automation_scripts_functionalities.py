@@ -123,7 +123,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         dataset = read_csv(dataset_path("adult"))
         result = preprocessing_algorithm_LearnFairRepresentation(
             dataset,
-            sensitive=["native-country", "race", "sex", "workclass"],
+            sensitive=["sex"],
             targets=["class"],
             **hyperparameters
         )
@@ -140,7 +140,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         result = self.__preprocessing_algorithm_LearnFairRepresentation()
         compute_metrics(
             result,
-            sensitives=["native-country", "race", "sex", "workclass"],
+            sensitives=["sex"],
             targets=["class"],
         )
         # FIXME: @josephgiovanelli, this computation taks too much time.
@@ -149,7 +149,11 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         # has too many values to consider... is this intended?
         # If yes, then we should possibly discretize the result of LFR before computing the metrics.
         # If not, then there may be a bug in the implementation of LFR.
-
+        
+        # DONE: @gciatto, if we are computing metrics with sensitives=["sex"], 
+        # then LFR has to be set the same (not with sensitives=["native-country", "race", "sex", "workclass"]),
+        # because (so far) we support LFR with just one sensitive attribute
+        
     def test_preprocessing_algorithm_CorrelationRemover(self):
         from resources.db.datasets import dataset_path
 
