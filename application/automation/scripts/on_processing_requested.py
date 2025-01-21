@@ -8,7 +8,6 @@ from domain.common.core import EntityId
 from domain.project.core import Project
 from utils.logs import set_other_loggers_level
 from .on_dataset_features_available import metrics, correlation_matrix_picture
-from utils.logs import logger
 
 from aif360.algorithms.preprocessing import LFR
 from fairlearn.preprocessing import CorrelationRemover
@@ -17,6 +16,7 @@ from sklearn.preprocessing import OrdinalEncoder
 from aif360.datasets import BinaryLabelDataset
 
 import pandas as pd
+import warnings
 
 
 # if testing, lowers the visibility of non-aequitas logs
@@ -39,7 +39,7 @@ class AbstractProcessingRequestedReaction(Automator):
         phase: str,
     ):
         if phase not in self.__supported_phases:
-            self.logger.info(
+            self.log(
                 "Ignoring event %s, because it is related to phase %s and this automator only supports phases %s",
                 topic,
                 phase,
@@ -68,20 +68,22 @@ class AbstractProcessingRequestedReaction(Automator):
         proxies = self.get_from_context(project_id, f"proxies__{dataset_id}", "json")
         detected = self.get_from_context(project_id, f"detected__{dataset_id}", "json")
         hyperparameters = self.get_from_context(project_id, context_key, "json")
-        new_keys = {
-            k: v
-            for k, v in self.produce_info(
-                phase,
-                dataset_id,
-                dataset,
-                targets,
-                sensitive,
-                proxies,
-                detected,
-                hyperparameters,
-            )
-        }
-        self.update_context(project_id, **new_keys)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            new_keys = {
+                k: v
+                for k, v in self.produce_info(
+                    phase,
+                    dataset_id,
+                    dataset,
+                    targets,
+                    sensitive,
+                    proxies,
+                    detected,
+                    hyperparameters,
+                )
+            }
+            self.update_context(project_id, **new_keys)
 
     def produce_info(
         self,
@@ -269,18 +271,6 @@ def _filter_keys(data: dict, *keys):
 def preprocessing_algorithm_LearnFairRepresentation(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
-    logger.warning(
-        "Executing LearnFairRepresentation: \n"
-        "\ton dataset of shape %s\n"
-        "\twith sensitive attributes %s\n"
-        "\tand targets %s\n"
-        "\twith hyperparameters %s",
-        dataset.shape,
-        sensitive,
-        targets,
-        kwargs,
-    )
-
     default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
     X, y = (
@@ -319,17 +309,6 @@ def preprocessing_algorithm_DisparateImpactRemover(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
     # TODO: @josephgiovanelli add implementation
-    logger.warning(
-        "Executing DisparateImpactRemover: \n"
-        "\ton dataset of shape %s\n"
-        "\twith sensitive attributes %s\n"
-        "\tand targets %s\n"
-        "\twith hyperparameters %s",
-        dataset.shape,
-        sensitive,
-        targets,
-        kwargs,
-    )
     return dataset
 
 
@@ -337,35 +316,12 @@ def preprocessing_algorithm_Reweighing(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
     # TODO: @josephgiovanelli add implementation
-    logger.warning(
-        "Executing Reweighing: \n"
-        "\ton dataset of shape %s\n"
-        "\twith sensitive attributes %s\n"
-        "\tand targets %s\n"
-        "\twith hyperparameters %s",
-        dataset.shape,
-        sensitive,
-        targets,
-        kwargs,
-    )
     return dataset
 
 
 def preprocessing_algorithm_CorrelationRemover(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
-    logger.warning(
-        "Executing CorrelationRemover: \n"
-        "\ton dataset of shape %s\n"
-        "\twith sensitive attributes %s\n"
-        "\tand targets %s\n"
-        "\twith hyperparameters %s",
-        dataset.shape,
-        sensitive,
-        targets,
-        kwargs,
-    )
-
     default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
     X, y = (
@@ -424,6 +380,18 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         if function_name not in globals():
             raise KeyError("No such algorithm: %s" % algorithm)
         function = globals()[function_name]
+        self.log(
+            "Executing %s: \n"
+            "\ton dataset of shape %s\n"
+            "\twith sensitive attributes %s\n"
+            "\tand targets %s\n"
+            "\twith hyperparameters %s",
+            algorithm,
+            dataset.shape,
+            sensitive,
+            targets,
+            hyperparameters,
+        )
         result = function(
             dataset,
             sensitive,
@@ -432,8 +400,14 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
             detected=detected,
             **hyperparameters,
         )
+        self.log(
+            "Executed %s: result is of type %s",
+            algorithm,
+            type(result),
+        )
         assert isinstance(result, pd.DataFrame)
         result_id = self.next_name(dataset_id)
+        self.log("New dataset id: %s", result_id)
         yield f"dataset__{result_id}", to_csv(result)
         yield f"correlation_matrix__{result_id}", correlation_matrix_picture(result)
         yield f"metrics__{result_id}", metrics(result, sensitive, targets)
