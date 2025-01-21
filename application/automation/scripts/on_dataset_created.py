@@ -125,8 +125,8 @@ def get_stats(
     features_view["values"] = features_view["feature"].apply(_get_distinct_values)
     features_view["type"] = features_view["feature"].apply(_get_feature_type)
     features_view["distribution"] = features_view["feature"].apply(_get_distribution)
-    features_view["output"] = [_maybe_target(col) for col in df.columns]
     features_view["sensitive"] = [_maybe_sensitive(col) for col in df.columns]
+    features_view["target"] = [_maybe_target(col) for col in df.columns]
 
     features_view = features_view[
         [
@@ -142,8 +142,8 @@ def get_stats(
             "type",
             "values",
             "distribution",
-            "output",
             "sensitive",
+            "target",
         ]
     ]
 
