@@ -53,8 +53,8 @@ class FirstQuestionAnsweredReaction(AbstractQuestionAnsweredReaction):
         question_index: int,
         selected_answers_ids: List[EntityId],
     ) -> Iterable[tuple[str, str]]:
-        answer = str(selected_answers_ids[0]["code"]).lower()
-        for name in ["adult", "compass", "credit"]:
+        answer = str(selected_answers_ids[0]["code"])
+        for name in ["Adult", "Compass", "Credit"]:
             if name in answer:
                 yield "current_dataset", f"{name}-1"
                 return
