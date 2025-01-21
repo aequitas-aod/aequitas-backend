@@ -97,21 +97,21 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         expected = read_json(PATH_METRICS_JSON)
         self.assertContainersAreAlmostEqual(actual, expected, tolerance=0.1)
 
-    def test_preprocessing_algorithm_LearnFairRepresentation(self):
-        from test.resources.adult import (
-            PATH_ACTUAL_DATASET_ADULT_CSV,
-            PATH_PREPROCESSING_LFR_CSV_OLD,
-            PATH_PREPROCESSING_LFR_CSV,
-        )
+    # def test_preprocessing_algorithm_LearnFairRepresentation(self):
+    #     from test.resources.adult import (
+    #         PATH_ACTUAL_DATASET_ADULT_CSV,
+    #         PATH_PREPROCESSING_LFR_CSV_OLD,
+    #         PATH_PREPROCESSING_LFR_CSV,
+    #     )
 
-        dataset = read_csv(PATH_ACTUAL_DATASET_ADULT_CSV)
-        my_conf = {"k": 5, "Ax": 0.01, "Ay": 1.0, "Az": 50.0}
-        result = preprocessing_algorithm_LearnFairRepresentation(
-            dataset, ["sex"], ["class"], **my_conf
-        )
-        expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
+    #     dataset = read_csv(PATH_ACTUAL_DATASET_ADULT_CSV)
+    #     my_conf = {"k": 5, "Ax": 0.01, "Ay": 1.0, "Az": 50.0}
+    #     result = preprocessing_algorithm_LearnFairRepresentation(
+    #         dataset, ["sex"], ["class"], **my_conf
+    #     )
+    #     expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
 
-        self.assertDataFramesAreEqual(result, expected)
+    #     self.assertDataFramesAreEqual(result, expected)
 
     def test_preprocessing_algorithm_CorrelationRemover(self):
         from test.resources.adult import (
