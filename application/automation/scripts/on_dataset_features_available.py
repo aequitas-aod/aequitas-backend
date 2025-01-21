@@ -11,6 +11,7 @@ import seaborn as sns
 from sklearn.preprocessing import OrdinalEncoder
 
 import utils.env
+from utils.logs import logger
 from application.automation.parsing import to_csv
 from application.automation.setup import Automator
 from domain.common.core import EntityId
@@ -135,6 +136,13 @@ def compute_metrics(
         for sensitive_value in domains[sensitive]:
             for target in targets:
                 for target_value in domains[target]:
+                    logger.debug(
+                        "Computing metrics for %s=%s and %s=%s",
+                        sensitive,
+                        sensitive_value,
+                        target,
+                        target_value,
+                    )
 
                     df = dataset[[sensitive, target]]
 
