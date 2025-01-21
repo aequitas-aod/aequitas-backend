@@ -100,6 +100,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
     def test_preprocessing_algorithm_LearnFairRepresentation(self):
         from test.resources.adult import (
             PATH_ACTUAL_DATASET_ADULT_CSV,
+            PATH_PREPROCESSING_LFR_CSV_OLD,
             PATH_PREPROCESSING_LFR_CSV,
         )
 
@@ -109,9 +110,6 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
             dataset, ["sex"], ["class"], **my_conf
         )
         expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
-
-        logger.debug("LFR result", result)
-        logger.debug("LFR expected", expected)
 
         self.assertDataFramesAreEqual(result, expected)
 
@@ -131,3 +129,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         self.assertDataFramesAreEqual(result, expected)
 
     # TODO @josephgiovanelli test here the algorithms that you will implement in on_processing_requested.py
+
+
+if __name__ == "__main__":
+    unittest.main()
