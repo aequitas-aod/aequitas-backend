@@ -44,6 +44,10 @@ class Automator:
     def logger(self):
         return logger
 
+    def log(self, message: str, *args, level="info", **kwargs):
+        logf = getattr(self.logger, level)
+        logf("[%s] " + message, type(self).__name__, *args, **kwargs)
+
     def __deserialize_notable_keys(self, **kwargs) -> dict:
         data = dict(kwargs)
         if "project_id" in data:
@@ -53,23 +57,25 @@ class Automator:
                     data["project_id"]
                 )
             else:
-                logger.warn(
-                    "project_service not found in components: this may be a bug"
+                self.log(
+                    "project_service not found in components: this may be a bug",
+                    level="warning",
                 )
         return data
 
     def _on_event(self, message: ConsumerRecord) -> None:
-        self.logger.info("Consumed event: %s", message)
+        self.log("Consumed event: %s", message)
         try:
             data = self.__deserialize_notable_keys(**message.value)
             self.on_event(message.topic, **data)
         except Exception as e:
-            self.logger.error(
+            self.log(
                 "Uncaught error in %s while processing event on topic %s: %s\n%s",
                 type(self),
                 message.topic,
                 e,
                 traceback.format_exc(),
+                level="error",
             )
 
     def on_event(self, topic: str, **kwargs) -> None:
@@ -86,20 +92,16 @@ class Automator:
         assert hasattr(
             self.components, "project_service"
         ), "project_service not found in components"
-        project = self.components.project_service.get_project_by_id(project_id)
         for key, value in updates.items():
+            project = self.components.project_service.get_project_by_id(project_id)
             project = project.add_to_context(key, value)
-            self.logger.info(
-                "About to add key %s of project %s",
+            self.components.project_service.update_project(project_id, project)
+            self.log(
+                "Add key %s to context of project %s. Keys are now: %s",
                 key,
-                project.id,
+                project_id,
+                sorted(list(project.context.keys())),
             )
-        self.components.project_service.update_project(project_id, project)
-        self.logger.info(
-            "Updated context of project %s with new keys: %s",
-            project_id,
-            sorted(list(updates.keys())),
-        )
 
     def get_from_context(
         self, project_id: EntityId, key: str, parse_as: str
@@ -114,8 +116,11 @@ class Automator:
         if hasattr(self.components, "project_service"):
             value = self.components.project_service.get_from_context(project_id, key)[0]
             if value is None:
-                logger.warning(
-                    f"Key '%s' not found in context of project '%s'", key, project_id
+                self.log(
+                    f"Key '%s' not found in context of project '%s'",
+                    key,
+                    project_id,
+                    level="warning",
                 )
                 return None
             try:

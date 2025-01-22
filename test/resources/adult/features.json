@@ -6,7 +6,7 @@
     },
     "workclass": {
         "target": false,
-        "sensitive": true,
+        "sensitive": false,
         "drop": false
     },
     "fnlwgt": {
@@ -41,7 +41,7 @@
     },
     "race": {
         "target": false,
-        "sensitive": true,
+        "sensitive": false,
         "drop": false
     },
     "sex": {
@@ -66,7 +66,7 @@
     },
     "native-country": {
         "target": false,
-        "sensitive": true,
+        "sensitive": false,
         "drop": false
     },
     "class": {

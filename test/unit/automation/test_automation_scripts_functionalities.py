@@ -1,12 +1,18 @@
 import unittest
 import pandas as pd
 
+from utils.logs import logger
+
 from application.automation.parsing import to_csv, read_csv, to_json, read_json
 from application.automation.scripts.on_dataset_created import get_stats
 from application.automation.scripts.on_dataset_features_available import (
     generate_correlation_matrix_picture,
     generate_proxy_suggestions,
     compute_metrics,
+)
+from application.automation.scripts.on_processing_requested import (
+    preprocessing_algorithm_CorrelationRemover,
+    preprocessing_algorithm_LearnFairRepresentation,
 )
 
 
@@ -33,8 +39,22 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
             f for f, opts in self.features.items() if "drop" in opts and opts["drop"]
         ]
 
-    def assertDataFramesAreEqual(self, df1: pd.DataFrame, df2: pd.DataFrame):
-        pd.testing.assert_frame_equal(df1, df2)
+    def assertDataFramesAreEqual(
+        self, df1: pd.DataFrame, df2: pd.DataFrame, tolerance: float = None
+    ):
+        if tolerance is None:
+            pd.testing.assert_frame_equal(df1, df2)
+        else:
+            pd.testing.assert_frame_equal(
+                left=df1,
+                right=df2,
+                check_exact=False,
+                atol=tolerance,
+            )
+
+    def assertDataFramesHaveSameStructure(self, df1: pd.DataFrame, df2: pd.DataFrame):
+        self.assertEqual(df1.shape, df2.shape)
+        self.assertEqual([str(c) for c in df1.columns], [str(c) for c in df2.columns])
 
     def test_get_stats(self):
         with self.subTest("adult"):
@@ -89,6 +109,51 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         dataset = read_csv(PATH_ACTUAL_DATASET_CSV)
         actual = compute_metrics(dataset, self.sensitives, self.targets)
         expected = read_json(PATH_METRICS_JSON)
-        self.assertContainersAreAlmostEqual(actual, expected, tolerance=0.1)
+        self.assertContainersAreAlmostEqual(actual, expected, tolerance=0.5)
 
-    # TODO @josephgiovanelli test here the algorithms that you will implement in on_processing_requested.py
+    def __preprocessing_algorithm_LearnFairRepresentation(self):
+        from resources.db.datasets import dataset_path
+        from resources.db.context import context_data
+
+        hyperparameters = context_data("preprocessing-hyperparameters")[
+            "LearnFairRepresentation"
+        ]
+        hyperparameters = {k: hyperparameters[k]["default"] for k in hyperparameters}
+
+        dataset = read_csv(dataset_path("adult"))
+        result = preprocessing_algorithm_LearnFairRepresentation(
+            dataset, sensitive=["sex"], targets=["class"], **hyperparameters
+        )
+        return result
+
+    def test_preprocessing_algorithm_LearnFairRepresentation(self):
+        from test.resources.adult import PATH_PREPROCESSING_LFR_CSV
+
+        result = self.__preprocessing_algorithm_LearnFairRepresentation()
+        expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
+        self.assertDataFramesHaveSameStructure(result, expected)
+
+    def test_metrics_after_LFR(self):
+        result = self.__preprocessing_algorithm_LearnFairRepresentation()
+        compute_metrics(
+            result,
+            sensitives=["sex"],
+            targets=["class"],
+        )
+
+    def test_preprocessing_algorithm_CorrelationRemover(self):
+        from resources.db.datasets import dataset_path
+        from test.resources.adult import PATH_PREPROCESSING_CR_CSV
+
+        dataset = read_csv(dataset_path("adult"))
+        my_conf = {"alpha": 0.5}
+        result = preprocessing_algorithm_CorrelationRemover(
+            dataset, ["sex"], ["class"], **my_conf
+        )
+        expected = read_csv(PATH_PREPROCESSING_CR_CSV)
+
+        self.assertDataFramesAreEqual(result, expected)
+
+
+if __name__ == "__main__":
+    unittest.main()

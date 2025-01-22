@@ -454,6 +454,25 @@ docs = ["ipython", "matplotlib", "numpydoc", "sphinx"]
 tests = ["pytest", "pytest-cov", "pytest-xdist"]
 
 [[package]]
+name = "fairlearn"
+version = "0.12.0"
+description = "A Python package to assess and improve fairness of machine learning models."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+markers = "python_version <= \"3.11\" or python_version >= \"3.12\""
+files = [
+    {file = "fairlearn-0.12.0-py3-none-any.whl", hash = "sha256:bcebeec54a7c35bc2ff0ce6e5cb123b959ad46ff8f9032d9cea9906f604dfaf4"},
+    {file = "fairlearn-0.12.0.tar.gz", hash = "sha256:bd3d79a3c0e4b35a9732278e20b6be80cbd6c47cf560326ffe9aaf0b8077e76f"},
+]
+
+[package.dependencies]
+numpy = ">=1.24.4"
+pandas = ">=2.0.3"
+scikit-learn = ">=1.2.1"
+scipy = ">=1.9.3"
+
+[[package]]
 name = "flask"
 version = "3.1.0"
 description = "A simple framework for building complex web applications."
@@ -1820,4 +1839,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">= 3.10.0, < 4.0.0"
-content-hash = "ca7f9be6ef520eb4fd9dd7d1e9cd411532bdce04ced348e51eacf937e3b9b842"
+content-hash = "d45c5de5cba0860b3bc64e04ce1a2e6859fa2120f8776002cee903a4bbc93631"
