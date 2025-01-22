@@ -13,7 +13,7 @@
       text: ProPublica COMPAS Dataset
       description: null
     - id: { code: CreditDataset }
-      text: German credit Dataset
+      text: German Credit Dataset
       description: null
   enabled_by: []
   action_needed: null
@@ -251,7 +251,7 @@
       text: ProPublica COMPAS Dataset
       description: null
     - id: { code: Test-CreditDataset }
-      text: German credit Dataset
+      text: German Credit Dataset
       description: null
     - id: { code: Test-LawSchoolGPADataset }
       text: Law School GPA Dataset

@@ -33,7 +33,6 @@ class QuestionnaireResource(Resource, EventGenerator):
             questionnaire: List[ProjectQuestion] = (
                 questionnaire_service.get_questionnaire(project_id)
             )
-            questionnaire.sort(key=lambda q: q.id)
             return [serialize(q) for q in questionnaire], StatusCode.OK
 
     def put(self, project_code, index=None):
@@ -49,7 +48,7 @@ class QuestionnaireResource(Resource, EventGenerator):
                 project_id = ProjectFactory.id_of(code=project_code)
                 questionnaire_service.select_answers(project_id, index, answer_ids)
                 self.trigger_event(
-                    "questionnaire.answered",
+                    "questions.answered",
                     project_id=project_id.code,
                     question_index=index,
                     selected_answers_ids=list(answer_ids),

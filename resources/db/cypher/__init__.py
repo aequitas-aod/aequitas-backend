@@ -7,7 +7,7 @@ PATH_GENERAL_CONTEXT_CYPHER = DIR / "general-context.cypher"
 PATH_PROJECT_P1 = DIR / "project-p1.cypher"
 
 
-_MAX_LINE_LENGTH = 10_000
+_MAX_LINE_LENGTH = 2**64
 
 
 def _generate_kv_pair(key, value, indent=2, chunk_size=_MAX_LINE_LENGTH):
