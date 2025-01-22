@@ -29,7 +29,7 @@ from fairlearn import metrics as fairlearn_metrics
 import warnings
 
 FIG_WIDTH_SIZE = 12
-FIG_HEIGHT_SIZE = 8
+FIG_HEIGHT_SIZE = 5
 FIG_DPI = 300
 
 
@@ -612,7 +612,9 @@ def inprocessing_algorithm_FaUCI(
     )
 
 
-def generate_standard_plots(plot_type: str, results: pd.DataFrame, file: io.IOBase):
+def generate_standard_plot_pictures(
+    plot_type: str, results: pd.DataFrame, file: io.IOBase
+):
     fig, axes = plt.subplots(
         1, 2, figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE), sharey=True
     )
@@ -654,9 +656,9 @@ def generate_standard_plots(plot_type: str, results: pd.DataFrame, file: io.IOBa
     fig.savefig(file, format="svg", dpi=FIG_DPI)
 
 
-def generate_polarization_plots(results: pd.DataFrame, file: io.IOBase):
+def generate_polarization_plot_pictures(results: pd.DataFrame, file: io.IOBase):
     fig, axes = plt.subplots(
-        1, 3, figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE), sharey=True
+        1, 2, figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE), sharey=True
     )
 
     sns.barplot(
@@ -692,13 +694,19 @@ def generate_polarization_plots(results: pd.DataFrame, file: io.IOBase):
     fig.savefig(file, format="svg", dpi=FIG_DPI)
 
 
-def generate_plot(plot_type: str, results: pd.DataFrame) -> bytes:
-    buffer = io.BytesIO()
+def generate_plot_picture(
+    plot_type: str, results: pd.DataFrame, file: io.IOBase
+) -> bytes:
     if plot_type in ["performance", "fairness"]:
         filtered_results = results[results["metric_type"] == plot_type].copy()
-        generate_standard_plots(plot_type, filtered_results, buffer)
+        generate_standard_plot_pictures(plot_type, filtered_results, file)
     else:
-        generate_polarization_plots(results, buffer)
+        generate_polarization_plot_pictures(results, file)
+
+
+def generate_plot(plot_type: str, results: pd.DataFrame) -> bytes:
+    buffer = io.BytesIO()
+    generate_plot_picture(plot_type=plot_type, results=results, file=buffer)
     return buffer.getvalue()
 
 
