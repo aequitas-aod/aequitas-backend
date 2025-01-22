@@ -600,9 +600,11 @@ def inprocessing_algorithm_FaUCI(
                     "value_pol": fm_pol,
                 }
             )
-            
+
     df_results = pd.DataFrame(df_results)
-    df_results["metric"] = df_results["metric"].apply(lambda x: x.replace("_", " ").title())
+    df_results["metric"] = df_results["metric"].apply(
+        lambda x: x.replace("_", " ").title()
+    )
 
     return (
         new_dataset.drop("class", axis=1).rename(columns={"predictions": "class"}),
@@ -731,9 +733,7 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         yield f"performance_plot_{result_id}", generate_plot(
             "performance", computed_metrics
         )
-        yield f"fairness_plot_{result_id}", generate_plot(
-            "fairness", computed_metrics
-        )
+        yield f"fairness_plot_{result_id}", generate_plot("fairness", computed_metrics)
         yield f"polarization_plot_{result_id}", generate_plot(
             "polarization", computed_metrics
         )
