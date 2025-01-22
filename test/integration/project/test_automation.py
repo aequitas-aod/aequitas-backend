@@ -75,6 +75,7 @@ class TestContextAutomation(AutomationRelatedTestCase):
         self.assertIsInstance(parse_json(data.decode("utf-8")), dict)
 
     def test_features_created_produces(self):
+        self.test_dataset_created_produces()
         response = self.app.put(
             f"/projects/{self.project_id.code}/context?key=features__{self.dataset_id}",
             json=self.features,
@@ -100,13 +101,6 @@ class TestContextAutomation(AutomationRelatedTestCase):
         self.result_id = "adult-2"
 
         self.test_features_created_produces()
-        key = f"features__{self.dataset_id}"
-        # with self.subTest(put=key):
-        response = self.app.put(
-            f"/projects/{self.project_id.code}/context?key={key}",
-            json=self.features,
-        )
-        self.assertResponseIsSuccessful(response)
         key = f"proxies__{self.dataset_id}"
         # with self.subTest(put=key):
         response = self.app.put(
