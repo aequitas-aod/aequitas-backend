@@ -88,9 +88,9 @@
     - id: { code: DisparateImpactRemover }
       text: Disparate Impact Remover
       description: Disparate Impact Remover is a preprocessing technique that edits feature values increase group fairness while preserving rank-ordering within groups.
-    - id: { code: LearningFairRepresentations }
-      text: Learning Fair Representations
-      description: Learning Fair Representations (LFR) aim to find and create a latent representation that encodes the data well but obfuscates information about protected attributes.
+    - id: { code: LearnedFairRepresentations }
+      text: Learned Fair Representations
+      description: Learned Fair Representations (LFR) aim to find and create a latent representation that encodes the data well but obfuscates information about protected attributes.
     - id: { code: Reweighing }
       text: Reweighing
       description: The Reweighing method assigns different weights to training samples for each group and label combination, aiming to ensure fairness before classification.
@@ -125,7 +125,7 @@
       description: null
   enabled_by:
     - { code: DisparateImpactRemover }
-    - { code: LearningFairRepresentations }
+    - { code: LearnedFairRepresentations }
     - { code: Reweighing }
     - { code: CorrelationRemover }
   action_needed: null

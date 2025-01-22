@@ -242,12 +242,12 @@
       },
       {
         "id": {
-          "code": "LearningFairRepresentations",
+          "code": "LearnedFairRepresentations",
           "question_code": "DataMitigation",
           "project_code": "p-1"
         },
-        "text": "Learning Fair Representations",
-        "description": "Learning Fair Representations (LFR) aim to find and create a latent representation that encodes the data well but obfuscates information about protected attributes.",
+        "text": "Learned Fair Representations",
+        "description": "Learned Fair Representations (LFR) aim to find and create a latent representation that encodes the data well but obfuscates information about protected attributes.",
         "selected": false
       },
       {

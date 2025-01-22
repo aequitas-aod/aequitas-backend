@@ -1,5 +1,5 @@
 # https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.preprocessing.LFR.html#aif360.algorithms.preprocessing.LFR
-LearnFairRepresentation:
+LearnedFairRepresentations:
   k:
     label: Number of Prototypes
     description: Size of the set of prototypes

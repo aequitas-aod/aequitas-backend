@@ -1,5 +1,5 @@
 {
-  "$algorithm": "LearnFairRepresentation",
+  "$algorithm": "LearnedFairRepresentations",
   "k": 5,
   "Ax": 0.01,
   "Ay": 1,

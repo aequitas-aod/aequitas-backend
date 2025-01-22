@@ -12,7 +12,7 @@ from application.automation.scripts.on_dataset_features_available import (
 )
 from application.automation.scripts.on_processing_requested import (
     preprocessing_algorithm_CorrelationRemover,
-    preprocessing_algorithm_LearnFairRepresentation,
+    preprocessing_algorithm_LearnedFairRepresentations,
 )
 
 
@@ -111,30 +111,30 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         expected = read_json(PATH_METRICS_JSON)
         self.assertContainersAreAlmostEqual(actual, expected, tolerance=0.5)
 
-    def __preprocessing_algorithm_LearnFairRepresentation(self):
+    def __preprocessing_algorithm_LearnedFairRepresentations(self):
         from resources.db.datasets import dataset_path
         from resources.db.context import context_data
 
         hyperparameters = context_data("preprocessing-hyperparameters")[
-            "LearnFairRepresentation"
+            "LearnedFairRepresentations"
         ]
         hyperparameters = {k: hyperparameters[k]["default"] for k in hyperparameters}
 
         dataset = read_csv(dataset_path("adult"))
-        result = preprocessing_algorithm_LearnFairRepresentation(
+        result = preprocessing_algorithm_LearnedFairRepresentations(
             dataset, sensitive=["sex"], targets=["class"], **hyperparameters
         )
         return result
 
-    def test_preprocessing_algorithm_LearnFairRepresentation(self):
+    def test_preprocessing_algorithm_LearnedFairRepresentations(self):
         from test.resources.adult import PATH_PREPROCESSING_LFR_CSV
 
-        result = self.__preprocessing_algorithm_LearnFairRepresentation()
+        result = self.__preprocessing_algorithm_LearnedFairRepresentations()
         expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
         self.assertDataFramesHaveSameStructure(result, expected)
 
     def test_metrics_after_LFR(self):
-        result = self.__preprocessing_algorithm_LearnFairRepresentation()
+        result = self.__preprocessing_algorithm_LearnedFairRepresentations()
         compute_metrics(
             result,
             sensitives=["sex"],
