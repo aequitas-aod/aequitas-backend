@@ -11,6 +11,7 @@ from application.automation.scripts.on_dataset_features_available import (
     compute_metrics,
 )
 from application.automation.scripts.on_processing_requested import (
+    inprocessing_algorithm_FaUCI,
     preprocessing_algorithm_CorrelationRemover,
     preprocessing_algorithm_LearnFairRepresentation,
 )
@@ -153,6 +154,19 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         expected = read_csv(PATH_PREPROCESSING_CR_CSV)
 
         self.assertDataFramesAreEqual(result, expected)
+
+    def test_inprocessing_algorithm_FaUCI(self):
+        from resources.db.datasets import dataset_path
+        from test.resources.adult import PATH_INPROCESSING_FAUCI_CSV
+
+        dataset = read_csv(dataset_path("adult"))
+        (new_dataset, result) = inprocessing_algorithm_FaUCI(
+            dataset, ["sex"], ["class"]
+        )
+
+        expected = read_csv(PATH_INPROCESSING_FAUCI_CSV)
+
+        self.assertDataFramesAreEqual(result, expected, tolerance=0.1)
 
 
 if __name__ == "__main__":
