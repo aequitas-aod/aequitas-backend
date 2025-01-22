@@ -4,5 +4,6 @@
   "Ax": 0.01,
   "Ay": 1,
   "Az": 50,
-  "random_state": 42
+  "random_state": 42,
+  "polarization": 0.6
 }
