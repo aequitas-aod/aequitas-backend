@@ -29,6 +29,10 @@ class AbstractProcessingRequestedReaction(Automator):
         super().__init__(["processing.requested"])
         self.__supported_phases = set(phases)
 
+    @property
+    def supported_phases(self):
+        return tuple(self.__supported_phases)
+
     # noinspection PyMethodOverriding
     def on_event(
         self,
@@ -105,6 +109,52 @@ class AbstractProcessingRequestedReaction(Automator):
             except ValueError:
                 pass
         return dataset_id + "-1"
+
+    def _call_global_algorithm(
+        self,
+        dataset: pd.DataFrame,
+        targets: list[str],
+        sensitive: list[str],
+        proxies: dict,
+        detected: dict,
+        hyperparameters: dict,
+        prefix: str = None,
+    ):
+        if prefix is None:
+            prefix = self.supported_phases[0]
+        algorithm = hyperparameters.pop("$algorithm")
+        # noinspection PyUnusedLocal
+        polarization = hyperparameters.pop("polarization")
+        function_name = f"{prefix}processing_algorithm_{algorithm}"
+        if function_name not in globals():
+            raise KeyError("No such algorithm: %s" % algorithm)
+        function = globals()[function_name]
+        self.log(
+            "Executing %s: \n"
+            "\ton dataset of shape %s\n"
+            "\twith sensitive attributes %s\n"
+            "\tand targets %s\n"
+            "\twith hyperparameters %s",
+            algorithm,
+            dataset.shape,
+            sensitive,
+            targets,
+            hyperparameters,
+        )
+        result = function(
+            dataset,
+            sensitive,
+            targets,
+            proxies=proxies,
+            detected=detected,
+            **hyperparameters,
+        )
+        self.log(
+            "Executed %s: result is of type %s",
+            algorithm,
+            type(result),
+        )
+        return result
 
 
 class AIF360PreprocWrapper(BaseEstimator, TransformerMixin):
@@ -371,37 +421,8 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         detected: dict,
         hyperparameters: dict,
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
-        algorithm = hyperparameters.pop("$algorithm")
-        # noinspection PyUnusedLocal
-        polarization = hyperparameters.pop("polarization")
-        function_name = f"preprocessing_algorithm_{algorithm}"
-        if function_name not in globals():
-            raise KeyError("No such algorithm: %s" % algorithm)
-        function = globals()[function_name]
-        self.log(
-            "Executing %s: \n"
-            "\ton dataset of shape %s\n"
-            "\twith sensitive attributes %s\n"
-            "\tand targets %s\n"
-            "\twith hyperparameters %s",
-            algorithm,
-            dataset.shape,
-            sensitive,
-            targets,
-            hyperparameters,
-        )
-        result = function(
-            dataset,
-            sensitive,
-            targets,
-            proxies=proxies,
-            detected=detected,
-            **hyperparameters,
-        )
-        self.log(
-            "Executed %s: result is of type %s",
-            algorithm,
-            type(result),
+        result = self._call_global_algorithm(
+            dataset, targets, sensitive, proxies, detected, hyperparameters
         )
         assert isinstance(result, pd.DataFrame)
         result_id = self.next_name(dataset_id)
@@ -416,17 +437,7 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
 def inprocessing_algorithm_FaUCI(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> tuple:
-    logger.warning(
-        "Executing FaUCI: \n"
-        "\ton dataset of shape %s\n"
-        "\twith sensitive attributes %s\n"
-        "\tand targets %s\n"
-        "\twith hyperparameters %s",
-        dataset.shape,
-        sensitive,
-        targets,
-        kwargs,
-    )
+    # TODO: @josephgiovanelli add implementation
     return (dataset,)
 
 
@@ -445,25 +456,13 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         detected: dict,
         hyperparameters: dict,
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
-        algorithm = hyperparameters.pop("$algorithm")
-        # noinspection PyUnusedLocal
-        polarization = hyperparameters.pop("polarization")
-        function_name = f"inprocessing_algorithm_{algorithm}"
-        if function_name not in globals():
-            raise KeyError("No such algorithm: %s" % algorithm)
-        function = globals()[function_name]
-        results = function(
-            dataset,
-            sensitive,
-            targets,
-            proxies=proxies,
-            detected=detected,
-            **hyperparameters,
+        results = self._call_global_algorithm(
+            dataset, targets, sensitive, proxies, detected, hyperparameters
         )
         assert isinstance(results, tuple)
         result_id = self.next_name(dataset_id)
         predictions: pd.DataFrame = results[0]
-        # consider the other results as well
+        # TODO consider the other results as well
         yield f"predictions__{result_id}", to_csv(predictions)
         yield f"correlation_matrix__{result_id}", correlation_matrix_picture(
             predictions
