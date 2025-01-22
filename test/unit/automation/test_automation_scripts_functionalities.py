@@ -157,16 +157,21 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
 
     def test_inprocessing_algorithm_FaUCI(self):
         from resources.db.datasets import dataset_path
-        from test.resources.adult import PATH_INPROCESSING_FAUCI_CSV
+        from test.resources.adult import (
+            PATH_INPROCESSING_FAUCI_PRED_CSV,
+            PATH_INPROCESSING_FAUCI_RES_CSV,
+        )
 
         dataset = read_csv(dataset_path("adult"))
-        (new_dataset, result) = inprocessing_algorithm_FaUCI(
+        (actual_predictions, actual_results) = inprocessing_algorithm_FaUCI(
             dataset, ["sex"], ["class"]
         )
 
-        expected = read_csv(PATH_INPROCESSING_FAUCI_CSV)
+        expected_predictions = read_csv(PATH_INPROCESSING_FAUCI_PRED_CSV)
+        expected_results = read_csv(PATH_INPROCESSING_FAUCI_RES_CSV)
 
-        self.assertDataFramesAreEqual(result, expected, tolerance=0.1)
+        self.assertDataFramesAreEqual(actual_predictions, expected_predictions)
+        self.assertDataFramesAreEqual(actual_results, expected_results, tolerance=0.1)
 
 
 if __name__ == "__main__":

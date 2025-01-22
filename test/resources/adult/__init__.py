@@ -16,7 +16,8 @@ PATH_PROXIES_JSON = DIR / "proxies.json"
 PATH_PREPROCESSING_JSON = DIR / "preprocessing.json"
 PATH_PREPROCESSING_LFR_CSV = DIR / "preprocessed_lfr_result.csv"
 PATH_PREPROCESSING_CR_CSV = DIR / "preprocessed_cr.csv"
-PATH_INPROCESSING_FAUCI_CSV = DIR / "fauci_results.csv"
+PATH_INPROCESSING_FAUCI_PRED_CSV = DIR / "fauci_predictions_test.csv"
+PATH_INPROCESSING_FAUCI_RES_CSV = DIR / "fauci_results.csv"
 
 
 def get_json(name: str | Path) -> dict:
