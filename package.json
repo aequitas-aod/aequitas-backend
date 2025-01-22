@@ -1,12 +1,9 @@
 {
-  "name": "aequitas-reasoner-service",
   "devDependencies": {
     "semantic-release-preconfigured-conventional-commits": "latest"
   },
-  "private": true,
-  "release": {
-    "branches": [
-      "main"
-    ]
+  "engines": {
+    "node": "22.13",
+    "npm": ">=3.0.0"
   }
 }
