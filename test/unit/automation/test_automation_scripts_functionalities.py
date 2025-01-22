@@ -140,20 +140,9 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
             sensitives=["sex"],
             targets=["class"],
         )
-        # FIXME: @josephgiovanelli, this computation taks too much time.
-        # I believe that the problem is a consequence of the fact that LFR
-        # outputs a dataset with numeric columns, so the computation of fairness metrics
-        # has too many values to consider... is this intended?
-        # If yes, then we should possibly discretize the result of LFR before computing the metrics.
-        # If not, then there may be a bug in the implementation of LFR.
-
-        # DONE: @gciatto, if we are computing metrics with sensitives=["sex"],
-        # then LFR has to be set the same (not with sensitives=["native-country", "race", "sex", "workclass"]),
-        # because (so far) we support LFR with just one sensitive attribute
 
     def test_preprocessing_algorithm_CorrelationRemover(self):
         from resources.db.datasets import dataset_path
-
         from test.resources.adult import PATH_PREPROCESSING_CR_CSV
 
         dataset = read_csv(dataset_path("adult"))

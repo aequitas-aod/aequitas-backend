@@ -1,11 +1,11 @@
 import io
-from typing import Union
+from typing import Optional
 
 import pandas as pd
 import json
 
 
-def to_csv(df: pd.DataFrame, path=None) -> Union[str, None]:
+def to_csv(df: pd.DataFrame, path=None) -> Optional[str]:
     def _convert_to_json(x):
         if isinstance(x, (dict, list)):
             return json.dumps(x)
@@ -23,8 +23,12 @@ def to_csv(df: pd.DataFrame, path=None) -> Union[str, None]:
         return df.to_csv(**params)
 
 
-def to_json(obj) -> str:
-    return json.dumps(obj, indent=4)
+def to_json(obj, path=None) -> Optional[str]:
+    if path is not None:
+        with open(path, "w") as file:
+            json.dump(obj, file, indent=4)
+    else:
+        return json.dumps(obj, indent=4)
 
 
 def parse_json(text: str) -> dict:
