@@ -34,12 +34,6 @@ LearnFairRepresentation:
       - 1
       - 42
       - 999
-  polarization: &polarize
-    label: Polarization Percent
-    description: How much to polarize the data for the sake of testing
-    type: float
-    default: 0.5
-    values: [0, 1]
 
 # https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.preprocessing.DisparateImpactRemover.html#aif360.algorithms.preprocessing.DisparateImpactRemover
 DisparateImpactRemover:
@@ -49,11 +43,9 @@ DisparateImpactRemover:
     type: float
     default: 1.0
     values: [0, 1]
-  polarization: *polarize
 
 # https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.preprocessing.Reweighing.html#aif360.algorithms.preprocessing.Reweighing
-Reweighing:
-  polarization: *polarize
+Reweighing: {}
 
 # https://fairlearn.org/main/api_reference/generated/fairlearn.preprocessing.CorrelationRemover.html
 CorrelationRemover:
@@ -63,4 +55,3 @@ CorrelationRemover:
     type: float
     default: 0.5
     values: [0, 1]
-  polarization: *polarize

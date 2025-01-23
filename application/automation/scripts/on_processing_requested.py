@@ -137,8 +137,6 @@ class AbstractProcessingRequestedReaction(Automator):
         if prefix is None:
             prefix = self.supported_phases[0]
         algorithm = hyperparameters.pop("$algorithm")
-        # noinspection PyUnusedLocal
-        polarization = hyperparameters.pop("polarization")
         function_name = f"{prefix}processing_algorithm_{algorithm}"
         if function_name not in globals():
             raise KeyError("No such algorithm: %s" % algorithm)
