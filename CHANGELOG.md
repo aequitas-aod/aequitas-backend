@@ -1,3 +1,9 @@
+## [0.29.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.29.0...v0.29.1) (2025-01-23)
+
+### Bug Fixes
+
+* **resources:** fix name of a SPD fairness metric ([be6abc7](https://github.com/aequitas-aod/aequitas-backend/commit/be6abc75bc685915277f62ccd6335e406d3e141f))
+
 ## [0.29.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.28.4...v0.29.0) (2025-01-23)
 
 ### Features
