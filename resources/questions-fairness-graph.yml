@@ -69,8 +69,8 @@
   description: The selected metrics will be mitigated in the next steps.
   type: multiple
   answers:
-    - id: { code: StatisticalParity }
-      text: Statistical Parity
+    - id: { code: StatisticalParityDifference }
+      text: Statistical Parity Difference
       description: Statistical Parity Difference (SPD) measures the difference between the probability that a model assigns a positive outcome to a protected group versus an unprotected group, we got fairness when the measure equals 0.
     - id: { code: DisparateImpact }
       text: Disparate Impact
@@ -101,7 +101,7 @@
       text: Do Not Mitigate
       description: null
   enabled_by:
-    - { code: StatisticalParity }
+    - { code: StatisticalParityDifference }
     - { code: DisparateImpact } # note the comeback from the summary
   action_needed: null
   created_at: 2024-05-31T18:20:28

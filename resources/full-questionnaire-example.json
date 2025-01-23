@@ -198,11 +198,11 @@
       },
       {
         "id": {
-          "code": "StatisticalParity",
+          "code": "StatisticalParityDifference",
           "question_code": "Detection",
           "project_code": "p-1"
         },
-        "text": "Statistical Parity",
+        "text": "Statistical Parity Difference",
         "description": "Statistical Parity Difference (SPD) measures the difference between the probability that a model assigns a positive outcome to a protected group versus an unprotected group, we got fairness when the measure equals 0.",
         "selected": false
       }
