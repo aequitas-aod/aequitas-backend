@@ -41,11 +41,11 @@ def get_stats(
 ) -> pd.DataFrame:
     def _maybe_target(name: str):
         name = name.lower().strip()
-        return any(word in name for word in WORDS_TARGETS)
+        return any(word == name for word in WORDS_TARGETS)
 
     def _maybe_sensitive(name: str):
         name = name.lower().strip()
-        return any(word in name for word in WORDS_SENSITIVE)
+        return any(word == name for word in WORDS_SENSITIVE)
 
     def _get_distribution(feature: str):
         distribution = {}
