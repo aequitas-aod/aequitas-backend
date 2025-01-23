@@ -11,6 +11,8 @@ from application.automation.scripts.on_dataset_features_available import (
     compute_metrics,
 )
 from application.automation.scripts.on_processing_requested import (
+    generate_plot_picture,
+    inprocessing_algorithm_FaUCI,
     preprocessing_algorithm_CorrelationRemover,
     preprocessing_algorithm_LearnedFairRepresentations,
 )
@@ -153,6 +155,46 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         expected = read_csv(PATH_PREPROCESSING_CR_CSV)
 
         self.assertDataFramesAreEqual(result, expected)
+
+    def test_inprocessing_algorithm_FaUCI(self):
+        from resources.db.datasets import dataset_path
+        from test.resources.adult import (
+            PATH_INPROCESSING_FAUCI_PRED_CSV,
+            PATH_INPROCESSING_FAUCI_RES_CSV,
+        )
+
+        dataset = read_csv(dataset_path("adult"))
+        (actual_predictions, actual_results) = inprocessing_algorithm_FaUCI(
+            dataset, ["sex"], ["class"]
+        )
+
+        expected_predictions = read_csv(PATH_INPROCESSING_FAUCI_PRED_CSV)
+        expected_results = read_csv(PATH_INPROCESSING_FAUCI_RES_CSV)
+
+        self.assertDataFramesAreEqual(actual_predictions, expected_predictions)
+        self.assertDataFramesAreEqual(actual_results, expected_results, tolerance=0.1)
+
+    def test_in_processing_pictures(self):
+        import io
+        from test.resources.adult import (
+            PATH_INPROCESSING_FAUCI_RES_CSV,
+            PATH_INPROCESSING_PERFORMANCE_SVG,
+            PATH_INPROCESSING_FAIRNESS_SVG,
+            PATH_INPROCESSING_POLARIZATION_SVG,
+        )
+
+        results = read_csv(PATH_INPROCESSING_FAUCI_RES_CSV)
+        for plot_type, file_name in {
+            "performance": PATH_INPROCESSING_PERFORMANCE_SVG,
+            "fairness": PATH_INPROCESSING_FAIRNESS_SVG,
+            "polarization": PATH_INPROCESSING_POLARIZATION_SVG,
+        }.items():
+            actual_svg = io.StringIO()
+            generate_plot_picture(plot_type=plot_type, results=results, file=actual_svg)
+            actual_svg = actual_svg.getvalue().splitlines()
+            expected_svg = file_name.read_text().splitlines()
+            self.assertEqual(len(actual_svg), len(expected_svg))
+            self.assertEqual(actual_svg[:4], expected_svg[:4])
 
 
 if __name__ == "__main__":
