@@ -1,3 +1,9 @@
+## [0.28.4](https://github.com/aequitas-aod/aequitas-backend/compare/v0.28.3...v0.28.4) (2025-01-23)
+
+### Bug Fixes
+
+* **resources:** fix LFR hyperparameters ([5d0839d](https://github.com/aequitas-aod/aequitas-backend/commit/5d0839db7248adf197ef19ab37c242e225c84a75))
+
 ## [0.28.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.28.2...v0.28.3) (2025-01-23)
 
 ### Dependency updates
