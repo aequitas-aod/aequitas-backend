@@ -1,3 +1,9 @@
+## [0.29.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.28.4...v0.29.0) (2025-01-23)
+
+### Features
+
+* inprocessing and testing ([89c0b37](https://github.com/aequitas-aod/aequitas-backend/commit/89c0b37ed93b4da6990484da30ad18b4c0a33814))
+
 ## [0.28.4](https://github.com/aequitas-aod/aequitas-backend/compare/v0.28.3...v0.28.4) (2025-01-23)
 
 ### Bug Fixes
