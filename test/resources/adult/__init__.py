@@ -19,9 +19,23 @@ PATH_PREPROCESSING_CR_CSV = DIR / "preprocessed_cr.csv"
 PATH_INPROCESSING_JSON = DIR / "inprocessing.json"
 PATH_INPROCESSING_FAUCI_PRED_CSV = DIR / "fauci_predictions_test.csv"
 PATH_INPROCESSING_FAUCI_RES_CSV = DIR / "fauci_results.csv"
+PATH_INPROCESSING_FAUCI_RES_0_CSV = DIR / "fauci_results-alpha-0.csv"
+PATH_INPROCESSING_FAUCI_RES_1_CSV = DIR / "fauci_results-alpha-1.csv"
 PATH_INPROCESSING_PERFORMANCE_SVG = DIR / "inprocessing-performance-plot.svg"
 PATH_INPROCESSING_FAIRNESS_SVG = DIR / "inprocessing-fairness-plot.svg"
 PATH_INPROCESSING_POLARIZATION_SVG = DIR / "inprocessing-polarization-plot.svg"
+PATH_INPROCESSING_PERFORMANCE_0_SVG = DIR / "inprocessing-performance-plot-alpha-0.svg"
+PATH_INPROCESSING_FAIRNESS_0_SVG = DIR / "inprocessing-fairness-plot-alpha-0.svg"
+PATH_INPROCESSING_POLARIZATION_0_SVG = (
+    DIR / "inprocessing-polarization-plot-alpha-0.svg"
+)
+PATH_INPROCESSING_PERFORMANCE_1_SVG = DIR / "inprocessing-performance-plot-alpha-1.svg"
+PATH_INPROCESSING_FAIRNESS_1_SVG = DIR / "inprocessing-fairness-plot-alpha-1.svg"
+PATH_INPROCESSING_POLARIZATION_1_SVG = (
+    DIR / "inprocessing-polarization-plot-alpha-1.svg"
+)
+PATH_INPROCESSING_NO_MIT_CSV = DIR / "inprocessing-no-mitigation.csv"
+PATH_PREPROCESSING_SVG = DIR / "preprocessing-plot.svg"
 
 
 def get_json(name: str | Path) -> dict:

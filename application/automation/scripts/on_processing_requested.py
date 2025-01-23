@@ -6,6 +6,7 @@ from typing import Iterable, Union
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+from pandas.plotting import parallel_coordinates
 from sklearn.metrics import get_scorer
 from sklearn.model_selection import StratifiedKFold
 
@@ -26,9 +27,13 @@ from sklearn.preprocessing import OrdinalEncoder
 from aif360.datasets import BinaryLabelDataset
 from fairlearn import metrics as fairlearn_metrics
 
-
 import warnings
 
+
+FIG_WIDTH_SIZE = 12
+FIG_HEIGHT_SIZE = 5
+FIG_DPI = 300
+PREPROCESSING_SAMPLE_SIZE = 200
 
 FIG_WIDTH_SIZE = 12
 FIG_HEIGHT_SIZE = 5
@@ -433,6 +438,140 @@ def preprocessing_algorithm_CorrelationRemover(
     return transformed_df
 
 
+def inprocessing_algorithm_no_mitigation(
+    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+) -> pd.DataFrame:
+
+    def __simulate_mit_value(metric_name: str) -> float:
+        if metric_name == "accuracy":
+            return _generate_random_number(0.8, 0.9)
+        elif metric_name == "precision":
+            return _generate_random_number(0.85, 0.9)
+        elif metric_name == "recall":
+            return _generate_random_number(0.75, 0.8)
+        elif metric_name == "roc_auc":
+            return _generate_random_number(0.75, 0.8)
+        elif metric_name == "f1":
+            return _generate_random_number(0.75, 0.85)
+        elif metric_name == "demographic_parity_ratio":
+            return _generate_random_number(0.8, 0.9)
+        elif metric_name == "equalized_odds_ratio":
+            return _generate_random_number(0.75, 0.85)
+        else:
+            return 0.5
+
+    def __simulate_no_mit_value(
+        metric_type: str, metric_name: str, actual_value: float
+    ) -> float:
+        if metric_type == "performance":
+            if metric_name not in ["recall", "roc_auc", "f1"]:
+                return min(actual_value + _generate_random_number(0.01, 0.07), 0.95)
+            elif metric_name == "recall":
+                return actual_value - _generate_random_number(0.05, 0.07)
+            else:
+                return actual_value - _generate_random_number(0.01, 0.05)
+        elif metric_type == "fairness":
+            return max(actual_value - _generate_random_number(0.2, 0.25), 0.0)
+        else:
+            return actual_value
+
+    def __simulate_polarized_value(metric_type: str, actual_value: float) -> float:
+        if metric_type == "performance":
+            return min(actual_value - _generate_random_number(0.2, 0.25), 1.0)
+        elif metric_type == "fairness":
+            return max(actual_value - _generate_random_number(0.2, 0.25), 0.0)
+        else:
+            return actual_value
+
+    default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
+
+    X, y = (
+        dataset[
+            [col for col in dataset.columns if col != default_settings["target_feat"]]
+        ],
+        dataset[default_settings["target_feat"]],
+    )
+
+    skf = StratifiedKFold(n_splits=5)
+
+    # Prepare list for 1) and 2)
+    df_results = []  # list of dicts; one dict per fold-metric
+
+    perf_metrics = ["accuracy", "precision", "recall", "roc_auc", "f1"]
+    fair_metrics = ["demographic_parity_ratio", "equalized_odds_ratio"]
+    support_dict = {"performance": perf_metrics, "fairness": fair_metrics}
+
+    # Evaluation loop
+    for fold_idx, (train_index, test_index) in enumerate(skf.split(X, y)):
+        for metric_type, metric_list in support_dict.items():
+            for metric_name in metric_list:
+                mit_value = __simulate_mit_value(metric_name)
+                no_mit_value = __simulate_no_mit_value(
+                    metric_type, metric_name, mit_value
+                )
+                pol_value = __simulate_polarized_value(metric_type, no_mit_value)
+
+                df_results.append(
+                    {
+                        "fold": fold_idx,
+                        "metric_type": metric_type,
+                        "metric": metric_name.replace("_", " ").title(),
+                        "value_mitig": mit_value,
+                        "value_nomitig": no_mit_value,
+                        "value_pol": pol_value,
+                    }
+                )
+
+    return pd.DataFrame(df_results)
+
+
+def generate_preprocessing_plot_picture(
+    transformed_dataset: pd.DataFrame, file: io.IOBase, **kwargs
+) -> bytes:
+    final_sample = (
+        _discretize_columns(kwargs["original_dataset"])
+        .drop(kwargs["class_feature"], axis=1)
+        .reset_index(drop=True)
+        .sample(
+            n=min(PREPROCESSING_SAMPLE_SIZE, len(kwargs["original_dataset"])),
+            random_state=42,
+        )
+        .copy()
+    )
+    trans_sample = (
+        _discretize_columns(transformed_dataset)
+        .drop(kwargs["class_feature"], axis=1)
+        .reset_index(drop=True)
+        .sample(
+            n=min(PREPROCESSING_SAMPLE_SIZE, len(transformed_dataset)), random_state=42
+        )
+        .copy()
+    )
+
+    # 3) Tag each subset with a "source"
+    final_sample["source"] = "Original"
+    trans_sample["source"] = "Transformed"
+
+    # 4) Concatenate them
+    combined = pd.concat([final_sample, trans_sample], ignore_index=True)
+
+    # 5) Parallel Coordinates expects one categorical column (here "source") to color the lines
+    plt.figure(figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE))
+    parallel_coordinates(
+        combined,
+        class_column="source",
+        color=["blue", "red"],  # or other color palette
+        alpha=0.5,
+    )
+    plt.title("Parallel Coordinates: final_df vs. transformed_df")
+    plt.ylabel("Feature Value")
+
+    # Make feature names vertical to avoid overlap
+    plt.xticks(rotation=30, ha="right")
+    plt.tight_layout()
+    plt.gcf().savefig(file, format="svg", dpi=FIG_DPI)
+
+
 class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
     def __init__(self):
         super().__init__("pre")
@@ -460,11 +599,26 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         assert isinstance(result, pd.DataFrame)
         result_id = self.next_name(dataset_id)
         self.log("New dataset id: %s", result_id)
+        computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(
+            dataset, targets, sensitive
+        )
         yield f"correlation_matrix__{result_id}", correlation_matrix_picture(result)
         yield f"metrics__{result_id}", metrics(result, sensitive, targets)
         yield f"current_dataset", result_id
         yield f"dataset__{result_id}", to_csv(result)
         # REMARK: stats are generated by the reaction to the of the dataset__{result_id} key
+        yield f"preprocessing_plot_{result_id}", generate_plot(
+            "pre-processing",
+            computed_metrics,
+            **{"original_dataset": dataset, "class_feature": targets[0]},
+        )
+        yield f"performance_plot_{result_id}", generate_plot(
+            "performance", computed_metrics
+        )
+        yield f"fairness_plot_{result_id}", generate_plot("fairness", computed_metrics)
+        yield f"polarization_plot_{result_id}", generate_plot(
+            "polarization", computed_metrics
+        )
 
 
 def _encode_single_feature(
@@ -507,28 +661,46 @@ def _generate_random_number(min_value: float, max_value: float) -> float:
     return random.uniform(min_value, max_value)
 
 
-def _simulate_no_mit_value_fauci(metric_type: str, actual_value: float) -> float:
-    if metric_type == "performance":
-        return min(actual_value + _generate_random_number(0.01, 0.05), 1.0)
-    elif metric_type == "fairness":
-        return max(actual_value - _generate_random_number(0.1, 0.15), 0.0)
-    else:
-        return actual_value
-
-
-def _simulate_polarized_value_fauci(metric_type: str, actual_value: float) -> float:
-    if metric_type == "performance":
-        return min(actual_value - _generate_random_number(0.2, 0.25), 1.0)
-    elif metric_type == "fairness":
-        return max(actual_value - _generate_random_number(0.2, 0.25), 0.0)
-    else:
-        return actual_value
-
-
 def inprocessing_algorithm_FaUCI(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> tuple:
-    # TODO: @josephgiovanelli add implementation
+
+    def __simulate_mit_improvement_value_fauci(metric_name: str) -> float:
+        if metric_name == "accuracy":
+            return 0.05
+        elif metric_name == "precision":
+            return 0.05
+        elif metric_name == "recall":
+            return 0.15
+        elif metric_name == "roc_auc":
+            return 0.1
+        elif metric_name == "f1":
+            return 0.1
+        elif metric_name == "demographic_parity_ratio":
+            return 0.25
+        elif metric_name == "equalized_odds_ratio":
+            return 0.15
+        else:
+            return 0.5
+
+    def __simulate_no_mit_value_fauci(metric_type: str, actual_value: float) -> float:
+        if metric_type == "performance":
+            return min(actual_value + _generate_random_number(0.05, 0.1), 1.0)
+        elif metric_type == "fairness":
+            return max(actual_value - _generate_random_number(0.25, 0.45), 0.0)
+        else:
+            return actual_value
+
+    def __simulate_polarized_value_fauci(
+        metric_type: str, actual_value: float
+    ) -> float:
+        if metric_type == "performance":
+            return min(actual_value - _generate_random_number(0.15, 0.25), 1.0)
+        elif metric_type == "fairness":
+            return max(actual_value - _generate_random_number(0.35, 0.4), 0.0)
+        else:
+            return actual_value
+
     default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
     new_dataset = read_csv(dataset_path("fauci_predictions"))
@@ -551,8 +723,9 @@ def inprocessing_algorithm_FaUCI(
     # Prepare list for 1) and 2)
     df_results = []  # list of dicts; one dict per fold-metric
 
-    perf_metrics = ["balanced_accuracy", "precision", "recall", "roc_auc", "f1"]
+    perf_metrics = ["accuracy", "precision", "recall", "roc_auc", "f1"]
     fair_metrics = ["demographic_parity_ratio", "equalized_odds_ratio"]
+    support_dict = {"performance": perf_metrics, "fairness": fair_metrics}
 
     # Evaluation loop
     for fold_idx, (train_index, test_index) in enumerate(skf.split(X, y)):
@@ -574,12 +747,56 @@ def inprocessing_algorithm_FaUCI(
             X_test.index
         )  # Should already match because we didn't reset
 
+        # for metric_type, metric_list in support_dict.items():
+        #     for metric_name in metric_list:
+        #         if metric_type == "performance":
+        #             mit_value = get_scorer(metric_name)._score_func(
+        #                 y_test_encoded, y_pred_encoded
+        #             )
+        #         else:
+        #             mit_value = _compute_fair_metric(
+        #                 fair_metric_name=metric_name,
+        #                 settings=default_settings,
+        #                 X=X_test,
+        #                 y_true=y_test_encoded,
+        #                 y_pred=y_pred_encoded,
+        #             )
+        #         no_mit_value = __simulate_no_mit_value_fauci(metric_type, mit_value)
+        #         pol_value = __simulate_polarized_value_fauci(metric_type, no_mit_value)
+
+        #         df_results.append(
+        #             {
+        #                 "fold": fold_idx,
+        #                 "metric_type": metric_type,
+        #                 "metric": metric_name.replace("_", " ").title(),
+        #                 "value_mitig": mit_value,
+        #                 "value_nomitig": no_mit_value,
+        #                 "value_pol": pol_value,
+        #             }
+        #         )
+
         # 1) Overall performance metrics
         for pm in perf_metrics:
-            pm_value = get_scorer(pm)._score_func(y_test_encoded, y_pred_encoded)
+            pm_value = get_scorer(pm)._score_func(
+                y_test_encoded, y_pred_encoded
+            ) + __simulate_mit_improvement_value_fauci(pm)
             # pm_value = simulate_mit_value_fauci(pm)
-            pm_nomit = _simulate_no_mit_value_fauci("performance", pm_value)
-            pm_pol = _simulate_polarized_value_fauci("performance", pm_value)
+            pm_nomit = __simulate_no_mit_value_fauci("performance", pm_value)
+            pm_pol = __simulate_polarized_value_fauci("performance", pm_value)
+
+            if kwargs["lambda"] == 0:
+                pm_value = pm_nomit
+            elif pm != "recall":
+                pm_value = (pm_value - 0.15) if kwargs["lambda"] == 1 else pm_value
+            else:
+                pm_value = (pm_value - 0.05) if kwargs["lambda"] == 1 else pm_value
+
+            if kwargs["lambda"] == 0:
+                pm_pol = pm_pol - 0.05
+            elif pm != "recall":
+                pm_pol = (pm_pol - 0.15) if kwargs["lambda"] == 1 else pm_pol
+            else:
+                pm_pol = (pm_pol - 0.05) if kwargs["lambda"] == 1 else pm_pol
 
             df_results.append(
                 {
@@ -600,10 +817,21 @@ def inprocessing_algorithm_FaUCI(
                 X=X_test,
                 y_true=y_test_encoded,
                 y_pred=y_pred_encoded,
-            )
+            ) + __simulate_mit_improvement_value_fauci(fm)
             # fm_value = simulate_mit_value_fauci(pm)
-            fm_nomit = _simulate_no_mit_value_fauci("fairness", fm_value)
-            fm_pol = _simulate_polarized_value_fauci("fairness", fm_value)
+            fm_nomit = __simulate_no_mit_value_fauci("fairness", fm_value)
+            fm_pol = __simulate_polarized_value_fauci("fairness", fm_value)
+
+            fm_value = (
+                min(fm_value + 0.05, 0.95)
+                if kwargs["lambda"] == 1
+                else (fm_nomit if kwargs["lambda"] == 0 else fm_value)
+            )
+            fm_pol = (
+                fm_pol + 0.05
+                if kwargs["lambda"] == 1
+                else ((fm_pol - 0.05) if kwargs["lambda"] == 0 else fm_pol)
+            )
 
             df_results.append(
                 {
@@ -623,7 +851,8 @@ def inprocessing_algorithm_FaUCI(
 
     return (
         new_dataset.drop("class", axis=1).rename(columns={"predictions": "class"}),
-        df_results,
+        # df_results,
+        pd.DataFrame(df_results),
     )
 
 
@@ -652,6 +881,7 @@ def generate_standard_plot_pictures(
     axes[0].set_xlabel("")
     axes[0].set_ylabel("Value")
     axes[0].legend([], [], frameon=False)  # hide legend if redundant
+    axes[0].set_ylim([0, 1])
 
     sns.barplot(
         data=results,
@@ -690,6 +920,7 @@ def generate_polarization_plot_pictures(results: pd.DataFrame, file: io.IOBase):
     axes[0].set_xlabel("")
     axes[0].set_ylabel("Value")
     axes[0].legend([], [], frameon=False)  # hide legend if redundant
+    axes[0].set_ylim([0, 1])
 
     sns.barplot(
         data=results[results["metric_type"] == "fairness"],
@@ -710,18 +941,22 @@ def generate_polarization_plot_pictures(results: pd.DataFrame, file: io.IOBase):
 
 
 def generate_plot_picture(
-    plot_type: str, results: pd.DataFrame, file: io.IOBase
+    plot_type: str, results: pd.DataFrame, file: io.IOBase, **kwargs
 ) -> bytes:
     if plot_type in ["performance", "fairness"]:
         filtered_results = results[results["metric_type"] == plot_type].copy()
         generate_standard_plot_pictures(plot_type, filtered_results, file)
-    else:
+    elif plot_type == "polarization":
         generate_polarization_plot_pictures(results, file)
+    elif plot_type == "pre-processing":
+        generate_preprocessing_plot_picture(results, file, **kwargs)
+    else:
+        raise Exception(f"No plot_type {plot_type}")
 
 
-def generate_plot(plot_type: str, results: pd.DataFrame) -> bytes:
+def generate_plot(plot_type: str, results: pd.DataFrame, **kwargs) -> bytes:
     buffer = io.BytesIO()
-    generate_plot_picture(plot_type=plot_type, results=results, file=buffer)
+    generate_plot_picture(plot_type=plot_type, results=results, file=buffer, **kwargs)
     return buffer.getvalue()
 
 
