@@ -606,7 +606,7 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         yield f"metrics__{result_id}", metrics(result, sensitive, targets)
         yield f"preprocessing_plot__{result_id}", generate_plot(
             "pre-processing",
-            computed_metrics,
+            result,
             **{"original_dataset": dataset, "class_feature": targets[0]},
         )
         yield f"performance_plot__{result_id}", generate_plot(
