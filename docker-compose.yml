@@ -52,15 +52,14 @@ services:
     image: aequitaseu/frontend:latest
     container_name: ${AEQUITAS_FRONTEND_HOST}
     ports:
-      - "${AEQUITAS_FRONTEND_PORT}:80"
+      - "80:80"
     environment:
-      NEXT_PUBLIC_BACKEND_URL: http://localhost:${AEQUITAS_BACKEND_PORT}
+      NEXT_PUBLIC_BACKEND_URL: http://aequitas.apice.unibo.it:${AEQUITAS_BACKEND_PORT}
     depends_on:
       backend:
         condition: service_healthy
 
   backend:
-    build: .
     image: aequitaseu/backend:latest
     platform: *platform
     container_name: ${AEQUITAS_BACKEND_HOST}
