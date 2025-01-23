@@ -104,7 +104,7 @@ class Automator:
             )
 
     def get_from_context(
-        self, project_id: EntityId, key: str, parse_as: str
+        self, project_id: EntityId, key: str, parse_as: str, optional: bool = False
     ) -> Union[dict, pd.DataFrame]:
         import application.automation.parsing as parsing
 
@@ -116,12 +116,13 @@ class Automator:
         if hasattr(self.components, "project_service"):
             value = self.components.project_service.get_from_context(project_id, key)[0]
             if value is None:
-                self.log(
-                    f"Key '%s' not found in context of project '%s'",
-                    key,
-                    project_id,
-                    level="warning",
-                )
+                if not optional:
+                    self.log(
+                        f"Key '%s' not found in context of project '%s'",
+                        key,
+                        project_id,
+                        level="warning",
+                    )
                 return None
             try:
                 return parsing_function(value)

@@ -12,7 +12,7 @@ from sklearn.model_selection import StratifiedKFold
 from resources.db.datasets import dataset_path
 
 import utils.env
-from application.automation.parsing import read_csv, to_csv
+from application.automation.parsing import read_csv, to_csv, to_json
 from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
@@ -26,7 +26,9 @@ from sklearn.preprocessing import OrdinalEncoder
 from aif360.datasets import BinaryLabelDataset
 from fairlearn import metrics as fairlearn_metrics
 
+
 import warnings
+
 
 FIG_WIDTH_SIZE = 12
 FIG_HEIGHT_SIZE = 5
@@ -63,6 +65,7 @@ class AbstractProcessingRequestedReaction(Automator):
                 phase,
                 self.__supported_phases,
             )
+            return
         dataset_id: str = context_key.split("__")[1]
         dataset: pd.DataFrame = self.get_from_context(
             project_id, f"dataset__{dataset_id}", "csv"
@@ -86,6 +89,16 @@ class AbstractProcessingRequestedReaction(Automator):
         proxies = self.get_from_context(project_id, f"proxies__{dataset_id}", "json")
         detected = self.get_from_context(project_id, f"detected__{dataset_id}", "json")
         hyperparameters = self.get_from_context(project_id, context_key, "json")
+        processing_history = (
+            self.get_from_context(
+                project_id, f"processing_history", "json", optional=True
+            )
+            or []
+        )
+        algorithm = hyperparameters["$algorithm"]
+        processing_history.append(
+            dict(phase=phase, dataset=dataset_id, algorithm=algorithm)
+        )
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             for k, v in self.produce_info(
@@ -99,6 +112,7 @@ class AbstractProcessingRequestedReaction(Automator):
                 hyperparameters,
             ):
                 self.update_context(project_id, k, v)
+        self.update_context(project_id, processing_history=to_json(processing_history))
 
     def produce_info(
         self,
@@ -166,7 +180,7 @@ class AbstractProcessingRequestedReaction(Automator):
             algorithm,
             type(result),
         )
-        return result
+        return algorithm, result
 
 
 class AIF360PreprocWrapper(BaseEstimator, TransformerMixin):
@@ -434,8 +448,14 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         detected: dict,
         hyperparameters: dict,
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
-        result = self._call_global_algorithm(
-            dataset, targets, sensitive, proxies, detected, hyperparameters
+        _, result = self._call_global_algorithm(
+            dataset,
+            targets,
+            sensitive,
+            proxies,
+            detected,
+            hyperparameters,
+            prefix=phase,
         )
         assert isinstance(result, pd.DataFrame)
         result_id = self.next_name(dataset_id)
@@ -467,10 +487,7 @@ def _compute_fair_metric(
     y_true: pd.Series,
     y_pred: pd.Series,
 ) -> float:
-
-    # metrics_module = __import__("metrics")
-    metrics_module = globals()["fairlearn_metrics"]
-    fair_metric_scorer = getattr(metrics_module, fair_metric_name)
+    fair_metric_scorer = getattr(fairlearn_metrics, fair_metric_name)
 
     X_sensitive = _encode_single_feature(
         df=X,
@@ -723,23 +740,31 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         detected: dict,
         hyperparameters: dict,
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
-        results = self._call_global_algorithm(
-            dataset, targets, sensitive, proxies, detected, hyperparameters
+        algorithm, results = self._call_global_algorithm(
+            dataset,
+            targets,
+            sensitive,
+            proxies,
+            detected,
+            hyperparameters,
+            prefix=phase,
         )
         assert isinstance(results, tuple)
-        result_id = self.next_name(dataset_id)
         predictions: pd.DataFrame = results[0]
         computed_metrics: pd.DataFrame = results[1]
-        # TODO consider the other results as well
-        yield f"predictions__{result_id}", to_csv(predictions)
-        yield f"correlation_matrix__{result_id}", correlation_matrix_picture(
+        yield f"predictions__{algorithm}__{dataset_id}", to_csv(predictions)
+        yield f"correlation_matrix__{algorithm}__{dataset_id}", correlation_matrix_picture(
             predictions
         )
-        yield f"metrics__{result_id}", metrics(predictions, sensitive, targets)
-        yield f"performance_plot_{result_id}", generate_plot(
+        yield f"metrics__{algorithm}__{dataset_id}", metrics(
+            predictions, sensitive, targets
+        )
+        yield f"performance_plot__{algorithm}__{dataset_id}", generate_plot(
             "performance", computed_metrics
         )
-        yield f"fairness_plot_{result_id}", generate_plot("fairness", computed_metrics)
-        yield f"polarization_plot_{result_id}", generate_plot(
+        yield f"fairness_plot__{algorithm}__{dataset_id}", generate_plot(
+            "fairness", computed_metrics
+        )
+        yield f"polarization_plot__{algorithm}__{dataset_id}", generate_plot(
             "polarization", computed_metrics
         )

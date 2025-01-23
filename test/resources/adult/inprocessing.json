@@ -1,0 +1,4 @@
+{
+  "$algorithm": "FaUCI",
+  "lambda": 0.5
+}

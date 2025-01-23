@@ -33,7 +33,6 @@ class TestContextAutomation(AutomationRelatedTestCase):
     def setUpClass(cls):
         super().setUpClass()
         from resources.db.datasets import dataset_path
-        from test.resources.adult import PATH_FEATURES_JSON
 
         cls.dataset_path = dataset_path("adult")
         cls.dataset = read_csv(cls.dataset_path)
@@ -52,7 +51,6 @@ class TestContextAutomation(AutomationRelatedTestCase):
     def test_dataset_created_produces(self):
         for key_prefix in ["dataset_head", "stats"]:
             key = f"{key_prefix}__{self.dataset_id}"
-            # with self.subTest(get=key):
             response = self.app.get(
                 f"/projects/{self.project_id.code}/context?key={key}"
             )
@@ -72,7 +70,8 @@ class TestContextAutomation(AutomationRelatedTestCase):
         self.assertIn(b"</svg>", data)
 
     def assertIsJson(self, data: bytes):
-        self.assertIsInstance(parse_json(data.decode("utf-8")), dict)
+        parsed = parse_json(data.decode("utf-8"))
+        self.assertTrue(isinstance(parsed, dict) or isinstance(parsed, list))
 
     def test_features_created_produces(self):
         self.test_dataset_created_produces()
@@ -89,7 +88,6 @@ class TestContextAutomation(AutomationRelatedTestCase):
         }
         for key_prefix, assertion in key_results.items():
             key = f"{key_prefix}__{self.dataset_id}"
-            # with self.subTest(get=key):
             response = self.app.get(
                 f"/projects/{self.project_id.code}/context?key={key}"
             )
@@ -97,38 +95,59 @@ class TestContextAutomation(AutomationRelatedTestCase):
             self.assertIn("plain/text", response.headers["Content-Type"])
             assertion(response.data)
 
-    def test_processing_requested_produces(self):
-        self.result_id = "adult-2"
-
-        self.test_features_created_produces()
+    def _proxies_and_detected(self):
         key = f"proxies__{self.dataset_id}"
-        # with self.subTest(put=key):
         response = self.app.put(
             f"/projects/{self.project_id.code}/context?key={key}",
             json=get_json(PATH_PROXIES_JSON),
         )
         self.assertResponseIsSuccessful(response)
         key = f"detected__{self.dataset_id}"
-        # with self.subTest(put=key):
         response = self.app.put(
             f"/projects/{self.project_id.code}/context?key={key}",
             json=get_json(PATH_DETECTED_JSON),
         )
         self.assertResponseIsSuccessful(response)
+
+    def assertCurrentDatasetIs(self, expected_id: str):
+        key = "current_dataset"
+        response = self.app.get(f"/projects/{self.project_id.code}/context?key={key}")
+        self.assertResponseIsSuccessful(response)
+        self.assertIn("plain/text", response.headers["Content-Type"])
+        self.assertEqual(response.data.decode("utf-8"), expected_id)
+
+    def assertLastProcessingIs(self, phase: str, algorithm: str, dataset: str):
+        key = "processing_history"
+        response = self.app.get(f"/projects/{self.project_id.code}/context?key={key}")
+        self.assertResponseIsSuccessful(response)
+        self.assertIn("plain/text", response.headers["Content-Type"])
+        parsed = parse_json(response.data.decode("utf-8"))
+        self.assertIsInstance(parsed, list)
+        self.assertTrue(len(parsed) > 0)
+        last_processing = parsed[-1]
+        self.assertEqual(last_processing["phase"], phase)
+        self.assertEqual(last_processing["dataset"], dataset)
+        self.assertEqual(last_processing["algorithm"], algorithm)
+
+    def test_preprocessing_requested_produces(self):
+        self.test_features_created_produces()
+        self._proxies_and_detected()
+        request = get_json(PATH_PREPROCESSING_JSON)
+        algorithm = request["$algorithm"]
         key = f"preprocessing__{self.dataset_id}"
-        # with self.subTest(put=key):
         response = self.app.put(
             f"/projects/{self.project_id.code}/context?key={key}",
-            json=get_json(PATH_PREPROCESSING_JSON),
+            json=request,
         )
         self.assertResponseIsSuccessful(response)
         key_results = {
-            "dataset": self.assertIsNonEmptyDataFrameInCsvFormat,
             "correlation_matrix": self.asserIsSvg,
             "metrics": self.assertIsJson,
+            "dataset": self.assertIsNonEmptyDataFrameInCsvFormat,
         }
+        result_id = "adult-2"
         for key_prefix, assertion in key_results.items():
-            key = f"{key_prefix}__{self.result_id}"
+            key = f"{key_prefix}__{result_id}"
             # with self.subTest(get=key):
             response = self.app.get(
                 f"/projects/{self.project_id.code}/context?key={key}"
@@ -136,3 +155,34 @@ class TestContextAutomation(AutomationRelatedTestCase):
             self.assertResponseIsSuccessful(response)
             self.assertIn("plain/text", response.headers["Content-Type"])
             assertion(response.data)
+        self.assertCurrentDatasetIs(result_id)
+        self.assertLastProcessingIs("pre", algorithm, self.dataset_id)
+
+    def test_inprocessing_requested_produces(self):
+        self.test_features_created_produces()
+        self._proxies_and_detected()
+        request = get_json(PATH_INPROCESSING_JSON)
+        algorithm = request["$algorithm"]
+        key = f"inprocessing__{self.dataset_id}"
+        response = self.app.put(
+            f"/projects/{self.project_id.code}/context?key={key}",
+            json=request,
+        )
+        self.assertResponseIsSuccessful(response)
+        key_results = {
+            "predictions": self.assertIsNonEmptyDataFrameInCsvFormat,
+            "correlation_matrix": self.asserIsSvg,
+            "metrics": self.assertIsJson,
+            "performance_plot": self.asserIsSvg,
+            "fairness_plot": self.asserIsSvg,
+            "polarization_plot": self.asserIsSvg,
+        }
+        for key_prefix, assertion in key_results.items():
+            key = f"{key_prefix}__{algorithm}__{self.dataset_id}"
+            response = self.app.get(
+                f"/projects/{self.project_id.code}/context?key={key}"
+            )
+            self.assertResponseIsSuccessful(response)
+            self.assertIn("plain/text", response.headers["Content-Type"])
+            assertion(response.data)
+        self.assertLastProcessingIs("in", algorithm, self.dataset_id)
