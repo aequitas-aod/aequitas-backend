@@ -1,29 +1,29 @@
 # https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.preprocessing.LFR.html#aif360.algorithms.preprocessing.LFR
-LearnFairRepresentation:
+LearnedFairRepresentations:
   k:
     label: Number of Prototypes
     description: Size of the set of prototypes
     type: integer
     default: 5
-    values: [2, 100]
+    values: [2, 20]
   Ax:
-    label:  Input recontruction quality term weight
+    label:  Input reconstruction quality term weight
     description: Weight coefficient on the reconstruct loss term
     type: float
     default: 0.01
-    values: [0, 1]
+    values: [0.001, 1]
   Ay:
     label: Fairness weight
     description: Weight coefficient on the fairness loss term
     type: float
     default: 1
-    values: [0, 1]
+    values: [0.1, 10]
   Az:
     label: Output prediction error
     description: Weight coefficient on the prediction error loss term
     type: float
     default: 50
-    values: [0, 1]
+    values: [10, 100]
   random_state:
     label: Random State
     description: Seed for reproducibility

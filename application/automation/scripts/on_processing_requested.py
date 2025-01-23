@@ -342,7 +342,7 @@ def _filter_keys(data: dict, *keys):
     return {k: v for k, v in data.items() if k in keys}
 
 
-def preprocessing_algorithm_LearnFairRepresentation(
+def preprocessing_algorithm_LearnedFairRepresentations(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
     default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
