@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 from application.automation.setup import Automator
-from application.automation.parsing import to_csv
+from application.automation.parsing import to_csv, _pythonize
 from domain.common.core import EntityId
 from domain.project.core import Project
 from typing import Iterable
@@ -39,15 +39,6 @@ def get_heads(df: pd.DataFrame) -> pd.DataFrame:
 def get_stats(
     df: pd.DataFrame, discretization_bins: int = DEFAULT_DISCRETIZATION_BINS
 ) -> pd.DataFrame:
-    def _pythonize(obj):
-        if isinstance(obj, list) or isinstance(obj, np.ndarray):
-            return [_pythonize(x) for x in obj]
-        if isinstance(obj, dict):
-            return {k: _pythonize(v) for k, v in obj.items()}
-        if hasattr(obj, "item"):
-            return obj.item()
-        return obj
-
     def _maybe_target(name: str):
         name = name.lower().strip()
         return any(word in name for word in WORDS_TARGETS)

@@ -12,7 +12,7 @@ from sklearn.preprocessing import OrdinalEncoder
 
 import utils.env
 from utils.logs import logger
-from application.automation.parsing import to_csv
+from application.automation.parsing import to_csv, _pythonize
 from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
@@ -174,12 +174,7 @@ def compute_metrics(
                         privileged_groups=privileged_groups,
                     )
 
-                    try:
-                        disparate_impact = metric.disparate_impact()
-                    except ZeroDivisionError:
-                        # If the privileged group has zero positives, ratio is undefined
-                        disparate_impact = np.nan
-
+                    disparate_impact = metric.disparate_impact()
                     stat_parity_diff = metric.mean_difference()
 
                     when_clause = {sensitive: sensitive_value, target: target_value}
@@ -187,14 +182,14 @@ def compute_metrics(
                     result["DisparateImpact"].append(
                         {
                             "when": when_clause,
-                            "value": float(disparate_impact),
+                            "value": _pythonize(disparate_impact),
                         }
                     )
 
                     result["StatisticalParityDifference"].append(
                         {
                             "when": when_clause,
-                            "value": float(stat_parity_diff),
+                            "value": _pythonize(stat_parity_diff),
                         }
                     )
 

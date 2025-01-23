@@ -1,6 +1,7 @@
 import io
 from typing import Optional
 
+import numpy as np
 import pandas as pd
 import json
 
@@ -52,6 +53,18 @@ def _upack_json_strings(df: pd.DataFrame) -> pd.DataFrame:
     for col in df.columns:
         df[col] = df[col].apply(_parse_as_json)
     return df
+
+
+def _pythonize(obj):
+    if isinstance(obj, list) or isinstance(obj, np.ndarray):
+        return [_pythonize(x) for x in obj]
+    if isinstance(obj, dict):
+        return {k: _pythonize(v) for k, v in obj.items()}
+    if hasattr(obj, "item"):
+        obj = obj.item()
+    if isinstance(obj, float) and np.isinf(obj):
+        return "Infinity" if obj > 0 else "-Infinity"
+    return obj
 
 
 def read_csv(path) -> pd.DataFrame:
