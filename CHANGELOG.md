@@ -1,3 +1,9 @@
+## [0.30.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.29.2...v0.30.0) (2025-01-23)
+
+### Features
+
+* handle no proceprocessing case ([f81838e](https://github.com/aequitas-aod/aequitas-backend/commit/f81838ea3c49eaaa8887bee5c8de1fff91cf24ec))
+
 ## [0.29.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.29.1...v0.29.2) (2025-01-23)
 
 ### Bug Fixes
