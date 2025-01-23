@@ -143,6 +143,10 @@ class TestContextAutomation(AutomationRelatedTestCase):
         key_results = {
             "correlation_matrix": self.asserIsSvg,
             "metrics": self.assertIsJson,
+            "preprocessing_plot": self.asserIsSvg,
+            "performance_plot": self.asserIsSvg,
+            "fairness_plot": self.asserIsSvg,
+            "polarization_plot": self.asserIsSvg,
             "dataset": self.assertIsNonEmptyDataFrameInCsvFormat,
         }
         result_id = "adult-2"
