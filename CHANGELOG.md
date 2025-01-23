@@ -1,3 +1,9 @@
+## [0.29.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.29.1...v0.29.2) (2025-01-23)
+
+### Bug Fixes
+
+* **automation:** fix target features suggestion ([3222818](https://github.com/aequitas-aod/aequitas-backend/commit/3222818b33c94200df9abef820da466a90e05e6c))
+
 ## [0.29.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.29.0...v0.29.1) (2025-01-23)
 
 ### Bug Fixes
