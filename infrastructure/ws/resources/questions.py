@@ -66,7 +66,8 @@ class QuestionResource(Resource):
             except NotFoundError as e:
                 return e.message, e.status_code
         else:
-            return "Missing question id", StatusCode.BAD_REQUEST
+            question_service.delete_all_questions()
+            return "All questions deleted successfully", StatusCode.OK
 
 
 class NewCandidateID(Resource):

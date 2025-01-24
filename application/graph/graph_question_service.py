@@ -92,3 +92,9 @@ class GraphQuestionService:
         :return: the enabled question or None if there is no enabled question
         """
         return self.question_repository.get_enabled_question(question_id, answer_ids)
+
+    def delete_all_questions(self) -> None:
+        """
+        Deletes all questions
+        """
+        self.question_repository.delete_all_questions()

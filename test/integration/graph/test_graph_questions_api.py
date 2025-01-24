@@ -56,10 +56,7 @@ class TestGraphQuestionsAPI(DockerComposeBasedTestCase):
         self._delete_all_questions()
 
     def _delete_all_questions(self):
-        response = self.app.get("/questions")
-        questions_dict = json.loads(response.data)
-        for question in questions_dict:
-            self.app.delete(f"/questions/{question['id']['code']}")
+        self.app.delete("/questions")
 
     def test_get_all_questions(self):
         self.app.post("/questions", json=serialize(self.question))
@@ -124,6 +121,15 @@ class TestGraphQuestionsAPI(DockerComposeBasedTestCase):
         self.assertEqual(response.status_code, 200)
         response = self.app.get(f"/questions/{self.question.id.code}")
         self.assertEqual(response.status_code, 404)
+
+    def test_delete_all_questions(self):
+        self.app.post("/questions", json=serialize(self.question))
+        self.app.post("/questions", json=serialize(self.question2))
+        response = self.app.delete("/questions")
+        self.assertEqual(response.status_code, 200)
+        response = self.app.get("/questions")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([], json.loads(response.data))
 
     def test_delete_non_existent_question(self):
         response = self.app.delete("/questions/does-not-exist")

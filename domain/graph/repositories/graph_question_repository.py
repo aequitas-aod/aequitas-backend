@@ -44,6 +44,11 @@ class GraphQuestionRepository(ABC):
         pass
 
     @abstractmethod
+    def delete_all_questions(self) -> None:
+        """Deletes all questions"""
+        pass
+
+    @abstractmethod
     def get_last_inserted_question(self) -> Optional[GraphQuestion]:
         """Gets the last inserted question
         :return: the last inserted question"""

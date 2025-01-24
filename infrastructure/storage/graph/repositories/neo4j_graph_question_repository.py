@@ -123,6 +123,15 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
             )
         )
 
+    def delete_all_questions(self) -> None:
+        self.driver.transaction(
+            [
+                Neo4jQuery("MATCH (n:GraphQuestion) DETACH DELETE n", {}),
+                Neo4jQuery("MATCH (n:Answer) DETACH DELETE n", {}),
+            ]
+        )
+
+
     def delete_answer(self, answer_id: EntityId) -> None:
         if not self._check_answer_exists(answer_id):
             raise NotFoundError(f"Answer with id {answer_id} does not exist")
