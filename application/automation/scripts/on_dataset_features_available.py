@@ -127,18 +127,24 @@ def generate_proxy_suggestions(
 
 
 THRESHOLD_CONTINOUS = 100
+DEFAULT_METRICS = {"DisparateImpact", "StatisticalParityDifference"}
 
 
 def compute_metrics(
-    dataset: pd.DataFrame, sensitives: list[str], targets: list[str]
+    dataset: pd.DataFrame,
+    sensitives: list[str],
+    targets: list[str],
+    metrics: list[str] = None,
 ) -> dict:
-    metrics = {"DisparateImpact", "StatisticalParityDifference"}
+    if metrics is None:
+        metrics = set(DEFAULT_METRICS)
+    else:
+        metrics = set(metrics) & DEFAULT_METRICS
 
     @functools.lru_cache(len(dataset.columns))
     def domain(feature):
         return sorted(dataset[feature].unique())
 
-    # domains = {k: sorted(dataset[k].unique()) for k in dataset.columns}
     result = {m: [] for m in metrics}
 
     for sensitive in sensitives:
@@ -223,8 +229,13 @@ def proxy_suggestions(
     return json.dumps(generate_proxy_suggestions(dataset, sensitive, targets))
 
 
-def metrics(dataset: pd.DataFrame, sensitive: list[str], targets: list[str]) -> str:
-    return json.dumps(compute_metrics(dataset, sensitive, targets))
+def metrics(
+    dataset: pd.DataFrame,
+    sensitive: list[str],
+    targets: list[str],
+    metrics: list[str] = None,
+) -> str:
+    return json.dumps(compute_metrics(dataset, sensitive, targets, metrics))
 
 
 class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):

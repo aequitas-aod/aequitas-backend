@@ -18,7 +18,10 @@ from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
 from utils.logs import set_other_loggers_level
-from .on_dataset_features_available import metrics, correlation_matrix_picture
+from .on_dataset_features_available import (
+    metrics as generate_metrics,
+    correlation_matrix_picture,
+)
 
 from aif360.algorithms.preprocessing import LFR
 from fairlearn.preprocessing import CorrelationRemover
@@ -79,20 +82,31 @@ class AbstractProcessingRequestedReaction(Automator):
             project_id, f"features__{dataset_id}", "json"
         )
         drops = {key for key, value in features.items() if value["drop"]}
-        targets = [
+        targets = {
             key
             for key, value in features.items()
             if value["target"]
             if key not in drops
-        ]
-        sensitive = [
+        }
+        sensitive = {
             key
             for key, value in features.items()
             if value["sensitive"]
             if key not in drops
-        ]
+        }
         proxies = self.get_from_context(project_id, f"proxies__{dataset_id}", "json")
         detected = self.get_from_context(project_id, f"detected__{dataset_id}", "json")
+        metrics = list(detected.keys())
+        selected_targets = [
+            v["target"]
+            for _, v in detected.items()
+            if isinstance(v, dict) and "target" in v and v["target"] in targets
+        ]
+        selected_sensitives = [
+            v["sensitive"]
+            for _, v in detected.items()
+            if isinstance(v, dict) and "sensitive" in v and v["sensitive"] in sensitive
+        ]
         hyperparameters = self.get_from_context(project_id, context_key, "json")
         processing_history = (
             self.get_from_context(
@@ -101,6 +115,15 @@ class AbstractProcessingRequestedReaction(Automator):
             or []
         )
         algorithm = hyperparameters["$algorithm"]
+        self.log(
+            "Requested %sprocessing with algorithm %s for dataset %s with metrics=%s, sensitives=%s, targets=%s",
+            phase,
+            algorithm,
+            dataset_id,
+            metrics,
+            selected_sensitives,
+            selected_targets,
+        )
         processing_history.append(
             dict(phase=phase, dataset=dataset_id, algorithm=algorithm)
         )
@@ -110,8 +133,9 @@ class AbstractProcessingRequestedReaction(Automator):
                 phase,
                 dataset_id,
                 dataset,
-                targets,
-                sensitive,
+                metrics,
+                selected_targets,
+                selected_sensitives,
                 proxies,
                 detected,
                 hyperparameters,
@@ -124,6 +148,7 @@ class AbstractProcessingRequestedReaction(Automator):
         phase: str,
         dataset_id: str,
         dataset: pd.DataFrame,
+        metrics: list[str],
         targets: list[str],
         sensitive: list[str],
         proxies: dict,
@@ -581,6 +606,7 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         phase: str,
         dataset_id: str,
         dataset: pd.DataFrame,
+        metrics: list[str],
         targets: list[str],
         sensitive: list[str],
         proxies: dict,
@@ -633,7 +659,10 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                 f"correlation_matrix__{result_id}",
                 lambda: correlation_matrix_picture(result),
             ),
-            (f"metrics__{result_id}", lambda: metrics(result, sensitive, targets)),
+            (
+                f"metrics__{result_id}",
+                lambda: generate_metrics(result, sensitive, targets, metrics),
+            ),
             (f"current_dataset", lambda: result_id),
             # FIXME: this key should currently be published as the last one to avoid flacky tests
             (f"dataset__{result_id}", lambda: to_csv(result)),
@@ -994,6 +1023,7 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         phase: str,
         dataset_id: str,
         dataset: pd.DataFrame,
+        metrics: list[str],
         targets: list[str],
         sensitive: list[str],
         proxies: dict,
@@ -1020,7 +1050,7 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
             ),
             (
                 f"metrics__{algorithm}__{dataset_id}",
-                lambda: metrics(predictions, sensitive, targets),
+                lambda: generate_metrics(predictions, sensitive, targets, metrics),
             ),
             (
                 f"performance_plot__{algorithm}__{dataset_id}",
