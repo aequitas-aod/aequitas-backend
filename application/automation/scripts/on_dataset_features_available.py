@@ -150,12 +150,12 @@ def compute_metrics(
     for sensitive in sensitives:
         sensitive_domain = domain(sensitive)
         if len(sensitive_domain) > THRESHOLD_CONTINOUS:
-            raise ValueError("Too many values for sensitive feature: %s" % sensitive)
+            raise ValueError(f"Too many values for sensitive feature: {sensitive}")
         for sensitive_value in sensitive_domain:
             for target in targets:
                 target_domain = domain(target)
                 if len(target_domain) > THRESHOLD_CONTINOUS:
-                    raise ValueError("Too many values for target feature: %s" % target)
+                    raise ValueError(f"Too many values for target feature: {target}")
                 for target_value in target_domain:
                     logger.debug(
                         "Computing metrics for %s=%s and %s=%s",
