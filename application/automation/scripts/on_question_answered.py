@@ -21,7 +21,7 @@ class AbstractQuestionAnsweredReaction(Automator):
         selected_answers_ids: List[EntityId],
     ):
         logger.info(
-            f"Topic: {topic}, project: {project}, question_index: {question_index}, selected_answers_ids: {selected_answers_ids}"
+            f"Topic: {topic}, project id: {project_id}, question_index: {question_index}, selected_answers_ids: {selected_answers_ids}"
         )
         if question_index in self.relevant_questions:
             new_keys = {
