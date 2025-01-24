@@ -136,7 +136,7 @@ def compute_metrics(
     targets: list[str],
     metrics: list[str] = None,
 ) -> dict:
-    if metrics is None:
+    if not metrics:
         metrics = set(DEFAULT_METRICS)
     else:
         metrics = set(metrics) & DEFAULT_METRICS
@@ -195,24 +195,25 @@ def compute_metrics(
                         privileged_groups=privileged_groups,
                     )
 
-                    disparate_impact = metric.disparate_impact()
-                    stat_parity_diff = metric.mean_difference()
-
                     when_clause = {sensitive: sensitive_value, target: target_value}
 
-                    result["DisparateImpact"].append(
-                        {
-                            "when": when_clause,
-                            "value": _pythonize(disparate_impact),
-                        }
-                    )
+                    if "DisparateImpact" in metrics:
+                        disparate_impact = metric.disparate_impact()
+                        result["DisparateImpact"].append(
+                            {
+                                "when": when_clause,
+                                "value": _pythonize(disparate_impact),
+                            }
+                        )
 
-                    result["StatisticalParityDifference"].append(
-                        {
-                            "when": when_clause,
-                            "value": _pythonize(stat_parity_diff),
-                        }
-                    )
+                    if "StatisticalParityDifference" in metrics:
+                        stat_parity_diff = metric.mean_difference()
+                        result["StatisticalParityDifference"].append(
+                            {
+                                "when": when_clause,
+                                "value": _pythonize(stat_parity_diff),
+                            }
+                        )
 
     return result
 

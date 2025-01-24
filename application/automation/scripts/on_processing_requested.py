@@ -106,7 +106,9 @@ class AbstractProcessingRequestedReaction(Automator):
             selected_sensitives = [
                 v["sensitive"]
                 for _, v in detected.items()
-                if isinstance(v, dict) and "sensitive" in v and v["sensitive"] in sensitive
+                if isinstance(v, dict)
+                and "sensitive" in v
+                and v["sensitive"] in sensitive
             ]
         else:
             metrics = []
