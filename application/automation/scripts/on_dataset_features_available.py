@@ -119,7 +119,7 @@ def generate_proxy_suggestions(
             correlation = encoded_df[sensitive_feature].corr(encoded_df[feature])
             suggested_proxy = abs(correlation) >= THRESHOLD_PROXY
             result[sensitive_feature][feature] = {
-                "correlation": correlation,
+                "correlation": correlation if not np.isnan(correlation) else "?",
                 "suggested_proxy": bool(suggested_proxy),
             }
     return result
