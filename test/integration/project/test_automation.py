@@ -148,6 +148,8 @@ class TestContextAutomation(AutomationRelatedTestCase):
             "fairness_plot": self.asserIsSvg,
             "polarization_plot": self.asserIsSvg,
             "dataset": self.assertIsNonEmptyDataFrameInCsvFormat,
+            "dataset_head": self.assertIsNonEmptyDataFrameInCsvFormat,
+            "stats": self.assertIsNonEmptyDataFrameInCsvFormat,
         }
         result_id = "adult-2"
         for key_prefix, assertion in key_results.items():
