@@ -148,5 +148,12 @@ class DatasetInfoCreator(AbstractDatasetCreationReaction):
     def produce_info(
         self, dataset_id: str, dataset: pd.DataFrame
     ) -> Iterable[tuple[str, str]]:
-        yield f"dataset_head__{dataset_id}", to_csv(get_heads(dataset))
-        yield f"stats__{dataset_id}", to_csv(get_stats(dataset))
+        cases = [
+            (f"dataset_head__{dataset_id}", lambda: to_csv(get_heads(dataset))),
+            (f"stats__{dataset_id}", lambda: to_csv(get_stats(dataset))),
+        ]
+        for k, v in cases:
+            try:
+                yield k, v()
+            except Exception as e:
+                self.log_error("Failed to produce %s", k, error=e)

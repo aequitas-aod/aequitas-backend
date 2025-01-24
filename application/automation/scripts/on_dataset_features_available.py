@@ -221,9 +221,20 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         targets: list[str],
         sensitive: list[str],
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
-        yield f"actual_dataset__{dataset_id}", to_csv(dataset)
-        yield f"correlation_matrix__{dataset_id}", correlation_matrix_picture(dataset)
-        yield f"suggested_proxies__{dataset_id}", proxy_suggestions(
-            dataset, sensitive, targets
-        )
-        yield f"metrics__{dataset_id}", metrics(dataset, sensitive, targets)
+        cases = [
+            (f"actual_dataset__{dataset_id}", lambda: to_csv(dataset)),
+            (
+                f"correlation_matrix__{dataset_id}",
+                lambda: correlation_matrix_picture(dataset),
+            ),
+            (
+                f"suggested_proxies__{dataset_id}",
+                lambda: proxy_suggestions(dataset, sensitive, targets),
+            ),
+            (f"metrics__{dataset_id}", lambda: metrics(dataset, sensitive, targets)),
+        ]
+        for k, v in cases:
+            try:
+                yield k, v()
+            except Exception as e:
+                self.log_error("Failed to produce %s", k, error=e)
