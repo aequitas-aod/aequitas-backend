@@ -138,8 +138,8 @@ def get_stats(
         ]
     ]
 
-    for col in features_view.columns:
-        features_view[col] = features_view[col].apply(_pythonize)
+    # for col in features_view.columns:
+    #     features_view[col] = features_view[col].apply(_pythonize)
 
     return features_view
 

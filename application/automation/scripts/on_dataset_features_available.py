@@ -1,5 +1,7 @@
 import io
 import json
+import pprint
+from dis import pretty_flags
 from typing import Iterable, Union
 import functools
 
@@ -149,10 +151,10 @@ def generate_proxy_suggestions(
             correlation = encoded_df[sensitive_feature].corr(encoded_df[feature])
             suggested_proxy = abs(correlation) >= THRESHOLD_PROXY
             result[sensitive_feature][feature] = {
-                "correlation": correlation if not np.isnan(correlation) else "?",
+                "correlation": correlation,
                 "suggested_proxy": bool(suggested_proxy),
             }
-    return result
+    return _pythonize(result)
 
 
 THRESHOLD_CONTINOUS = 100
@@ -235,7 +237,7 @@ def compute_metrics(
                         result["DisparateImpact"].append(
                             {
                                 "when": when_clause,
-                                "value": _pythonize(disparate_impact),
+                                "value": disparate_impact,
                             }
                         )
 
@@ -244,7 +246,7 @@ def compute_metrics(
                         result["StatisticalParityDifference"].append(
                             {
                                 "when": when_clause,
-                                "value": _pythonize(stat_parity_diff),
+                                "value": stat_parity_diff,
                             }
                         )
 
@@ -269,7 +271,7 @@ def metrics(
     targets: list[str],
     metrics: list[str] = None,
 ) -> str:
-    return json.dumps(compute_metrics(dataset, sensitive, targets, metrics))
+    return json.dumps(_pythonize(compute_metrics(dataset, sensitive, targets, metrics)))
 
 
 class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):

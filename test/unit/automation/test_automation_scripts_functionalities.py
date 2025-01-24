@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 
-from application.automation.parsing import to_csv, read_csv, read_json
+from application.automation.parsing import to_csv, read_csv, read_json, _pythonize
 from application.automation.scripts.on_dataset_created import get_stats
 from application.automation.scripts.on_dataset_features_available import (
     generate_correlation_matrix_picture,
@@ -60,7 +60,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
 
     def test_get_stats(self):
         with self.subTest("adult"):
-            result = get_stats(self.dataset)
+            result: pd.DataFrame = get_stats(self.dataset)
             expected = read_csv(PATH_STATS_CSV)
             self.assertDataFramesAreEqual(result, expected)
         with self.subTest("csv"):

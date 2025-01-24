@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from application.automation.parsing import _pythonize
 
 DIR = Path(__file__).parent
 
@@ -57,7 +58,7 @@ def generate_actual_general_context():
         csv = path.read_text()
         data[f"dataset__{key_name}"] = csv
         df = read_csv(path)
-        stats = get_stats(df)
+        stats = _pythonize(get_stats(df))
         heads = get_heads(df)
         data[f"stats__{key_name}"] = to_csv(stats)
         data[f"dataset_head__{key_name}"] = to_csv(heads)
