@@ -124,5 +124,8 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
+      - name: Check code syntax
+        run: poe compile-all
+
       - name: Check code style
         run: poe format-check
