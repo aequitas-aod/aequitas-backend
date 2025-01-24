@@ -112,8 +112,11 @@ def _discretize_numerical_columns(df: pd.DataFrame, features=None) -> pd.DataFra
 
     for feature in categorical_features:
         logger.debug("Discretizing feature %s", feature)
-        discretizer = KBinsDiscretizer()
-        discretized = discretizer.fit_transform(encoded_df[feature])
+        discretizer = KBinsDiscretizer(encode="ordinal", strategy="quantile")
+        column = encoded_df[feature].values
+        if column.ndim == 1:
+            column = column.reshape(-1, 1)
+        discretized = discretizer.fit_transform(column)
         encoded_df[feature] = discretized
 
     return encoded_df
