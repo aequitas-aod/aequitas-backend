@@ -156,10 +156,3 @@ class Neo4jProjectRepository(ProjectRepository):
         for key in project.context:
             context[key] = project.context[key]
         return context
-
-
-if __name__ == "__main__":
-    repo = Neo4jProjectRepository()
-    repo.insert_project(
-        ProjectFactory().create_project(EntityId(code="p-1"), "Project 1")
-    )

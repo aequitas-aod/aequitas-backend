@@ -44,7 +44,9 @@ class ProjectResource(Resource):
     def post(self):
         body: dict = request.get_json()
         try:
-            project_id: EntityId = project_service.add_project(body["name"])
+            name = body["name"]
+            code = body.get("code")
+            project_id: EntityId = project_service.add_project(name, code)
         except ConflictError as e:
             return e.message, e.status_code
         logger.info("Project '%s' created with id %s", body["name"], project_id.code)
