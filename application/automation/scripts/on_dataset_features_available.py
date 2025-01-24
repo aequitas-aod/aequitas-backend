@@ -2,6 +2,7 @@ import copy
 import io
 import json
 from typing import Iterable, Union
+import functools
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -125,17 +126,31 @@ def generate_proxy_suggestions(
     return result
 
 
+THRESHOLD_CONTINOUS = 100
+
+
 def compute_metrics(
     dataset: pd.DataFrame, sensitives: list[str], targets: list[str]
 ) -> dict:
     metrics = {"DisparateImpact", "StatisticalParityDifference"}
-    domains = {k: sorted(dataset[k].unique()) for k in dataset.columns}
+
+    @functools.lru_cache(len(dataset.columns))
+    def domain(feature):
+        return sorted(dataset[feature].unique())
+
+    # domains = {k: sorted(dataset[k].unique()) for k in dataset.columns}
     result = {m: [] for m in metrics}
 
     for sensitive in sensitives:
-        for sensitive_value in domains[sensitive]:
+        sensitive_domain = domain(sensitive)
+        if len(sensitive_domain) > THRESHOLD_CONTINOUS:
+            raise ValueError("Too many values for sensitive feature: %s" % sensitive)
+        for sensitive_value in sensitive_domain:
             for target in targets:
-                for target_value in domains[target]:
+                target_domain = domain(target)
+                if len(target_domain) > THRESHOLD_CONTINOUS:
+                    raise ValueError("Too many values for target feature: %s" % target)
+                for target_value in target_domain:
                     logger.debug(
                         "Computing metrics for %s=%s and %s=%s",
                         sensitive,

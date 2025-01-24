@@ -42,7 +42,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
-dev = { cmd = "flask --app infrastructure/ws/main.py run -h localhost -p $port", args = ["port"], env = { ENV = "develop", DB_HOST = "localhost" } }
+dev = { cmd = "flask --app infrastructure/ws/main.py run -h 0.0.0.0 -p $port", args = ["port"], env = { ENV = "develop", DB_HOST = "localhost" } }
 serve = { cmd = "waitress-serve --port $port --call infrastructure.ws.main:create_app", args = ["port"], env = { ENV = "production", DB_HOST = "aequitas-db" } }
 ###
 regenerate-general-context = { cmd = "python -m resources.db.cypher regenerate general_context", env = { ENV = "develop", DB_HOST = "localhost" } }
