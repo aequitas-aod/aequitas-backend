@@ -3,7 +3,7 @@
   description: Choose or provide a dataset which will be subject to the fairness process.
   type: single
   answers:
-    - id: { code: Custom }
+    - id: { code: CustomDataset }
       text: Custom
       description: Load your own dataset.
     - id: { code: AdultDataset }
@@ -31,7 +31,7 @@
     text: "No"
     description: null
   enabled_by:
-    - { code: Custom }
+    - { code: CustomDataset }
     - { code: AdultDataset }
     - { code: CompasDataset }
     - { code: CreditDataset }
@@ -238,7 +238,7 @@
   description: null
   type: single
   answers:
-    - id: { code: Test-Custom }
+    - id: { code: Test-CustomDataset }
       text: Custom
       description: Load your own dataset.
     - id: { code: Test-AdultDataset }
@@ -283,7 +283,7 @@
       text: Numerical Polarization
       description: null
   enabled_by:
-    - { code: Test-Custom }
+    - { code: Test-CustomDataset }
     - { code: Test-AdultDataset }
     - { code: Test-BankDataset }
     - { code: Test-CompasDataset }
