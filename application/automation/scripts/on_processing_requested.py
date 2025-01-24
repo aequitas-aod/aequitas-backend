@@ -665,7 +665,11 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
             ]
         except Exception as e:
             self.log_error("Failed to compute no_mitigations metrics", error=e)
-        cases += [
+        cases = [
+            (f"dataset__{result_id}", lambda: to_csv(result)),
+            (f"current_dataset", lambda: result_id),
+            (f"dataset_head__{result_id}", lambda: to_csv(get_heads(result))),
+            (f"stats__{result_id}", lambda: to_csv(get_stats(result))),
             (
                 f"correlation_matrix__{result_id}",
                 lambda: correlation_matrix_picture(result),
@@ -674,11 +678,7 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                 f"metrics__{result_id}",
                 lambda: generate_metrics(result, sensitive, targets, metrics),
             ),
-            (f"current_dataset", lambda: result_id),
-            (f"dataset__{result_id}", lambda: to_csv(result)),
-            (f"dataset_head__{result_id}", lambda: to_csv(get_heads(result))),
-            (f"stats__{result_id}", lambda: to_csv(get_stats(result))),
-        ]
+        ] + cases
         for k, v in cases:
             try:
                 yield k, v()
