@@ -1,3 +1,9 @@
+## [0.31.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.30.3...v0.31.0) (2025-01-24)
+
+### Features
+
+* bunch of fixes to keys generation ([#82](https://github.com/aequitas-aod/aequitas-backend/issues/82)). Now preprocessing is actually supported ([ce9c750](https://github.com/aequitas-aod/aequitas-backend/commit/ce9c75043ada8b9e37dc5c4b035bb818b05da671))
+
 ## [0.30.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.30.2...v0.30.3) (2025-01-24)
 
 ### Bug Fixes
