@@ -102,14 +102,14 @@ class AbstractProcessingRequestedReaction(Automator):
                 v["target"]
                 for _, v in detected.items()
                 if isinstance(v, dict) and "target" in v and v["target"] in targets
-            ]
+            ] or list(targets)
             selected_sensitives = [
                 v["sensitive"]
                 for _, v in detected.items()
                 if isinstance(v, dict)
                 and "sensitive" in v
                 and v["sensitive"] in sensitive
-            ]
+            ] or list(sensitive)
         else:
             metrics = []
             selected_targets = list(targets)
