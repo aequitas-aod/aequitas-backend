@@ -1,3 +1,9 @@
+## [0.30.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.30.2...v0.30.3) (2025-01-24)
+
+### Bug Fixes
+
+* **automation:** fix NaN value in proxy suggestions generation ([a0aeab8](https://github.com/aequitas-aod/aequitas-backend/commit/a0aeab8f5275368f9e8a5b93c4346e4dbca1ea48))
+
 ## [0.30.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.30.1...v0.30.2) (2025-01-24)
 
 ### Bug Fixes
