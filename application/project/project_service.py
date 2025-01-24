@@ -31,7 +31,7 @@ class ProjectService:
         """
         return self.project_repository.get_project_by_id(project_id)
 
-    def add_project(self, name: str) -> EntityId:
+    def add_project(self, name: str, code: str = None) -> EntityId:
         """
         Inserts a project
         :param name: the project name
@@ -39,7 +39,7 @@ class ProjectService:
         :raises ConflictError: if the project already exists
         """
         project: Project = ProjectFactory.create_project(
-            ProjectFactory.id_of(code=shortuuid.uuid()), name, {}
+            ProjectFactory.id_of(code=code or shortuuid.uuid()), name, {}
         )
         return self.project_repository.insert_project(project)
 
