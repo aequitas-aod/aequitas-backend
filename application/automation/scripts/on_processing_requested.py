@@ -15,10 +15,17 @@ from resources.db.datasets import dataset_path
 import utils.env
 from application.automation.parsing import read_csv, to_csv, to_json
 from application.automation.setup import Automator
+from application.automation.scripts.on_dataset_created import (
+    get_heads,
+    get_stats,
+)
+from application.automation.scripts.on_dataset_features_available import (
+    metrics as generate_metrics,
+    correlation_matrix_picture,
+)
 from domain.common.core import EntityId
 from domain.project.core import Project
 from utils.logs import set_other_loggers_level
-from .on_dataset_features_available import metrics, correlation_matrix_picture
 
 from aif360.algorithms.preprocessing import LFR
 from fairlearn.preprocessing import CorrelationRemover
@@ -79,20 +86,38 @@ class AbstractProcessingRequestedReaction(Automator):
             project_id, f"features__{dataset_id}", "json"
         )
         drops = {key for key, value in features.items() if value["drop"]}
-        targets = [
+        targets = {
             key
             for key, value in features.items()
             if value["target"]
             if key not in drops
-        ]
-        sensitive = [
+        }
+        sensitive = {
             key
             for key, value in features.items()
             if value["sensitive"]
             if key not in drops
-        ]
+        }
         proxies = self.get_from_context(project_id, f"proxies__{dataset_id}", "json")
         detected = self.get_from_context(project_id, f"detected__{dataset_id}", "json")
+        if isinstance(detected, dict):
+            metrics = list(detected.keys())
+            selected_targets = [
+                v["target"]
+                for _, v in detected.items()
+                if isinstance(v, dict) and "target" in v and v["target"] in targets
+            ] or list(targets)
+            selected_sensitives = [
+                v["sensitive"]
+                for _, v in detected.items()
+                if isinstance(v, dict)
+                and "sensitive" in v
+                and v["sensitive"] in sensitive
+            ] or list(sensitive)
+        else:
+            metrics = []
+            selected_targets = list(targets)
+            selected_sensitives = list(sensitive)
         hyperparameters = self.get_from_context(project_id, context_key, "json")
         processing_history = (
             self.get_from_context(
@@ -101,6 +126,15 @@ class AbstractProcessingRequestedReaction(Automator):
             or []
         )
         algorithm = hyperparameters["$algorithm"]
+        self.log(
+            "Requested %sprocessing with algorithm %s for dataset %s with metrics=%s, sensitives=%s, targets=%s",
+            phase,
+            algorithm,
+            dataset_id,
+            metrics,
+            selected_sensitives,
+            selected_targets,
+        )
         processing_history.append(
             dict(phase=phase, dataset=dataset_id, algorithm=algorithm)
         )
@@ -110,8 +144,9 @@ class AbstractProcessingRequestedReaction(Automator):
                 phase,
                 dataset_id,
                 dataset,
-                targets,
-                sensitive,
+                metrics,
+                selected_targets,
+                selected_sensitives,
                 proxies,
                 detected,
                 hyperparameters,
@@ -124,6 +159,7 @@ class AbstractProcessingRequestedReaction(Automator):
         phase: str,
         dataset_id: str,
         dataset: pd.DataFrame,
+        metrics: list[str],
         targets: list[str],
         sensitive: list[str],
         proxies: dict,
@@ -581,6 +617,7 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         phase: str,
         dataset_id: str,
         dataset: pd.DataFrame,
+        metrics: list[str],
         targets: list[str],
         sensitive: list[str],
         proxies: dict,
@@ -599,26 +636,54 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         assert isinstance(result, pd.DataFrame)
         result_id = self.next_name(dataset_id)
         self.log("New dataset id: %s", result_id)
-        computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(
-            dataset, targets, sensitive
-        )
-        yield f"correlation_matrix__{result_id}", correlation_matrix_picture(result)
-        yield f"metrics__{result_id}", metrics(result, sensitive, targets)
-        yield f"preprocessing_plot__{result_id}", generate_plot(
-            "pre-processing",
-            result,
-            **{"original_dataset": dataset, "class_feature": targets[0]},
-        )
-        yield f"performance_plot__{result_id}", generate_plot(
-            "performance", computed_metrics
-        )
-        yield f"fairness_plot__{result_id}", generate_plot("fairness", computed_metrics)
-        yield f"polarization_plot__{result_id}", generate_plot(
-            "polarization", computed_metrics
-        )
-        yield f"current_dataset", result_id
-        yield f"dataset__{result_id}", to_csv(result)
-        # REMARK: stats are generated by the reaction to the of the dataset__{result_id} key
+        cases = []
+        try:
+            computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(
+                dataset, targets, sensitive
+            )
+            cases = [
+                (
+                    f"preprocessing_plot__{result_id}",
+                    lambda: generate_plot(
+                        "pre-processing",
+                        result,
+                        **{"original_dataset": dataset, "class_feature": targets[0]},
+                    ),
+                ),
+                (
+                    f"performance_plot__{result_id}",
+                    lambda: generate_plot("performance", computed_metrics),
+                ),
+                (
+                    f"fairness_plot__{result_id}",
+                    lambda: generate_plot("fairness", computed_metrics),
+                ),
+                (
+                    f"polarization_plot__{result_id}",
+                    lambda: generate_plot("polarization", computed_metrics),
+                ),
+            ]
+        except Exception as e:
+            self.log_error("Failed to compute no_mitigations metrics", error=e)
+        cases = [
+            (f"dataset__{result_id}", lambda: to_csv(result)),
+            (f"current_dataset", lambda: result_id),
+            (f"dataset_head__{result_id}", lambda: to_csv(get_heads(result))),
+            (f"stats__{result_id}", lambda: to_csv(get_stats(result))),
+            (
+                f"correlation_matrix__{result_id}",
+                lambda: correlation_matrix_picture(result),
+            ),
+            (
+                f"metrics__{result_id}",
+                lambda: generate_metrics(result, sensitive, targets, metrics),
+            ),
+        ] + cases
+        for k, v in cases:
+            try:
+                yield k, v()
+            except Exception as e:
+                self.log_error("Failed to produce %s", k, error=e)
 
 
 def _encode_single_feature(
@@ -969,6 +1034,7 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         phase: str,
         dataset_id: str,
         dataset: pd.DataFrame,
+        metrics: list[str],
         targets: list[str],
         sensitive: list[str],
         proxies: dict,
@@ -987,19 +1053,31 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         assert isinstance(results, tuple)
         predictions: pd.DataFrame = results[0]
         computed_metrics: pd.DataFrame = results[1]
-        yield f"predictions__{algorithm}__{dataset_id}", to_csv(predictions)
-        yield f"correlation_matrix__{algorithm}__{dataset_id}", correlation_matrix_picture(
-            predictions
-        )
-        yield f"metrics__{algorithm}__{dataset_id}", metrics(
-            predictions, sensitive, targets
-        )
-        yield f"performance_plot__{algorithm}__{dataset_id}", generate_plot(
-            "performance", computed_metrics
-        )
-        yield f"fairness_plot__{algorithm}__{dataset_id}", generate_plot(
-            "fairness", computed_metrics
-        )
-        yield f"polarization_plot__{algorithm}__{dataset_id}", generate_plot(
-            "polarization", computed_metrics
-        )
+        cases = [
+            (f"predictions__{algorithm}__{dataset_id}", lambda: to_csv(predictions)),
+            (
+                f"correlation_matrix__{algorithm}__{dataset_id}",
+                lambda: correlation_matrix_picture(predictions),
+            ),
+            (
+                f"metrics__{algorithm}__{dataset_id}",
+                lambda: generate_metrics(predictions, sensitive, targets, metrics),
+            ),
+            (
+                f"performance_plot__{algorithm}__{dataset_id}",
+                lambda: generate_plot("performance", computed_metrics),
+            ),
+            (
+                f"fairness_plot__{algorithm}__{dataset_id}",
+                lambda: generate_plot("fairness", computed_metrics),
+            ),
+            (
+                f"polarization_plot__{algorithm}__{dataset_id}",
+                lambda: generate_plot("polarization", computed_metrics),
+            ),
+        ]
+        for k, v in cases:
+            try:
+                yield k, v()
+            except Exception as e:
+                self.log_error("Failed to produce %s", k, error=e)

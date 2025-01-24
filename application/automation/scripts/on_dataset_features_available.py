@@ -1,14 +1,14 @@
-import copy
 import io
 import json
 from typing import Iterable, Union
+import functools
 
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import seaborn as sns
-from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import OrdinalEncoder, KBinsDiscretizer
 
 import utils.env
 from utils.logs import logger
@@ -78,8 +78,8 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         raise NotImplementedError("Subclasses must implement this method")
 
 
-def _discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
-    encoded_df = copy.deepcopy(df)
+def _encode_categorical_columns(df: pd.DataFrame) -> pd.DataFrame:
+    encoded_df = df.copy()
     categorical_features = encoded_df.select_dtypes(
         include=["object", "category"]
     ).columns
@@ -92,9 +92,39 @@ def _discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
     return encoded_df
 
 
+def _needs_discretization(df: pd.DataFrame, features=None) -> bool:
+    if not features:
+        features = df.columns
+    features = set(features)
+    return any(
+        pd.api.types.is_float_dtype(df[col]) for col in df.columns if col in features
+    )
+
+
+def _discretize_numerical_columns(df: pd.DataFrame, features=None) -> pd.DataFrame:
+    if not features:
+        features = list(df.columns)
+    categorical_features = [
+        col for col in features if pd.api.types.is_float_dtype(df[col])
+    ]
+
+    encoded_df = df.copy()
+
+    for feature in categorical_features:
+        logger.debug("Discretizing feature %s", feature)
+        discretizer = KBinsDiscretizer(encode="ordinal", strategy="quantile")
+        column = encoded_df[feature].values
+        if column.ndim == 1:
+            column = column.reshape(-1, 1)
+        discretized = discretizer.fit_transform(column)
+        encoded_df[feature] = discretized
+
+    return encoded_df
+
+
 def generate_correlation_matrix_picture(dataset: pd.DataFrame, file: io.IOBase):
     plt.figure(figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE))
-    encoded_df = _discretize_columns(dataset)
+    encoded_df = _encode_categorical_columns(dataset)
     ax = sns.heatmap(
         encoded_df.corr(),
         annot=len(encoded_df.columns) < FIG_MAX_FEATS,
@@ -110,7 +140,7 @@ def generate_proxy_suggestions(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
 ) -> dict:
     result = dict()
-    encoded_df = _discretize_columns(
+    encoded_df = _encode_categorical_columns(
         dataset[[feature for feature in dataset.columns if feature not in targets]]
     )
     for sensitive_feature in sensitive:
@@ -125,17 +155,41 @@ def generate_proxy_suggestions(
     return result
 
 
+THRESHOLD_CONTINOUS = 100
+DEFAULT_METRICS = {"DisparateImpact", "StatisticalParityDifference"}
+
+
 def compute_metrics(
-    dataset: pd.DataFrame, sensitives: list[str], targets: list[str]
+    dataset: pd.DataFrame,
+    sensitives: list[str],
+    targets: list[str],
+    metrics: list[str] = None,
 ) -> dict:
-    metrics = {"DisparateImpact", "StatisticalParityDifference"}
-    domains = {k: sorted(dataset[k].unique()) for k in dataset.columns}
+    if not metrics:
+        metrics = set(DEFAULT_METRICS)
+    else:
+        metrics = set(metrics) & DEFAULT_METRICS
+
+    relevant_columns = set(sensitives) | set(targets)
+    if _needs_discretization(dataset, relevant_columns):
+        dataset = _discretize_numerical_columns(dataset, relevant_columns)
+
+    @functools.lru_cache(len(dataset.columns))
+    def domain(feature):
+        return sorted(dataset[feature].unique())
+
     result = {m: [] for m in metrics}
 
     for sensitive in sensitives:
-        for sensitive_value in domains[sensitive]:
+        sensitive_domain = domain(sensitive)
+        if len(sensitive_domain) > THRESHOLD_CONTINOUS:
+            raise ValueError(f"Too many values for sensitive feature: {sensitive}")
+        for sensitive_value in sensitive_domain:
             for target in targets:
-                for target_value in domains[target]:
+                target_domain = domain(target)
+                if len(target_domain) > THRESHOLD_CONTINOUS:
+                    raise ValueError(f"Too many values for target feature: {target}")
+                for target_value in target_domain:
                     logger.debug(
                         "Computing metrics for %s=%s and %s=%s",
                         sensitive,
@@ -174,24 +228,25 @@ def compute_metrics(
                         privileged_groups=privileged_groups,
                     )
 
-                    disparate_impact = metric.disparate_impact()
-                    stat_parity_diff = metric.mean_difference()
-
                     when_clause = {sensitive: sensitive_value, target: target_value}
 
-                    result["DisparateImpact"].append(
-                        {
-                            "when": when_clause,
-                            "value": _pythonize(disparate_impact),
-                        }
-                    )
+                    if "DisparateImpact" in metrics:
+                        disparate_impact = metric.disparate_impact()
+                        result["DisparateImpact"].append(
+                            {
+                                "when": when_clause,
+                                "value": _pythonize(disparate_impact),
+                            }
+                        )
 
-                    result["StatisticalParityDifference"].append(
-                        {
-                            "when": when_clause,
-                            "value": _pythonize(stat_parity_diff),
-                        }
-                    )
+                    if "StatisticalParityDifference" in metrics:
+                        stat_parity_diff = metric.mean_difference()
+                        result["StatisticalParityDifference"].append(
+                            {
+                                "when": when_clause,
+                                "value": _pythonize(stat_parity_diff),
+                            }
+                        )
 
     return result
 
@@ -208,8 +263,13 @@ def proxy_suggestions(
     return json.dumps(generate_proxy_suggestions(dataset, sensitive, targets))
 
 
-def metrics(dataset: pd.DataFrame, sensitive: list[str], targets: list[str]) -> str:
-    return json.dumps(compute_metrics(dataset, sensitive, targets))
+def metrics(
+    dataset: pd.DataFrame,
+    sensitive: list[str],
+    targets: list[str],
+    metrics: list[str] = None,
+) -> str:
+    return json.dumps(compute_metrics(dataset, sensitive, targets, metrics))
 
 
 class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
@@ -221,9 +281,20 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         targets: list[str],
         sensitive: list[str],
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
-        yield f"actual_dataset__{dataset_id}", to_csv(dataset)
-        yield f"correlation_matrix__{dataset_id}", correlation_matrix_picture(dataset)
-        yield f"suggested_proxies__{dataset_id}", proxy_suggestions(
-            dataset, sensitive, targets
-        )
-        yield f"metrics__{dataset_id}", metrics(dataset, sensitive, targets)
+        cases = [
+            (f"actual_dataset__{dataset_id}", lambda: to_csv(dataset)),
+            (
+                f"correlation_matrix__{dataset_id}",
+                lambda: correlation_matrix_picture(dataset),
+            ),
+            (
+                f"suggested_proxies__{dataset_id}",
+                lambda: proxy_suggestions(dataset, sensitive, targets),
+            ),
+            (f"metrics__{dataset_id}", lambda: metrics(dataset, sensitive, targets)),
+        ]
+        for k, v in cases:
+            try:
+                yield k, v()
+            except Exception as e:
+                self.log_error("Failed to produce %s", k, error=e)

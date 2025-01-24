@@ -48,6 +48,13 @@ class Automator:
         logf = getattr(self.logger, level)
         logf("[%s] " + message, type(self).__name__, *args, **kwargs)
 
+    def log_error(self, message: str, *args, error: Exception = None, **kwargs):
+        if error is not None:
+            stack_trace = traceback.format_exception(error)
+            stack_trace_str = "".join(stack_trace)
+            message = message + "\n" + stack_trace_str
+        self.log(message, *args, level="error", **kwargs)
+
     def __deserialize_notable_keys(self, **kwargs) -> dict:
         data = dict(kwargs)
         if "project_id" in data:
@@ -69,13 +76,11 @@ class Automator:
             data = self.__deserialize_notable_keys(**message.value)
             self.on_event(message.topic, **data)
         except Exception as e:
-            self.log(
-                "Uncaught error in %s while processing event on topic %s: %s\n%s",
-                type(self),
+            self.log_error(
+                "Uncaught error while processing event on topic %s: %s",
                 message.topic,
-                e,
-                traceback.format_exc(),
-                level="error",
+                message,
+                error=e,
             )
 
     def on_event(self, topic: str, **kwargs) -> None:

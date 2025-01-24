@@ -21,7 +21,7 @@ class AbstractQuestionAnsweredReaction(Automator):
         selected_answers_ids: List[EntityId],
     ):
         logger.info(
-            f"Topic: {topic}, project: {project}, question_index: {question_index}, selected_answers_ids: {selected_answers_ids}"
+            f"Topic: {topic}, project id: {project_id}, question_index: {question_index}, selected_answers_ids: {selected_answers_ids}"
         )
         if question_index in self.relevant_questions:
             new_keys = {
@@ -54,8 +54,8 @@ class FirstQuestionAnsweredReaction(AbstractQuestionAnsweredReaction):
         selected_answers_ids: List[EntityId],
     ) -> Iterable[tuple[str, str]]:
         answer = str(selected_answers_ids[0]["code"])
-        for name in ["Adult", "Compas", "Credit", "Custom"]:
+        for name in ["Adult", "Compas", "Credit", "Ull", "Custom"]:
             if name in answer:
                 yield "current_dataset", f"{name}-1"
                 return
-        raise ValueError(f"Unhandled answer: {answer}")
+        self.log("Unknown dataset: %s", answer, level="warning")
