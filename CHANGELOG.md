@@ -1,3 +1,9 @@
+## [0.30.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.30.1...v0.30.2) (2025-01-24)
+
+### Bug Fixes
+
+* change code of Custom answer ([81724f6](https://github.com/aequitas-aod/aequitas-backend/commit/81724f68b136c72722c69f268ee184f5548de93c))
+
 ## [0.30.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.30.0...v0.30.1) (2025-01-24)
 
 ### Bug Fixes
