@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import seaborn as sns
-from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import OrdinalEncoder, KBinsDiscretizer
 
 import utils.env
 from utils.logs import logger
@@ -79,7 +79,7 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         raise NotImplementedError("Subclasses must implement this method")
 
 
-def _discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
+def _encode_categorical_columns(df: pd.DataFrame) -> pd.DataFrame:
     encoded_df = copy.deepcopy(df)
     categorical_features = encoded_df.select_dtypes(
         include=["object", "category"]
@@ -93,9 +93,27 @@ def _discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
     return encoded_df
 
 
+def _needs_discretization(df: pd.DataFrame) -> bool:
+    return any(pd.api.types.is_float_dtype(df[col]) for col in df.columns)
+
+
+def _discretize_numerical_columns(df: pd.DataFrame) -> pd.DataFrame:
+    encoded_df = copy.deepcopy(df)
+    categorical_features = [
+        col for col in df.columns if pd.api.types.is_float_dtype(df[col])
+    ]
+
+    # Apply Ordinal Encoding
+    encoder = KBinsDiscretizer()
+    encoded_df[categorical_features] = encoder.fit_transform(
+        encoded_df[categorical_features]
+    )
+    return encoded_df
+
+
 def generate_correlation_matrix_picture(dataset: pd.DataFrame, file: io.IOBase):
     plt.figure(figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE))
-    encoded_df = _discretize_columns(dataset)
+    encoded_df = _encode_categorical_columns(dataset)
     ax = sns.heatmap(
         encoded_df.corr(),
         annot=len(encoded_df.columns) < FIG_MAX_FEATS,
@@ -111,7 +129,7 @@ def generate_proxy_suggestions(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str]
 ) -> dict:
     result = dict()
-    encoded_df = _discretize_columns(
+    encoded_df = _encode_categorical_columns(
         dataset[[feature for feature in dataset.columns if feature not in targets]]
     )
     for sensitive_feature in sensitive:
@@ -140,6 +158,9 @@ def compute_metrics(
         metrics = set(DEFAULT_METRICS)
     else:
         metrics = set(metrics) & DEFAULT_METRICS
+
+    if _needs_discretization(dataset):
+        dataset = _discretize_numerical_columns(dataset)
 
     @functools.lru_cache(len(dataset.columns))
     def domain(feature):
