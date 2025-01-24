@@ -1,4 +1,3 @@
-import copy
 import io
 import json
 from typing import Iterable, Union
@@ -80,7 +79,7 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
 
 
 def _encode_categorical_columns(df: pd.DataFrame) -> pd.DataFrame:
-    encoded_df = copy.deepcopy(df)
+    encoded_df = df.copy()
     categorical_features = encoded_df.select_dtypes(
         include=["object", "category"]
     ).columns
@@ -93,21 +92,30 @@ def _encode_categorical_columns(df: pd.DataFrame) -> pd.DataFrame:
     return encoded_df
 
 
-def _needs_discretization(df: pd.DataFrame) -> bool:
-    return any(pd.api.types.is_float_dtype(df[col]) for col in df.columns)
+def _needs_discretization(df: pd.DataFrame, features=None) -> bool:
+    if not features:
+        features = df.columns
+    features = set(features)
+    return any(
+        pd.api.types.is_float_dtype(df[col]) for col in df.columns if col in features
+    )
 
 
-def _discretize_numerical_columns(df: pd.DataFrame) -> pd.DataFrame:
-    encoded_df = copy.deepcopy(df)
+def _discretize_numerical_columns(df: pd.DataFrame, features=None) -> pd.DataFrame:
+    if not features:
+        features = list(df.columns)
     categorical_features = [
-        col for col in df.columns if pd.api.types.is_float_dtype(df[col])
+        col for col in features if pd.api.types.is_float_dtype(df[col])
     ]
 
-    # Apply Ordinal Encoding
-    encoder = KBinsDiscretizer()
-    encoded_df[categorical_features] = encoder.fit_transform(
-        encoded_df[categorical_features]
-    )
+    encoded_df = df.copy()
+
+    for feature in categorical_features:
+        logger.debug("Discretizing feature %s", feature)
+        discretizer = KBinsDiscretizer()
+        discretized = discretizer.fit_transform(encoded_df[feature])
+        encoded_df[feature] = discretized
+
     return encoded_df
 
 
@@ -159,8 +167,9 @@ def compute_metrics(
     else:
         metrics = set(metrics) & DEFAULT_METRICS
 
-    if _needs_discretization(dataset):
-        dataset = _discretize_numerical_columns(dataset)
+    relevant_columns = set(sensitives) | set(targets)
+    if _needs_discretization(dataset, relevant_columns):
+        dataset = _discretize_numerical_columns(dataset, relevant_columns)
 
     @functools.lru_cache(len(dataset.columns))
     def domain(feature):
