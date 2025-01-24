@@ -96,17 +96,22 @@ class AbstractProcessingRequestedReaction(Automator):
         }
         proxies = self.get_from_context(project_id, f"proxies__{dataset_id}", "json")
         detected = self.get_from_context(project_id, f"detected__{dataset_id}", "json")
-        metrics = list(detected.keys())
-        selected_targets = [
-            v["target"]
-            for _, v in detected.items()
-            if isinstance(v, dict) and "target" in v and v["target"] in targets
-        ]
-        selected_sensitives = [
-            v["sensitive"]
-            for _, v in detected.items()
-            if isinstance(v, dict) and "sensitive" in v and v["sensitive"] in sensitive
-        ]
+        if isinstance(detected, dict):
+            metrics = list(detected.keys())
+            selected_targets = [
+                v["target"]
+                for _, v in detected.items()
+                if isinstance(v, dict) and "target" in v and v["target"] in targets
+            ]
+            selected_sensitives = [
+                v["sensitive"]
+                for _, v in detected.items()
+                if isinstance(v, dict) and "sensitive" in v and v["sensitive"] in sensitive
+            ]
+        else:
+            metrics = []
+            selected_targets = list(targets)
+            selected_sensitives = list(sensitive)
         hyperparameters = self.get_from_context(project_id, context_key, "json")
         processing_history = (
             self.get_from_context(
