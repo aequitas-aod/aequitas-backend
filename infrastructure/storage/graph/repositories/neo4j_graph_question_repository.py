@@ -131,7 +131,6 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
             ]
         )
 
-
     def delete_answer(self, answer_id: EntityId) -> None:
         if not self._check_answer_exists(answer_id):
             raise NotFoundError(f"Answer with id {answer_id} does not exist")

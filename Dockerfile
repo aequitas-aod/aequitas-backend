@@ -20,6 +20,8 @@ FROM python:3.13-slim AS production
 # removes the configurations to delete cached files after a successful install
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 
+RUN apt-get update && apt-get install -y netcat-openbsd curl
+
 ENV VIRTUAL_ENV="/home/aequitas-backend/.venv"
 
 WORKDIR /home/aequitas-backend

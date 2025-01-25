@@ -1,6 +1,4 @@
-import asyncio
 import subprocess
-import time
 
 from flask import Flask
 from flask_cors import CORS
@@ -11,10 +9,9 @@ from infrastructure.ws.resources.questions import questions_bp
 
 
 def setup_db():
-    time.sleep(2)
-    subprocess.Popen(
-        ["./setup-db.sh"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
+    subprocess.run(["echo", "Launching setup script"])
+    subprocess.Popen(["./setup-db.sh"], shell=True)
+    subprocess.run(["echo", "Script started"])
 
 
 def create_app():
