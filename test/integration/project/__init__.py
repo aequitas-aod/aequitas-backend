@@ -1,9 +1,10 @@
 import json
+
 from flask import Response
 
 from domain.common.core import EntityId
-from presentation.presentation import deserialize, serialize
 from infrastructure.ws.main import create_app
+from presentation.presentation import deserialize
 from test.integration import DockerComposeBasedTestCase
 
 

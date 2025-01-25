@@ -126,8 +126,10 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
     def delete_all_questions(self) -> None:
         self.driver.transaction(
             [
-                Neo4jQuery("MATCH (n:GraphQuestion) DETACH DELETE n", {}),
-                Neo4jQuery("MATCH (n:Answer) DETACH DELETE n", {}),
+                Neo4jQuery(
+                    "MATCH (n:GraphQuestion)-[r]->(linkedNode) DETACH DELETE n, linkedNode",
+                    {},
+                ),
             ]
         )
 
