@@ -1,3 +1,9 @@
+## [0.32.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.0...v0.32.1) (2025-01-25)
+
+### Bug Fixes
+
+* fix delete all questions, improve dockerfile and setup script, do not run script during tests ([1a2b6b8](https://github.com/aequitas-aod/aequitas-backend/commit/1a2b6b85d83aff46965d85439dcfb7ffcd089631))
+
 ## [0.32.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.31.0...v0.32.0) (2025-01-25)
 
 ### Features
