@@ -24,7 +24,7 @@ from aif360.datasets import BinaryLabelDataset
 from aif360.metrics import BinaryLabelDatasetMetric
 
 matplotlib.use("agg")
-THRESHOLD_PROXY = 0.5
+THRESHOLD_PROXY = 0.8
 
 FIG_WIDTH_SIZE = 12
 FIG_HEIGHT_SIZE = 10

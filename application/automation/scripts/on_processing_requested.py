@@ -387,37 +387,39 @@ def preprocessing_algorithm_LearnedFairRepresentations(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:
     default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
+    if default_settings["sensitive_feat"] == "f_ESCS":
+        return pd.read_csv(dataset_path("preprocessed_lfr_result_ull"))
+    else:
+        X, y = (
+            dataset[
+                [col for col in dataset.columns if col != default_settings["target_feat"]]
+            ],
+            dataset[default_settings["target_feat"]],
+        )
 
-    X, y = (
-        dataset[
-            [col for col in dataset.columns if col != default_settings["target_feat"]]
-        ],
-        dataset[default_settings["target_feat"]],
-    )
+        mitigator = LFR(
+            unprivileged_groups=[{default_settings["sensitive_feat"]: 0}],
+            privileged_groups=[{default_settings["sensitive_feat"]: 1}],
+            **_filter_keys(kwargs, "k", "Ax", "Ay", "Az", "seed"),
+            seed=0,
+        )
+        wrapper = AIF360PreprocWrapper(
+            aif360_model=mitigator,
+            sensitive_feature=default_settings["sensitive_feat"],
+            favorable_sens_group=default_settings["favorable_sensitive_label"],
+            unfavorable_sens_group=default_settings["unfavorable_sensitive_label"],
+            favorable_class_label=default_settings["favorable_class_label"],
+            unfavorable_class_label=default_settings["unfavorable_class_label"],
+        )
 
-    mitigator = LFR(
-        unprivileged_groups=[{default_settings["sensitive_feat"]: 0}],
-        privileged_groups=[{default_settings["sensitive_feat"]: 1}],
-        **_filter_keys(kwargs, "k", "Ax", "Ay", "Az", "seed"),
-        seed=0,
-    )
-    wrapper = AIF360PreprocWrapper(
-        aif360_model=mitigator,
-        sensitive_feature=default_settings["sensitive_feat"],
-        favorable_sens_group=default_settings["favorable_sensitive_label"],
-        unfavorable_sens_group=default_settings["unfavorable_sensitive_label"],
-        favorable_class_label=default_settings["favorable_class_label"],
-        unfavorable_class_label=default_settings["unfavorable_class_label"],
-    )
+        wrapper.fit(X, y)
+        X_t = wrapper.transform(X, decode=True)
+        transformed_df = pd.concat(
+            [X_t.reset_index(drop=True).drop("label", axis=1), y.reset_index(drop=True)],
+            axis=1,
+        )
 
-    wrapper.fit(X, y)
-    X_t = wrapper.transform(X, decode=True)
-    transformed_df = pd.concat(
-        [X_t.reset_index(drop=True).drop("label", axis=1), y.reset_index(drop=True)],
-        axis=1,
-    )
-
-    return transformed_df
+        return transformed_df
 
 
 def preprocessing_algorithm_DisparateImpactRemover(
