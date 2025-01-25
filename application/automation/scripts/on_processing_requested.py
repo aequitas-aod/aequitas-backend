@@ -1052,8 +1052,10 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         )
         assert isinstance(results, tuple)
         predictions: pd.DataFrame = results[0]
+        predictions_head = predictions.head(100)
         computed_metrics: pd.DataFrame = results[1]
         cases = [
+            (f"predictions_head__{algorithm}__{dataset_id}", lambda: to_csv(predictions_head)),
             (f"predictions__{algorithm}__{dataset_id}", lambda: to_csv(predictions)),
             (
                 f"correlation_matrix__{algorithm}__{dataset_id}",

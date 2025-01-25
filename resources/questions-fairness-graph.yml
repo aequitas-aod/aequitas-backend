@@ -82,7 +82,7 @@
 
 - id: { code: DataMitigation }
   text: Which data mitigation technique do you want to apply?
-  description: null
+  description: Data mitigation involves reducing biases in data to prevent unfair outcomes. This operation will produce a new dataset that will be used to train the model.
   type: single
   answers:
     - id: { code: DisparateImpactRemover }
@@ -133,18 +133,18 @@
 
 - id: { code: ModelMitigation }
   text: Which model mitigation technique do you want to apply?
-  description: null
+  description: Model mitigation consists of creating a model using techniques aimed at reducing bias.
   type: single
   answers:
-    - id: { code: AdversarialDebiasing }
-      text: Adversarial Debiasing
-      description: Adversarial Debiasing is based on the idea of training one main model (called the classifier), while at the same time training a second model (called the adversary). The goal of the adversary model is to try to predict the sensitive feature (e.g., race or gender) from the classifier's output.
+    - id: { code: FaUCI }
+      text: FaUCI
+      description: null
     - id: { code: PrejudiceRemover }
       text: Prejudice Remover
       description: Prejudice Remover is a method that modifies the objective function of the classifier by inserting a term that penalizes discrimination based on a sensitive feature. This term is added to the loss function of the model, and its weight can be controlled by a parameter that defines the degree of penalty.
-    - id: { code: MetaFairClassifier }
-      text: MetaFair Classifier
-      description: Meta-Fair Classifier is algorithm that uses an optimization method based on surrogate loss functions to ensure fairness. The idea is to train a classifier that meets specific equity metrics defined during training. This is done by incorporating a surrogate loss function that takes equity metrics into account in the optimization process. Equity metrics are translated into optimization constraints during model training.
+    - id: { code: GerryFairClassifier }
+      text: GerryFair Classifier
+      description: null
     - id: { code: NoModelMitigation }
       text: Do Not Mitigate
       description: null  
@@ -176,15 +176,15 @@
       text: Done
       description: null
   enabled_by:
-    - { code: AdversarialDebiasing }
+    - { code: FaUCI }
     - { code: PrejudiceRemover }
-    - { code: MetaFairClassifier }
+    - { code: GerryFairClassifier }
   action_needed: null
   created_at: 2024-05-31T18:20:31
 
 - id: { code: OutcomeMitigation }
   text: Which outcome mitigation technique do you want to apply?
-  description: null
+  description: Outcome mitigation involves modifying the model's predictions to ensure fairness.
   type: single
   answers:
     - id: { code: EqualizedOdds }

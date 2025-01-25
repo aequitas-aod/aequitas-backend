@@ -5,7 +5,6 @@ from application.automation.parsing import _pythonize
 DIR = Path(__file__).parent
 
 PATH_GENERAL_CONTEXT_CYPHER = DIR / "general-context.cypher"
-PATH_PROJECT_P1 = DIR / "project-p1.cypher"
 
 
 _MAX_LINE_LENGTH = 2**64
