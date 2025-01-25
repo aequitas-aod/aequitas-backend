@@ -15,6 +15,7 @@ services:
       timeout: 2s
       retries: 5
       start_period: 10s
+    restart: on-failure
     networks:
       - internal
 
@@ -44,35 +45,36 @@ services:
     depends_on:
       zookeeper:
         condition: service_healthy
+    restart: on-failure
     networks:
       - internal
 
-  kafka-ui:
-    container_name: kafka-ui
-    image: provectuslabs/kafka-ui:latest
-    platform: *platform
-    ports:
-      - "${KAFKA_UI_PORT}:8080"
-    environment:
-      DYNAMIC_CONFIG_ENABLED: 'true'
-      KAFKA_CLUSTERS_0_NAME: cluster
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_HOST}:${KAFKA_PORT}
-    depends_on:
-      kafka:
-        condition: service_healthy
-    networks:
-      - internal
-
-#  frontend:
-#    image: aequitaseu/frontend:latest
-#    container_name: ${AEQUITAS_FRONTEND_HOST}
+#  kafka-ui:
+#    container_name: kafka-ui
+#    image: provectuslabs/kafka-ui:latest
+#    platform: *platform
 #    ports:
-#      - "${AEQUITAS_FRONTEND_PORT}:80"
+#      - "${KAFKA_UI_PORT}:8080"
 #    environment:
-#      NEXT_PUBLIC_BACKEND_URL: localhost:${AEQUITAS_BACKEND_PORT}
+#      DYNAMIC_CONFIG_ENABLED: 'true'
+#      KAFKA_CLUSTERS_0_NAME: cluster
+#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_HOST}:${KAFKA_PORT}
 #    depends_on:
-#      backend:
+#      kafka:
 #        condition: service_healthy
+#    networks:
+#      - internal
+
+  frontend:
+    image: aequitaseu/frontend:latest
+    container_name: ${AEQUITAS_FRONTEND_HOST}
+    ports:
+      - "${AEQUITAS_FRONTEND_PORT}:80"
+    environment:
+      NEXT_PUBLIC_BACKEND_URL: localhost:${AEQUITAS_BACKEND_PORT}
+    depends_on:
+      backend:
+        condition: service_healthy
 
   backend:
     build: .

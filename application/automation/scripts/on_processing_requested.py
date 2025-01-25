@@ -392,7 +392,11 @@ def preprocessing_algorithm_LearnedFairRepresentations(
     else:
         X, y = (
             dataset[
-                [col for col in dataset.columns if col != default_settings["target_feat"]]
+                [
+                    col
+                    for col in dataset.columns
+                    if col != default_settings["target_feat"]
+                ]
             ],
             dataset[default_settings["target_feat"]],
         )
@@ -415,7 +419,10 @@ def preprocessing_algorithm_LearnedFairRepresentations(
         wrapper.fit(X, y)
         X_t = wrapper.transform(X, decode=True)
         transformed_df = pd.concat(
-            [X_t.reset_index(drop=True).drop("label", axis=1), y.reset_index(drop=True)],
+            [
+                X_t.reset_index(drop=True).drop("label", axis=1),
+                y.reset_index(drop=True),
+            ],
             axis=1,
         )
 
@@ -1057,7 +1064,10 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         predictions_head = predictions.head(100)
         computed_metrics: pd.DataFrame = results[1]
         cases = [
-            (f"predictions_head__{algorithm}__{dataset_id}", lambda: to_csv(predictions_head)),
+            (
+                f"predictions_head__{algorithm}__{dataset_id}",
+                lambda: to_csv(predictions_head),
+            ),
             (f"predictions__{algorithm}__{dataset_id}", lambda: to_csv(predictions)),
             (
                 f"correlation_matrix__{algorithm}__{dataset_id}",
