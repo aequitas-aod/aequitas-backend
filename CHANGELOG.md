@@ -1,3 +1,20 @@
+## [0.32.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.31.0...v0.32.0) (2025-01-25)
+
+### Features
+
+* add script for setup db from server ([3696635](https://github.com/aequitas-aod/aequitas-backend/commit/3696635ebd7e40a855d3d05a013e84d03159c45a))
+* **graph:** add delete all questions feature ([0b0119f](https://github.com/aequitas-aod/aequitas-backend/commit/0b0119fe9d76ada8157235c127599d7d19c13e74))
+* support creation of project with custom code ([49e83ae](https://github.com/aequitas-aod/aequitas-backend/commit/49e83ae702295b08ced0a312c560014dec6b621b))
+
+### Bug Fixes
+
+* init file generation with just general context, setup script filling db with questions ([035b82a](https://github.com/aequitas-aod/aequitas-backend/commit/035b82a764eb5dddb3be3be3a885e26eb74b2e9b))
+* setup db script ([279cfe0](https://github.com/aequitas-aod/aequitas-backend/commit/279cfe07d6cf95b8db8ba622b7073fbc2e6ca962))
+
+### Refactoring
+
+* improve use of pythonize ([9c2e7f3](https://github.com/aequitas-aod/aequitas-backend/commit/9c2e7f3844796ec9e52e9f62387ec76f17d38cd1))
+
 ## [0.31.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.30.3...v0.31.0) (2025-01-24)
 
 ### Features
