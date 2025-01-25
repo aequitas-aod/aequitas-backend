@@ -1,3 +1,11 @@
+## [0.32.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.1...v0.32.2) (2025-01-25)
+
+### Bug Fixes
+
+* add predictions_head and fix hyperparameters in flow ([763b292](https://github.com/aequitas-aod/aequitas-backend/commit/763b29254d8491faf7b43064ef9d84c4b91a7473))
+* format code and modify docker compose ([5c2428f](https://github.com/aequitas-aod/aequitas-backend/commit/5c2428f62b9f44d758eefede591a72e2db12d97b))
+* mock lfr result in case of ULL ([b7c3184](https://github.com/aequitas-aod/aequitas-backend/commit/b7c31841dd881839cd13fb183ca4a42f697b5d13))
+
 ## [0.32.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.0...v0.32.1) (2025-01-25)
 
 ### Bug Fixes
