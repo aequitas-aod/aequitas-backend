@@ -35,4 +35,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY --from=build ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
-CMD ["sh", "-c", "poe serve --port $AEQUITAS_BACKEND_PORT"]
+ENV ENV=production
+
+CMD ["sh", "-c", "poe flask --port $AEQUITAS_BACKEND_PORT"]

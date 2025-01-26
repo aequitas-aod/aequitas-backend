@@ -44,6 +44,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poe.tasks]
 compile-all = { cmd = "python -m compileall application domain infrastructure presentation resources test utils" }
 dev = { cmd = "flask --app infrastructure/ws/main.py run -h 0.0.0.0 -p $port", args = ["port"], env = { ENV = "develop", DB_HOST = "localhost" } }
+flask = { cmd = "flask --app infrastructure/ws/main.py run -h 0.0.0.0 -p $port", args = ["port"], env = { DB_HOST = "aequitas-db" } }
 serve = { cmd = "waitress-serve --port $port --call infrastructure.ws.main:create_app", args = ["port"], env = { ENV = "production", DB_HOST = "aequitas-db" } }
 ###
 regenerate-general-context = { cmd = "python -m resources.db.cypher regenerate general_context", env = { ENV = "develop", DB_HOST = "localhost" } }
