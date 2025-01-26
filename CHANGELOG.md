@@ -1,3 +1,9 @@
+## [0.32.4](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.3...v0.32.4) (2025-01-26)
+
+### Bug Fixes
+
+* change columns names in preprocessed_lfr_results ([f87d0aa](https://github.com/aequitas-aod/aequitas-backend/commit/f87d0aad38ae78051ad389096c34cdf6315bac28))
+
 ## [0.32.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.2...v0.32.3) (2025-01-26)
 
 ### Bug Fixes
