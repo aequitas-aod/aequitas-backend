@@ -1,3 +1,9 @@
+## [0.32.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.2...v0.32.3) (2025-01-26)
+
+### Bug Fixes
+
+* use insecure flask command instead of waitress-serve ([6eaead7](https://github.com/aequitas-aod/aequitas-backend/commit/6eaead7b6bec9fa7f1cd3c2a5d604c4711bbd59e))
+
 ## [0.32.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.1...v0.32.2) (2025-01-25)
 
 ### Bug Fixes
