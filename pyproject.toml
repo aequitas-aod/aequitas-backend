@@ -34,7 +34,7 @@ aif360 = "^0.6.1"
 fairlearn = "^0.12.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "24.10.0"
+black = "25.1.0"
 python-on-whales = "0.75.1"
 
 [build-system]
