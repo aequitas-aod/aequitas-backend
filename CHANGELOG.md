@@ -1,3 +1,15 @@
+## [0.32.5](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.4...v0.32.5) (2025-02-05)
+
+### Dependency updates
+
+* **deps:** update actions/setup-node action to v4.2.0 ([#84](https://github.com/aequitas-aod/aequitas-backend/issues/84)) ([44dfb8d](https://github.com/aequitas-aod/aequitas-backend/commit/44dfb8d9717e5b72a3fa07488db37ba9680c7437))
+* **deps:** update dependency black to v25 ([#85](https://github.com/aequitas-aod/aequitas-backend/issues/85)) ([1c8ca48](https://github.com/aequitas-aod/aequitas-backend/commit/1c8ca4857b5bd17356edbb3b208b65c2d5bd3284))
+* **deps:** update dependency poethepoet to v0.32.2 ([#83](https://github.com/aequitas-aod/aequitas-backend/issues/83)) ([e1b4f08](https://github.com/aequitas-aod/aequitas-backend/commit/e1b4f08f8b97becb5a909eda156279bde7cf8038))
+
+### Bug Fixes
+
+* **deps:** update dependency neo4j to v5.28.0 ([#86](https://github.com/aequitas-aod/aequitas-backend/issues/86)) ([2c5a244](https://github.com/aequitas-aod/aequitas-backend/commit/2c5a244bbc30f69a62615d679dbdd9c56d449437))
+
 ## [0.32.4](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.3...v0.32.4) (2025-01-26)
 
 ### Bug Fixes
