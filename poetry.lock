@@ -868,13 +868,13 @@ files = [
 
 [[package]]
 name = "neo4j"
-version = "5.28.0"
+version = "5.28.1"
 description = "Neo4j Bolt driver for Python"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "neo4j-5.28.0-py3-none-any.whl", hash = "sha256:728f17502b9a1de13d25f309a3e4925e832df553f07b9f37418dfd5bf038fe54"},
-    {file = "neo4j-5.28.0.tar.gz", hash = "sha256:e20e05db87cec0603710d834b58ff2e75f33ebc3a3c4654596035f48c2d9ec99"},
+    {file = "neo4j-5.28.1-py3-none-any.whl", hash = "sha256:6755ef9e5f4e14b403aef1138fb6315b120631a0075c138b5ddb2a06b87b09fd"},
+    {file = "neo4j-5.28.1.tar.gz", hash = "sha256:ae8e37a1d895099062c75bc359b2cce62099baac7be768d0eba7180c1298e214"},
 ]
 
 [package.dependencies]
@@ -1724,4 +1724,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">= 3.10.0, < 4.0.0"
-content-hash = "78a462b57927b6786712bf889fd1afdf7d93a413070de4e36bc2c14c62bf1c6c"
+content-hash = "0238a1c89e6351c3163b101826d70db05047f69fa9da45a32385e2e3e8343c9a"
