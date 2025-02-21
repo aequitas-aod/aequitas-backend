@@ -180,7 +180,7 @@ paths:
           required: true
           schema:
             type: integer
-            description: ID of the core
+            description: ID of the project
       responses:
         200:
           description: The resource was deleted successfully
@@ -191,7 +191,7 @@ paths:
 
   /projects/{id}/questionnaire:
     get:
-      summary: Get all questions filled in by the user for a core
+      summary: Get all questions filled in by the user for a project
       tags: [ Questionnaires ]
       parameters:
         - in: path
@@ -199,14 +199,14 @@ paths:
           required: true
           schema:
             type: integer
-            description: ID of the core
+            description: ID of the project
       responses:
         200:
-          description: The actual list of questions composing the questionnaire of the core
+          description: The actual list of questions composing the questionnaire of the project
 
   /projects/{id}/questionnaire/{number}:
     get:
-      summary: Get the n-th question of core questionnaire
+      summary: Get the n-th question of project questionnaire
       tags: [ Questionnaires ]
       parameters:
         - in: path
@@ -214,7 +214,7 @@ paths:
           required: true
           schema:
             type: integer
-            description: ID of the core
+            description: ID of the project
         - in: path
           name: number
           required: true
@@ -223,37 +223,12 @@ paths:
             description: Number of the question
       responses:
         200:
-          description: The actual list of questions composing the questionnaire of the core
+          description: The actual list of questions composing the questionnaire of the project
         400:
           description: The request was invalid
-
-    post:
-      summary: Add a new question to the core questionnaire
-      tags: [ Questionnaires ]
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-            description: ID of the core
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: './schemas.yml#/components/schemas/Question'
-      responses:
-        201:
-          description: The question was added successfully
-        400:
-          description: The request was invalid
-        409:
-          description: The question already exists
 
     put:
-      summary: Update the n-th question of core questionnaire,
-        this operation implies the deletion of all successive questions
+      summary: Update the n-th question of project questionnaire. It is used to select an answer to the question.
       tags: [ Questionnaires ]
       parameters:
         - in: path
@@ -261,7 +236,7 @@ paths:
           required: true
           schema:
             type: integer
-            description: ID of the core
+            description: ID of the project
         - in: path
           name: number
           required: true
@@ -281,8 +256,7 @@ paths:
           description: The request was invalid
 
     delete:
-      summary: Delete the n-th question of core questionnaire,
-        this operation implies the deletion of all successive questions
+      summary: Delete the n-th question of project questionnaire.
       tags: [ Questionnaires ]
       parameters:
         - in: path
@@ -290,7 +264,7 @@ paths:
           required: true
           schema:
             type: integer
-            description: ID of the core
+            description: ID of the project
         - in: path
           name: number
           required: true

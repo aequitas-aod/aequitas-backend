@@ -1,28 +1,38 @@
-@startuml
+@startuml architecture
 
 left to right direction
+
+actor "Business User" as BU
+actor "Technical User" as TU
 
 rectangle {
     portin entrypoint
 
-    cloud Broker as broker
-
-    component "Frontend" as frontend
-    component "Backend" as reasoner
-    component "Autonomous Worker" as worker
+    cloud " Event\nBroker" as Broker
+    component Backend
     component "Aequitas Library" as library
+    database "Database" as DB
+    component Frontend
+    process "Automation Script" as P1
+    process "Automation Script" as P2
+
+    interface API
+
+    Backend -up- API
+    Backend -left-> library: Uses
+    DB <-left- Backend : Stores
+    Frontend --( API : Requests
+    Broker -- Backend
+    Broker -up- P1
+    Broker -up- P2
+
+    TU --> P1 : Creates
+    TU --> P2 : Creates
 
 }
-actor "Business User" as bu
-actor "Technical User" as tu
 
-bu --> entrypoint
-tu --> library
-entrypoint --> frontend
+BU --> entrypoint
+entrypoint --> Frontend
 
-frontend --> reasoner
-broker -- reasoner
-broker -- library
-broker -- worker
 
 @enduml

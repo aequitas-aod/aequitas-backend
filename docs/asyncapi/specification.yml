@@ -1,104 +1,114 @@
 asyncapi: 3.0.0
 info:
-    title: Aequitas Async API
-    version: 1.0.0
-    description: This is the Async API specification for the Aequitas system.
-    tags:
-        - name: Questions
-          description: Events about questions asked in the system
+  title: Aequitas Async API
+  version: 1.0.0
+  description: This is the Async API specification for the Aequitas system.
+  tags:
+    - name: Dataset
+      description: Events about datasets in the system
+    - name: Questions
+      description: Events about questions asked in the system
 
 servers:
-    firstKafkaServer:
-        host: kafka-broker-1:8092
-        description: First instance of Kafka
-        protocol: kafka
-    secondKafkaServer:
-        host: kafka-broker-2:8092
-        description: Second instance of Kafka
-        protocol: kafka
+  kafkaServer:
+    host: kafka-broker-1:8092
+    description: Instance of Kafka
+    protocol: kafka
 
 operations:
-    publishQuestionShown:
-        action: send
-        summary: Publish a message to the QuestionShown channel
-        channel:
-            $ref: "#/channels/questions.shown"
-    onQuestionShown:
-        action: receive
-        summary: Receive a message from the QuestionShown channel
-        channel:
-            $ref: "#/channels/questions.shown"
+  publishDatasetCreated:
+    action: send
+    summary: Publish a message to the DatasetCreated channel
+    channel:
+      $ref: "#/channels/datasets.created"
+  onDatasetCreated:
+    action: receive
+    summary: Receive a message from the DatasetCreated channel
+    channel:
+      $ref: "#/channels/datasets.created"
 
 channels:
-    questions.shown:
-        tags:
-            - name: Questions
-        description: This channel contains a message per each question shown in the system.
-        address: questions.shown
-        messages:
-            Question:
-                $ref: "#/components/messages/Question"
-        servers:
-            - $ref: "#/servers/firstKafkaServer"
-            - $ref: "#/servers/secondKafkaServer"
+  datasets.created:
+    tags:
+      - name: Dataset
+    description: This channel contains a message per each dataset created in the system.
+    address: datasets.created
+    messages:
+      DatasetCreated:
+        $ref: "#/components/messages/DatasetCreated"
+    servers:
+      - $ref: "#/servers/kafkaServer"
 
-    questions.answered:
-        tags:
-            - name: Questions
-        description: This channel contains a message per each question answered in the system.
-        address: questions.answered
-        messages:
-            Measurement:
-                $ref: "#/components/messages/Question"
-        servers:
-            - $ref: "#/servers/firstKafkaServer"
-            - $ref: "#/servers/secondKafkaServer"
+  questions.answered:
+    tags:
+      - name: Questions
+    description: This channel contains a message per each question answered in the system.
+    address: questions.answered
+    messages:
+      Measurement:
+        $ref: "#/components/messages/Question"
+    servers:
+      - $ref: "#/servers/kafkaServer"
 
 components:
-    messages:
-        Question:
-            payload:
-                $ref: "#/components/schemas/Question"
+  messages:
+    DatasetCreated:
+      payload:
+        $ref: "#/components/schemas/DatasetCreated"
+    Question:
+      payload:
+        $ref: "#/components/schemas/Question"
 
-    schemas:
-        QuestionId:
-            additionalProperties: false
-            type: object
-            properties:
-                code:
-                    type: string
-                    description: The unique code of the question
-        AnswerId:
-            additionalProperties: false
-            type: object
-            properties:
-                code:
-                    type: string
-                    description: The unique code of the answer
+  schemas:
+    DatasetCreated:
+      type: object
+      properties:
+        project_id: 
+          type: string
+          description: The unique identifier of the project
+        context_key: 
+          type: string
+          description: The key of project context containing the dataset 
 
-        Answer:
-            additionalProperties: false
-            type: object
-            properties:
-                answerId:
-                    $ref: "#/components/schemas/AnswerId"
-                text:
-                    type: string
-                    description: The text of the answer
+    QuestionId:
+      additionalProperties: false
+      type: object
+      properties:
+        code:
+          type: string
+          description: The unique code of the question
+    AnswerId:
+      additionalProperties: false
+      type: object
+      properties:
+        code:
+          type: string
+          description: The unique code of the answer
 
-        Question:
-            additionalProperties: false
-            type: object
-            properties:
-                questionId:
-                    $ref: "#/components/schemas/QuestionId"
-                text:
-                    type: string
-                    description: The text of the question
-                type:
-                    type: string
-                    description: The type of the question (e.g. single, multiple)
-                availableAnswers:
-                    type: array
-                    items:
-                        $ref: "#/components/schemas/Answer"
+    Answer:
+      additionalProperties: false
+      type: object
+      properties:
+        answerId:
+          $ref: "#/components/schemas/AnswerId"
+        text:
+          type: string
+          description: The text of the answer
+
+    Question:
+      additionalProperties: false
+      type: object
+      properties:
+        questionId:
+          $ref: "#/components/schemas/QuestionId"
+        text:
+          type: string
+          description: The text of the question
+        type:
+          type: string
+          description: The type of the question (e.g. single, multiple)
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Answer"
+
