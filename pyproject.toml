@@ -54,7 +54,7 @@ test = { cmd = "python -m unittest discover -v -t . -s test -p 'test_*.py'", env
 unit-test = { cmd = "python -m unittest discover -v -t . -s test/unit -p 'test_*.py'", env = { ENV = "test" } }
 integration-test = { cmd = "python -m unittest discover -v -t . -s test/integration -p 'test_*.py'", env = { ENV = "test", DB_HOST = "localhost" } }
 coverage = { cmd = "coverage run -m unittest discover -v -t . -s test -p 'test_*.py'", env = { ENV = "test", DB_HOST = "localhost" } }
-coverage-report = "coverage report"
+coverage-report = "coverage report --omit='test/*'"
 ###
 format-check = "black --check ."
 format = "black ."

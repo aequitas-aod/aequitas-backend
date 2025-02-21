@@ -7,7 +7,6 @@ from domain.graph.core.enum import Action
 
 
 class GraphQuestion(Question):
-
     enabled_by: FrozenSet[EntityId]
     action_needed: Optional[Action]
 
