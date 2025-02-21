@@ -1,3 +1,19 @@
+## [0.32.9](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.8...v0.32.9) (2025-02-21)
+
+### Dependency updates
+
+* **deps:** update dependency poetry to v2.1.0 ([#91](https://github.com/aequitas-aod/aequitas-backend/issues/91)) ([5a1b8b5](https://github.com/aequitas-aod/aequitas-backend/commit/5a1b8b516979f051b955af11683b1d722f652233))
+* **deps:** update dependency poetry to v2.1.1 ([#92](https://github.com/aequitas-aod/aequitas-backend/issues/92)) ([ca38451](https://github.com/aequitas-aod/aequitas-backend/commit/ca384511f1ab6fb9e3d73e706bd5470e50735421))
+* **deps:** update node.js to 22.14 ([#90](https://github.com/aequitas-aod/aequitas-backend/issues/90)) ([de9c690](https://github.com/aequitas-aod/aequitas-backend/commit/de9c69098e422bbb49eefd8bcf71b1c55fdef732))
+
+### Documentation
+
+* fix api specifications and architecture diagram ([2556627](https://github.com/aequitas-aod/aequitas-backend/commit/255662764a4123842257e5727729f5a7b1e8eaba))
+
+### Build and continuous integration
+
+* fix coverage report command to exclude test package ([4b215be](https://github.com/aequitas-aod/aequitas-backend/commit/4b215be01acf822168e4cec535b25187ad1974c1))
+
 ## [0.32.8](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.7...v0.32.8) (2025-02-11)
 
 ### Bug Fixes
