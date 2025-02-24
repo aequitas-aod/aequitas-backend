@@ -1,3 +1,9 @@
+## [0.32.10](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.9...v0.32.10) (2025-02-24)
+
+### Bug Fixes
+
+* **deps:** update dependency flask-cors to v5.0.1 ([#93](https://github.com/aequitas-aod/aequitas-backend/issues/93)) ([b92549e](https://github.com/aequitas-aod/aequitas-backend/commit/b92549eaaf823ecf4e16faba2f856648e9cdf4ef))
+
 ## [0.32.9](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.8...v0.32.9) (2025-02-21)
 
 ### Dependency updates
