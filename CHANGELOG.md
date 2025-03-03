@@ -1,3 +1,17 @@
+## [0.33.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.11...v0.33.0) (2025-03-03)
+
+### Features
+
+* update questions and answers descriptions ([c6aec09](https://github.com/aequitas-aod/aequitas-backend/commit/c6aec095d7cc097fe0791f534f2c316c87a60973))
+
+### Dependency updates
+
+* **deps:** update dependency poethepoet to v0.33.0 ([#95](https://github.com/aequitas-aod/aequitas-backend/issues/95)) ([56ce1a7](https://github.com/aequitas-aod/aequitas-backend/commit/56ce1a790e2c89663c5a4d0347d682b9262df0d1))
+
+### Build and continuous integration
+
+* fix neo4j version ([e70f841](https://github.com/aequitas-aod/aequitas-backend/commit/e70f841ab6ba5731b97ce577f0b01ace64284513))
+
 ## [0.32.11](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.10...v0.32.11) (2025-02-28)
 
 ### Bug Fixes
