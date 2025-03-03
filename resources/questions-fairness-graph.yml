@@ -8,13 +8,13 @@
       description: Load your own dataset.
     - id: { code: AdultDataset }
       text: Adult Census Income Dataset
-      description: null
+      description: A dataset containing demographic information used to predict whether an individual's income exceeds $50,000 per year based on attributes like age, education, and occupation.
     - id: { code: CompasDataset }
       text: ProPublica COMPAS Dataset
-      description: null
+      description: A dataset used to assess the risk of recidivism, containing data from the COMPAS system, which is used in the U.S. criminal justice system to predict the likelihood of re-offending.
     - id: { code: CreditDataset }
       text: German Credit Dataset
-      description: null
+      description: A dataset used for credit scoring, containing data about individuals' credit history and personal information to predict whether a person is a good or bad credit risk.
   enabled_by: []
   action_needed: null
   created_at: 2024-05-31T18:20:23
@@ -39,7 +39,9 @@
   created_at: 2024-05-31T18:20:24
 
 - id: { code: FeaturesSelection }
-  text: Which are the sensitive and output features?
+  text: | 
+    Which are the sensitive and output features?
+    Select features on the left. Columns display all statistical information about the features. On the right, choose the sensitive features and a target feature to predict. Features potentially sensitive based on their names are preselected automatically but you can deselect them. 
   description: Mark the features that are sensitive and the ones that are the output of the model.
   type: multiple
   answers:
@@ -52,7 +54,9 @@
   created_at: 2024-05-31T18:20:25
 
 - id: { code: Proxies }
-  text: Specify the proxies for the sensitive features.
+  text: |
+    Specify the proxies for the sensitive features.
+    Proxy features refer to attributes or variables in a dataset that are not explicitly discriminatory but are closely correlated with sensitive attributes like race, gender, age, or disability. These proxy features can inadvertently lead to biased decisions when used in machine learning models.
   description: Proxies are features that are correlated with the sensitive features but are not themselves sensitive.
   type: multiple
   answers:
@@ -65,16 +69,17 @@
   created_at: 2024-05-31T18:20:26
 
 - id: { code: Detection }
-  text: Select the fairness metrics and the features to check.
-  description: The selected metrics will be mitigated in the next steps.
+  text: Select the fairness metrics and the features to check. The selected metrics will be mitigated in the next steps.
+  description: |
+    Fairness metrics are quantitative tools used to assess the fairness of AI systems, ensuring all individuals or groups are treated equitably. These metrics help pinpoint biases that may arise from training data, algorithm design, or unintended model outcomes. The framework recommends the most suitable metrics based on the context analysis. For a detailed understanding of each metric's meaning and formulation, please see [link to detailed resource].
   type: multiple
   answers:
     - id: { code: StatisticalParityDifference }
       text: Statistical Parity Difference
-      description: Statistical Parity Difference (SPD) measures the difference between the probability that a model assigns a positive outcome to a protected group versus an unprotected group, we got fairness when the measure equals 0.
+      description: Statistical Parity Difference measures fairness by comparing the difference in favorable outcomes between groups. A value close to 0 indicates minimal bias.
     - id: { code: DisparateImpact }
       text: Disparate Impact
-      description: Disparate Impact (DI) examines the ratio of favorable outcomes for two groups — a majority and a minority. A fair assessment is achieved when this measure equals 1.
+      description: Disparate Impact measures fairness by comparing favorable outcomes between groups. A ratio below 0.8 may indicate discrimination.
   enabled_by:
     - { code: Proxies-features-selected }
   action_needed: null
@@ -87,16 +92,16 @@
   answers:
     - id: { code: DisparateImpactRemover }
       text: Disparate Impact Remover
-      description: Disparate Impact Remover is a preprocessing technique that edits feature values increase group fairness while preserving rank-ordering within groups.
+      description: Disparate Impact Remover adjusts the model to reduce bias by minimizing disparate impacts between groups.
     - id: { code: LearnedFairRepresentations }
       text: Learned Fair Representations
-      description: Learned Fair Representations (LFR) aim to find and create a latent representation that encodes the data well but obfuscates information about protected attributes.
+      description: Learned Fair Representations transforms data to minimize bias while preserving predictive power, ensuring fairness in model outcomes.
     - id: { code: Reweighing }
       text: Reweighing
-      description: The Reweighing method assigns different weights to training samples for each group and label combination, aiming to ensure fairness before classification.
+      description: Reweighing adjusts the importance of samples to correct for bias, giving more weight to underrepresented groups to promote fairness.
     - id: { code: CorrelationRemover }
       text: Correlation Remover
-      description: The Correlation Remover applies a linear transformation to the non-sensitive feature columns in order to remove their correlation with the sensitive feature columns while retaining as much information as possible (as measured by the least-squares error).
+      description: Correlation Remover removes features highly correlated with others to reduce multicollinearity and improve model fairness.
     - id: { code: NoDataMitigation }
       text: Do Not Mitigate
       description: null
@@ -138,13 +143,13 @@
   answers:
     - id: { code: FaUCI }
       text: FaUCI
-      description: null
+      description: FaUCI introduces a fairness regularization approach that adjusts the model's decision boundary based on the fairness metrics.
     - id: { code: PrejudiceRemover }
       text: Prejudice Remover
-      description: Prejudice Remover is a method that modifies the objective function of the classifier by inserting a term that penalizes discrimination based on a sensitive feature. This term is added to the loss function of the model, and its weight can be controlled by a parameter that defines the degree of penalty.
+      description: Prejudice Remover alters the model to reduce bias, ensuring that sensitive attributes do not influence predictions.
     - id: { code: GerryFairClassifier }
       text: GerryFair Classifier
-      description: null
+      description: GerryFair Classifier modifies decision boundaries to reduce fairness violations, preserving model accuracy and performance.
     - id: { code: NoModelMitigation }
       text: Do Not Mitigate
       description: null  
