@@ -102,7 +102,7 @@ services:
       - internal
 
   db:
-    image: neo4j:5
+    image: neo4j:2025
 #    platform: *platform
     container_name: ${DB_HOST}
     restart: always
