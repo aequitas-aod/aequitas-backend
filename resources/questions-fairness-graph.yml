@@ -54,10 +54,8 @@
   created_at: 2024-05-31T18:20:25
 
 - id: { code: Proxies }
-  text: |
-    Specify the proxies for the sensitive features.
-    Proxy features refer to attributes or variables in a dataset that are not explicitly discriminatory but are closely correlated with sensitive attributes like race, gender, age, or disability. These proxy features can inadvertently lead to biased decisions when used in machine learning models.
-  description: Proxies are features that are correlated with the sensitive features but are not themselves sensitive.
+  text: Specify the proxies for the sensitive features.
+  description: Proxy features refer to attributes or variables in a dataset that are not explicitly discriminatory but are closely correlated with sensitive attributes like race, gender, age, or disability. These proxy features can inadvertently lead to biased decisions when used in machine learning models.
   type: multiple
   answers:
     - id: { code: Proxies-features-selected }
@@ -70,8 +68,7 @@
 
 - id: { code: Detection }
   text: Select the fairness metrics and the features to check. The selected metrics will be mitigated in the next steps.
-  description: |
-    Fairness metrics are quantitative tools used to assess the fairness of AI systems, ensuring all individuals or groups are treated equitably. These metrics help pinpoint biases that may arise from training data, algorithm design, or unintended model outcomes. The framework recommends the most suitable metrics based on the context analysis. For a detailed understanding of each metric's meaning and formulation, please see [link to detailed resource].
+  description: Fairness metrics are quantitative tools used to assess the fairness of AI systems, ensuring all individuals or groups are treated equitably. These metrics help pinpoint biases that may arise from training data, algorithm design, or unintended model outcomes. The framework recommends the most suitable metrics based on the context analysis. For a detailed understanding of each metric's meaning and formulation, please see [link to detailed resource].
   type: multiple
   answers:
     - id: { code: StatisticalParityDifference }
@@ -113,7 +110,7 @@
 
 - id: { code: DataMitigationSummary }
   text: What do you want to do next?
-  description: null
+  description: Summary of data mitigation performed with results and updated dataset.
   type: single
   answers:
     - id: { code: MitigateDataAgain}
@@ -162,7 +159,7 @@
 
 - id: { code: ModelMitigationSummary }
   text: What do you want to do next?
-  description: null
+  description: Summary of model mitigation performed.
   type: single
   answers:
     - id: { code: MitigateDataAgain }
@@ -213,7 +210,7 @@
 
 - id: { code: OutcomeMitigationSummary }
   text: What do you want to do next?
-  description: null
+  description: Summary of outcome mitigation performed.
   type: single
   answers:
     - id: { code: MitigateDataAgain}
