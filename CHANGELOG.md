@@ -1,3 +1,18 @@
+## [0.33.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.33.0...v0.33.1) (2025-03-06)
+
+### Dependency updates
+
+* **deps:** update neo4j docker tag to v2025 ([#96](https://github.com/aequitas-aod/aequitas-backend/issues/96)) ([12df575](https://github.com/aequitas-aod/aequitas-backend/commit/12df5750cd209035e4e031d9bf5048ad460e0ac4))
+
+### Bug Fixes
+
+* **automation:** modify svg creations with new attribute, modify relative tests ([c92c662](https://github.com/aequitas-aod/aequitas-backend/commit/c92c662793fb3dc2fe78fa2d1f1e9c5a8e9cc823))
+* **build:** fix neo4j image version ([48f78f0](https://github.com/aequitas-aod/aequitas-backend/commit/48f78f04642f2486e1b0357ebbab44613e6acdbd))
+
+### Refactoring
+
+* update questions yaml ([9ffa1b3](https://github.com/aequitas-aod/aequitas-backend/commit/9ffa1b34b94f42335075824712fd1eec895e60ce))
+
 ## [0.33.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.32.11...v0.33.0) (2025-03-03)
 
 ### Features
