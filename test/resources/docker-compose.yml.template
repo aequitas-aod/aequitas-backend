@@ -70,7 +70,7 @@ services:
       - internal
 
   db:
-    image: neo4j:latest
+    image: neo4j:5
 #    platform: *platform
     restart: always
     environment:
