@@ -571,8 +571,8 @@ def inprocessing_algorithm_no_mitigation(
 
 
 def generate_preprocessing_plot_picture(
-    transformed_dataset: pd.DataFrame, file: io.IOBase, **kwargs
-) -> bytes:
+    transformed_dataset: pd.DataFrame, file: io.BytesIO, **kwargs
+):
     final_sample = (
         _discretize_columns(kwargs["original_dataset"])
         .drop(kwargs["class_feature"], axis=1)
@@ -654,7 +654,7 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                 (
                     f"preprocessing_plot__{result_id}",
                     lambda: generate_plot(
-                        "pre-processing",
+                        "preprocessing",
                         result,
                         **{"original_dataset": dataset, "class_feature": targets[0]},
                     ),
@@ -931,7 +931,7 @@ def inprocessing_algorithm_FaUCI(
 
 
 def generate_standard_plot_pictures(
-    plot_type: str, results: pd.DataFrame, file: io.IOBase
+    plot_type: str, results: pd.DataFrame, file: io.BytesIO
 ):
     fig, axes = plt.subplots(
         1, 2, figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE), sharey=True
@@ -975,7 +975,7 @@ def generate_standard_plot_pictures(
     fig.savefig(file, format="svg", dpi=FIG_DPI)
 
 
-def generate_polarization_plot_pictures(results: pd.DataFrame, file: io.IOBase):
+def generate_polarization_plot_pictures(results: pd.DataFrame, file: io.BytesIO):
     fig, axes = plt.subplots(
         1, 2, figsize=(FIG_WIDTH_SIZE, FIG_HEIGHT_SIZE), sharey=True
     )
@@ -1015,23 +1015,30 @@ def generate_polarization_plot_pictures(results: pd.DataFrame, file: io.IOBase):
 
 
 def generate_plot_picture(
-    plot_type: str, results: pd.DataFrame, file: io.IOBase, **kwargs
-) -> bytes:
+    plot_type: str, results: pd.DataFrame, file: io.BytesIO, **kwargs
+) -> io.BytesIO:
     if plot_type in ["performance", "fairness"]:
         filtered_results = results[results["metric_type"] == plot_type].copy()
         generate_standard_plot_pictures(plot_type, filtered_results, file)
     elif plot_type == "polarization":
         generate_polarization_plot_pictures(results, file)
-    elif plot_type == "pre-processing":
+    elif plot_type == "preprocessing":
         generate_preprocessing_plot_picture(results, file, **kwargs)
     else:
         raise Exception(f"No plot_type {plot_type}")
 
+    svg_data = file.getvalue().decode("utf-8")
+    modified_svg = svg_data.replace("<svg", f'<svg plot-type="{plot_type}_plot"', 1)
+    updated_file = io.BytesIO(modified_svg.encode("utf-8"))
+    return updated_file
+
 
 def generate_plot(plot_type: str, results: pd.DataFrame, **kwargs) -> bytes:
     buffer = io.BytesIO()
-    generate_plot_picture(plot_type=plot_type, results=results, file=buffer, **kwargs)
-    return buffer.getvalue()
+    plot_picture_buffer: io.BytesIO = generate_plot_picture(
+        plot_type=plot_type, results=results, file=buffer, **kwargs
+    )
+    return plot_picture_buffer.getvalue()
 
 
 class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):

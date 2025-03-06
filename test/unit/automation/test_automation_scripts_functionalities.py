@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 
-from application.automation.parsing import to_csv, read_csv, read_json, _pythonize
+from application.automation.parsing import to_csv, read_csv, read_json
 from application.automation.scripts.on_dataset_created import get_stats
 from application.automation.scripts.on_dataset_features_available import (
     generate_correlation_matrix_picture,
@@ -240,14 +240,15 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
                 "polarization": get_polarization_file(l),
             }.items():
                 results = read_csv(get_result_file(l))
-                actual_svg = io.StringIO()
-                generate_plot_picture(
-                    plot_type=plot_type, results=results, file=file_name
+                buffer = io.BytesIO()
+                buffer_svg = generate_plot_picture(
+                    plot_type=plot_type, results=results, file=buffer
                 )
-                # actual_svg = actual_svg.getvalue().splitlines()
-                # expected_svg = file_name.read_text().splitlines()
-                # self.assertEqual(len(actual_svg), len(expected_svg))
-                # self.assertEqual(actual_svg[:4], expected_svg[:4])
+                actual_svg = buffer_svg.getvalue().decode("utf-8").splitlines()
+                expected_svg = file_name.read_text().splitlines()
+                self.assertEqual(type(actual_svg), type(expected_svg))
+                self.assertEqual(len(actual_svg), len(expected_svg))
+                self.assertEqual(actual_svg[:4], expected_svg[:4])
 
     def test_inprocessing_algorithm_no_mitigation(self):
         from resources.db.datasets import dataset_path
@@ -276,14 +277,14 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         dataset = read_csv(dataset_path("adult"))
         transformed_df = read_csv(PATH_PREPROCESSING_LFR_CSV)
 
-        actual_svg = io.StringIO()
-        generate_plot_picture(
-            plot_type="pre-processing",
+        actual_svg = io.BytesIO()
+        buffer_svg = generate_plot_picture(
+            plot_type="preprocessing",
             results=transformed_df,
             file=actual_svg,
             **{"original_dataset": dataset, "class_feature": "class"},
         )
-        actual_svg = actual_svg.getvalue().splitlines()
+        actual_svg = buffer_svg.getvalue().decode("utf-8").splitlines()
         expected_svg = PATH_PREPROCESSING_SVG.read_text().splitlines()
         self.assertEqual(len(actual_svg), len(expected_svg))
         self.assertEqual(actual_svg[:4], expected_svg[:4])
