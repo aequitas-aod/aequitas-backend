@@ -1,3 +1,9 @@
+## [0.33.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.33.1...v0.33.2) (2025-03-07)
+
+### Bug Fixes
+
+* **build:** fix backend url in docker compose ([16d26ea](https://github.com/aequitas-aod/aequitas-backend/commit/16d26ea7ba49fd4476c48575cbb4bc37f7581ec9))
+
 ## [0.33.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.33.0...v0.33.1) (2025-03-06)
 
 ### Dependency updates
