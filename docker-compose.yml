@@ -71,7 +71,7 @@ services:
     ports:
       - "${AEQUITAS_FRONTEND_PORT}:80"
     environment:
-      NEXT_PUBLIC_BACKEND_URL: localhost:${AEQUITAS_BACKEND_PORT}
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:${AEQUITAS_BACKEND_PORT}
     depends_on:
       backend:
         condition: service_healthy
