@@ -1,3 +1,9 @@
+## [0.34.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.33.2...v0.34.0) (2025-03-07)
+
+### Features
+
+* **projects:** add update context key without re-update whole context ([743f642](https://github.com/aequitas-aod/aequitas-backend/commit/743f6426d9441ab239e64132c62893ab5086c764))
+
 ## [0.33.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.33.1...v0.33.2) (2025-03-07)
 
 ### Bug Fixes
