@@ -48,3 +48,13 @@ class ProjectRepository(ABC):
         """Gets the public context
         :return: the public context"""
         pass
+
+    @abstractmethod
+    def add_context_key(self, project_id: EntityId, key: str, value: str) -> None:
+        """
+        Adds a key to the project context
+        :param project_id: the project id
+        :param key: the key to add
+        :param value: the value of the key
+        :raises NotFoundError: if the project does not exist
+        """

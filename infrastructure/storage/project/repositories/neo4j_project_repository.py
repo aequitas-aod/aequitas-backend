@@ -133,6 +133,20 @@ class Neo4jProjectRepository(ProjectRepository):
         )
         return result
 
+    def add_context_key(self, project_id: EntityId, key: str, value: str) -> None:
+        if not self._check_project_exists(project_id):
+            raise NotFoundError(f"Project with id {project_id} does not exist")
+        query_string: str = (
+            "MATCH (p:Project {code: $project_code})-[:HAS_CONTEXT]->(pc:ProjectContext) "
+            "CALL apoc.create.setProperty(pc, $key, $value) "
+            "YIELD node RETURN node"
+        )
+        query: Neo4jQuery = Neo4jQuery(
+            query_string, {"project_code": project_id.code, "key": key, "value": value}
+        )
+        self.driver.query(query)
+        db_log("Added key %s to project with id %s", key, project_id.code)
+
     def _check_project_exists(self, project_id: EntityId) -> bool:
         p: Project = self.get_project_by_id(project_id)
         return p is not None

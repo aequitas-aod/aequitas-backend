@@ -6,6 +6,7 @@ from domain.common.core import EntityId
 from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from domain.project.repositories import ProjectRepository
+from utils.encodings import encode
 from utils.errors import BadRequestError, NotFoundError
 
 import utils.encodings as base64
@@ -74,6 +75,25 @@ class ProjectService:
         if project is not None:
             return project.get_context()
         raise NotFoundError("Project does not exist")
+
+    def add_context_key(
+        self, project_id: EntityId, key: str, value: Union[str, bytes]
+    ) -> None:
+        """
+        Adds a key to the project context
+        :param project_id: the project id
+        :param key: the key to add
+        :param value: the value of the key
+        :raises NotFoundError: if the project does not exist
+        :raises ValueError: if the value is not of type str or bytes
+        """
+        if type(value) != str and type(value) != bytes:
+            raise ValueError(f"Value must be of type str or bytes, not {type(value)}")
+
+        project: Optional[Project] = self.get_project_by_id(project_id)
+        if project is None:
+            raise NotFoundError("Project does not exist")
+        self.project_repository.add_context_key(project_id, key, encode(value))
 
     @staticmethod
     def __bytes_to_string(value: bytes) -> tuple[str, bool]:

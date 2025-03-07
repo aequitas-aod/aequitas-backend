@@ -177,8 +177,7 @@ class ProjectContextResource(Resource, EventGenerator):
             value: bytes = request.get_data()
             if not value:
                 return "Missing value", StatusCode.BAD_REQUEST
-            updated_project = project.add_to_context(key, value)
-            project_service.update_project(project_id, updated_project)
+            project_service.add_context_key(project_id, key, value)
             logger.info("Key '%s' updated in project '%s'", key, project_id.code)
             self.trigger_context_event(key, project_id=project_id.code, context_key=key)
             return "Project context updated successfully", StatusCode.OK

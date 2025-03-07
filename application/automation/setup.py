@@ -98,9 +98,8 @@ class Automator:
             self.components, "project_service"
         ), "project_service not found in components"
         for key, value in updates.items():
+            self.components.project_service.add_context_key(project_id, key, value)
             project = self.components.project_service.get_project_by_id(project_id)
-            project = project.add_to_context(key, value)
-            self.components.project_service.update_project(project_id, project)
             self.log(
                 "Add key %s to context of project %s. Keys are now: %s",
                 key,
