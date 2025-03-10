@@ -68,7 +68,7 @@
 
 - id: { code: Detection }
   text: Select the fairness metrics and the features to check. The selected metrics will be mitigated in the next steps.
-  description: Fairness metrics are quantitative tools used to assess the fairness of AI systems, ensuring all individuals or groups are treated equitably. These metrics help pinpoint biases that may arise from training data, algorithm design, or unintended model outcomes. The framework recommends the most suitable metrics based on the context analysis. For a detailed understanding of each metric's meaning and formulation, please see [link to detailed resource].
+  description: Fairness metrics are quantitative tools used to assess the fairness of AI systems, ensuring all individuals or groups are treated equitably. These metrics help pinpoint biases that may arise from training data, algorithm design, or unintended model outcomes. The framework recommends the most suitable metrics based on the context analysis. For a detailed understanding of each metric's meaning and formulation, please see https://aequitas-home.readthedocs.io/en/latest/detection.html#definitions-based-on-predicted-outcome.
   type: multiple
   answers:
     - id: { code: StatisticalParityDifference }
