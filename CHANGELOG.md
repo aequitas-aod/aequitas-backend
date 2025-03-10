@@ -1,3 +1,9 @@
+## [0.34.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.0...v0.34.1) (2025-03-10)
+
+### Bug Fixes
+
+* **resources:** update Detection question description ([108b022](https://github.com/aequitas-aod/aequitas-backend/commit/108b022f43290f8f1443cfaf2c00478499b4cc93))
+
 ## [0.34.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.33.2...v0.34.0) (2025-03-07)
 
 ### Features
