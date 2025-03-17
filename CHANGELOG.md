@@ -1,3 +1,14 @@
+## [0.34.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.1...v0.34.2) (2025-03-17)
+
+### Dependency updates
+
+* **deps:** update dependency poethepoet to v0.33.1 ([#99](https://github.com/aequitas-aod/aequitas-backend/issues/99)) ([681d8e0](https://github.com/aequitas-aod/aequitas-backend/commit/681d8e0600b66c3316e25d60229e31169ba4478a))
+* **deps:** update dependency python to 3.13 ([#98](https://github.com/aequitas-aod/aequitas-backend/issues/98)) ([da3175c](https://github.com/aequitas-aod/aequitas-backend/commit/da3175c25e82caed1934d6666980f08ee3e3050e))
+
+### Bug Fixes
+
+* **deps:** update dependency coverage to v7.7.0 ([#100](https://github.com/aequitas-aod/aequitas-backend/issues/100)) ([7029d76](https://github.com/aequitas-aod/aequitas-backend/commit/7029d76253eb13a75da0d0d458ef6897f1dd1d09))
+
 ## [0.34.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.0...v0.34.1) (2025-03-10)
 
 ### Bug Fixes
