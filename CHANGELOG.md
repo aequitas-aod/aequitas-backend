@@ -1,3 +1,13 @@
+## [0.34.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.2...v0.34.3) (2025-03-21)
+
+### Dependency updates
+
+* **deps:** update actions/setup-node action to v4.3.0 ([#101](https://github.com/aequitas-aod/aequitas-backend/issues/101)) ([9d309f2](https://github.com/aequitas-aod/aequitas-backend/commit/9d309f298d7bec3438e2610b1f0fc9d658769dfe))
+
+### Bug Fixes
+
+* **deps:** update dependency coverage to v7.7.1 ([#102](https://github.com/aequitas-aod/aequitas-backend/issues/102)) ([0f5aa1e](https://github.com/aequitas-aod/aequitas-backend/commit/0f5aa1ef2fca50d09f227dfae06320f831f20006))
+
 ## [0.34.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.1...v0.34.2) (2025-03-17)
 
 ### Dependency updates
