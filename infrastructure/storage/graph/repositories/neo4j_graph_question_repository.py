@@ -20,7 +20,7 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
 
     def get_all_questions(self) -> List[GraphQuestion]:
         query_string = (
-            "MATCH (q:GraphQuestion)-[:HAS_ANSWER]->(a:Answer) "
+            "MATCH (q:GraphQuestion)-[:HAS_ANSWER]->(a:GraphAnswer) "
             "OPTIONAL MATCH (q)-[:PREVIOUS]->(prev:GraphQuestion) "
             "RETURN q, COLLECT(a) AS answers"
         )
@@ -36,7 +36,7 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
 
     def get_question_by_id(self, question_id: EntityId) -> Optional[GraphQuestion]:
         query_string = (
-            "MATCH (q:GraphQuestion {code: $question_code})-[:HAS_ANSWER]->(a:Answer) "
+            "MATCH (q:GraphQuestion {code: $question_code})-[:HAS_ANSWER]->(a:GraphAnswer) "
             "OPTIONAL MATCH (q)-[:PREVIOUS]->(prev:GraphQuestion) "
             "RETURN q, COLLECT(a) AS answers"
         )
@@ -70,7 +70,7 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
             queries.append(
                 Neo4jQuery(
                     "MATCH (q:GraphQuestion {code: $question_code}) "
-                    "MATCH (a:Answer {code: $answer_code}) "
+                    "MATCH (a:GraphAnswer {code: $answer_code}) "
                     "CREATE (q)-[:HAS_ANSWER]->(a)",
                     {"question_code": question.id.code, "answer_code": answer.id.code},
                 )
@@ -81,7 +81,7 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
             queries.append(
                 Neo4jQuery(
                     "MATCH (q1:GraphQuestion {code: $question_code}) "
-                    "MATCH (a:Answer {code: $answer_code}) "
+                    "MATCH (a:GraphAnswer {code: $answer_code}) "
                     "CREATE (q1)-[:ENABLED_BY]->(a)",
                     {"question_code": question.id.code, "answer_code": answer_id.code},
                 )
@@ -93,7 +93,7 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
         if self._check_answer_exists(answer.id):
             raise ConflictError(f"Answer with id {answer.id} already exists")
         a: dict = self._convert_answer_in_node(answer)
-        query: Neo4jQuery = Neo4jQuery("CREATE (:Answer $answer)", {"answer": a})
+        query: Neo4jQuery = Neo4jQuery("CREATE (:GraphAnswer $answer)", {"answer": a})
         self.driver.query(query)
 
     def update_question(self, question_id: EntityId, question: GraphQuestion) -> None:
@@ -107,7 +107,7 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
             raise NotFoundError(f"Answer with id {answer_id} does not exist")
         a: dict = self._convert_answer_in_node(answer)
         query: Neo4jQuery = Neo4jQuery(
-            "MATCH (a:Answer {code: $answer_code}) SET a = $answer",
+            "MATCH (a:GraphAnswer {code: $answer_code}) SET a = $answer",
             {"answer_code": answer_id.code, "answer": a},
         )
         self.driver.query(query)
@@ -117,20 +117,18 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
             raise NotFoundError(f"Question with id {question_id} does not exist")
         self.driver.query(
             Neo4jQuery(
-                "MATCH (q:GraphQuestion {code: $question_code})-[:HAS_ANSWER]->(a:Answer) "
+                "MATCH (q:GraphQuestion {code: $question_code})-[:HAS_ANSWER]->(a:GraphAnswer) "
                 "DETACH DELETE q, a",
                 {"question_code": question_id.code},
             )
         )
 
     def delete_all_questions(self) -> None:
-        self.driver.transaction(
-            [
-                Neo4jQuery(
-                    "MATCH (n:GraphQuestion)-[r]->(linkedNode) DETACH DELETE n, linkedNode",
-                    {},
-                ),
-            ]
+        self.driver.query(
+            Neo4jQuery(
+                "MATCH (n:GraphQuestion)-[r]->(linkedNode) DETACH DELETE n, linkedNode",
+                {},
+            )
         )
 
     def delete_answer(self, answer_id: EntityId) -> None:
@@ -138,14 +136,14 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
             raise NotFoundError(f"Answer with id {answer_id} does not exist")
         self.driver.query(
             Neo4jQuery(
-                "MATCH (a:Answer {code: $answer_code}) " "DETACH DELETE a",
+                "MATCH (a:GraphAnswer {code: $answer_code}) DETACH DELETE a",
                 {"answer_code": answer_id.code},
             )
         )
 
     def get_last_inserted_question(self) -> Optional[GraphQuestion]:
         query_string = (
-            "MATCH (q:GraphQuestion)-[:HAS_ANSWER]->(a:Answer) "
+            "MATCH (q:GraphQuestion)-[:HAS_ANSWER]->(a:GraphAnswer) "
             "OPTIONAL MATCH (q)-[:PREVIOUS]->(prev:GraphQuestion) "
             "RETURN q, COLLECT(a) AS answers "
             "ORDER BY q.created_at DESC LIMIT 1"
@@ -163,10 +161,10 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
         self, question_id: EntityId, answer_ids: List[EntityId]
     ) -> Optional[GraphQuestion]:
         query_string = (
-            "MATCH (q:GraphQuestion {code: $question_code})-[:HAS_ANSWER]->(a:Answer) "
+            "MATCH (q:GraphQuestion {code: $question_code})-[:HAS_ANSWER]->(a:GraphAnswer) "
             "WHERE a.code IN $answer_codes "
-            "MATCH (q_enabled:GraphQuestion)-[:ENABLED_BY]->(a:Answer) "
-            "MATCH (q_enabled)-[:HAS_ANSWER]->(a_enabled:Answer) "
+            "MATCH (q_enabled:GraphQuestion)-[:ENABLED_BY]->(a:GraphAnswer) "
+            "MATCH (q_enabled)-[:HAS_ANSWER]->(a_enabled:GraphAnswer) "
             "RETURN q_enabled, COLLECT(a_enabled) AS answers"
         )
         query: Neo4jQuery = Neo4jQuery(
@@ -189,7 +187,7 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
         return q is not None
 
     def _check_answer_exists(self, answer_id: EntityId) -> bool:
-        query_string = "MATCH (a:Answer {code: $answer_code}) RETURN a"
+        query_string = "MATCH (a:GraphAnswer {code: $answer_code}) RETURN a"
         query: Neo4jQuery = Neo4jQuery(query_string, {"answer_code": answer_id.code})
         r: List[dict] = self.driver.query(query)
         return len(r) > 0
@@ -197,7 +195,7 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
     def _get_enabled_by(self, graph_question_id: EntityId) -> List[dict]:
         query_string = (
             "MATCH (q:GraphQuestion {code: $question_code}) "
-            "OPTIONAL MATCH (q)-[:ENABLED_BY]->(a:Answer)<-[:HAS_ANSWER]-(q2:GraphQuestion) "
+            "OPTIONAL MATCH (q)-[:ENABLED_BY]->(a:GraphAnswer)<-[:HAS_ANSWER]-(q2:GraphQuestion) "
             "RETURN COLLECT(a.code) AS answer_code, COLLECT(q2.code) AS question_code"
         )
         query: Neo4jQuery = Neo4jQuery(
@@ -248,11 +246,3 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
         a["code"] = answer.id.code
         del a["id"]
         return a
-
-    def delete_all_questions(self) -> None:
-        self.driver.transaction(
-            [
-                Neo4jQuery("MATCH (n:GraphQuestion) DETACH DELETE n", {}),
-                Neo4jQuery("MATCH (n:Answer) DETACH DELETE n", {}),
-            ]
-        )
