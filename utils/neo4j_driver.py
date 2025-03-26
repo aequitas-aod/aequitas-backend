@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Optional
 
 import backoff
-from neo4j import GraphDatabase, Driver
+from neo4j import GraphDatabase, Driver, Result
 from neo4j.exceptions import ServiceUnavailable, SessionExpired
-from utils.logs import set_other_loggers_level
-import utils.env
 
+import utils.env
+from utils.logs import set_other_loggers_level
 
 # if testing, lowers the visibility of non-aequitas logs
 if utils.env.is_testing():
@@ -20,8 +20,9 @@ class Credentials:
 
 class Neo4jQuery:
     def __init__(self, query: str, params: dict):
-        self.query = query
-        self.params = params
+        self.query: str = query
+        self.params: dict = params
+        self.result: Optional[Result] = None
 
 
 class Neo4jDriver:
@@ -38,17 +39,39 @@ class Neo4jDriver:
         backoff.expo, (ServiceUnavailable, SessionExpired), max_tries=10
     )
     def query(self, query: Neo4jQuery) -> List[dict]:
+        """
+        Execute a query and return the results as a list of dictionaries.
+        It also stores the Result in the query object.
+        :param Neo4jQuery query: Query to be executed
+        :return: Results as a list of dictionaries
+        """
         with self.driver.session() as session:
-            return session.run(query.query, **query.params).data()
+            result: Result = session.run(query.query, **query.params)
+            query.result = result
+            return result.data()
 
     @backoff.on_exception(
         backoff.expo, (ServiceUnavailable, SessionExpired), max_tries=10
     )
     def transaction(self, queries: List[Neo4jQuery]) -> None:
+        """
+        Execute a list of queries in a single transaction.
+        Each query can use the results of the previous queries as parameters.
+        For example:
+        queries = [
+            Neo4jQuery("MATCH (n:Node {code: $node_code}) RETURN n.name AS node_name", {"node_code": "123"}),
+            Neo4jQuery("MATCH (n:Node {name: $node_name}) RETURN n", {}),
+        ]
+        :param List[Neo4jQuery] queries: List of queries to be executed
+        """
         with self.driver.session() as session:
             with session.begin_transaction() as tx:
+                results: dict[str, any] = {}
                 for query in queries:
-                    tx.run(query.query, **query.params)
+                    result: Result = tx.run(query.query, **(query.params | results))
+                    for dic in result.data():
+                        results = results | dic
+
                 tx.commit()
 
     def close(self):
