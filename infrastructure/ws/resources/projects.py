@@ -98,7 +98,9 @@ class ProjectContextResource(Resource, EventGenerator):
             )
         else:
             if not silent_miss:
-                logger.warn("Key '%s' not found in project '%s'", key, project_id.code)
+                logger.warning(
+                    "Key '%s' not found in project '%s'", key, project_id.code
+                )
             return Response("Key not found", StatusCode.NOT_FOUND)
 
     def _get_key(self, project_id: EntityId, key: str, timeout: timedelta) -> Response:

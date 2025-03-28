@@ -1,13 +1,14 @@
-import unittest
-from python_on_whales import DockerClient
-from utils.logs import logger
-from pathlib import Path
-import test.resources
-import tempfile
-from resources.db import PATH_INIT_CYPHER as RESOURCE_INIT_CYPHER
 import atexit
 import shutil
+import tempfile
+import unittest
+from pathlib import Path
 
+from python_on_whales import DockerClient
+
+import test.resources
+from resources.db import PATH_INIT_CYPHER as RESOURCE_INIT_CYPHER
+from utils.logs import logger
 
 DIR_PROJECT = Path(test.__file__).parent.parent
 DIR_INTEGRATION_TESTS = Path(
@@ -54,7 +55,10 @@ class DockerComposeBasedTestCase(unittest.TestCase):
     @classmethod
     def startDockerServices(cls):
         cls.docker.compose.up(
-            services=list(cls.services), detach=True, wait=True, build=True
+            services=list(cls.services),
+            detach=True,
+            wait=True,
+            build=True,
         )
 
     @classmethod
