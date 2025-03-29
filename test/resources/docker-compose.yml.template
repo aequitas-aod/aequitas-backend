@@ -18,7 +18,7 @@ services:
       - internal
 
   kafka:
-    image: bitnami/kafka:latest
+    image: bitnami/kafka:3.9
     platform: *platform
     ports:
       - __KAFKA_PORT__:__KAFKA_PORT__

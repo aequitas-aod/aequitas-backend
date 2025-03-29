@@ -55,10 +55,7 @@ class DockerComposeBasedTestCase(unittest.TestCase):
     @classmethod
     def startDockerServices(cls):
         cls.docker.compose.up(
-            services=list(cls.services),
-            detach=True,
-            wait=True,
-            build=True,
+            services=list(cls.services), detach=True, wait=True, build=True
         )
 
     @classmethod
