@@ -1,3 +1,13 @@
+## [0.35.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.0...v0.35.1) (2025-03-29)
+
+### Dependency updates
+
+* **deps:** update dependency python-on-whales to v0.76.1 ([#104](https://github.com/aequitas-aod/aequitas-backend/issues/104)) ([5979f06](https://github.com/aequitas-aod/aequitas-backend/commit/5979f06b59ec8f9e91edde2f67ad0bf19f3d4d69))
+
+### Bug Fixes
+
+* **deps:** update dependency pydantic to v2.11.1 ([#105](https://github.com/aequitas-aod/aequitas-backend/issues/105)) ([557aeb8](https://github.com/aequitas-aod/aequitas-backend/commit/557aeb888161f93c9dc99e0ba76ce5203da5e77b))
+
 ## [0.35.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.3...v0.35.0) (2025-03-29)
 
 ### Features
