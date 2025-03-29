@@ -1,3 +1,17 @@
+## [0.35.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.3...v0.35.0) (2025-03-29)
+
+### Features
+
+* **build:** add multiplatform image build ([e3bcaa4](https://github.com/aequitas-aod/aequitas-backend/commit/e3bcaa4ec80a0eb7c9385f77a191b81e126b05d9))
+* **storage:** add distinction between GraphAnswer and ProjectAnswer in neo4j db, improve ProjectQuestion insertion retrieving its id in queries ([99ec4b9](https://github.com/aequitas-aod/aequitas-backend/commit/99ec4b9c1de224a843e54331d4b50fd34467277c))
+* **utils:** improve Neo4jDriver with results handling ([823e8e8](https://github.com/aequitas-aod/aequitas-backend/commit/823e8e870a4db0241f931605dec979de16aa4f09))
+
+### Bug Fixes
+
+* **build:** fix kafka env configuration ([311afb2](https://github.com/aequitas-aod/aequitas-backend/commit/311afb2d288f4073d56721db2f354a829feb1bca))
+* **build:** fix kafka version to not migrate to Kraft ([c5ab68f](https://github.com/aequitas-aod/aequitas-backend/commit/c5ab68fd562e56f1ec9f4f97d0fd395cfb826241))
+* **storage:** fix ProjectQuestion insertion with multiple projects in db, replace deprecated ID function of neo4j ([9a26ea5](https://github.com/aequitas-aod/aequitas-backend/commit/9a26ea5c075d31bd006081edb70a2ca5bf21e30e))
+
 ## [0.34.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.2...v0.34.3) (2025-03-21)
 
 ### Dependency updates
