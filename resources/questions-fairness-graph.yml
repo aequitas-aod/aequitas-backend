@@ -242,31 +242,19 @@
   answers:
     - id: { code: Test-CustomDataset }
       text: Custom
-      description: Load your own dataset.
+      description: Load your own test dataset.
     - id: { code: Test-AdultDataset }
       text: Adult Census Income Dataset
-      description: null
-    - id: { code: Test-BankDataset }
-      text: Bank Marketing Dataset
-      description: null
+      description: Test dataset for the Adult Census Income Dataset.
     - id: { code: Test-CompasDataset }
       text: ProPublica COMPAS Dataset
-      description: null
+      description: Test dataset for the ProPublica COMPAS Dataset.
     - id: { code: Test-CreditDataset }
       text: German Credit Dataset
-      description: null
-    - id: { code: Test-LawSchoolGPADataset }
-      text: Law School GPA Dataset
-      description: null
-    - id: { code: Test-MEPSDataset19 }
-      text: Medical Expenditure Panel Survey Dataset 2019
-      description: null
-    - id: { code: Test-MEPSDataset20 }
-      text: Medical Expenditure Panel Survey Dataset 2020
-      description: null
-    - id: { code: Test-MEPSDataset21 }
-      text: Medical Expenditure Panel Survey Dataset 2021
-      description: null
+      description: Test dataset for the German Credit Dataset.
+    - id: { code: Test-GenerateDataset }
+      text: Synthetic Data
+      description: A test dataset generated with the Synthetic Data Generator.
   enabled_by:
     - { code: Test }
     - { code: TestAgain }
@@ -285,15 +273,7 @@
       text: Numerical Polarization
       description: null
   enabled_by:
-    - { code: Test-CustomDataset }
-    - { code: Test-AdultDataset }
-    - { code: Test-BankDataset }
-    - { code: Test-CompasDataset }
-    - { code: Test-CreditDataset }
-    - { code: Test-LawSchoolGPADataset }
-    - { code: Test-MEPSDataset19 }
-    - { code: Test-MEPSDataset20 }
-    - { code: Test-MEPSDataset21 }
+    - { code: Test-GenerateDataset }
   action_needed: null
   created_at: 2024-05-31T18:20:35
 
@@ -318,6 +298,10 @@
       text: Done
       description: null
   enabled_by:
+    - { code: Test-CustomDataset }
+    - { code: Test-AdultDataset }
+    - { code: Test-CompasDataset }
+    - { code: Test-CreditDataset }
     - { code: CategoricalPolarization }
     - { code: NumericalPolarization }
   action_needed: null
