@@ -1,3 +1,28 @@
+## [0.35.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.3...v0.35.0) (2025-03-31)
+
+### Features
+
+* **build:** add multiplatform image build ([e3bcaa4](https://github.com/aequitas-aod/aequitas-backend/commit/e3bcaa4ec80a0eb7c9385f77a191b81e126b05d9))
+* **storage:** add distinction between GraphAnswer and ProjectAnswer in neo4j db, improve ProjectQuestion insertion retrieving its id in queries ([99ec4b9](https://github.com/aequitas-aod/aequitas-backend/commit/99ec4b9c1de224a843e54331d4b50fd34467277c))
+* **utils:** improve Neo4jDriver with results handling ([823e8e8](https://github.com/aequitas-aod/aequitas-backend/commit/823e8e870a4db0241f931605dec979de16aa4f09))
+
+### Dependency updates
+
+* **deps:** update bitnami/kafka docker tag to v4 ([#106](https://github.com/aequitas-aod/aequitas-backend/issues/106)) ([50756e9](https://github.com/aequitas-aod/aequitas-backend/commit/50756e9a67a49a09fb877e05d1bbac19e8b404f7))
+
+### Bug Fixes
+
+* **build:** fix kafka env configuration ([311afb2](https://github.com/aequitas-aod/aequitas-backend/commit/311afb2d288f4073d56721db2f354a829feb1bca))
+* **build:** fix kafka version to not migrate to Kraft ([c5ab68f](https://github.com/aequitas-aod/aequitas-backend/commit/c5ab68fd562e56f1ec9f4f97d0fd395cfb826241))
+* **build:** trigger new release ([697a2f6](https://github.com/aequitas-aod/aequitas-backend/commit/697a2f6c01faf1a0a8b0b6fa2da9873ab1b5e615))
+* **deps:** update dependency coverage to v7.8.0 ([#112](https://github.com/aequitas-aod/aequitas-backend/issues/112)) ([8514156](https://github.com/aequitas-aod/aequitas-backend/commit/8514156da67bb1fda6eeb1a216d71664be4f3178))
+* **storage:** fix ProjectQuestion insertion with multiple projects in db, replace deprecated ID function of neo4j ([9a26ea5](https://github.com/aequitas-aod/aequitas-backend/commit/9a26ea5c075d31bd006081edb70a2ca5bf21e30e))
+
+### General maintenance
+
+* **release:** 0.35.0 [skip ci] ([9d14f97](https://github.com/aequitas-aod/aequitas-backend/commit/9d14f974cff8fa778b3d70564812c72d0387052b)), closes [#106](https://github.com/aequitas-aod/aequitas-backend/issues/106)
+* **release:** 0.35.0 [skip ci] ([7c602b0](https://github.com/aequitas-aod/aequitas-backend/commit/7c602b06b3d92290a2c93268c4ffd67633d2a305))
+
 ## [0.35.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.3...v0.35.0) (2025-03-30)
 
 ### Features
