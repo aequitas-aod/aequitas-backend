@@ -1,3 +1,14 @@
+## [0.35.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.0...v0.35.1) (2025-04-03)
+
+### Dependency updates
+
+* **deps:** update docker/setup-buildx-action action to v3.10.0 ([#113](https://github.com/aequitas-aod/aequitas-backend/issues/113)) ([06a992e](https://github.com/aequitas-aod/aequitas-backend/commit/06a992ef6e7e3ec8618b8bf7acd30323659c5304))
+* **deps:** update docker/setup-qemu-action action to v3.6.0 ([#114](https://github.com/aequitas-aod/aequitas-backend/issues/114)) ([9e5107a](https://github.com/aequitas-aod/aequitas-backend/commit/9e5107aa98ef523364f473ad44e14c166c27de09))
+
+### Bug Fixes
+
+* **deps:** update dependency pydantic to v2.11.2 ([#110](https://github.com/aequitas-aod/aequitas-backend/issues/110)) ([778d1ee](https://github.com/aequitas-aod/aequitas-backend/commit/778d1ee5056dc79d7b8488afaf2c4d3653d5d7f3))
+
 ## [0.35.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.34.3...v0.35.0) (2025-04-02)
 
 ### Features
