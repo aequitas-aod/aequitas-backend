@@ -1,3 +1,9 @@
+## [0.35.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.1...v0.35.2) (2025-04-04)
+
+### Bug Fixes
+
+* **inprocessing:** mock fauci results for demo ([2405b4b](https://github.com/aequitas-aod/aequitas-backend/commit/2405b4bbb7828f1bdd8887c500fbfa34076ae2ae))
+
 ## [0.35.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.0...v0.35.1) (2025-04-03)
 
 ### Dependency updates
