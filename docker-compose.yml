@@ -20,7 +20,7 @@ services:
       - internal
 
   kafka:
-    image: bitnami/kafka:4.0
+    image: bitnami/kafka:3.9
     container_name: ${KAFKA_HOST}
     platform: *platform
     ports:
