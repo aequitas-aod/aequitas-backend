@@ -1,3 +1,9 @@
+## [0.35.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.2...v0.35.3) (2025-04-04)
+
+### Bug Fixes
+
+* **build:** fix kafka version ([420ab93](https://github.com/aequitas-aod/aequitas-backend/commit/420ab93bf87acadd8c460f51ae7c14a19215e259))
+
 ## [0.35.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.1...v0.35.2) (2025-04-04)
 
 ### Bug Fixes
