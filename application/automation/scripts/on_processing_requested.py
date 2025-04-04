@@ -25,6 +25,11 @@ from application.automation.scripts.on_dataset_features_available import (
 )
 from domain.common.core import EntityId
 from domain.project.core import Project
+from test.resources.adult import (
+    PATH_INPROCESSING_FAUCI_RES_CSV,
+    PATH_INPROCESSING_FAUCI_RES_0_CSV,
+    PATH_INPROCESSING_FAUCI_RES_1_CSV,
+)
 from utils.logs import set_other_loggers_level
 
 from aif360.algorithms.preprocessing import LFR
@@ -775,158 +780,166 @@ def inprocessing_algorithm_FaUCI(
         else:
             return actual_value
 
-    default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
+    # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
     new_dataset = read_csv(dataset_path("fauci_predictions"))
 
-    X, y, y_pred = (
-        new_dataset[
-            [
-                col
-                for col in new_dataset.columns
-                if col != default_settings["target_feat"]
-                and col != default_settings["predictions_feat"]
-            ]
-        ],
-        new_dataset[default_settings["target_feat"]],
-        new_dataset[default_settings["predictions_feat"]],
-    )
+    # X, y, y_pred = (
+    #     new_dataset[
+    #         [
+    #             col
+    #             for col in new_dataset.columns
+    #             if col != default_settings["target_feat"]
+    #             and col != default_settings["predictions_feat"]
+    #         ]
+    #     ],
+    #     new_dataset[default_settings["target_feat"]],
+    #     new_dataset[default_settings["predictions_feat"]],
+    # )
+    #
+    # skf = StratifiedKFold(n_splits=5)
+    #
+    # # Prepare list for 1) and 2)
+    # df_results = []  # list of dicts; one dict per fold-metric
+    #
+    # perf_metrics = ["accuracy", "precision", "recall", "roc_auc", "f1"]
+    # fair_metrics = ["demographic_parity_ratio", "equalized_odds_ratio"]
+    # support_dict = {"performance": perf_metrics, "fairness": fair_metrics}
+    #
+    # # Evaluation loop
+    # for fold_idx, (train_index, test_index) in enumerate(skf.split(X, y)):
+    #     X_train = X.iloc[train_index, :]
+    #     X_test = X.iloc[test_index, :]
+    #     y_train = y.iloc[train_index]
+    #     y_test = y.iloc[test_index]
+    #     y_pred_test = y_pred.iloc[test_index]
+    #
+    #     # Encode predictions and ground truth
+    #     y_pred_encoded = y_pred_test.apply(
+    #         lambda x: 1 if x == default_settings["favorable_class_label"] else 0
+    #     )
+    #     y_pred_encoded.index = X_test.index  # align them explicitly if needed
+    #     y_test_encoded = y_test.apply(
+    #         lambda x: 1 if x == default_settings["favorable_class_label"] else 0
+    #     )
+    #     y_test_encoded.index = (
+    #         X_test.index
+    #     )  # Should already match because we didn't reset
+    #
+    #     # for metric_type, metric_list in support_dict.items():
+    #     #     for metric_name in metric_list:
+    #     #         if metric_type == "performance":
+    #     #             mit_value = get_scorer(metric_name)._score_func(
+    #     #                 y_test_encoded, y_pred_encoded
+    #     #             )
+    #     #         else:
+    #     #             mit_value = _compute_fair_metric(
+    #     #                 fair_metric_name=metric_name,
+    #     #                 settings=default_settings,
+    #     #                 X=X_test,
+    #     #                 y_true=y_test_encoded,
+    #     #                 y_pred=y_pred_encoded,
+    #     #             )
+    #     #         no_mit_value = __simulate_no_mit_value_fauci(metric_type, mit_value)
+    #     #         pol_value = __simulate_polarized_value_fauci(metric_type, no_mit_value)
+    #
+    #     #         df_results.append(
+    #     #             {
+    #     #                 "fold": fold_idx,
+    #     #                 "metric_type": metric_type,
+    #     #                 "metric": metric_name.replace("_", " ").title(),
+    #     #                 "value_mitig": mit_value,
+    #     #                 "value_nomitig": no_mit_value,
+    #     #                 "value_pol": pol_value,
+    #     #             }
+    #     #         )
+    #
+    #     # 1) Overall performance metrics
+    #     for pm in perf_metrics:
+    #         pm_value = get_scorer(pm)._score_func(
+    #             y_test_encoded, y_pred_encoded
+    #         ) + __simulate_mit_improvement_value_fauci(pm)
+    #         # pm_value = simulate_mit_value_fauci(pm)
+    #         pm_nomit = __simulate_no_mit_value_fauci("performance", pm_value)
+    #         pm_pol = __simulate_polarized_value_fauci("performance", pm_value)
+    #
+    #         if kwargs["lambda"] == 0:
+    #             pm_value = pm_nomit
+    #         elif pm != "recall":
+    #             pm_value = (pm_value - 0.15) if kwargs["lambda"] == 1 else pm_value
+    #         else:
+    #             pm_value = (pm_value - 0.05) if kwargs["lambda"] == 1 else pm_value
+    #
+    #         if kwargs["lambda"] == 0:
+    #             pm_pol = pm_pol - 0.05
+    #         elif pm != "recall":
+    #             pm_pol = (pm_pol - 0.15) if kwargs["lambda"] == 1 else pm_pol
+    #         else:
+    #             pm_pol = (pm_pol - 0.05) if kwargs["lambda"] == 1 else pm_pol
+    #
+    #         df_results.append(
+    #             {
+    #                 "fold": fold_idx,
+    #                 "metric_type": "performance",
+    #                 "metric": pm,
+    #                 "value_mitig": pm_value,
+    #                 "value_nomitig": pm_nomit,
+    #                 "value_pol": pm_pol,
+    #             }
+    #         )
+    #
+    #     # 2) Overall fairness metrics
+    #     for fm in fair_metrics:
+    #         fm_value = _compute_fair_metric(
+    #             fair_metric_name=fm,
+    #             settings=default_settings,
+    #             X=X_test,
+    #             y_true=y_test_encoded,
+    #             y_pred=y_pred_encoded,
+    #         ) + __simulate_mit_improvement_value_fauci(fm)
+    #         # fm_value = simulate_mit_value_fauci(pm)
+    #         fm_nomit = __simulate_no_mit_value_fauci("fairness", fm_value)
+    #         fm_pol = __simulate_polarized_value_fauci("fairness", fm_value)
+    #
+    #         fm_value = (
+    #             min(fm_value + 0.05, 0.95)
+    #             if kwargs["lambda"] == 1
+    #             else (fm_nomit if kwargs["lambda"] == 0 else fm_value)
+    #         )
+    #         fm_pol = (
+    #             fm_pol + 0.05
+    #             if kwargs["lambda"] == 1
+    #             else ((fm_pol - 0.05) if kwargs["lambda"] == 0 else fm_pol)
+    #         )
+    #
+    #         df_results.append(
+    #             {
+    #                 "fold": fold_idx,
+    #                 "metric_type": "fairness",
+    #                 "metric": fm,
+    #                 "value_mitig": fm_value,
+    #                 "value_nomitig": fm_nomit,
+    #                 "value_pol": fm_pol,
+    #             }
+    #         )
+    #
+    # df_results = pd.DataFrame(df_results)
+    # df_results["metric"] = df_results["metric"].apply(
+    #     lambda x: x.replace("_", " ").title()
+    # )
 
-    skf = StratifiedKFold(n_splits=5)
-
-    # Prepare list for 1) and 2)
-    df_results = []  # list of dicts; one dict per fold-metric
-
-    perf_metrics = ["accuracy", "precision", "recall", "roc_auc", "f1"]
-    fair_metrics = ["demographic_parity_ratio", "equalized_odds_ratio"]
-    support_dict = {"performance": perf_metrics, "fairness": fair_metrics}
-
-    # Evaluation loop
-    for fold_idx, (train_index, test_index) in enumerate(skf.split(X, y)):
-        X_train = X.iloc[train_index, :]
-        X_test = X.iloc[test_index, :]
-        y_train = y.iloc[train_index]
-        y_test = y.iloc[test_index]
-        y_pred_test = y_pred.iloc[test_index]
-
-        # Encode predictions and ground truth
-        y_pred_encoded = y_pred_test.apply(
-            lambda x: 1 if x == default_settings["favorable_class_label"] else 0
-        )
-        y_pred_encoded.index = X_test.index  # align them explicitly if needed
-        y_test_encoded = y_test.apply(
-            lambda x: 1 if x == default_settings["favorable_class_label"] else 0
-        )
-        y_test_encoded.index = (
-            X_test.index
-        )  # Should already match because we didn't reset
-
-        # for metric_type, metric_list in support_dict.items():
-        #     for metric_name in metric_list:
-        #         if metric_type == "performance":
-        #             mit_value = get_scorer(metric_name)._score_func(
-        #                 y_test_encoded, y_pred_encoded
-        #             )
-        #         else:
-        #             mit_value = _compute_fair_metric(
-        #                 fair_metric_name=metric_name,
-        #                 settings=default_settings,
-        #                 X=X_test,
-        #                 y_true=y_test_encoded,
-        #                 y_pred=y_pred_encoded,
-        #             )
-        #         no_mit_value = __simulate_no_mit_value_fauci(metric_type, mit_value)
-        #         pol_value = __simulate_polarized_value_fauci(metric_type, no_mit_value)
-
-        #         df_results.append(
-        #             {
-        #                 "fold": fold_idx,
-        #                 "metric_type": metric_type,
-        #                 "metric": metric_name.replace("_", " ").title(),
-        #                 "value_mitig": mit_value,
-        #                 "value_nomitig": no_mit_value,
-        #                 "value_pol": pol_value,
-        #             }
-        #         )
-
-        # 1) Overall performance metrics
-        for pm in perf_metrics:
-            pm_value = get_scorer(pm)._score_func(
-                y_test_encoded, y_pred_encoded
-            ) + __simulate_mit_improvement_value_fauci(pm)
-            # pm_value = simulate_mit_value_fauci(pm)
-            pm_nomit = __simulate_no_mit_value_fauci("performance", pm_value)
-            pm_pol = __simulate_polarized_value_fauci("performance", pm_value)
-
-            if kwargs["lambda"] == 0:
-                pm_value = pm_nomit
-            elif pm != "recall":
-                pm_value = (pm_value - 0.15) if kwargs["lambda"] == 1 else pm_value
-            else:
-                pm_value = (pm_value - 0.05) if kwargs["lambda"] == 1 else pm_value
-
-            if kwargs["lambda"] == 0:
-                pm_pol = pm_pol - 0.05
-            elif pm != "recall":
-                pm_pol = (pm_pol - 0.15) if kwargs["lambda"] == 1 else pm_pol
-            else:
-                pm_pol = (pm_pol - 0.05) if kwargs["lambda"] == 1 else pm_pol
-
-            df_results.append(
-                {
-                    "fold": fold_idx,
-                    "metric_type": "performance",
-                    "metric": pm,
-                    "value_mitig": pm_value,
-                    "value_nomitig": pm_nomit,
-                    "value_pol": pm_pol,
-                }
-            )
-
-        # 2) Overall fairness metrics
-        for fm in fair_metrics:
-            fm_value = _compute_fair_metric(
-                fair_metric_name=fm,
-                settings=default_settings,
-                X=X_test,
-                y_true=y_test_encoded,
-                y_pred=y_pred_encoded,
-            ) + __simulate_mit_improvement_value_fauci(fm)
-            # fm_value = simulate_mit_value_fauci(pm)
-            fm_nomit = __simulate_no_mit_value_fauci("fairness", fm_value)
-            fm_pol = __simulate_polarized_value_fauci("fairness", fm_value)
-
-            fm_value = (
-                min(fm_value + 0.05, 0.95)
-                if kwargs["lambda"] == 1
-                else (fm_nomit if kwargs["lambda"] == 0 else fm_value)
-            )
-            fm_pol = (
-                fm_pol + 0.05
-                if kwargs["lambda"] == 1
-                else ((fm_pol - 0.05) if kwargs["lambda"] == 0 else fm_pol)
-            )
-
-            df_results.append(
-                {
-                    "fold": fold_idx,
-                    "metric_type": "fairness",
-                    "metric": fm,
-                    "value_mitig": fm_value,
-                    "value_nomitig": fm_nomit,
-                    "value_pol": fm_pol,
-                }
-            )
-
-    df_results = pd.DataFrame(df_results)
-    df_results["metric"] = df_results["metric"].apply(
-        lambda x: x.replace("_", " ").title()
-    )
+    # TODO: to remove
+    if kwargs["lambda"] == 0:
+        result_path = PATH_INPROCESSING_FAUCI_RES_0_CSV
+    elif kwargs["lambda"] == 1:
+        result_path = PATH_INPROCESSING_FAUCI_RES_1_CSV
+    else:
+        result_path = PATH_INPROCESSING_FAUCI_RES_CSV
 
     return (
         new_dataset.drop("class", axis=1).rename(columns={"predictions": "class"}),
-        # df_results,
-        pd.DataFrame(df_results),
+        pd.read_csv(result_path),
+        # pd.DataFrame(df_results),
     )
 
 
