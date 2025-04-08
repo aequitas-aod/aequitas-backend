@@ -1170,13 +1170,13 @@ type = ["mypy (>=1.11.2)"]
 
 [[package]]
 name = "pydantic"
-version = "2.11.2"
+version = "2.11.3"
 description = "Data validation using Python type hints"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "pydantic-2.11.2-py3-none-any.whl", hash = "sha256:7f17d25846bcdf89b670a86cdfe7b29a9f1c9ca23dee154221c9aa81845cfca7"},
-    {file = "pydantic-2.11.2.tar.gz", hash = "sha256:2138628e050bd7a1e70b91d4bf4a91167f4ad76fdb83209b107c8d84b854917e"},
+    {file = "pydantic-2.11.3-py3-none-any.whl", hash = "sha256:a082753436a07f9ba1289c6ffa01cd93db3548776088aa917cc43b63f68fa60f"},
+    {file = "pydantic-2.11.3.tar.gz", hash = "sha256:7471657138c16adad9322fe3070c0116dd6c3ad8d649300e3cbdfe91f4db4ec3"},
 ]
 
 [package.dependencies]
@@ -1745,4 +1745,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">= 3.10.0, < 4.0.0"
-content-hash = "2a83d0ca3824ed43daa471d703c537ae279f74f75a8bed120fd73c3d92a98378"
+content-hash = "3855e1d9e8ba3dc819af2e6d98655e249a21b329e8aa5c24de021f9afba1302d"
