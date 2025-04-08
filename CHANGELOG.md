@@ -1,3 +1,9 @@
+## [0.35.4](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.3...v0.35.4) (2025-04-08)
+
+### Bug Fixes
+
+* **deps:** update dependency pydantic to v2.11.3 ([#116](https://github.com/aequitas-aod/aequitas-backend/issues/116)) ([bd8c6dd](https://github.com/aequitas-aod/aequitas-backend/commit/bd8c6dd5742fb67c56f3c706d69e7e2d9bbe27d3))
+
 ## [0.35.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.2...v0.35.3) (2025-04-04)
 
 ### Bug Fixes
