@@ -36,5 +36,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY --from=build ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 ENV ENV=production
+ENV TASK=serve
 
-CMD ["sh", "-c", "poe serve --port $AEQUITAS_BACKEND_PORT"]
+CMD ["sh", "-c", "poe $TASK --port $AEQUITAS_BACKEND_PORT"]
