@@ -1,3 +1,9 @@
+## [0.35.6](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.5...v0.35.6) (2025-04-11)
+
+### Bug Fixes
+
+* **Neo4jDriver:** fix resource warning due to deprecated closing driver ([85cde9b](https://github.com/aequitas-aod/aequitas-backend/commit/85cde9bf10b6c9b58288edf289fed67f2f30597f))
+
 ## [0.35.5](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.4...v0.35.5) (2025-04-11)
 
 ### Bug Fixes
