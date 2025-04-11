@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import backoff
 from neo4j import GraphDatabase, Driver, Result
@@ -28,12 +28,8 @@ class Neo4jQuery:
 class Neo4jDriver:
 
     def __init__(self, host: str, credentials: Credentials):
-        self.retries = 10
-        self.delay = 1
-        self.driver: Driver = GraphDatabase.driver(
-            f"neo4j://{host}",
-            auth=(credentials.user, credentials.password),
-        )
+        self.uri: str = f"neo4j://{host}"
+        self.auth: Tuple[str, str] = (credentials.user, credentials.password)
 
     @backoff.on_exception(
         backoff.expo, (ServiceUnavailable, SessionExpired), max_tries=10
@@ -45,10 +41,11 @@ class Neo4jDriver:
         :param Neo4jQuery query: Query to be executed
         :return: Results as a list of dictionaries
         """
-        with self.driver.session() as session:
-            result: Result = session.run(query.query, **query.params)
-            query.result = result
-            return result.data()
+        with GraphDatabase.driver(uri=self.uri, auth=self.auth) as driver:
+            with driver.session() as session:
+                result: Result = session.run(query.query, **query.params)
+                query.result = result
+                return result.data()
 
     @backoff.on_exception(
         backoff.expo, (ServiceUnavailable, SessionExpired), max_tries=10
@@ -64,15 +61,13 @@ class Neo4jDriver:
         ]
         :param List[Neo4jQuery] queries: List of queries to be executed
         """
-        with self.driver.session() as session:
-            with session.begin_transaction() as tx:
-                results: dict[str, any] = {}
-                for query in queries:
-                    result: Result = tx.run(query.query, **(query.params | results))
-                    for dic in result.data():
-                        results = results | dic
+        with GraphDatabase.driver(uri=self.uri, auth=self.auth) as driver:
+            with driver.session() as session:
+                with session.begin_transaction() as tx:
+                    results: dict[str, any] = {}
+                    for query in queries:
+                        result: Result = tx.run(query.query, **(query.params | results))
+                        for dic in result.data():
+                            results = results | dic
 
-                tx.commit()
-
-    def close(self):
-        self.driver.close()
+                    tx.commit()
