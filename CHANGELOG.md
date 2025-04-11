@@ -1,3 +1,14 @@
+## [0.36.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.6...v0.36.0) (2025-04-11)
+
+### Features
+
+* **infrastructure:** add endpoint to check if a project exists ([0d998b5](https://github.com/aequitas-aod/aequitas-backend/commit/0d998b5aa2df5484fb3b2cc1d649799972a481b5))
+
+### Refactoring
+
+* **repository:** improve check_project_exists query ([5422cf2](https://github.com/aequitas-aod/aequitas-backend/commit/5422cf22af39369304ca969db36a5dcb24258859))
+* **repository:** improve method to check if a project exists ([5a4815d](https://github.com/aequitas-aod/aequitas-backend/commit/5a4815d28493e009a75dea69cbbe99bc8c985123))
+
 ## [0.35.6](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.5...v0.35.6) (2025-04-11)
 
 ### Bug Fixes
