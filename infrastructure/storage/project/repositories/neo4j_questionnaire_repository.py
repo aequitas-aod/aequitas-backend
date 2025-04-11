@@ -69,14 +69,11 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             if len(res) == 0:
                 return None
 
-            project_code: str = self._get_project_code_from_question_code(
-                res[0]["q"]["code"]
-            )
             question: ProjectQuestion = self._convert_node_in_project_question(
                 res[0]["q"],
                 res[0]["available_answers"],
                 res[0]["selected_answers"],
-                project_code,
+                project_id.code,
             )
             return question
 
@@ -206,10 +203,9 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             raise NotFoundError(f"Question with id {question_id} does not exist")
         self.driver.query(
             Neo4jQuery(
-                "MATCH (p:Project {code: $project_code})-[*]-(q:ProjectQuestion {code: $question_code})"
-                "OPTIONAL MATCH (q)-[]->(a:ProjectAnswer)"
-                "OPTIONAL MATCH (prev_q: ProjectQuestion)-[:NEXT]->(q)"
-                "OPTIONAL MATCH (p: Project)-[:QUESTIONNAIRE]->(q)"
+                "MATCH (p:Project {code: $project_code})-[*]-(q:ProjectQuestion {code: $question_code}) "
+                "WITH DISTINCT q "
+                "OPTIONAL MATCH (q)-[]->(a:ProjectAnswer) "
                 "DETACH DELETE q, a",
                 {
                     "project_code": question_id.project_code,
@@ -303,11 +299,3 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             for a in available_answers + selected_answers
         ]
         return deserialize(question, ProjectQuestion)
-
-    def _get_project_code_from_question_code(self, question_code: str):
-        project_query: Neo4jQuery = Neo4jQuery(
-            "MATCH path=(q:ProjectQuestion {code: $question_code})-[:NEXT|QUESTIONNAIRE*]-(p:Project) RETURN p",
-            {"question_code": question_code},
-        )
-        res: List[dict] = self.driver.query(project_query)
-        return res[0]["p"]["code"]

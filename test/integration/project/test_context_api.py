@@ -31,7 +31,7 @@ class TestContextAPI(ProjectRelatedTestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-    def test_get_missing_key_timout(self):
+    def test_get_missing_key_timeout(self):
         response = self.app.get(
             f"/projects/{self.project_id.code}/context?key={self.key}&wait=True&timeout=0.5"
         )

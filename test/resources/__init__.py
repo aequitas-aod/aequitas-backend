@@ -1,8 +1,8 @@
 import pathlib
-from functools import cache
-from utils.logs import logger
 import re
+from functools import cache
 
+from utils.logs import logger
 
 DIR = pathlib.Path(__file__).parent
 

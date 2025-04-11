@@ -37,7 +37,7 @@ class EventGenerator:
     def trigger_event(self, topic: str, **kwargs):
         message = self.__serialize(self.__wrap_notable_keys(**kwargs))
         if not infrastructure.ws.setup.AUTOMATION_ENABLED:
-            logger.warn(
+            logger.warning(
                 f"Skip production of event %s, because automation is disabled. Message was:\n\t%s",
                 topic,
                 message,
