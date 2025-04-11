@@ -147,10 +147,10 @@ class Neo4jProjectRepository(ProjectRepository):
         db_log("Added key %s to project with id %s", key, project_id.code)
 
     def check_project_exists(self, project_id: EntityId) -> bool:
-        query_string: str = "MATCH (p:Project {code: $project_code}) RETURN p.code"
+        query_string: str = "MATCH (p:Project {code: $project_code}) RETURN count(p) > 0 as exists"
         query: Neo4jQuery = Neo4jQuery(query_string, {"project_code": project_id.code})
         res: List[Dict] = self.driver.query(query)
-        return len(res) > 0
+        return res[0]["exists"]
 
     def _convert_project_in_node(self, project: Project) -> Dict:
         p: Dict = serialize(project)
