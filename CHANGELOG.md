@@ -1,3 +1,9 @@
+## [0.35.5](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.4...v0.35.5) (2025-04-11)
+
+### Bug Fixes
+
+* **questionnaire:** fix project question insert/delete ([74bdb16](https://github.com/aequitas-aod/aequitas-backend/commit/74bdb16bc3b3ca0c4011d4ef209d91a6de97ae65))
+
 ## [0.35.4](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.3...v0.35.4) (2025-04-08)
 
 ### Bug Fixes
