@@ -64,6 +64,14 @@ class ProjectService:
         """
         self.project_repository.delete_project(project_id)
 
+    def check_project_exists(self, project_id: EntityId) -> bool:
+        """
+        Checks if a project exists
+        :param project_id: the project id
+        :return: True if the project exists, False otherwise
+        """
+        return self.project_repository.check_project_exists(project_id)
+
     def get_context(self, project_id: EntityId) -> Optional[dict]:
         """
         Gets the context of a project by its id, if the project does not exist returns None

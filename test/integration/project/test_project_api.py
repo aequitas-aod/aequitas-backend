@@ -95,3 +95,12 @@ class TestProjectsAPI(ProjectRelatedTestCase):
     def test_delete_non_existent_project(self):
         response = self.app.delete("/projects/does-not-exist")
         self.assertEqual(response.status_code, 404)
+
+    def test_check_project_exists(self):
+        project_id: EntityId = self._create_project(self.project_name_1)
+        response = self.app.get(f"/projects/{project_id.code}/exists")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.data), True)
+        response = self.app.get(f"/projects/does-not-exist/exists")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.data), False)

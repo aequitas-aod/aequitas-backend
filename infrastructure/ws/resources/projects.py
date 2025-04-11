@@ -187,5 +187,14 @@ class ProjectContextResource(Resource, EventGenerator):
             return "Project not found", StatusCode.NOT_FOUND
 
 
+class ProjectExistenceResource(Resource):
+
+    def get(self, project_id=None):
+        project_id: EntityId = ProjectFactory.id_of(code=project_id)
+        exists: bool = project_service.check_project_exists(project_id)
+        return exists, StatusCode.OK
+
+
 api.add_resource(ProjectResource, "/projects", "/projects/<string:project_id>")
 api.add_resource(ProjectContextResource, "/projects/<string:project_id>/context")
+api.add_resource(ProjectExistenceResource, "/projects/<string:project_id>/exists")
