@@ -44,6 +44,13 @@ class ProjectRepository(ABC):
         pass
 
     @abstractmethod
+    def check_project_exists(self, project_id: EntityId) -> bool:
+        """Checks if a project exists
+        :param project_id: the project id
+        :return: True if the project exists, False otherwise"""
+        pass
+
+    @abstractmethod
     def get_public_context(self) -> dict:
         """Gets the public context
         :return: the public context"""

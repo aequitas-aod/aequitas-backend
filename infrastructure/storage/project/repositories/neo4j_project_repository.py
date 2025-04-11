@@ -2,10 +2,9 @@ from typing import List, Optional, Dict
 
 from domain.common.core import EntityId
 from domain.project.core import Project
-from domain.project.factories import ProjectFactory
 from domain.project.repositories.project_repository import ProjectRepository
-from presentation.presentation import deserialize, serialize
 from infrastructure.storage import db_log
+from presentation.presentation import deserialize, serialize
 from utils.encodings import decode
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
 from utils.errors import NotFoundError, ConflictError
@@ -58,7 +57,7 @@ class Neo4jProjectRepository(ProjectRepository):
         return project
 
     def insert_project(self, project: Project) -> EntityId:
-        if self._check_project_exists(project.id):
+        if self.check_project_exists(project.id):
             raise ConflictError(f"Project with id {project.id} already exists")
 
         context: Dict = self._get_context_dict(project)
@@ -79,7 +78,7 @@ class Neo4jProjectRepository(ProjectRepository):
         return project.id
 
     def update_project(self, project_id: EntityId, project: Project) -> None:
-        if not self._check_project_exists(project_id):
+        if not self.check_project_exists(project_id):
             raise NotFoundError(f"Project with id {project_id} does not exist")
         if project_id != project.id:
             raise ConflictError("Updated project id does not match")
@@ -104,7 +103,7 @@ class Neo4jProjectRepository(ProjectRepository):
         )
 
     def delete_project(self, project_id: EntityId) -> None:
-        if not self._check_project_exists(project_id):
+        if not self.check_project_exists(project_id):
             raise NotFoundError(f"Project with id {project_id} does not exist")
         query_string = (
             "MATCH (p:Project {code: $project_code}) "
@@ -134,7 +133,7 @@ class Neo4jProjectRepository(ProjectRepository):
         return result
 
     def add_context_key(self, project_id: EntityId, key: str, value: str) -> None:
-        if not self._check_project_exists(project_id):
+        if not self.check_project_exists(project_id):
             raise NotFoundError(f"Project with id {project_id} does not exist")
         query_string: str = (
             "MATCH (p:Project {code: $project_code})-[:HAS_CONTEXT]->(pc:ProjectContext) "
@@ -147,9 +146,11 @@ class Neo4jProjectRepository(ProjectRepository):
         self.driver.query(query)
         db_log("Added key %s to project with id %s", key, project_id.code)
 
-    def _check_project_exists(self, project_id: EntityId) -> bool:
-        p: Project = self.get_project_by_id(project_id)
-        return p is not None
+    def check_project_exists(self, project_id: EntityId) -> bool:
+        query_string: str = "MATCH (p:Project {code: $project_code}) RETURN p.code"
+        query: Neo4jQuery = Neo4jQuery(query_string, {"project_code": project_id.code})
+        res: List[Dict] = self.driver.query(query)
+        return len(res) > 0
 
     def _convert_project_in_node(self, project: Project) -> Dict:
         p: Dict = serialize(project)
