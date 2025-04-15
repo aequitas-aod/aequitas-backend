@@ -7,6 +7,21 @@
 ### Bug Fixes
 
 * temporary fix for video demo ([7a70ece](https://github.com/aequitas-aod/aequitas-backend/commit/7a70eceedd7d74a351c05a11a5d5a45c58bde91b))
+* trigger release ([1a88014](https://github.com/aequitas-aod/aequitas-backend/commit/1a88014d9b118e40dba3f16df47031dada03d0cc))
+
+### General maintenance
+
+* **release:** 0.36.1 [skip ci] ([930b356](https://github.com/aequitas-aod/aequitas-backend/commit/930b35653d9f81684409fab7574649cbb7f4fb03)), closes [#117](https://github.com/aequitas-aod/aequitas-backend/issues/117)
+
+## [0.36.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.36.0...v0.36.1) (2025-04-15)
+
+### Dependency updates
+
+* **deps:** update actions/setup-node action to v4.4.0 ([#117](https://github.com/aequitas-aod/aequitas-backend/issues/117)) ([200f752](https://github.com/aequitas-aod/aequitas-backend/commit/200f7524a75553ac9aef652d132e6736632cc8f4))
+
+### Bug Fixes
+
+* temporary fix for video demo ([7a70ece](https://github.com/aequitas-aod/aequitas-backend/commit/7a70eceedd7d74a351c05a11a5d5a45c58bde91b))
 
 ## [0.36.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.35.6...v0.36.0) (2025-04-11)
 
