@@ -25,7 +25,7 @@ from application.automation.scripts.on_dataset_features_available import (
 )
 from domain.common.core import EntityId
 from domain.project.core import Project
-from test.resources.adult import (
+from resources.adult import (
     PATH_INPROCESSING_FAUCI_RES_CSV,
     PATH_INPROCESSING_FAUCI_RES_0_CSV,
     PATH_INPROCESSING_FAUCI_RES_1_CSV,

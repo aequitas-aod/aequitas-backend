@@ -1,0 +1,77 @@
+{
+    "age": {
+        "target": false,
+        "sensitive": false,
+        "drop":false
+    },
+    "workclass": {
+        "target": false,
+        "sensitive": false,
+        "drop": false
+    },
+    "fnlwgt": {
+        "target": false,
+        "sensitive": false,
+        "drop": true
+    },
+    "education": {
+        "target": false,
+        "sensitive": false,
+        "drop": false
+    },
+    "education-num": {
+        "target": false,
+        "sensitive": false,
+        "drop": true
+    },
+    "marital-status": {
+        "target": false,
+        "sensitive": false,
+        "drop": false
+    },
+    "occupation": {
+        "target": false,
+        "sensitive": false,
+        "drop": false
+    },
+    "relationship": {
+        "target": false,
+        "sensitive": false,
+        "drop": false
+    },
+    "race": {
+        "target": false,
+        "sensitive": false,
+        "drop": false
+    },
+    "sex": {
+        "target": false,
+        "sensitive": true,
+        "drop": false
+    },
+    "capitalgain": {
+        "target": false,
+        "sensitive": false,
+        "drop": false
+    },
+    "capitalloss": {
+        "target": false,
+        "sensitive": false,
+        "drop": false
+    },
+    "hoursperweek": {
+        "target": false,
+        "sensitive": false,
+        "drop": false
+    },
+    "native-country": {
+        "target": false,
+        "sensitive": false,
+        "drop": false
+    },
+    "class": {
+        "target": true,
+        "sensitive": false,
+        "drop": false
+    }
+}

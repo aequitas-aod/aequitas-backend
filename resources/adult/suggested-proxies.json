@@ -1,0 +1,56 @@
+{
+    "sex": {
+        "age": {
+            "correlation": 0.0841715819595506,
+            "suggested_proxy": false
+        },
+        "workclass": {
+            "correlation": 0.06963837637215337,
+            "suggested_proxy": false
+        },
+        "fnlwgt": {
+            "correlation": 0.027239886295330203,
+            "suggested_proxy": false
+        },
+        "education": {
+            "correlation": -0.02756863907292518,
+            "suggested_proxy": false
+        },
+        "education-num": {
+            "correlation": 0.003417271846690591,
+            "suggested_proxy": false
+        },
+        "marital-status": {
+            "correlation": -0.12000797457963565,
+            "suggested_proxy": false
+        },
+        "occupation": {
+            "correlation": 0.05662473019951373,
+            "suggested_proxy": false
+        },
+        "relationship": {
+            "correlation": -0.5829741840377124,
+            "suggested_proxy": false
+        },
+        "race": {
+            "correlation": 0.08893476281873552,
+            "suggested_proxy": false
+        },
+        "capitalgain": {
+            "correlation": 0.07132285121606259,
+            "suggested_proxy": false
+        },
+        "capitalloss": {
+            "correlation": 0.04765996602948975,
+            "suggested_proxy": false
+        },
+        "hoursperweek": {
+            "correlation": 0.23971189541668664,
+            "suggested_proxy": false
+        },
+        "native-country": {
+            "correlation": -0.0041701201718341175,
+            "suggested_proxy": false
+        }
+    }
+}

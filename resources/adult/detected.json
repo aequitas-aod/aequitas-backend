@@ -1,0 +1,14 @@
+{
+  "DisparateImpact": [
+    {
+      "sensitive": "sex",
+      "target": "class"
+    }
+  ],
+  "StatisticalParityDifference": [
+    {
+      "sensitive": "sex",
+      "target": "class"
+    }
+  ]
+}
