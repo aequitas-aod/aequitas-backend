@@ -1,3 +1,9 @@
+## [0.36.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.36.2...v0.36.3) (2025-05-09)
+
+### Bug Fixes
+
+* **deps:** update dependency matplotlib to v3.10.3 ([#121](https://github.com/aequitas-aod/aequitas-backend/issues/121)) ([d72fa6f](https://github.com/aequitas-aod/aequitas-backend/commit/d72fa6fd290c870aad29c2482995a1a98424c9d7))
+
 ## [0.36.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.36.1...v0.36.2) (2025-05-04)
 
 ### Dependency updates
