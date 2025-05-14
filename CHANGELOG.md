@@ -1,3 +1,9 @@
+## [0.36.4](https://github.com/aequitas-aod/aequitas-backend/compare/v0.36.3...v0.36.4) (2025-05-14)
+
+### Bug Fixes
+
+* **deps:** update dependency flask to v3.1.1 [security] ([#123](https://github.com/aequitas-aod/aequitas-backend/issues/123)) ([f260136](https://github.com/aequitas-aod/aequitas-backend/commit/f26013639ca45b73f0b83eec3926de02250a9309))
+
 ## [0.36.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.36.2...v0.36.3) (2025-05-09)
 
 ### Bug Fixes
