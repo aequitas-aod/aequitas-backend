@@ -5,7 +5,7 @@ from application.automation.setup import Automator
 from application.automation.parsing import to_csv, _pythonize
 from domain.common.core import EntityId
 from domain.project.core import Project
-from typing import Iterable
+from typing import Iterable, List
 
 
 class AbstractDatasetCreationReaction(Automator):
@@ -93,7 +93,7 @@ def get_stats(
         else:
             return "categorical"
 
-    features_view = pd.DataFrame(data={"feature": df.columns})
+    features_view: pd.DataFrame = pd.DataFrame(data={"feature": df.columns})
 
     features_view = features_view.merge(
         right=df.describe().T.reset_index(),
@@ -119,25 +119,30 @@ def get_stats(
     features_view["sensitive"] = [_maybe_sensitive(col) for col in df.columns]
     features_view["target"] = [_maybe_target(col) for col in df.columns]
 
+    numerical_columns = [
+        "mean",
+        "std",
+        "min",
+        "1st_percentile",
+        "2nd_percentile",
+        "3rd_percentile",
+        "max",
+    ]
+    images_columns = ["unique", "top", "freq"]
+    columns: List[str] = (
+        numerical_columns if "mean" in features_view.columns else images_columns
+    )
     features_view = features_view[
         [
             "feature",
             "missing_values",
-            "min",
-            "max",
-            "mean",
-            "std",
-            "1st_percentile",
-            "2nd_percentile",
-            "3rd_percentile",
-            "type",
+            *columns,
             "values",
             "distribution",
             "sensitive",
             "target",
         ]
     ]
-
     # for col in features_view.columns:
     #     features_view[col] = features_view[col].apply(_pythonize)
 

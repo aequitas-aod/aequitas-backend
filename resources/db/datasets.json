@@ -25,5 +25,14 @@
         "columns": 20,
         "description": "This dataset provides data on credit risk classification based on personal and financial characteristics.",
         "created-at": "2024-11-12T10:00:09.611719"
+    },
+    {
+        "id": "skin-disease",
+        "name": "Skin Disease Dataset",
+        "size": "to replace",
+        "rows": "to replace",
+        "columns": 3,
+        "description": "This dataset contains images of skin diseases for classification purposes.",
+        "created-at": "2024-11-12T10:00:09.611719"
     }
 ]
