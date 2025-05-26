@@ -120,13 +120,14 @@ def get_stats(
     features_view["target"] = [_maybe_target(col) for col in df.columns]
 
     numerical_columns = [
+        "min",
+        "max",
         "mean",
         "std",
-        "min",
         "1st_percentile",
         "2nd_percentile",
         "3rd_percentile",
-        "max",
+        "type",
     ]
     images_columns = ["unique", "top", "freq"]
     columns: List[str] = (

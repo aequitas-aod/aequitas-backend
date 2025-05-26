@@ -52,7 +52,7 @@ def generate_actual_general_context():
 
     for dataset_name in DATASETS_DIR.glob("*.csv"):
         dataset_name = dataset_name.stem
-        key_name = dataset_name.capitalize() + "-1"
+        key_name = dataset_name.title().replace("_", "") + "-1"
         path = dataset_path(dataset_name)
         csv = path.read_text()
         data[f"dataset__{key_name}"] = csv
