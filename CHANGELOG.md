@@ -1,3 +1,16 @@
+## [0.37.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.36.5...v0.37.0) (2025-05-27)
+
+### Features
+
+* add first question to detect dataset type ([3f34f2c](https://github.com/aequitas-aod/aequitas-backend/commit/3f34f2ced7f2fd5526051fdd2ec0c0373d00c751))
+* add sample image dataset ([3a99778](https://github.com/aequitas-aod/aequitas-backend/commit/3a99778a7539dbd1078cb5d32ededa0500731173))
+* **resources:** add Adversarial Debiasing algorithm ([0d51477](https://github.com/aequitas-aod/aequitas-backend/commit/0d51477b74479456f22eb5943a13305dc37ce25d))
+* **resources:** divide dataset selection for tabular and image types ([3d9bf47](https://github.com/aequitas-aod/aequitas-backend/commit/3d9bf4783e272a1bc7fa5d6cb483adf8f127aeff))
+
+### Bug Fixes
+
+* fix dataset stats creation ([d2f4f55](https://github.com/aequitas-aod/aequitas-backend/commit/d2f4f55c0c64b8a8ba9da7023bb6c555d6e5fcf5))
+
 ## [0.36.5](https://github.com/aequitas-aod/aequitas-backend/compare/v0.36.4...v0.36.5) (2025-05-18)
 
 ### Bug Fixes
