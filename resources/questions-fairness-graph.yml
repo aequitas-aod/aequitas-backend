@@ -177,9 +177,9 @@
     - id: { code: PrejudiceRemover }
       text: Prejudice Remover
       description: Prejudice Remover alters the model to reduce bias, ensuring that sensitive attributes do not influence predictions.
-    - id: { code: GerryFairClassifier }
-      text: GerryFair Classifier
-      description: GerryFair Classifier modifies decision boundaries to reduce fairness violations, preserving model accuracy and performance.
+    - id: { code: AdversarialDebiasing }
+      text: Adversarial Debiasing
+      description: Adversarial Debiasing uses adversarial training to minimize bias in model predictions, ensuring fairness across sensitive groups.
     - id: { code: NoModelMitigation }
       text: Do Not Mitigate
       description: null  
@@ -213,7 +213,7 @@
   enabled_by:
     - { code: FaUCI }
     - { code: PrejudiceRemover }
-    - { code: GerryFairClassifier }
+    - { code: AdversarialDebiasing }
   action_needed: null
   created_at: 2024-05-31T18:20:31
 
