@@ -42,9 +42,24 @@ class AbstractQuestionAnsweredReaction(Automator):
         raise NotImplementedError("Subclasses must implement this method")
 
 
-class FirstQuestionAnsweredReaction(AbstractQuestionAnsweredReaction):
+class DatasetTypeSelectionQuestionAnsweredReaction(AbstractQuestionAnsweredReaction):
     def __init__(self):
         super().__init__({1})
+
+    def produce_info(
+        self,
+        project_id: EntityId,
+        project: Project,
+        question_index: int,
+        selected_answers_ids: List[EntityId],
+    ) -> Iterable[tuple[str, str]]:
+        answer = str(selected_answers_ids[0]["code"])
+        yield "dataset_type", answer
+
+
+class DatasetSelectionQuestionAnsweredReaction(AbstractQuestionAnsweredReaction):
+    def __init__(self):
+        super().__init__({2})
 
     def produce_info(
         self,

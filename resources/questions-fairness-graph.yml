@@ -1,3 +1,18 @@
+- id: { code: DatasetTypeSelection }
+  text: Which type of dataset are you going to use?
+  description: Choose the dataset type you want to use in next steps.
+  type: single
+  answers:
+    - id: { code: TabularDatasetType }
+      text: Tabular Dataset
+      description: A dataset in a structured format, typically organized in rows and columns, where each column represents a feature and each row represents an instance.
+    - id: { code: ImageDatasetType }
+      text: Image Dataset
+      description: A dataset composed also of images, where each image is associated with a label or category.
+  enabled_by: []
+  action_needed: null
+  created_at: 2024-05-31T18:20:22
+
 - id: { code: DatasetSelection }
   text: Choose a dataset or load your own.
   description: Choose or provide a dataset which will be subject to the fairness process.
@@ -18,7 +33,9 @@
     - id: { code: SkinDiseaseDataset }
       text: Skin Disease Dataset
       description: A dataset used for skin disease classification, containing images of various skin conditions to assist in diagnosis.
-  enabled_by: []
+  enabled_by:
+    - { code: TabularDatasetType }
+    - { code: ImageDatasetType }
   action_needed: null
   created_at: 2024-05-31T18:20:23
 
