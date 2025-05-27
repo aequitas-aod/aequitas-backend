@@ -6,7 +6,7 @@ from flask_restful import Api, Resource
 from domain.common.core import EntityId
 from domain.project.core import ProjectQuestion
 from domain.project.factories import ProjectFactory
-from infrastructure.ws.setup import questionnaire_service
+from infrastructure.ws.setup import questionnaire_service, project_service
 from infrastructure.ws.resources import EventGenerator
 from presentation.presentation import serialize, deserialize
 from utils.errors import NotFoundError, BadRequestError
@@ -19,6 +19,8 @@ api = Api(questionnaires_bp)
 class QuestionnaireResource(Resource, EventGenerator):
     def get(self, project_code, index=None):
         project_id: EntityId = ProjectFactory.id_of(code=project_code)
+        if not project_service.check_project_exists(project_id):
+            return "Project not found", StatusCode.NOT_FOUND
         if index:
             try:
                 q: Optional[ProjectQuestion] = questionnaire_service.get_nth_question(
