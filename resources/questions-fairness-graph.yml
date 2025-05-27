@@ -11,9 +11,9 @@
       description: A dataset composed also of images, where each image is associated with a label or category.
   enabled_by: []
   action_needed: null
-  created_at: 2024-05-31T18:20:22
+  created_at: 2024-05-31T18:20:21
 
-- id: { code: DatasetSelection }
+- id: { code: TabularDatasetSelection }
   text: Choose a dataset or load your own.
   description: Choose or provide a dataset which will be subject to the fairness process.
   type: single
@@ -30,11 +30,23 @@
     - id: { code: CreditDataset }
       text: German Credit Dataset
       description: A dataset used for credit scoring, containing data about individuals' credit history and personal information to predict whether a person is a good or bad credit risk.
+  enabled_by:
+    - { code: TabularDatasetType }
+  action_needed: null
+  created_at: 2024-05-31T18:20:22
+
+- id: { code: ImageDatasetSelection }
+  text: Choose a dataset or load your own.
+  description: Choose or provide a dataset which will be subject to the fairness process.
+  type: single
+  answers:
+    - id: { code: CustomDataset }
+      text: Custom
+      description: Load your own dataset.
     - id: { code: SkinDiseaseDataset }
       text: Skin Disease Dataset
       description: A dataset used for skin disease classification, containing images of various skin conditions to assist in diagnosis.
   enabled_by:
-    - { code: TabularDatasetType }
     - { code: ImageDatasetType }
   action_needed: null
   created_at: 2024-05-31T18:20:23
