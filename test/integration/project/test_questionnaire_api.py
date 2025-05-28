@@ -188,8 +188,8 @@ class TestQuestionnairesAPI(ProjectRelatedTestCase):
         response = self.app.get(
             f"/projects/{self.project_id.code}/questionnaire/{len(self.questions) + 5}"
         )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, b'"Questionnaire is finished"\n')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, b'"Question not found"\n')
 
     def test_multiple_questionnaires(self):
         project_name_2: str = "Project name 2"

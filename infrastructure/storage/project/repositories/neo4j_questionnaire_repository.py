@@ -14,7 +14,7 @@ from infrastructure.storage.project.repositories.neo4j_project_repository import
 )
 from presentation.presentation import serialize, deserialize
 from utils.env import DB_HOST, DB_USER, DB_PASSWORD
-from utils.errors import NotFoundError
+from utils.errors import NotFoundError, BadRequestError, MissingFirstQuestion
 from utils.neo4j_driver import Neo4jDriver, Credentials, Neo4jQuery
 
 
@@ -26,9 +26,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         )
         self.project_repository: ProjectRepository = Neo4jProjectRepository()
 
-    def get_nth_question(
-        self, project_id: EntityId, index: int
-    ) -> Optional[ProjectQuestion]:
+    def get_nth_question(self, project_id: EntityId, index: int) -> ProjectQuestion:
         if index <= 0:
             raise ValueError("Index must be greater than 0")
         elif index == 1:
@@ -43,7 +41,8 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             )
             res: List[dict] = self.driver.query(query)
             if len(res) == 0:
-                return None
+                raise MissingFirstQuestion()
+
             question: ProjectQuestion = self._convert_node_in_project_question(
                 res[0]["q"],
                 res[0]["available_answers"],
@@ -67,7 +66,19 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             )
             res: List[dict] = self.driver.query(query)
             if len(res) == 0:
-                return None
+                try:
+                    previous_question: ProjectQuestion = self.get_nth_question(
+                        project_id, index - 1
+                    )
+                except Exception:
+                    raise NotFoundError("Question not found")
+                previous_question_answered = any(
+                    a.selected for a in previous_question.answers
+                )
+                if previous_question_answered:
+                    raise BadRequestError("Questionnaire is finished")
+                else:
+                    raise NotFoundError("Question not found")
 
             question: ProjectQuestion = self._convert_node_in_project_question(
                 res[0]["q"],

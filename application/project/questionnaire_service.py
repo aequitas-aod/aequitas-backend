@@ -7,7 +7,7 @@ from domain.graph.factories import GraphQuestionFactory
 from domain.project.core import ProjectQuestion
 from domain.project.factories import ProjectQuestionFactory
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
-from utils.errors import BadRequestError, NotFoundError
+from utils.errors import BadRequestError, NotFoundError, MissingFirstQuestion
 
 
 class QuestionnaireService:
@@ -38,31 +38,27 @@ class QuestionnaireService:
         :raises NotFoundError: if the question is not found
         :raises BadRequestError: if nth is greater than the number of questions
         """
-        q: Optional[ProjectQuestion] = self.questionnaire_repository.get_nth_question(
-            project_id, nth
-        )
-        if q:
+        try:
+            q: ProjectQuestion = self.questionnaire_repository.get_nth_question(
+                project_id, nth
+            )
             return q
-        else:
+        except BadRequestError:
+            raise BadRequestError("Questionnaire is finished")
+        except NotFoundError:
+            raise NotFoundError("Question not found")
+        except MissingFirstQuestion:
             questions: List[GraphQuestion] = self.question_service.get_all_questions()
-            if nth == 1:
-                graph_question: Optional[GraphQuestion] = next(
-                    filter(lambda x: len(x.enabled_by) == 0, questions), None
-                )
-                if graph_question is None:
-                    raise NotFoundError("No first question found")
-                project_question: ProjectQuestion = (
-                    ProjectQuestionFactory.from_graph_question(
-                        graph_question, project_id
-                    )
-                )
-                self.questionnaire_repository.insert_project_question(project_question)
-                return project_question
-            else:
-                if len(questions) < nth:
-                    raise BadRequestError("Questionnaire is finished")
-                else:
-                    raise NotFoundError("Question not found")
+            graph_question: Optional[GraphQuestion] = next(
+                filter(lambda x: len(x.enabled_by) == 0, questions), None
+            )
+            if graph_question is None:
+                raise NotFoundError("No first question found")
+            project_question: ProjectQuestion = (
+                ProjectQuestionFactory.from_graph_question(graph_question, project_id)
+            )
+            self.questionnaire_repository.insert_project_question(project_question)
+            return project_question
 
     def select_answers(
         self, project_id: EntityId, index: int, answer_ids: List[EntityId]
