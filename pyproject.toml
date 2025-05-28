@@ -35,7 +35,7 @@ fairlearn = "^0.12.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "25.1.0"
-python-on-whales = "0.75.1"
+python-on-whales = "0.77.0"
 
 [build-system]
 requires = ["poetry-core"]
