@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Aequitas Backend"
-version = "v0.36.5"
+version = "v0.37.2"
 description = "Backend service of for Aequitas project"
 authors = ["aequitas-aod"]
 packages = [

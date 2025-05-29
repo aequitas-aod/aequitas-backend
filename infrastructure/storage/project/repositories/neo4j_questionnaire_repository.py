@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from domain.common.core import EntityId
+from domain.graph.repositories import GraphQuestionRepository
 from domain.project.core import (
     ProjectQuestion,
     Project,
@@ -9,6 +10,7 @@ from domain.project.core import (
 from domain.project.factories import ProjectFactory, ProjectQuestionFactory
 from domain.project.repositories import ProjectRepository
 from domain.project.repositories.questionnaire_repository import QuestionnaireRepository
+from infrastructure.storage.graph.repositories import Neo4JGraphQuestionRepository
 from infrastructure.storage.project.repositories.neo4j_project_repository import (
     Neo4jProjectRepository,
 )
@@ -25,6 +27,9 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             DB_HOST, Credentials(DB_USER, DB_PASSWORD)
         )
         self.project_repository: ProjectRepository = Neo4jProjectRepository()
+        self.graph_question_repository: GraphQuestionRepository = (
+            Neo4JGraphQuestionRepository()
+        )
 
     def get_nth_question(self, project_id: EntityId, index: int) -> ProjectQuestion:
         if index <= 0:
@@ -70,12 +75,18 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                     previous_question: ProjectQuestion = self.get_nth_question(
                         project_id, index - 1
                     )
+                    previous_answers_selected: List[EntityId] = [
+                        a.id for a in previous_question.answers if a.selected
+                    ]
+                    enabled_question = (
+                        self.graph_question_repository.get_enabled_question(
+                            previous_question.id, previous_answers_selected
+                        )
+                    )
                 except Exception:
                     raise NotFoundError("Question not found")
-                previous_question_answered = any(
-                    a.selected for a in previous_question.answers
-                )
-                if previous_question_answered:
+
+                if enabled_question is None:
                     raise BadRequestError("Questionnaire is finished")
                 else:
                     raise NotFoundError("Question not found")
