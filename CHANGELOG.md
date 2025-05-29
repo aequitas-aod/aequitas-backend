@@ -1,3 +1,26 @@
+## [0.38.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.37.2...v0.38.0) (2025-05-29)
+
+### Features
+
+* **questionnaire:** add last question as placeholder and fix queries to support questions without answers ([2206dc6](https://github.com/aequitas-aod/aequitas-backend/commit/2206dc62db75a125394d05b38a10709666103ec8))
+
+### Dependency updates
+
+* **deps:** update dependency python-on-whales to v0.77.0 ([#109](https://github.com/aequitas-aod/aequitas-backend/issues/109)) ([85b225c](https://github.com/aequitas-aod/aequitas-backend/commit/85b225c9c618773db9e585c97e98a438a47fd944))
+* **deps:** update node.js to 22.16 ([#127](https://github.com/aequitas-aod/aequitas-backend/issues/127)) ([dc96a4f](https://github.com/aequitas-aod/aequitas-backend/commit/dc96a4f0258bef17c89092f3c981f27a77afbec3))
+
+### Bug Fixes
+
+* **questionnaire:** fix get_nth_question when questionnaire is finished ([23726a9](https://github.com/aequitas-aod/aequitas-backend/commit/23726a9d425912dfa6d12bd785f7416cacd0b125))
+
+### General maintenance
+
+* **ws:** add check project exists in get questionnaire ([74d66e7](https://github.com/aequitas-aod/aequitas-backend/commit/74d66e7d222034f2e5ad3de71b93467dabd7479d))
+
+### Refactoring
+
+* change end of questionnaires ([e199959](https://github.com/aequitas-aod/aequitas-backend/commit/e1999597bda100471d96584c8bea1297a3c69612))
+
 ## [0.37.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.37.1...v0.37.2) (2025-05-28)
 
 ### Bug Fixes
