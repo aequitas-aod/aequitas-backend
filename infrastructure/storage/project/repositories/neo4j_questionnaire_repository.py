@@ -122,7 +122,8 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
     ) -> Optional[ProjectQuestion]:
         project_code: str = project_question_id.project_code
         query_string: str = (
-            "MATCH (q:ProjectQuestion {code: $question_code})-[:HAS_AVAILABLE]->(available:ProjectAnswer) "
+            "MATCH (q:ProjectQuestion {code: $question_code}) "
+            "OPTIONAL MATCH (q)-[:HAS_AVAILABLE]->(available:ProjectAnswer) "
             "OPTIONAL MATCH (q)-[:HAS_SELECTED]->(selected:ProjectAnswer) "
             "OPTIONAL MATCH (prev_q: ProjectQuestion)-[:NEXT]->(q) "
             "RETURN q, COLLECT(available) AS available_answers, COLLECT(selected) AS selected_answers, prev_q"

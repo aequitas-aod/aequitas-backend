@@ -135,6 +135,9 @@
     - id: { code: NoDataMitigation }
       text: Do Not Mitigate
       description: null
+    - id: { code: Done }
+      text: Do Not Mitigate and Finish
+      description: null
   enabled_by:
     - { code: StatisticalParityDifference }
     - { code: DisparateImpact } # note the comeback from the summary
@@ -182,7 +185,10 @@
       description: Adversarial Debiasing uses adversarial training to minimize bias in model predictions, ensuring fairness across sensitive groups.
     - id: { code: NoModelMitigation }
       text: Do Not Mitigate
-      description: null  
+      description: null
+    - id: { code: Done }
+      text: Do Not Mitigate and Finish
+      description: null
   enabled_by:
     - { code: MitigateModel }
     - { code: MitigateModelAgain }
@@ -231,8 +237,11 @@
     - id: { code: RejectOptionClassification }
       text: Reject Option Classification
       description: Reject Option Classification (ROC) is a post-processing algorithm used to improve fairness in machine learning models by intervening in areas where the model is less confident in its predictions.
-    - id: { code: NoOutcomeMitigation }
-      text: Do Not Mitigate
+    - id: { code: Test }
+      text: Do Not Mitigate and Test
+      description: null
+    - id: { code: Done }
+      text: Do Not Mitigate and Finish
       description: null
   enabled_by:
     - { code: MitigateOutcome }
@@ -339,3 +348,13 @@
     - { code: NumericalPolarization }
   action_needed: null
   created_at: 2024-05-31T18:20:36
+
+- id: { code: QuestionnaireEnd }
+  text: ""
+  description: null
+  type: single
+  answers: []
+  enabled_by:
+    - { code: Done }
+  action_needed: null
+  created_at: 2024-05-31T18:20:37

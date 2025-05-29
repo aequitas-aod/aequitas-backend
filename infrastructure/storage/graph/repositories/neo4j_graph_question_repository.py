@@ -164,7 +164,7 @@ class Neo4JGraphQuestionRepository(GraphQuestionRepository):
             "MATCH (q:GraphQuestion {code: $question_code})-[:HAS_ANSWER]->(a:GraphAnswer) "
             "WHERE a.code IN $answer_codes "
             "MATCH (q_enabled:GraphQuestion)-[:ENABLED_BY]->(a:GraphAnswer) "
-            "MATCH (q_enabled)-[:HAS_ANSWER]->(a_enabled:GraphAnswer) "
+            "OPTIONAL MATCH (q_enabled)-[:HAS_ANSWER]->(a_enabled:GraphAnswer) "
             "RETURN q_enabled, COLLECT(a_enabled) AS answers"
         )
         query: Neo4jQuery = Neo4jQuery(
