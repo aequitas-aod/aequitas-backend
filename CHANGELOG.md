@@ -1,3 +1,9 @@
+## [0.38.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.38.1...v0.38.2) (2025-06-07)
+
+### Bug Fixes
+
+* **deps:** update dependency scikit-learn to v1.7.0 ([#130](https://github.com/aequitas-aod/aequitas-backend/issues/130)) ([94460e3](https://github.com/aequitas-aod/aequitas-backend/commit/94460e3913115a27f0380ae902f4a47f4d2932a0))
+
 ## [0.38.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.38.0...v0.38.1) (2025-06-06)
 
 ### Bug Fixes
