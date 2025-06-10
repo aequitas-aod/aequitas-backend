@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from warnings import warn
+
 from dotenv import load_dotenv
 
 _home = Path.home()
@@ -45,10 +46,6 @@ if is_testing() and DB_HOST != "localhost":
         RuntimeWarning,
         stacklevel=2,
     )
-
-
-def force_local_db():
-    DB_HOST = "localhost"
 
 
 def environ():
