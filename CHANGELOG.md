@@ -1,3 +1,9 @@
+## [0.39.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.38.3...v0.39.0) (2025-06-10)
+
+### Features
+
+* add ULL in dataset selection ([11380f6](https://github.com/aequitas-aod/aequitas-backend/commit/11380f63ead271e8dd577a40bd5294588ab89cc0))
+
 ## [0.38.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.38.2...v0.38.3) (2025-06-10)
 
 ### Dependency updates
