@@ -1,3 +1,9 @@
+## [0.39.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.39.0...v0.39.1) (2025-06-10)
+
+### Bug Fixes
+
+* fix concurrency problem adding threads to waitress command, fix neo4 env variable ([12fa973](https://github.com/aequitas-aod/aequitas-backend/commit/12fa97376c8b587bfed2d0c5084319ec1f3ab7af))
+
 ## [0.39.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.38.3...v0.39.0) (2025-06-10)
 
 ### Features
