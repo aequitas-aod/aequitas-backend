@@ -30,6 +30,9 @@
     - id: { code: CreditDataset }
       text: German Credit Dataset
       description: A dataset used for credit scoring, containing data about individuals' credit history and personal information to predict whether a person is a good or bad credit risk.
+    - id: { code: UllDataset }
+      text: ULL Dataset
+      description: to fill
   enabled_by:
     - { code: TabularDatasetType }
   action_needed: null
@@ -67,6 +70,7 @@
     - { code: AdultDataset }
     - { code: CompasDataset }
     - { code: CreditDataset }
+    - { code: UllDataset }
     - { code: SkinDiseaseDataset }
   action_needed: null
   created_at: 2024-05-31T18:20:24
