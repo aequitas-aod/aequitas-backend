@@ -32,7 +32,7 @@
       description: A dataset used for credit scoring, containing data about individuals' credit history and personal information to predict whether a person is a good or bad credit risk.
     - id: { code: UllDataset }
       text: ULL Dataset
-      description: to fill
+      description: A dataset collecting information about students in primary schools of the Canary Islands, used to assess discrimination in disadvantaged contexts.
   enabled_by:
     - { code: TabularDatasetType }
   action_needed: null
@@ -139,9 +139,9 @@
     - id: { code: NoDataMitigation }
       text: Do Not Mitigate
       description: null
-    - id: { code: Done }
-      text: Do Not Mitigate and Finish
-      description: null
+#    - id: { code: Done }
+#      text: Do Not Mitigate and Finish
+#      description: null
   enabled_by:
     - { code: StatisticalParityDifference }
     - { code: DisparateImpact } # note the comeback from the summary
@@ -153,9 +153,6 @@
   description: Summary of data mitigation performed with results and updated dataset.
   type: single
   answers:
-    - id: { code: MitigateDataAgain}
-      text: Mitigate Data Again
-      description: null
     - id: { code: MitigateModel }
       text: Mitigate Model
       description: null
@@ -163,7 +160,7 @@
       text: Done
       description: null
     - id: { code: Test }
-      text: Validate on Test Data
+      text: Go to Stress Test
       description: null
   enabled_by:
     - { code: DisparateImpactRemover }
@@ -190,13 +187,12 @@
     - id: { code: NoModelMitigation }
       text: Do Not Mitigate
       description: null
-    - id: { code: Done }
-      text: Do Not Mitigate and Finish
-      description: null
+#    - id: { code: Done }
+#      text: Do Not Mitigate and Finish
+#      description: null
   enabled_by:
     - { code: MitigateModel }
-    - { code: MitigateModelAgain }
-    - { code: NoDataMitigation } # note the comeback from the summary
+    - { code: NoDataMitigation }
   action_needed: null
   created_at: 2024-05-31T18:20:30
 
@@ -205,17 +201,11 @@
   description: Summary of model mitigation performed.
   type: single
   answers:
-    - id: { code: MitigateDataAgain }
-      text: Mitigate Data Again
-      description: null
-    - id: { code: MitigateModelAgain }
-      text: Mitigate Model Again
-      description: null
     - id: { code: MitigateOutcome }
       text: Mitigate Outcome
       description: null
     - id: { code: Test }
-      text: Validate on Test Data
+      text: Go to Stress Test
       description: null
     - id: { code: Done }
       text: Done
@@ -242,14 +232,13 @@
       text: Reject Option Classification
       description: Reject Option Classification (ROC) is a post-processing algorithm used to improve fairness in machine learning models by intervening in areas where the model is less confident in its predictions.
     - id: { code: Test }
-      text: Do Not Mitigate and Test
+      text: Go to Stress Test
       description: null
-    - id: { code: Done }
-      text: Do Not Mitigate and Finish
-      description: null
+#    - id: { code: Done }
+#      text: Do Not Mitigate and Finish
+#      description: null
   enabled_by:
     - { code: MitigateOutcome }
-    - { code: MitigateOutcomeAgain }
     - { code: NoModelMitigation }
   action_needed: null
   created_at: 2024-05-31T18:20:32
@@ -259,17 +248,8 @@
   description: Summary of outcome mitigation performed.
   type: single
   answers:
-    - id: { code: MitigateDataAgain}
-      text: Mitigate Data Again
-      description: null
-    - id: { code: MitigateModelAgain }
-      text: Mitigate Model Again
-      description: null
-    - id: { code: MitigateOutcomeAgain }
-      text: Mitigate Outcome Again
-      description: null
     - id: { code: Test }
-      text: Validate on Test Data
+      text: Go to Stress Test
       description: null
     - id: { code: Done }
       text: Done
@@ -288,57 +268,31 @@
   answers:
     - id: { code: Test-CustomDataset }
       text: Custom
-      description: Load your own test dataset.
+      description: Load your own dataset.
     - id: { code: Test-AdultDataset }
       text: Adult Census Income Dataset
-      description: Test dataset for the Adult Census Income Dataset.
+      description: Polarized version of the Adult Census Income Dataset.
     - id: { code: Test-CompasDataset }
       text: ProPublica COMPAS Dataset
-      description: Test dataset for the ProPublica COMPAS Dataset.
+      description: A polarized version of the ProPublica COMPAS Dataset.
     - id: { code: Test-CreditDataset }
       text: German Credit Dataset
-      description: Test dataset for the German Credit Dataset.
-    - id: { code: Test-GenerateDataset }
-      text: Synthetic Data
-      description: A test dataset generated with the Synthetic Data Generator.
+      description: A polarized version of the German Credit Dataset.
+    - id: { code: Test-UllDataset }
+      text: ULL Dataset
+      description: A polarized version of the ULL Dataset.
   enabled_by:
     - { code: Test }
-    - { code: TestAgain }
   action_needed: null
   created_at: 2024-05-31T18:20:34
-
-- id: { code: Polarization }
-  text: Select the polarization algorithm according to your data.
-  description: null
-  type: multiple
-  answers:
-    - id: { code: CategoricalPolarization }
-      text: Categorical Polarization
-      description: null
-    - id: { code: NumericalPolarization }
-      text: Numerical Polarization
-      description: null
-  enabled_by:
-    - { code: Test-GenerateDataset }
-  action_needed: null
-  created_at: 2024-05-31T18:20:35
 
 - id: { code: TestSummary }
   text: What do you want to do next?
   description: null
   type: single
   answers:
-    - id: { code: MitigateDataAgain }
-      text: Mitigate Data Again
-      description: null
-    - id: { code: MitigateModelAgain }
-      text: Mitigate Model Again
-      description: null
-    - id: { code: MitigateOutcomeAgain }
-      text: Mitigate Outcome Again
-      description: null
-    - id: { code: TestAgain }
-      text: Validate on Test Data Again
+    - id: { code: MitigateOutcome }
+      text: Mitigate Outcome
       description: null
     - id: { code: Done }
       text: Done
@@ -348,8 +302,7 @@
     - { code: Test-AdultDataset }
     - { code: Test-CompasDataset }
     - { code: Test-CreditDataset }
-    - { code: CategoricalPolarization }
-    - { code: NumericalPolarization }
+    - { code: Test-UllDataset }
   action_needed: null
   created_at: 2024-05-31T18:20:36
 

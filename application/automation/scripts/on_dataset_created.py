@@ -1,11 +1,12 @@
-import pandas as pd
-import numpy as np
+from typing import Iterable, List
 
+import numpy as np
+import pandas as pd
+
+from application.automation.parsing import to_csv
 from application.automation.setup import Automator
-from application.automation.parsing import to_csv, _pythonize
 from domain.common.core import EntityId
 from domain.project.core import Project
-from typing import Iterable, List
 
 
 class AbstractDatasetCreationReaction(Automator):
@@ -49,7 +50,10 @@ def get_stats(
 
     def _get_distribution(feature: str):
         distribution = {}
-        if df[feature].dtype == "int" or df[feature].dtype == "float":
+        if isinstance(df[feature][0], (list, set)):
+            distribution["keys"] = []
+            distribution["values"] = []
+        elif df[feature].dtype == "int" or df[feature].dtype == "float":
             # For numerical features, create equi-width bins (maximum of 10 bins)
             counts, bin_edges = np.histogram(df[feature], bins=discretization_bins)
             bin_labels = [
@@ -74,7 +78,8 @@ def get_stats(
 
     # Define a new function to get distinct values and feature type
     def _get_distinct_values(feature: str):
-        # For non-float features, return the distinct values
+        if isinstance(df[feature][0], (list, set)):
+            return None
         if df[feature].dtype != "float":
             distinct_values = df[feature].unique()
             # if np.issubdtype(distinct_values.dtype, np.number):
@@ -83,6 +88,8 @@ def get_stats(
         return None
 
     def _get_feature_type(feature: str):
+        if isinstance(df[feature][0], (list, set)):
+            return "lists"
         unique_values = df[feature].nunique()
         if unique_values == 2:
             return "binary"
