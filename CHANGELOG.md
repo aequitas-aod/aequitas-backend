@@ -1,3 +1,13 @@
+## [0.39.7](https://github.com/aequitas-aod/aequitas-backend/compare/v0.39.6...v0.39.7) (2025-06-17)
+
+### Dependency updates
+
+* **deps:** update docker/setup-buildx-action action to v3.11.0 ([#139](https://github.com/aequitas-aod/aequitas-backend/issues/139)) ([ecb81f3](https://github.com/aequitas-aod/aequitas-backend/commit/ecb81f3914cb9ed1baa8e0319352b3a31ccd2231))
+
+### Bug Fixes
+
+* fix upload of csv with commas, fix ULL default dataset, fix flow of mitigation ([42ba6a0](https://github.com/aequitas-aod/aequitas-backend/commit/42ba6a08bf2671ba915299302d3ed7da335ad8b9))
+
 ## [0.39.6](https://github.com/aequitas-aod/aequitas-backend/compare/v0.39.5...v0.39.6) (2025-06-14)
 
 ### Bug Fixes
