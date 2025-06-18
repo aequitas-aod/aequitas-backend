@@ -89,7 +89,7 @@ def get_stats(
 
     def _get_feature_type(feature: str):
         if isinstance(df[feature][0], (list, set)):
-            return "lists"
+            return "list"
         unique_values = df[feature].nunique()
         if unique_values == 2:
             return "binary"

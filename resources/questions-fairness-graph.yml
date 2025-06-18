@@ -20,7 +20,7 @@
   answers:
     - id: { code: CustomDataset }
       text: Custom
-      description: Load your own dataset.
+      description: Load your own dataset. The quote char must be the single quote (') and the separator must be a comma (,). The first row must contain the column names.
     - id: { code: AdultDataset }
       text: Adult Census Income Dataset
       description: A dataset containing demographic information used to predict whether an individual's income exceeds $50,000 per year based on attributes like age, education, and occupation.
@@ -31,7 +31,7 @@
       text: German Credit Dataset
       description: A dataset used for credit scoring, containing data about individuals' credit history and personal information to predict whether a person is a good or bad credit risk.
     - id: { code: UllDataset }
-      text: ULL Dataset
+      text: AEQUITAS – Use Case S2 – Education
       description: A dataset collecting information about students in primary schools of the Canary Islands, used to assess discrimination in disadvantaged contexts.
   enabled_by:
     - { code: TabularDatasetType }
@@ -261,14 +261,14 @@
   action_needed: null
   created_at: 2024-05-31T18:20:33
 
-- id: { code: TestSetChoice }
+- id: { code: TestSetSelection }
   text: Choose the Test Data according to your Training Data.
   description: null
   type: single
   answers:
     - id: { code: Test-CustomDataset }
       text: Custom
-      description: Load your own dataset.
+      description: Load your own polarized dataset.
     - id: { code: Test-AdultDataset }
       text: Adult Census Income Dataset
       description: Polarized version of the Adult Census Income Dataset.
@@ -279,7 +279,7 @@
       text: German Credit Dataset
       description: A polarized version of the German Credit Dataset.
     - id: { code: Test-UllDataset }
-      text: ULL Dataset
+      text: AEQUITAS Use Case S2 Education
       description: A polarized version of the ULL Dataset.
   enabled_by:
     - { code: Test }
