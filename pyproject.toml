@@ -32,6 +32,7 @@ scikit-learn = "^1.6.0"
 seaborn = "^0.13.2"
 aif360 = "^0.6.1"
 fairlearn = "^0.12.0"
+aequitas-fairlib = "^2.8.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "25.1.0"
