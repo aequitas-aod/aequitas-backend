@@ -1,3 +1,13 @@
+## [0.40.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.39.7...v0.40.0) (2025-06-19)
+
+### Features
+
+* add Akkodis Dataset ([2dd604e](https://github.com/aequitas-aod/aequitas-backend/commit/2dd604e95d16ff6421887fc1a2b82abdc3c5b02c))
+
+### Dependency updates
+
+* **deps:** update docker/setup-buildx-action action to v3.11.1 ([#140](https://github.com/aequitas-aod/aequitas-backend/issues/140)) ([c449f7e](https://github.com/aequitas-aod/aequitas-backend/commit/c449f7ed2179626a80e0a5bd75a38ba54af4b9e6))
+
 ## [0.39.7](https://github.com/aequitas-aod/aequitas-backend/compare/v0.39.6...v0.39.7) (2025-06-18)
 
 ### Dependency updates
