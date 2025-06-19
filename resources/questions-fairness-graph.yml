@@ -31,8 +31,11 @@
       text: German Credit Dataset
       description: A dataset used for credit scoring, containing data about individuals' credit history and personal information to predict whether a person is a good or bad credit risk.
     - id: { code: UllDataset }
-      text: AEQUITAS – Use Case S2 – Education
+      text: AEQUITAS - Use Case S2 - Education
       description: A dataset collecting information about students in primary schools of the Canary Islands, used to assess discrimination in disadvantaged contexts.
+    - id: { code: AkkodisDataset }
+      text: AEQUITAS - Use Case HR2 - Recruitment
+      description: To fill
   enabled_by:
     - { code: TabularDatasetType }
   action_needed: null
@@ -71,6 +74,7 @@
     - { code: CompasDataset }
     - { code: CreditDataset }
     - { code: UllDataset }
+    - { code: AkkodisDataset }
     - { code: SkinDiseaseDataset }
   action_needed: null
   created_at: 2024-05-31T18:20:24
@@ -279,8 +283,11 @@
       text: German Credit Dataset
       description: A polarized version of the German Credit Dataset.
     - id: { code: Test-UllDataset }
-      text: AEQUITAS Use Case S2 Education
+      text: AEQUITAS - Use Case S2 - Education
       description: A polarized version of the ULL Dataset.
+    - id: { code: Test-AkkodisDataset }
+      text: AEQUITAS - Use Case HR2 - Recruitment
+      description: A polarized version of the Akkodis Dataset.
   enabled_by:
     - { code: Test }
   action_needed: null
@@ -303,6 +310,7 @@
     - { code: Test-CompasDataset }
     - { code: Test-CreditDataset }
     - { code: Test-UllDataset }
+    - { code: Test-AkkodisDataset }
   action_needed: null
   created_at: 2024-05-31T18:20:36
 

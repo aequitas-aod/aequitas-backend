@@ -28,10 +28,19 @@
     },
     {
         "id": "ull",
-        "name": "AEQUITAS Use Case S2 Education",
+        "name": "AEQUITAS - Use Case S2 - Education",
         "size": 2.4,
         "rows": 10735,
         "columns": 19,
+        "description": "",
+        "created-at": "2024-11-12T10:00:09.611719"
+    },
+    {
+        "id": "akkodis",
+        "name": "AEQUITAS - Use Case HR2 - Recruitment",
+        "size": 2000000000,
+        "rows": 107300000000,
+        "columns": 1000000000,
         "description": "",
         "created-at": "2024-11-12T10:00:09.611719"
     },
