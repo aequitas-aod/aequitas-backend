@@ -1,3 +1,13 @@
+## [0.40.1](https://github.com/aequitas-aod/aequitas-backend/compare/v0.40.0...v0.40.1) (2025-06-21)
+
+### Dependency updates
+
+* **deps:** add aequitas-fairlib ([c367ad6](https://github.com/aequitas-aod/aequitas-backend/commit/c367ad61ffa42ec7151f7aa6cdb26c073aaca07c))
+
+### Bug Fixes
+
+* **deps:** update dependency aequitas-fairlib to v2.8.1 ([#141](https://github.com/aequitas-aod/aequitas-backend/issues/141)) ([d6679a1](https://github.com/aequitas-aod/aequitas-backend/commit/d6679a1d6e4ecc61cbd44a262be605b354013420))
+
 ## [0.40.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.39.7...v0.40.0) (2025-06-19)
 
 ### Features
