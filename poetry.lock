@@ -2,14 +2,14 @@
 
 [[package]]
 name = "aequitas-fairlib"
-version = "2.8.1"
+version = "2.8.2"
 description = "A library for detecting and mitigating bias in machine learning models, with a focus on interoperability with scikit-learn, Pandas, and PyTorch."
 optional = false
 python-versions = "<4.0.0,>=3.10.0"
 groups = ["main"]
 files = [
-    {file = "aequitas_fairlib-2.8.1-py3-none-any.whl", hash = "sha256:ed32984daf5a1729470fe31a3f823194f4f08c148f78d26b5e226416b36c9f4f"},
-    {file = "aequitas_fairlib-2.8.1.tar.gz", hash = "sha256:1744da6051894c0b4f7a89d669ce3c8ef3b9118f430b97fc25a6780aaa7dd6e6"},
+    {file = "aequitas_fairlib-2.8.2-py3-none-any.whl", hash = "sha256:46adc32adbf34935c9e1f36e69588ad6968cf8bb5df7c25b29552b5a81023d8b"},
+    {file = "aequitas_fairlib-2.8.2.tar.gz", hash = "sha256:26aa0f41825eeeba1a42de230029b05065fd5443b32bf280a06a31755a2f00e6"},
 ]
 
 [package.dependencies]
