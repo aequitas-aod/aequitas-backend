@@ -1,3 +1,9 @@
+## [0.40.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.40.2...v0.40.3) (2025-06-24)
+
+### Bug Fixes
+
+* **deps:** update dependency python-dotenv to v1.1.1 ([#111](https://github.com/aequitas-aod/aequitas-backend/issues/111)) ([2191fe2](https://github.com/aequitas-aod/aequitas-backend/commit/2191fe2499217524973f25cebf92228edd4bda07))
+
 ## [0.40.2](https://github.com/aequitas-aod/aequitas-backend/compare/v0.40.1...v0.40.2) (2025-06-23)
 
 ### Bug Fixes
