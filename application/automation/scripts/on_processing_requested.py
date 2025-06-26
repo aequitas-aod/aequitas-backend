@@ -36,7 +36,7 @@ from resources.akkodis import (
     PATH_INPROCESSING_ADVDEB_PRED_1_CSV,
     PATH_INPROCESSING_ADVDEB_RES_0_CSV,
     PATH_INPROCESSING_ADVDEB_RES_CSV,
-    PATH_INPROCESSING_ADVDEB_RES_1_CSV
+    PATH_INPROCESSING_ADVDEB_RES_1_CSV,
 )
 from utils.logs import set_other_loggers_level
 
@@ -954,9 +954,9 @@ def inprocessing_algorithm_FaUCI(
 def inprocessing_algorithm_Adversarial_Debiasing(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> tuple:
-    
+
     # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
-    
+
     PATH_INPROCESSING_ADVDEB_PRED_0_CSV,
     PATH_INPROCESSING_ADVDEB_PRED_CSV,
     PATH_INPROCESSING_ADVDEB_PRED_1_CSV,
@@ -966,11 +966,20 @@ def inprocessing_algorithm_Adversarial_Debiasing(
 
     # TODO: to remove
     if kwargs["lambda_adv"] == 0:
-        result_paths = PATH_INPROCESSING_ADVDEB_PRED_0_CSV, PATH_INPROCESSING_ADVDEB_RES_0_CSV
+        result_paths = (
+            PATH_INPROCESSING_ADVDEB_PRED_0_CSV,
+            PATH_INPROCESSING_ADVDEB_RES_0_CSV,
+        )
     elif kwargs["lambda"] == 1:
-        result_paths = PATH_INPROCESSING_ADVDEB_PRED_CSV, PATH_INPROCESSING_ADVDEB_RES_CSV
+        result_paths = (
+            PATH_INPROCESSING_ADVDEB_PRED_CSV,
+            PATH_INPROCESSING_ADVDEB_RES_CSV,
+        )
     else:
-        result_paths = PATH_INPROCESSING_ADVDEB_PRED_1_CSV, PATH_INPROCESSING_ADVDEB_RES_1_CSV
+        result_paths = (
+            PATH_INPROCESSING_ADVDEB_PRED_1_CSV,
+            PATH_INPROCESSING_ADVDEB_RES_1_CSV,
+        )
 
     return (
         pd.read_csv(result_paths[0]),
