@@ -951,18 +951,11 @@ def inprocessing_algorithm_FaUCI(
     )
 
 
-def inprocessing_algorithm_Adversarial_Debiasing(
+def inprocessing_algorithm_AdversarialDebiasing(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> tuple:
 
     # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
-
-    PATH_INPROCESSING_ADVDEB_PRED_0_CSV,
-    PATH_INPROCESSING_ADVDEB_PRED_CSV,
-    PATH_INPROCESSING_ADVDEB_PRED_1_CSV,
-    PATH_INPROCESSING_ADVDEB_RES_0_CSV,
-    PATH_INPROCESSING_ADVDEB_RES_CSV,
-    PATH_INPROCESSING_ADVDEB_RES_1_CSV
 
     # TODO: to remove
     if kwargs["lambda_adv"] == 0:
@@ -970,15 +963,15 @@ def inprocessing_algorithm_Adversarial_Debiasing(
             PATH_INPROCESSING_ADVDEB_PRED_0_CSV,
             PATH_INPROCESSING_ADVDEB_RES_0_CSV,
         )
-    elif kwargs["lambda"] == 1:
-        result_paths = (
-            PATH_INPROCESSING_ADVDEB_PRED_CSV,
-            PATH_INPROCESSING_ADVDEB_RES_CSV,
-        )
-    else:
+    elif kwargs["lambda_adv"] == 1:
         result_paths = (
             PATH_INPROCESSING_ADVDEB_PRED_1_CSV,
             PATH_INPROCESSING_ADVDEB_RES_1_CSV,
+        )
+    else:
+        result_paths = (
+            PATH_INPROCESSING_ADVDEB_PRED_CSV,
+            PATH_INPROCESSING_ADVDEB_RES_CSV,
         )
 
     return (

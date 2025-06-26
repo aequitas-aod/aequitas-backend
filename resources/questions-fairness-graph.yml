@@ -35,7 +35,7 @@
       description: A dataset collecting information about students in primary schools of the Canary Islands, used to assess discrimination in disadvantaged contexts.
     - id: { code: AkkodisDataset }
       text: AEQUITAS - Use Case HR2 - Recruitment
-      description: To fill
+      description: The Akkodis dataset contains data collected during the company's recruitment process, between 2019 and 2023, including candidates' technical skills and sensitive attributes. The task involves predicting whether a candidate has been selected or not.
   enabled_by:
     - { code: TabularDatasetType }
   action_needed: null

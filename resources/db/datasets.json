@@ -38,9 +38,9 @@
     {
         "id": "akkodis",
         "name": "AEQUITAS - Use Case HR2 - Recruitment",
-        "size": 2000000000,
-        "rows": 107300000000,
-        "columns": 1000000000,
+        "size": 0.368,
+        "rows": 2582,
+        "columns": 16,
         "description": "",
         "created-at": "2024-11-12T10:00:09.611719"
     },
