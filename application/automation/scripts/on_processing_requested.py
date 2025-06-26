@@ -30,6 +30,14 @@ from resources.adult import (
     PATH_INPROCESSING_FAUCI_RES_0_CSV,
     PATH_INPROCESSING_FAUCI_RES_1_CSV,
 )
+from resources.akkodis import (
+    PATH_INPROCESSING_ADVDEB_PRED_0_CSV,
+    PATH_INPROCESSING_ADVDEB_PRED_CSV,
+    PATH_INPROCESSING_ADVDEB_PRED_1_CSV,
+    PATH_INPROCESSING_ADVDEB_RES_0_CSV,
+    PATH_INPROCESSING_ADVDEB_RES_CSV,
+    PATH_INPROCESSING_ADVDEB_RES_1_CSV
+)
 from utils.logs import set_other_loggers_level
 
 from aif360.algorithms.preprocessing import LFR
@@ -940,6 +948,33 @@ def inprocessing_algorithm_FaUCI(
         new_dataset.drop("class", axis=1).rename(columns={"predictions": "class"}),
         pd.read_csv(result_path),
         # pd.DataFrame(df_results),
+    )
+
+
+def inprocessing_algorithm_Adversarial_Debiasing(
+    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+) -> tuple:
+    
+    # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
+    
+    PATH_INPROCESSING_ADVDEB_PRED_0_CSV,
+    PATH_INPROCESSING_ADVDEB_PRED_CSV,
+    PATH_INPROCESSING_ADVDEB_PRED_1_CSV,
+    PATH_INPROCESSING_ADVDEB_RES_0_CSV,
+    PATH_INPROCESSING_ADVDEB_RES_CSV,
+    PATH_INPROCESSING_ADVDEB_RES_1_CSV
+
+    # TODO: to remove
+    if kwargs["lambda_adv"] == 0:
+        result_paths = PATH_INPROCESSING_ADVDEB_PRED_0_CSV, PATH_INPROCESSING_ADVDEB_RES_0_CSV
+    elif kwargs["lambda"] == 1:
+        result_paths = PATH_INPROCESSING_ADVDEB_PRED_CSV, PATH_INPROCESSING_ADVDEB_RES_CSV
+    else:
+        result_paths = PATH_INPROCESSING_ADVDEB_PRED_1_CSV, PATH_INPROCESSING_ADVDEB_RES_1_CSV
+
+    return (
+        pd.read_csv(result_paths[0]),
+        pd.read_csv(result_paths[1]),
     )
 
 
