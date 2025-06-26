@@ -1,3 +1,22 @@
+## [0.41.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.40.3...v0.41.0) (2025-06-26)
+
+### Features
+
+* add akkodis results ([fb2ccf6](https://github.com/aequitas-aod/aequitas-backend/commit/fb2ccf634cd435bbf335b445e78e298ae88300e6))
+* update akkodis dataset ([cd316a7](https://github.com/aequitas-aod/aequitas-backend/commit/cd316a791f33cfee5019c5f28f67e42d622bf83f))
+
+### Dependency updates
+
+* **deps:** update node.js to 22.17 ([#143](https://github.com/aequitas-aod/aequitas-backend/issues/143)) ([c440f97](https://github.com/aequitas-aod/aequitas-backend/commit/c440f97d6400b1a2a50b5bbf9419aaf7c23c0e5b))
+
+### Bug Fixes
+
+* fix akkodis dataset for demo ([92a4534](https://github.com/aequitas-aod/aequitas-backend/commit/92a45347699a6097467a0ddc8bd82ec2c954bf57))
+
+### General maintenance
+
+* fix formatting ([3a48b07](https://github.com/aequitas-aod/aequitas-backend/commit/3a48b075cd8e4b601a96acec0a2d8e5c3459acc5))
+
 ## [0.40.3](https://github.com/aequitas-aod/aequitas-backend/compare/v0.40.2...v0.40.3) (2025-06-24)
 
 ### Bug Fixes
