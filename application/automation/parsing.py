@@ -17,7 +17,7 @@ def to_csv(df: pd.DataFrame, path=None) -> Optional[str]:
     for col in df.columns:
         df[col] = df[col].apply(_convert_to_json)
 
-    params = {"index": False, "quotechar": "'", "lineterminator": "\n"}
+    params = {"index": False, "quotechar": '"', "lineterminator": "\n"}
     if path:
         df.to_csv(path, **params)
     else:
@@ -76,7 +76,7 @@ def _pythonize(obj):
 
 
 def read_csv(path) -> pd.DataFrame:
-    df = pd.read_csv(path, quotechar="'")
+    df = pd.read_csv(path, quotechar='"')
     return _upack_json_strings(df)
 
 
