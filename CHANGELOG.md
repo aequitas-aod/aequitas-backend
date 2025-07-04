@@ -1,3 +1,17 @@
+## [1.0.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.41.0...v1.0.0) (2025-07-04)
+
+### ⚠ BREAKING CHANGES
+
+* change quoteChar for csv data
+
+### Dependency updates
+
+* **deps:** update dependency poethepoet to v0.36.0 ([#144](https://github.com/aequitas-aod/aequitas-backend/issues/144)) ([fa68445](https://github.com/aequitas-aod/aequitas-backend/commit/fa68445027c858c9a0215a16f425709013e7a1bd))
+
+### Refactoring
+
+* change quoteChar for csv data ([c323e26](https://github.com/aequitas-aod/aequitas-backend/commit/c323e2659ea6b8babe427097476a59eabe91feb7))
+
 ## [0.41.0](https://github.com/aequitas-aod/aequitas-backend/compare/v0.40.3...v0.41.0) (2025-06-26)
 
 ### Features
