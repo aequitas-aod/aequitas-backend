@@ -1,3 +1,9 @@
+## [1.0.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.0.1...v1.0.2) (2025-07-08)
+
+### Bug Fixes
+
+* **deps:** update dependency pandas to v2.3.1 ([#146](https://github.com/aequitas-aod/aequitas-backend/issues/146)) ([51e3084](https://github.com/aequitas-aod/aequitas-backend/commit/51e30841dda7ce8d55afe31609999dcd9e4073eb))
+
 ## [1.0.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.0.0...v1.0.1) (2025-07-04)
 
 ### Bug Fixes
