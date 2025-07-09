@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.2.0...v1.3.0) (2025-07-09)
+
+### Features
+
+* **automation:** add test dataset selection reaction ([d2c9d91](https://github.com/aequitas-aod/aequitas-backend/commit/d2c9d9170e47cdc8fe51b1a9c83ea7b4332c073f))
+
 ## [1.2.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.1.0...v1.2.0) (2025-07-09)
 
 ### Features
