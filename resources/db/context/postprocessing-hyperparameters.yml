@@ -1,0 +1,81 @@
+# https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.postprocessing.CalibratedEqOddsPostprocessing.html
+CalibratedEqualizedOdds:
+  cost_constraint:
+    label: Cost Constraint
+    description: "Defines the cost constraint to match for the groups. It can be: `fnr` - match false negatives across groups, `fpr` - match false positives across groups, `weighted` - match a weighted combination of false positives and false negatives."
+    type: categorical
+    default: weighted
+    values:
+      - fnr
+      - fpr
+      - weighted
+
+  random_state:
+    label: Random State
+    description: Seed for reproducibility.
+    type: integer
+    default: 42
+    values: [1, 100]
+
+# https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.postprocessing.EqOddsPostprocessing.html
+EqualizedOdds:
+  random_state:
+    label: Random State
+    description: Seed for reproducibility.
+    type: integer
+    default: 42
+    values: [1, 100]
+
+# https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.postprocessing.RejectOptionClassification.html
+RejectOptionClassification:
+  low_class_thresh:
+    label: Low Class Threshold
+    description: Smallest classification threshold to use in the optimization.
+    type: float
+    default: 0.01
+    values: [0.0, 1.0]
+
+  high_class_thresh:
+    label: High Class Threshold
+    description: Highest classification threshold to use in the optimization.
+    type: float
+    default: 0.99
+    values: [0.0, 1.0]
+
+  num_class_thresh:
+    label: Number of Class Thresholds
+    description: Number of classification thresholds between low_class_thresh and high_class_thresh for the optimization search.
+    type: integer
+    default: 100
+    values: [1, 1000]
+
+  num_ROC_margin:
+    label: Number of ROC Margins
+    description: Number of relevant ROC margins to be used in the optimization search.
+    type: integer
+    default: 50
+    values: [1, 1000]
+
+  metric_name:
+    label: Metric Name
+    description: "Name of the metric to use for the optimization. Allowed options are \"Statistical parity difference\", \"Average odds difference\", \"Equal opportunity difference\"."
+    type: categorical
+    default: Statistical parity difference
+    values:
+      - Statistical parity difference
+      - Average odds difference
+      - Equal opportunity difference
+
+  metric_ub:
+    label: Metric Upper Bound
+    description:  Upper bound of constraint on the metric value.
+    type: float
+    default: 0.05
+    values: [0.0, 1.0]
+
+  metric_lb:
+    label: Metric Lower Bound
+    description: Lower bound of constraint on the metric value.
+    type: float
+    default: -0.05
+    values: [-1.0, 1.0]
