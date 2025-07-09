@@ -70,3 +70,18 @@ class DatasetSelectionQuestionAnsweredReaction(AbstractQuestionAnsweredReaction)
     ) -> Iterable[tuple[str, str]]:
         answer = str(selected_answers_ids[0]["code"])
         yield "current_dataset", f"{answer.removesuffix('Dataset')}-1"
+
+
+class TestDatasetSelectionQuestionAnsweredReaction(AbstractQuestionAnsweredReaction):
+    def __init__(self):
+        super().__init__({10})
+
+    def produce_info(
+        self,
+        project_id: EntityId,
+        project: Project,
+        question_index: int,
+        selected_answers_ids: List[EntityId],
+    ) -> Iterable[tuple[str, str]]:
+        answer = str(selected_answers_ids[0]["code"])
+        yield "current_test_dataset", f"{answer.removesuffix('Dataset')}-1"
