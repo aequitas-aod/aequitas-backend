@@ -45,6 +45,15 @@
         "created-at": "2024-11-12T10:00:09.611719"
     },
     {
+        "id": "adecco",
+        "name": "Adecco Dataset",
+        "size": 20000000000,
+        "rows": 2000000000,
+        "columns": 10,
+        "description": "",
+        "created-at": "2024-11-12T10:00:09.611719"
+    },
+    {
         "id": "skin-disease",
         "name": "Skin Disease Dataset",
         "size": "to replace",
