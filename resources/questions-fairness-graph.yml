@@ -144,12 +144,12 @@
     - id: { code: CorrelationRemover }
       text: Correlation Remover
       description: Correlation Remover removes features highly correlated with others to reduce multicollinearity and improve model fairness.
+    - id: { code: StableDiffusion-BasedDataAugmentation }
+      text: Stable Diffusion-based Data Augmentation
+      description: To fill
     - id: { code: NoDataMitigation }
       text: Do Not Mitigate
       description: null
-#    - id: { code: Done }
-#      text: Do Not Mitigate and Finish
-#      description: null
   enabled_by:
     - { code: StatisticalParityDifference }
     - { code: DisparateImpact } # note the comeback from the summary
@@ -175,6 +175,7 @@
     - { code: LearnedFairRepresentations }
     - { code: Reweighing }
     - { code: CorrelationRemover }
+    - { code: StableDiffusion-BasedDataAugmentation }
   action_needed: null
   created_at: 2024-05-31T18:20:29
 
