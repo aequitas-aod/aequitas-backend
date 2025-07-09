@@ -1,3 +1,14 @@
+## [1.2.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.1.0...v1.2.0) (2025-07-09)
+
+### Features
+
+* add mitigation algorithm for image dataset ([025829a](https://github.com/aequitas-aod/aequitas-backend/commit/025829abac222007b9f6e5958ff617ce2333f84e))
+* **context:** add post-processing hyperparameters ([8d97a76](https://github.com/aequitas-aod/aequitas-backend/commit/8d97a76b6e7c7ff9aac4ebe749e14b6574e8328f))
+
+### Refactoring
+
+* update adecco dataset name ([83b3705](https://github.com/aequitas-aod/aequitas-backend/commit/83b3705cccf34f2ecd20755e332fbfaff802bb1c))
+
 ## [1.1.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.0.2...v1.1.0) (2025-07-09)
 
 ### Features
