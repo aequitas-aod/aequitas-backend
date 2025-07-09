@@ -37,7 +37,7 @@
       text: AEQUITAS - Use Case HR2 - Recruitment
       description: The Akkodis dataset contains data collected during the company's recruitment process, between 2019 and 2023, including candidates' technical skills and sensitive attributes. The task involves predicting whether a candidate has been selected or not.
     - id: { code: AdeccoDataset }
-      text: Adecco Dataset
+      text: AEQUITAS - Use Case HR1 - Recruitment
       description: To fill
   enabled_by:
     - { code: TabularDatasetType }
@@ -293,7 +293,7 @@
       text: AEQUITAS - Use Case HR2 - Recruitment
       description: A polarized version of the Akkodis Dataset.
     - id: { code: Test-AdeccoDataset }
-      text: Adecco Dataset
+      text: AEQUITAS - Use Case HR1 - Recruitment
       description: A polarized version of the Adecco Dataset.
   enabled_by:
     - { code: Test }

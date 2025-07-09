@@ -46,10 +46,10 @@
     },
     {
         "id": "adecco",
-        "name": "Adecco Dataset",
-        "size": 20000000000,
-        "rows": 2000000000,
-        "columns": 10,
+        "name": "AEQUITAS - Use Case HR1 - Recruitment",
+        "size": 0.731,
+        "rows": 8520,
+        "columns": 8,
         "description": "",
         "created-at": "2024-11-12T10:00:09.611719"
     },
