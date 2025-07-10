@@ -84,4 +84,5 @@ class TestDatasetSelectionQuestionAnsweredReaction(AbstractQuestionAnsweredReact
         selected_answers_ids: List[EntityId],
     ) -> Iterable[tuple[str, str]]:
         answer = str(selected_answers_ids[0]["code"])
-        yield "current_test_dataset", f"{answer.removesuffix('Dataset')}-1"
+        current_test_dataset = f"{answer.removesuffix('Dataset')}"
+        yield "current_test_dataset", current_test_dataset
