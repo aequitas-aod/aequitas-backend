@@ -9,7 +9,7 @@ from utils.logs import logger
 from typing import Iterable, Dict
 
 
-_prefixes = ["pre", "in", "post"]
+_prefixes = ["pre", "in", "post", "polarization"]
 
 
 class EventGenerator:

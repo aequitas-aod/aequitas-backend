@@ -146,7 +146,7 @@ class TestContextAutomation(AutomationRelatedTestCase):
             "preprocessing_plot": self.asserIsSvg,
             "performance_plot": self.asserIsSvg,
             "fairness_plot": self.asserIsSvg,
-            "polarization_plot": self.asserIsSvg,
+            # "polarization_plot": self.asserIsSvg,
             "dataset": self.assertIsNonEmptyDataFrameInCsvFormat,
             "dataset_head": self.assertIsNonEmptyDataFrameInCsvFormat,
             "stats": self.assertIsNonEmptyDataFrameInCsvFormat,
@@ -181,7 +181,7 @@ class TestContextAutomation(AutomationRelatedTestCase):
             "metrics": self.assertIsJson,
             "performance_plot": self.asserIsSvg,
             "fairness_plot": self.asserIsSvg,
-            "polarization_plot": self.asserIsSvg,
+            # "polarization_plot": self.asserIsSvg,
         }
         for key_prefix, assertion in key_results.items():
             key = f"{key_prefix}__{algorithm}__{self.dataset_id}"

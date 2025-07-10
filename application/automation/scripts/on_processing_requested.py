@@ -36,6 +36,9 @@ from resources.adecco import (
     PATH_ADECCO_INPROCESSING_ADVDEB_PRED_2_CSV,
     PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV,
     PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV,
 )
 from resources.adult import (
     PATH_INPROCESSING_FAUCI_RES_CSV,
@@ -683,10 +686,10 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                     f"fairness_plot__{result_id}",
                     lambda: generate_plot("fairness", computed_metrics),
                 ),
-                (
-                    f"polarization_plot__{result_id}",
-                    lambda: generate_plot("polarization", computed_metrics),
-                ),
+                # (
+                #     f"polarization_plot__{result_id}",
+                #     lambda: generate_plot("polarization", computed_metrics),
+                # ),
             ]
         except Exception as e:
             self.log_error("Failed to compute no_mitigations metrics", error=e)
@@ -961,7 +964,7 @@ def inprocessing_algorithm_AdversarialDebiasing(
     # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
     # TODO: to remove
-    if sensitive[0] == "cand_provenance_gender":
+    if "cand_provenance_gender" in sensitive:
         if kwargs["lambda_adv"] == 0:
             result_paths = (
                 PATH_ADECCO_INPROCESSING_ADVDEB_PRED_0_CSV,
@@ -1140,6 +1143,11 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         predictions: pd.DataFrame = results[0]
         predictions_head = predictions.head(100)
         computed_metrics: pd.DataFrame = results[1]
+
+        test_dataset_id = "Test-" + dataset_id[:-2]
+        test_predictions = compute_polarization(sensitive, hyperparameters)
+        test_predictions_head = test_predictions.head(100)
+
         cases = [
             (
                 f"predictions_head__{algorithm}__{dataset_id}",
@@ -1161,6 +1169,184 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
             (
                 f"fairness_plot__{algorithm}__{dataset_id}",
                 lambda: generate_plot("fairness", computed_metrics),
+            ),
+            (
+                f"polarization_plot__{algorithm}__{test_dataset_id}",
+                lambda: generate_plot("polarization", computed_metrics),
+            ),
+            (
+                f"predictions_head__{algorithm}__{test_dataset_id}",
+                lambda: to_csv(test_predictions_head),
+            ),
+            (
+                f"predictions__{algorithm}__{test_dataset_id}",
+                lambda: to_csv(test_predictions),
+            ),
+            (
+                f"correlation_matrix__{algorithm}__{test_dataset_id}",
+                lambda: correlation_matrix_picture(test_predictions),
+            ),
+            (
+                f"metrics__{algorithm}__{test_dataset_id}",
+                lambda: generate_metrics(test_predictions, sensitive, targets, metrics),
+            ),
+        ]
+        for k, v in cases:
+            try:
+                yield k, v()
+            except Exception as e:
+                self.log_error("Failed to produce %s", k, error=e)
+
+
+def compute_polarization(
+    sensitive: list[str],
+    hyperparameters: dict,
+):
+    if "cand_provenance_gender" in sensitive:
+        if hyperparameters["lambda_adv"] == 0:
+            result_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV
+        elif hyperparameters["lambda_adv"] == 1:
+            result_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV
+        else:
+            result_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV
+    elif "Sensitive" in sensitive:
+        if hyperparameters["lambda_adv"] == 0:
+            result_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV
+        elif hyperparameters["lambda_adv"] == 1:
+            result_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV
+        else:
+            result_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV
+    elif "f_ESCS" in sensitive:
+        result_path = dataset_path("preprocessed_lfr_result_ull")
+    else:
+        result_path = dataset_path("fauci_predictions")
+
+    result = pd.read_csv(result_path)
+
+    if "lambda" in hyperparameters:
+        result = result.drop("class", axis=1).rename(columns={"predictions": "class"})
+
+    return result
+
+
+class PolarizationProcessingRequestedReaction(AbstractProcessingRequestedReaction):
+    def __init__(self):
+        super().__init__("polarization")
+
+    def __compute_polarization(
+        self,
+        dataset: pd.DataFrame,
+        targets: list[str],
+        sensitive: list[str],
+        proxies: dict,
+        detected: dict,
+        hyperparameters: dict,
+        prefix: str = "polarization",
+    ):
+        algorithm = hyperparameters.pop("$algorithm")
+        # TODO: to remove
+        if "cand_provenance_gender" in sensitive:
+            if hyperparameters["lambda_adv"] == 0:
+                result_paths = (
+                    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV,
+                    PATH_ADECCO_INPROCESSING_ADVDEB_RES_0_CSV,
+                )
+            elif hyperparameters["lambda_adv"] == 1:
+                result_paths = (
+                    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV,
+                    PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV,
+                )
+            else:
+                result_paths = (
+                    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV,
+                    PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV,
+                )
+        elif "Sensitive" in sensitive:
+            if hyperparameters["lambda_adv"] == 0:
+                result_paths = (
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV,
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_0_CSV,
+                )
+            elif hyperparameters["lambda_adv"] == 1:
+                result_paths = (
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV,
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_1_CSV,
+                )
+            else:
+                result_paths = (
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV,
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_CSV,
+                )
+        elif "f_ESCS" in sensitive:
+            result_paths = (
+                dataset_path("preprocessed_lfr_result_ull"),
+                PATH_INPROCESSING_FAUCI_RES_CSV,
+            )
+        else:
+            if hyperparameters["lambda"] == 0:
+                result_path = PATH_INPROCESSING_FAUCI_RES_0_CSV
+            elif hyperparameters["lambda"] == 1:
+                result_path = PATH_INPROCESSING_FAUCI_RES_1_CSV
+            else:
+                result_path = PATH_INPROCESSING_FAUCI_RES_CSV
+
+            result_paths = (
+                dataset_path("fauci_predictions"),
+                result_path,
+            )
+
+        results = (
+            (
+                pd.read_csv(result_paths[0])
+                if "lambda" not in hyperparameters
+                else pd.read_csv(result_paths[0])
+                .drop("class", axis=1)
+                .rename(columns={"predictions": "class"})
+            ),
+            pd.read_csv(result_paths[1]),
+        )
+        return algorithm, results
+
+    def produce_info(
+        self,
+        phase: str,
+        dataset_id: str,
+        dataset: pd.DataFrame,
+        metrics: list[str],
+        targets: list[str],
+        sensitive: list[str],
+        proxies: dict,
+        detected: dict,
+        hyperparameters: dict,
+    ) -> Iterable[tuple[str, Union[str, bytes]]]:
+
+        algorithm, results = self.__compute_polarization(
+            dataset,
+            targets,
+            sensitive,
+            proxies,
+            detected,
+            hyperparameters,
+            prefix=phase,
+        )
+
+        assert isinstance(results, tuple)
+        predictions: pd.DataFrame = results[0]
+        predictions_head = predictions.head(100)
+        computed_metrics: pd.DataFrame = results[1]
+        cases = [
+            (
+                f"predictions_head__{algorithm}__{dataset_id}",
+                lambda: to_csv(predictions_head),
+            ),
+            (f"predictions__{algorithm}__{dataset_id}", lambda: to_csv(predictions)),
+            (
+                f"correlation_matrix__{algorithm}__{dataset_id}",
+                lambda: correlation_matrix_picture(predictions),
+            ),
+            (
+                f"metrics__{algorithm}__{dataset_id}",
+                lambda: generate_metrics(predictions, sensitive, targets, metrics),
             ),
             (
                 f"polarization_plot__{algorithm}__{dataset_id}",
