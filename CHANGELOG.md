@@ -1,3 +1,11 @@
+## [1.4.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.3.0...v1.4.0) (2025-07-10)
+
+### Features
+
+* add adecco datasets ([c6474e1](https://github.com/aequitas-aod/aequitas-backend/commit/c6474e1bcd98f487b14d4748ec6b982a055e1ecb))
+* add polarization stuffs in InProcessing and setup PolarizationProcessing ([152b3b3](https://github.com/aequitas-aod/aequitas-backend/commit/152b3b3dcbc5f98c0b07b454e0871bb32a99fefb))
+* add polarized adecco dataset ([898b9df](https://github.com/aequitas-aod/aequitas-backend/commit/898b9df568b0312f106b1987980f754fccc646ef))
+
 ## [1.3.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.2.0...v1.3.0) (2025-07-09)
 
 ### Features
