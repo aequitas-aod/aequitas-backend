@@ -1,20 +1,23 @@
 import copy
 import io
 import random
+import warnings
 from typing import Iterable, Union
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+from aif360.algorithms.preprocessing import LFR
+from aif360.datasets import BinaryLabelDataset
+from fairlearn import metrics as fairlearn_metrics
+from fairlearn.preprocessing import CorrelationRemover
 from pandas.plotting import parallel_coordinates
-from sklearn.metrics import get_scorer
+from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.model_selection import StratifiedKFold
-
-from resources.db.datasets import dataset_path
+from sklearn.preprocessing import OrdinalEncoder
 
 import utils.env
 from application.automation.parsing import read_csv, to_csv, to_json
-from application.automation.setup import Automator
 from application.automation.scripts.on_dataset_created import (
     get_heads,
     get_stats,
@@ -23,32 +26,32 @@ from application.automation.scripts.on_dataset_features_available import (
     metrics as generate_metrics,
     correlation_matrix_picture,
 )
+from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
+from resources.adecco import (
+    PATH_ADECCO_INPROCESSING_ADVDEB_PRED_1_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_RES_0_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_PRED_0_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_PRED_2_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV,
+)
 from resources.adult import (
     PATH_INPROCESSING_FAUCI_RES_CSV,
     PATH_INPROCESSING_FAUCI_RES_0_CSV,
     PATH_INPROCESSING_FAUCI_RES_1_CSV,
 )
 from resources.akkodis import (
-    PATH_INPROCESSING_ADVDEB_PRED_0_CSV,
-    PATH_INPROCESSING_ADVDEB_PRED_CSV,
-    PATH_INPROCESSING_ADVDEB_PRED_1_CSV,
-    PATH_INPROCESSING_ADVDEB_RES_0_CSV,
-    PATH_INPROCESSING_ADVDEB_RES_CSV,
-    PATH_INPROCESSING_ADVDEB_RES_1_CSV,
+    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV,
+    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV,
+    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV,
+    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_0_CSV,
+    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_CSV,
+    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_1_CSV,
 )
+from resources.db.datasets import dataset_path
 from utils.logs import set_other_loggers_level
-
-from aif360.algorithms.preprocessing import LFR
-from fairlearn.preprocessing import CorrelationRemover
-from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.preprocessing import OrdinalEncoder
-from aif360.datasets import BinaryLabelDataset
-from fairlearn import metrics as fairlearn_metrics
-
-import warnings
-
 
 FIG_WIDTH_SIZE = 12
 FIG_HEIGHT_SIZE = 5
@@ -958,21 +961,38 @@ def inprocessing_algorithm_AdversarialDebiasing(
     # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
     # TODO: to remove
-    if kwargs["lambda_adv"] == 0:
-        result_paths = (
-            PATH_INPROCESSING_ADVDEB_PRED_0_CSV,
-            PATH_INPROCESSING_ADVDEB_RES_0_CSV,
-        )
-    elif kwargs["lambda_adv"] == 1:
-        result_paths = (
-            PATH_INPROCESSING_ADVDEB_PRED_1_CSV,
-            PATH_INPROCESSING_ADVDEB_RES_1_CSV,
-        )
+    if sensitive[0] == "cand_provenance_gender":
+        if kwargs["lambda_adv"] == 0:
+            result_paths = (
+                PATH_ADECCO_INPROCESSING_ADVDEB_PRED_0_CSV,
+                PATH_ADECCO_INPROCESSING_ADVDEB_RES_0_CSV,
+            )
+        elif kwargs["lambda_adv"] == 1:
+            result_paths = (
+                PATH_ADECCO_INPROCESSING_ADVDEB_PRED_1_CSV,
+                PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV,
+            )
+        else:
+            result_paths = (
+                PATH_ADECCO_INPROCESSING_ADVDEB_PRED_2_CSV,
+                PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV,
+            )
     else:
-        result_paths = (
-            PATH_INPROCESSING_ADVDEB_PRED_CSV,
-            PATH_INPROCESSING_ADVDEB_RES_CSV,
-        )
+        if kwargs["lambda_adv"] == 0:
+            result_paths = (
+                PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV,
+                PATH_AKKODIS_INPROCESSING_ADVDEB_RES_0_CSV,
+            )
+        elif kwargs["lambda_adv"] == 1:
+            result_paths = (
+                PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV,
+                PATH_AKKODIS_INPROCESSING_ADVDEB_RES_1_CSV,
+            )
+        else:
+            result_paths = (
+                PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV,
+                PATH_AKKODIS_INPROCESSING_ADVDEB_RES_CSV,
+            )
 
     return (
         pd.read_csv(result_paths[0]),
