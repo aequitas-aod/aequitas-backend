@@ -36,7 +36,7 @@ aequitas-fairlib = "^2.8.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "25.1.0"
-python-on-whales = "0.77.0"
+python-on-whales = "0.78.0"
 
 [build-system]
 requires = ["poetry-core"]
