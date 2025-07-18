@@ -1,3 +1,13 @@
+## [1.4.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.4.0...v1.4.1) (2025-07-18)
+
+### Dependency updates
+
+* **deps:** update dependency python-on-whales to v0.78.0 ([#147](https://github.com/aequitas-aod/aequitas-backend/issues/147)) ([d5122e8](https://github.com/aequitas-aod/aequitas-backend/commit/d5122e884ff05ded788d75063276caab791f867f))
+
+### Bug Fixes
+
+* **deps:** update dependency scikit-learn to v1.7.1 ([#148](https://github.com/aequitas-aod/aequitas-backend/issues/148)) ([e735896](https://github.com/aequitas-aod/aequitas-backend/commit/e735896c95b28ed9953b7f93fc70d6f68f1e72a6))
+
 ## [1.4.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.3.0...v1.4.0) (2025-07-10)
 
 ### Features
