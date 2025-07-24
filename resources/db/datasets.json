@@ -56,7 +56,7 @@
     {
         "id": "skin-disease",
         "name": "Skin Disease Dataset",
-        "size": 773,
+        "size": 773.0,
         "rows": 49269,
         "columns": 3,
         "description": "This dataset contains images of skin diseases for classification purposes.",
