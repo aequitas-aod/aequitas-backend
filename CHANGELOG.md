@@ -1,3 +1,11 @@
+## [1.5.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.5.0...v1.5.1) (2025-07-24)
+
+### Bug Fixes
+
+* fix image dataset metadata ([c25d354](https://github.com/aequitas-aod/aequitas-backend/commit/c25d3547d2798f698a9e91d1d97782195303c2c6))
+* regenerate context ([df6d3ab](https://github.com/aequitas-aod/aequitas-backend/commit/df6d3ab0370f0907b9dc234db850a21ffc3d1852))
+* regenerate context ([073a8a0](https://github.com/aequitas-aod/aequitas-backend/commit/073a8a0c86f04e0457ca25d233cf81b6bf13ca04))
+
 ## [1.5.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.4.1...v1.5.0) (2025-07-24)
 
 ### Features
