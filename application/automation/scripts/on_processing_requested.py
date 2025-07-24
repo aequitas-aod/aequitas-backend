@@ -53,6 +53,15 @@ from resources.akkodis import (
     PATH_AKKODIS_INPROCESSING_ADVDEB_RES_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_RES_1_CSV,
 )
+from resources.skin_deseases import (
+    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_RES_NONE_CSV,
+    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_RES_MIN_CSV,
+    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_RES_BALANCED_CSV,
+    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_NONE_CSV,
+    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_MIN_CSV,
+    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_BALANCED_CSV,
+    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV,
+)
 from resources.db.datasets import dataset_path
 from utils.logs import set_other_loggers_level
 
@@ -400,6 +409,31 @@ def _discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
 def _filter_keys(data: dict, *keys):
     keys = set(keys)
     return {k: v for k, v in data.items() if k in keys}
+
+
+def preprocessing_algorithm_StableDiffusionBasedDataAugmentation(
+    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+) -> pd.DataFrame:
+    if "min" in kwargs["augmentation_criterion"]:
+        result_paths = (
+            PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_MIN_CSV,
+            PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_RES_MIN_CSV,
+        )
+    elif "balanced" in kwargs["augmentation_criterion"]:
+        result_paths = (
+            PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_BALANCED_CSV,
+            PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_RES_BALANCED_CSV,
+        )
+    else:
+        result_paths = (
+            PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_NONE_CSV,
+            PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_RES_NONE_CSV,
+        )
+
+    return (
+        pd.read_csv(result_paths[0]),
+        pd.read_csv(result_paths[1]),
+    )
 
 
 def preprocessing_algorithm_LearnedFairRepresentations(
@@ -1218,6 +1252,8 @@ def compute_polarization(
             result_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV
     elif "f_ESCS" in sensitive:
         result_path = dataset_path("preprocessed_lfr_result_ull")
+    elif "skin_color" in sensitive:
+        result_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV
     else:
         result_path = dataset_path("fauci_predictions")
 

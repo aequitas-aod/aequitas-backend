@@ -58,7 +58,7 @@ StableDiffusionBasedDataAugmentation:
     description: Augmentation Criterion for the bias remover
     type: categorical
     default: none
-    values: ['none', 'augmin', 'augbalanced']
+    values: ['none', 'min', 'balanced']
   batch_size:
     label: Batch Size
     description: Batch size for the data augmentation

@@ -296,6 +296,9 @@
     - id: { code: Test-AdeccoDataset }
       text: AEQUITAS - Use Case HR1 - Recruitment
       description: A polarized version of the Adecco Dataset.
+    - id: { code: Test-SkinDiseaseDataset }
+      text: AEQUITAS - Use Case HC1 - Skin Disease
+      description: A polarized version of the Skin Disease Dataset.
   enabled_by:
     - { code: Test }
   action_needed: null
