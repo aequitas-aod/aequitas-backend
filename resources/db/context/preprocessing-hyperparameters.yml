@@ -51,3 +51,23 @@ CorrelationRemover:
     type: float
     default: 0.5
     values: [0, 1]
+
+StableDiffusionBasedDataAugmentation:
+  augmentation_criterion:
+    label: Augmentation Criterion
+    description: Augmentation Criterion for the bias remover
+    type: categorical
+    default: none
+    values: ['none', 'augmin', 'augbalanced']
+  batch_size:
+    label: Batch Size
+    description: Batch size for the data augmentation
+    type: integer
+    default: 256
+    values: [1, 512]
+  epochs:
+    label: Epochs
+    description: Number of epochs for the data augmentation
+    type: integer
+    default: 100
+    values: [1, 1000]

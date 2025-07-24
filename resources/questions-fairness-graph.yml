@@ -84,9 +84,9 @@
   created_at: 2024-05-31T18:20:24
 
 - id: { code: FeaturesSelection }
-  text: | 
+  text: |
     Which are the sensitive and output features?
-    Select features on the left. Columns display all statistical information about the features. On the right, choose the sensitive features and a target feature to predict. Features potentially sensitive based on their names are preselected automatically but you can deselect them. 
+    Select features on the left. Columns display all statistical information about the features. On the right, choose the sensitive features and a target feature to predict. Features potentially sensitive based on their names are preselected automatically but you can deselect them.
   description: Mark the features that are sensitive and the ones that are the output of the model.
   type: multiple
   answers:
@@ -144,7 +144,7 @@
     - id: { code: CorrelationRemover }
       text: Correlation Remover
       description: Correlation Remover removes features highly correlated with others to reduce multicollinearity and improve model fairness.
-    - id: { code: StableDiffusion-BasedDataAugmentation }
+    - id: { code: StableDiffusionBasedDataAugmentation }
       text: Stable Diffusion-based Data Augmentation
       description: To fill
     - id: { code: NoDataMitigation }
