@@ -695,14 +695,19 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
             hyperparameters,
             prefix=phase,
         )
-        assert isinstance(result, pd.DataFrame)
+        computed_metrics = None
+        if isinstance(result, tuple):
+            assert len(result) == 2, "Expected a tuple of two dataframes"
+            result, computed_metrics = result
+        assert isinstance(result, pd.DataFrame), f"Expected dataframe, got {type(result)}: {result!r}"
         result_id = self.next_name(dataset_id)
         self.log("New dataset id: %s", result_id)
         cases = []
         try:
-            computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(
-                dataset, targets, sensitive
-            )
+            if computed_metrics is None:
+                computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(
+                    dataset, targets, sensitive
+                )
             cases = [
                 (
                     f"preprocessing_plot__{result_id}",
