@@ -1,3 +1,9 @@
+## [1.6.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.5.2...v1.6.0) (2025-07-24)
+
+### Features
+
+* add polarization plots for skin disease dataset ([ffca903](https://github.com/aequitas-aod/aequitas-backend/commit/ffca903a7b72962b966026b8be28f73528deff84))
+
 ## [1.5.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.5.1...v1.5.2) (2025-07-24)
 
 ### Bug Fixes
