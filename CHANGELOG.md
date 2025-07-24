@@ -1,3 +1,10 @@
+## [1.5.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.4.1...v1.5.0) (2025-07-24)
+
+### Features
+
+* add stable diffusion hyper-parameters ([1f8d941](https://github.com/aequitas-aod/aequitas-backend/commit/1f8d941feb38d99b0fc592d7b3e91147ee845182))
+* support for skin disease usecase ([b5707b7](https://github.com/aequitas-aod/aequitas-backend/commit/b5707b7fc320c38da672bb5c27811bf470980c01))
+
 ## [1.4.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.4.0...v1.4.1) (2025-07-18)
 
 ### Dependency updates
