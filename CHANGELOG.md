@@ -1,3 +1,9 @@
+## [1.6.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.6.0...v1.6.1) (2025-07-24)
+
+### Bug Fixes
+
+* fix plot with wrong standard deviations ([a115796](https://github.com/aequitas-aod/aequitas-backend/commit/a115796421df91307f3602c9afdf95dcc3726c15))
+
 ## [1.6.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.5.2...v1.6.0) (2025-07-24)
 
 ### Features
