@@ -686,7 +686,7 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         detected: dict,
         hyperparameters: dict,
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
-        _, result = self._call_global_algorithm(
+        algorithm, result = self._call_global_algorithm(
             dataset,
             targets,
             sensitive,
@@ -705,8 +705,11 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         result_id = self.next_name(dataset_id)
         self.log("New dataset id: %s", result_id)
         cases = []
+
+        test_dataset_id = "Test-" + dataset_id[:-2]
+        test_predictions = compute_polarization(sensitive, hyperparameters)
+        test_predictions_head = test_predictions.head(100)
         try:
-            cases = []
             if computed_metrics is None:
                 computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(
                     dataset, targets, sensitive
@@ -733,10 +736,28 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                     f"fairness_plot__{result_id}",
                     lambda: generate_plot("fairness", computed_metrics),
                 ),
-                # (
-                #     f"polarization_plot__{result_id}",
-                #     lambda: generate_plot("polarization", computed_metrics),
-                # ),
+                (
+                    f"polarization_plot__{algorithm}__{test_dataset_id}",
+                    lambda: generate_plot("polarization", computed_metrics),
+                ),
+                (
+                    f"predictions_head__{algorithm}__{test_dataset_id}",
+                    lambda: to_csv(test_predictions_head),
+                ),
+                (
+                    f"predictions__{algorithm}__{test_dataset_id}",
+                    lambda: to_csv(test_predictions),
+                ),
+                (
+                    f"correlation_matrix__{algorithm}__{test_dataset_id}",
+                    lambda: correlation_matrix_picture(test_predictions),
+                ),
+                (
+                    f"metrics__{algorithm}__{test_dataset_id}",
+                    lambda: generate_metrics(
+                        test_predictions, sensitive, targets, metrics
+                    ),
+                ),
             ]
         except Exception as e:
             self.log_error("Failed to compute no_mitigations metrics", error=e)

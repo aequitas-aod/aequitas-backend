@@ -74,7 +74,7 @@ class DatasetSelectionQuestionAnsweredReaction(AbstractQuestionAnsweredReaction)
 
 class TestDatasetSelectionQuestionAnsweredReaction(AbstractQuestionAnsweredReaction):
     def __init__(self):
-        super().__init__({10})
+        super().__init__({9})
 
     def produce_info(
         self,
