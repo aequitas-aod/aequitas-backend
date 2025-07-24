@@ -1,0 +1,45 @@
+fold,metric_type,metric,value_nomitig,value_mitig,value_pol
+0,fairness,Iatrogenic Drug Induced Exanthema,0.7158,0.8884,0.7217
+1,fairness,Iatrogenic Drug Induced Exanthema,0.7244,0.8753,0.7137
+2,fairness,Iatrogenic Drug Induced Exanthema,0.7364,0.8691,0.6854
+3,fairness,Iatrogenic Drug Induced Exanthema,0.7034,0.8872,0.6792
+0,fairness,Maculopapular Exanthema,0.7455,0.6463,0.5632
+1,fairness,Maculopapular Exanthema,0.7442,0.6196,0.6063
+2,fairness,Maculopapular Exanthema,0.7362,0.6581,0.547
+3,fairness,Maculopapular Exanthema,0.7341,0.6761,0.5235
+0,fairness,Morbilliform Exanthema,0.7319,0.9564,0.7713
+1,fairness,Morbilliform Exanthema,0.7865,0.9367,0.7698
+2,fairness,Morbilliform Exanthema,0.7529,0.9527,0.7504
+3,fairness,Morbilliform Exanthema,0.7687,0.9543,0.7886
+0,fairness,Polymorphous Exanthema,0.7101,0.5883,0.8093
+1,fairness,Polymorphous Exanthema,0.7598,0.606,0.7954
+2,fairness,Polymorphous Exanthema,0.7358,0.5542,0.7714
+3,fairness,Polymorphous Exanthema,0.7143,0.5715,0.7839
+0,fairness,Viral Exanthema,0.8869,0.9304,0.7915
+1,fairness,Viral Exanthema,0.8993,0.9513,0.7291
+2,fairness,Viral Exanthema,0.9318,0.9717,0.7625
+3,fairness,Viral Exanthema,0.9219,0.9466,0.7568
+0,fairness,Urticaria,0.7373,0.7411,0.927
+1,fairness,Urticaria,0.7195,0.7432,0.9405
+2,fairness,Urticaria,0.76,0.7522,0.9377
+3,fairness,Urticaria,0.7432,0.7636,0.9148
+0,fairness,Pediculosis,0.6108,0.7525,0.4165
+1,fairness,Pediculosis,0.6058,0.798,0.4503
+2,fairness,Pediculosis,0.579,0.7501,0.4318
+3,fairness,Pediculosis,0.6444,0.7394,0.4213
+0,fairness,Scabies,0.0957,0.4479,0.898
+1,fairness,Scabies,0.1237,0.4271,0.9116
+2,fairness,Scabies,0.1053,0.437,0.9166
+3,fairness,Scabies,0.0754,0.488,0.9138
+0,fairness,Chickenpox,0.3694,0.3482,0.4133
+1,fairness,Chickenpox,0.3417,0.3547,0.414
+2,fairness,Chickenpox,0.3346,0.3523,0.3898
+3,fairness,Chickenpox,0.3542,0.3449,0.463
+0,performance,Accuracy,0.901,0.8868,0.888
+1,performance,Accuracy,0.9212,0.8779,0.8844
+2,performance,Accuracy,0.886,0.8953,0.9386
+3,performance,Accuracy,0.9438,0.9159,0.897
+0,performance,F1,0.8877,0.878,0.8911
+1,performance,F1,0.9072,0.907,0.8766
+2,performance,F1,0.9224,0.8901,0.8881
+3,performance,F1,0.8827,0.8848,0.9442
