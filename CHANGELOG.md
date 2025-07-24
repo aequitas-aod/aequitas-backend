@@ -1,3 +1,11 @@
+## [1.5.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.5.1...v1.5.2) (2025-07-24)
+
+### Bug Fixes
+
+* naming of StableDiffusionBasedDataAugmentation ([c9f78c6](https://github.com/aequitas-aod/aequitas-backend/commit/c9f78c6440db27135cdfa5fa0bc0b4ad72ff1c22))
+* preprocessing metrics for stable diffusion ([2b8c50b](https://github.com/aequitas-aod/aequitas-backend/commit/2b8c50b9dd7e5730ecba1a27e8f05410a25399df))
+* skin-desease dataset's size and rows metadata ([329251c](https://github.com/aequitas-aod/aequitas-backend/commit/329251cb0359ae401107c2d7477023b9ee01dbd7))
+
 ## [1.5.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.5.0...v1.5.1) (2025-07-24)
 
 ### Bug Fixes
