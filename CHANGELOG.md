@@ -1,3 +1,9 @@
+## [1.6.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.6.1...v1.6.2) (2025-07-25)
+
+### Bug Fixes
+
+* **deps:** update dependency coverage to v7.10.0 ([#149](https://github.com/aequitas-aod/aequitas-backend/issues/149)) ([78e7e41](https://github.com/aequitas-aod/aequitas-backend/commit/78e7e4158472115fd6ffb66de7a1638744748f45))
+
 ## [1.6.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.6.0...v1.6.1) (2025-07-24)
 
 ### Bug Fixes
