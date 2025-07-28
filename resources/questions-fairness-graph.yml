@@ -146,7 +146,7 @@
       description: Correlation Remover removes features highly correlated with others to reduce multicollinearity and improve model fairness.
     - id: { code: StableDiffusionBasedDataAugmentation }
       text: Stable Diffusion-based Data Augmentation
-      description: To fill
+      description: An augmentation based on Stable Diffusion training via DreamBooth followed by a classification step via a Swin Transformer.
     - id: { code: NoDataMitigation }
       text: Do Not Mitigate
       description: null
