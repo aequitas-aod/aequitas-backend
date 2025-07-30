@@ -1,23 +1,22 @@
+import io
+import threading
 import time
 from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Set, Optional, io
+from typing import Set, Optional
 
 from flask import Blueprint, request, Response, send_file
 from flask_restful import Api, Resource
 
-from infrastructure.ws.resources import EventGenerator
 from domain.common.core import EntityId
 from domain.project.core import Project
 from domain.project.factories import ProjectFactory
-from infrastructure.ws.setup import project_service, events_service
+from infrastructure.ws.resources import EventGenerator
+from infrastructure.ws.setup import project_service
 from presentation.presentation import serialize, deserialize
 from utils.encodings import encode
 from utils.errors import ConflictError, NotFoundError, BadRequestError
 from utils.logs import logger
 from utils.status_code import StatusCode
-import threading
-
 
 projects_bp = Blueprint("projects", __name__)
 api = Api(projects_bp)
