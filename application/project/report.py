@@ -24,6 +24,8 @@ from reportlab.platypus import (
     KeepTogether,
 )
 
+from utils.logs import logger
+
 extra_feature_selection = False
 
 
@@ -57,7 +59,7 @@ def is_csv(value):
         pd.read_csv(io.StringIO(value))
         return True
     except Exception as e:
-        print("Error reading CSV:", e)
+        logger.info("Error reading CSV:", e)
         return False
 
 
@@ -105,7 +107,7 @@ def graph_creator(temp_dir, output_folder, key, svg_value):
 
         convert_svg_to_png(svg_output, png_output)
     except UnicodeDecodeError:
-        print(f"File '{svg_value}' (key: {key}) is not plain UTF-8 text.")
+        logger.info(f"File '{svg_value}' (key: {key}) is not plain UTF-8 text.")
 
 
 def add_title_overlay(page, title_text):
@@ -193,7 +195,7 @@ def PDFCreator2(temp_dir, folder, file_name):
 
             with open(final_report_path, "wb") as f_out:
                 writer.write(f_out)
-            print(f"Appended to existing PDF at {final_report_path}")
+            logger.info(f"Appended to existing PDF at {final_report_path}")
         else:
             # Save as new PDF
             writer = PdfWriter()
@@ -202,7 +204,7 @@ def PDFCreator2(temp_dir, folder, file_name):
 
             with open(final_report_path, "wb") as f_out:
                 writer.write(f_out)
-            print(f"PDF created at {final_report_path}")
+            logger.info(f"PDF created at {final_report_path}")
 
     pdfs = [f for f in os.listdir(folder) if f.lower().endswith(".pdf")]
     pdfs.sort(key=lambda f: os.path.getctime(os.path.join(folder, f)))
@@ -212,7 +214,7 @@ def PDFCreator2(temp_dir, folder, file_name):
 
         # If report.pdf already exists, add its pages first
         if os.path.exists(final_report_path):
-            print(f"Appending to existing {final_report_path}")
+            logger.info(f"Appending to existing {final_report_path}")
             with open(final_report_path, "rb") as existing:
                 reader = PdfReader(existing)
                 for page in reader.pages:
@@ -228,13 +230,13 @@ def PDFCreator2(temp_dir, folder, file_name):
             if os.path.abspath(full_path) == os.path.abspath(final_report_path):
                 continue  # skip report.pdf itself
 
-            print(f"Adding {pdf_file}")
+            logger.info(f"Adding {pdf_file}")
             reader = PdfReader(full_path)
 
             for i, page in enumerate(reader.pages):
                 # Add title overlay only on the first page of the first PDF
                 if first_pdf and i == 0:
-                    print(f"Adding title to {pdf_file}'s first page")
+                    logger.info(f"Adding title to {pdf_file}'s first page")
                     page = add_title_overlay(page, title)
 
                 writer.add_page(page)
@@ -246,7 +248,7 @@ def PDFCreator2(temp_dir, folder, file_name):
         with open(final_report_path, "wb") as f_out:
             writer.write(f_out)
 
-    print(f"Report generated at {final_report_path}")
+    logger.info(f"Report generated at {final_report_path}")
 
 
 def csv_to_pdf_table(temp_dir, folder, output_pdf, csv_string):
@@ -317,7 +319,7 @@ def csv_to_pdf_table(temp_dir, folder, output_pdf, csv_string):
         )
         doc.build(elements)
 
-        print(f"Created PDF: {output_path}")
+        logger.info(f"Created PDF: {output_path}")
 
 
 def csv_with_json_to_pdf(folder, output_pdf, csv_file):
@@ -510,7 +512,7 @@ def csv_with_json_to_pdf(folder, output_pdf, csv_file):
 
     # Build PDF
     doc.build(elements)
-    print("PDF of a table with json generated at:", pdf_path)
+    logger.info("PDF of a table with json generated at:", pdf_path)
 
 
 def truncate_text(text, max_len=150):
@@ -535,7 +537,7 @@ def json_to_pdf2(temp_dir, folder, section_title, json_string):
         Spacer(1, 12),
     ]
 
-    print(section_title)
+    logger.info(section_title)
     data = json.loads(json_string)
 
     cleaned_data = {key.strip('" '): value for key, value in data.items()}
@@ -621,7 +623,7 @@ def json_to_pdf2(temp_dir, folder, section_title, json_string):
         elements.append(table)
         doc.build(elements)
 
-        print(f"PDF saved as: {pdf_filename}")
+        logger.info(f"PDF saved as: {pdf_filename}")
 
 
 def create_histogram_image(labels, values, img_path, title=None):
@@ -746,7 +748,7 @@ def histogram_json_to_pdf(folder, pdf_name, json_value):
                 elements.append(Spacer(1, 24))
 
         doc.build(elements)
-        print(f"PDF created at: {pdf_path}")
+        logger.info(f"PDF created at: {pdf_path}")
 
 
 def suggested_json_to_pdf(folder, name, data):
@@ -819,7 +821,7 @@ def suggested_json_to_pdf(folder, name, data):
             elements.append(Spacer(1, 24))
 
     doc.build(elements)
-    print(f"PDF saved to {doc.filename}")
+    logger.info(f"PDF saved to {doc.filename}")
 
 
 def preprocessing_json_to_pdf(folder, name, path):
@@ -866,7 +868,7 @@ def preprocessing_json_to_pdf(folder, name, path):
     elements.append(Spacer(1, 24))
 
     doc.build(elements)
-    print(f"PDF saved to: {os.path.join(folder, f'{name}.pdf')}")
+    logger.info(f"PDF saved to: {os.path.join(folder, f'{name}.pdf')}")
 
 
 def create_report_data(temp_dir, title, dictionary):
@@ -891,4 +893,4 @@ def create_report(temp_dir: str, file_name: str):
         for dir in folders:
             PDFCreator2(temp_dir, dir, file_name)
     else:
-        print("ReportData does not exist")
+        logger.info("ReportData does not exist")
