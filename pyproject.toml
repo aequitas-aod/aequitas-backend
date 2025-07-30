@@ -33,6 +33,9 @@ seaborn = "^0.13.2"
 aif360 = "^0.6.1"
 fairlearn = "^0.12.0"
 aequitas-fairlib = "^2.8.0"
+reportlab = "^4.4.3"
+svglib = "^1.5.1"
+pypdf2 = "^3.0.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "25.1.0"

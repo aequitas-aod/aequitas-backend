@@ -1,15 +1,20 @@
-from typing import Optional, List, Union
+import io
+import re
+import tempfile
+from pathlib import Path
+from typing import Optional, List, Union, Dict
+from warnings import warn
 
 import shortuuid
 
+import utils.encodings as base64
+from application.project.report import create_report_data, create_report
 from domain.common.core import EntityId
 from domain.project.core import Project
 from domain.project.factories import ProjectFactory
 from domain.project.repositories import ProjectRepository
 from utils.encodings import encode
 from utils.errors import BadRequestError, NotFoundError
-
-import utils.encodings as base64
 
 
 class ProjectService:
@@ -132,3 +137,59 @@ class ProjectService:
                 value, binary = self.__bytes_to_string(value)
             return value, binary
         raise NotFoundError("Project does not exist")
+
+    def create_report(self, project_id: EntityId) -> io.BytesIO:
+        """Creates the report of the experiment.
+
+        :param project_id: the id of the project
+        :return: the pdf report of the project
+        """
+        project = self.project_repository.get_project_by_id(project_id)
+        public_context = self.project_repository.get_public_context()
+        ctx = project.get_context() | public_context
+        regex_patterns_for_report: Dict[re.Pattern, str] = {
+            re.compile(r"^dataset_head__\w+-1$"): "Dataset View",
+            re.compile(r"^stats__\w+-1$"): "Features View",
+            re.compile(r"^correlation_matrix__\w+-1$"): "Proxies",
+            re.compile(r"^suggested_proxies__\w+-1$"): "Proxies",
+            re.compile(r"^metrics__\w+-1$"): "Detection",
+            re.compile(r"^preprocessing__\w+$"): "Data Mitigation",
+            re.compile(r"^preprocessing_plot__\w+-2$"): "Data Mitigation Results",
+            re.compile(r"^performance_plot__\w+-2$"): "Data Mitigation Results",
+            re.compile(r"^fairness_plot__\w+-2$"): "Data Mitigation Results",
+            re.compile(r"^dataset_head__\w+-2$"): "Data Mitigation Results",
+            re.compile(r"^correlation_matrix__\w+-2$"): "Data Mitigation Results",
+            re.compile(r"^metrics__\w+-2$"): "Data Mitigation Results",
+            re.compile(r"^polarization_plot__[\w-]+__[\w-]+$"): "Stress Test Results",
+            re.compile(r"^predictions_head__[\w-]+__[\w-]+$"): "Stress Test Results",
+            re.compile(r"^correlation_matrix__[\w-]+__[\w-]+$"): "Stress Test Results",
+        }
+
+        current_dataset: str = ctx.get("current_dataset")[:-2]
+        ctx: dict = {key: value for key, value in ctx.items() if current_dataset in key}
+        to_delete: List[str] = []
+        with tempfile.TemporaryDirectory() as temp_dir:
+            for pattern, title in regex_patterns_for_report.items():
+                for key, value in ctx.items():
+                    if pattern.match(key):
+                        to_delete.append(key)
+                        if isinstance(value, bytes):
+                            value = value.decode("utf-8")
+                        create_report_data(temp_dir, title, {key: value})
+                    else:
+                        warn(
+                            f"Pattern '{pattern}' did not match any key in the context.",
+                            RuntimeWarning,
+                        )
+            print(to_delete)
+            # file_name: str = f"report_{project_id.code}.pdf"
+            file_name: str = f"report.pdf"
+            create_report(temp_dir, file_name)
+            print("Report created successfully")
+            report_path = Path(temp_dir) / file_name
+            # Create an in-memory file
+            file_data: io.BytesIO = io.BytesIO(report_path.read_bytes())
+
+            # You must seek back to start
+            file_data.seek(0)
+            return file_data

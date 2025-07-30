@@ -1,8 +1,9 @@
 import time
 from datetime import datetime, timedelta
-from typing import Set, Optional
+from pathlib import Path
+from typing import Set, Optional, io
 
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, Response, send_file
 from flask_restful import Api, Resource
 
 from infrastructure.ws.resources import EventGenerator
@@ -195,6 +196,20 @@ class ProjectExistenceResource(Resource):
         return exists, StatusCode.OK
 
 
+class ProjectReportResource(Resource):
+
+    def get(self, project_id=None):
+        project_id: EntityId = ProjectFactory.id_of(code=project_id)
+        report_data: io.BytesIO = project_service.create_report(project_id)
+        return send_file(
+            report_data,
+            mimetype="application/pdf",
+            as_attachment=True,
+            download_name="report.pdf",
+        )
+
+
 api.add_resource(ProjectResource, "/projects", "/projects/<string:project_id>")
 api.add_resource(ProjectContextResource, "/projects/<string:project_id>/context")
 api.add_resource(ProjectExistenceResource, "/projects/<string:project_id>/exists")
+api.add_resource(ProjectReportResource, "/projects/<string:project_id>/report")

@@ -20,7 +20,12 @@ FROM python:3.13-slim AS production
 # removes the configurations to delete cached files after a successful install
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && \
+    apt-get install -y curl && \
+    apt-get install -y librsvg2-bin && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 
 ENV VIRTUAL_ENV="/home/aequitas-backend/.venv"
 
@@ -38,3 +43,4 @@ COPY --from=build ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 ENV ENV=production
 
 CMD ["sh", "-c", "poe serve --port $AEQUITAS_BACKEND_PORT"]
+
