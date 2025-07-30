@@ -1,3 +1,19 @@
+## [1.7.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.6.3...v1.7.0) (2025-07-30)
+
+### Features
+
+* add report creation ([15a52e3](https://github.com/aequitas-aod/aequitas-backend/commit/15a52e3c98cd0e3b76765c49d5da0dd1b423f1c6))
+
+### Bug Fixes
+
+* add detection graph to report ([9bca41e](https://github.com/aequitas-aod/aequitas-backend/commit/9bca41ebc9bfcf737075aa40ffc0aea981326f34))
+
+### General maintenance
+
+* add description to image preprocessing algorithm ([ccb3cf0](https://github.com/aequitas-aod/aequitas-backend/commit/ccb3cf06ba9a10fed818e4e55157af0caaf4468d))
+* add metrics after mitigation in pdf report ([fa91480](https://github.com/aequitas-aod/aequitas-backend/commit/fa914808422f93947888042143e7274ba688605d))
+* replace print with logger ([47a861e](https://github.com/aequitas-aod/aequitas-backend/commit/47a861e9ce6f3dfbb5c48c103ed2c25f6dbb9383))
+
 ## [1.6.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.6.2...v1.6.3) (2025-07-27)
 
 ### Bug Fixes
