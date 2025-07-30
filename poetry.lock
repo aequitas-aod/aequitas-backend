@@ -1231,14 +1231,14 @@ test = ["pep440", "pre-commit", "pytest", "testpath"]
 
 [[package]]
 name = "neo4j"
-version = "5.28.1"
+version = "5.28.2"
 description = "Neo4j Bolt driver for Python"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "neo4j-5.28.1-py3-none-any.whl", hash = "sha256:6755ef9e5f4e14b403aef1138fb6315b120631a0075c138b5ddb2a06b87b09fd"},
-    {file = "neo4j-5.28.1.tar.gz", hash = "sha256:ae8e37a1d895099062c75bc359b2cce62099baac7be768d0eba7180c1298e214"},
+    {file = "neo4j-5.28.2-py3-none-any.whl", hash = "sha256:5c53b5c3eee6dee7e920c9724391aa38d7135a651e71b766da00533b92a91a94"},
+    {file = "neo4j-5.28.2.tar.gz", hash = "sha256:7d38e27e4f987a45cc9052500c6ee27325cb23dae6509037fe31dd7ddaed70c7"},
 ]
 
 [package.dependencies]
@@ -2479,4 +2479,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">= 3.10.0, < 4.0.0"
-content-hash = "3218e1fc16e286ac40c9fe3bd46cc1979d4338b84f458f152a70b4d7e5d004a2"
+content-hash = "b4104c70c317f614f139bbae61c6d5719d585db93b9c33c8efb4b1ab61fa6035"
