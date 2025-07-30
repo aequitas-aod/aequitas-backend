@@ -159,10 +159,10 @@ class ProjectService:
             re.compile(r"^fairness_plot__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^dataset_head__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^correlation_matrix__\w+-2$"): "Data Mitigation Results",
-            re.compile(r"^metrics__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^polarization_plot__[\w-]+__[\w-]+$"): "Stress Test Results",
             re.compile(r"^predictions_head__[\w-]+__[\w-]+$"): "Stress Test Results",
             re.compile(r"^correlation_matrix__[\w-]+__[\w-]+$"): "Stress Test Results",
+            re.compile(r"^metrics__[\w-]+__[\w-]+$"): "Stress Test Results",
         }
 
         current_dataset: str = ctx.get("current_dataset")[:-2]
