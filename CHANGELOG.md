@@ -1,3 +1,9 @@
+## [1.7.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.7.0...v1.7.1) (2025-07-30)
+
+### Bug Fixes
+
+* fix import ([8c23912](https://github.com/aequitas-aod/aequitas-backend/commit/8c2391242615eb12314c29c4136004df83753578))
+
 ## [1.7.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.6.3...v1.7.0) (2025-07-30)
 
 ### Features
