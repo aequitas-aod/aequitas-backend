@@ -9,6 +9,7 @@ from application.events import EventsService
 from typing import Iterable, Union
 from domain.common.core import EntityId
 from utils.logs import logger
+from collections import namedtuple
 
 
 class DynamicObject:
@@ -22,7 +23,26 @@ class DynamicObject:
             setattr(self, key, value)
 
 
+DatasetInfo = namedtuple(
+    "DatasetInfo",
+    [
+        "dataset_id",
+        "dataset",
+        "metrics",
+        "features",
+        "drops",
+        "targets",
+        "sensitive",
+        "proxies",
+        "detected",
+        "selected_sensitives",
+        "selected_targets",
+    ],
+)
+
+
 class Automator:
+
     def __init__(self, topics: Iterable[str], components: dict = None):
         assert topics, "Some topic must be provided"
         self.__topics: set[str] = set(topics or [])
@@ -137,6 +157,61 @@ class Automator:
                 ) from e
         else:
             raise ValueError("Project service not found in components")
+
+    def get_dataset_info_from_context(self, project_id: EntityId, context_key: str):
+        dataset_id: str = context_key.split("__")[1]
+        dataset: pd.DataFrame = self.get_from_context(
+            project_id, f"dataset__{dataset_id}", "csv"
+        )
+        features: dict = self.get_from_context(
+            project_id, f"features__{dataset_id}", "json"
+        )
+        drops = {key for key, value in features.items() if value["drop"]}
+        targets = {
+            key
+            for key, value in features.items()
+            if value["target"]
+            if key not in drops
+        }
+        sensitive = {
+            key
+            for key, value in features.items()
+            if value["sensitive"]
+            if key not in drops
+        }
+        proxies = self.get_from_context(project_id, f"proxies__{dataset_id}", "json")
+        detected = self.get_from_context(project_id, f"detected__{dataset_id}", "json")
+        if isinstance(detected, dict):
+            metrics = list(detected.keys())
+            selected_targets = [
+                v["target"]
+                for _, v in detected.items()
+                if isinstance(v, dict) and "target" in v and v["target"] in targets
+            ] or list(targets)
+            selected_sensitives = [
+                v["sensitive"]
+                for _, v in detected.items()
+                if isinstance(v, dict)
+                and "sensitive" in v
+                and v["sensitive"] in sensitive
+            ] or list(sensitive)
+        else:
+            metrics = []
+            selected_targets = list(targets)
+            selected_sensitives = list(sensitive)
+        return DatasetInfo(
+            dataset_id,
+            dataset,
+            metrics,
+            features,
+            drops,
+            targets,
+            sensitive,
+            proxies,
+            detected,
+            selected_sensitives,
+            selected_targets,
+        )
 
 
 PACKAGE_ROOT = f"{__package__}.scripts"
