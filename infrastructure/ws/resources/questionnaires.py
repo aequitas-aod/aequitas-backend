@@ -49,10 +49,14 @@ class QuestionnaireResource(Resource, EventGenerator):
                 ]
                 project_id = ProjectFactory.id_of(code=project_code)
                 questionnaire_service.select_answers(project_id, index, answer_ids)
+                question: ProjectQuestion = questionnaire_service.get_nth_question(
+                    project_id, index
+                )
                 self.trigger_event(
                     "questions.answered",
                     project_id=project_id.code,
                     question_index=index,
+                    question_code=question.id.code,
                     selected_answers_ids=list(answer_ids),
                 )
             except ValueError:
