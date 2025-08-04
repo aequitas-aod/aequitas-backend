@@ -270,7 +270,7 @@
   action_needed: null
   created_at: 2024-05-31T18:20:33
 
-- id: { code: TestSetSelection }
+- id: { code: TestDatasetSelection }
   text: Choose the Test Data according to your Training Data.
   description: null
   type: single

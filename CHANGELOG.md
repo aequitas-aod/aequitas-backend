@@ -1,3 +1,13 @@
+## [1.7.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.7.3...v1.7.4) (2025-08-04)
+
+### Dependency updates
+
+* **deps:** update node.js to 22.18 ([#153](https://github.com/aequitas-aod/aequitas-backend/issues/153)) ([cdcc774](https://github.com/aequitas-aod/aequitas-backend/commit/cdcc77427fccce09a19779a543b67a587cd6284d))
+
+### Bug Fixes
+
+* **deps:** update dependency coverage to v7.10.2 ([#154](https://github.com/aequitas-aod/aequitas-backend/issues/154)) ([b38c30d](https://github.com/aequitas-aod/aequitas-backend/commit/b38c30d0038efb64997a4d0601b301fb5ddcfe1b))
+
 ## [1.7.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.7.2...v1.7.3) (2025-08-01)
 
 ### Bug Fixes

@@ -7,7 +7,7 @@ from utils.logs import logger
 
 
 class AbstractQuestionAnsweredReaction(Automator):
-    def __init__(self, relevant_questions: Iterable[int]):
+    def __init__(self, relevant_questions: Iterable[int | str]):
         super().__init__(["questions.answered"])
         self.relevant_questions = relevant_questions
 
@@ -18,12 +18,16 @@ class AbstractQuestionAnsweredReaction(Automator):
         project_id: EntityId,
         project: Project,
         question_index: int,
+        question_code: str,
         selected_answers_ids: List[EntityId],
     ):
         logger.info(
             f"Topic: {topic}, project id: {project_id}, question_index: {question_index}, selected_answers_ids: {selected_answers_ids}"
         )
-        if question_index in self.relevant_questions:
+        if (
+            question_index in self.relevant_questions
+            or question_code in self.relevant_questions
+        ):
             new_keys = {
                 k: v
                 for k, v in self.produce_info(
@@ -74,7 +78,7 @@ class DatasetSelectionQuestionAnsweredReaction(AbstractQuestionAnsweredReaction)
 
 class TestDatasetSelectionQuestionAnsweredReaction(AbstractQuestionAnsweredReaction):
     def __init__(self):
-        super().__init__({9})
+        super().__init__({"TestDatasetSelection"})
 
     def produce_info(
         self,
