@@ -1,3 +1,9 @@
+## [1.7.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.7.4...v1.7.5) (2025-08-04)
+
+### Bug Fixes
+
+* fix questionnaire reactions trigger using question codes ([9efb759](https://github.com/aequitas-aod/aequitas-backend/commit/9efb759262a04454c2296e9d8377e0f37cab9d43))
+
 ## [1.7.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.7.3...v1.7.4) (2025-08-04)
 
 ### Dependency updates
