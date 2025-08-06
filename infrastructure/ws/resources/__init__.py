@@ -54,6 +54,8 @@ class EventGenerator:
             topic = "processing.requested"
             phase = event_key.split("processing__")[0]
             kwargs.update(phase=phase)
+        elif event_key.startswith(f"polarization__"):
+            topic = "polarization.requested"
         else:
             return
         self.trigger_event(topic, **kwargs)

@@ -24,10 +24,10 @@ from resources.akkodis import (
     PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV,
 )
+from resources.db.datasets import dataset_path
 from resources.skin_deseases import (
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV,
 )
-from resources.db.datasets import dataset_path
 
 
 def compute_polarization(
@@ -63,7 +63,7 @@ def compute_polarization(
     return result
 
 
-class ProcessingRequestedReaction(Automator):
+class PolarizationRequestedReaction(Automator):
     def __init__(self):
         super().__init__(["polarization.requested"])
 
@@ -74,8 +74,8 @@ class ProcessingRequestedReaction(Automator):
         project_id: EntityId,
         project: Project,
         context_key: str,
+        # phase: str,
     ):
-        dataset_info = self.get_dataset_info_from_context(project_id, context_key)
         args = self.get_from_context(project_id, context_key, "json")
         processing_history = (
             self.get_from_context(
@@ -89,8 +89,11 @@ class ProcessingRequestedReaction(Automator):
             )
         last_processing = processing_history[-1]
         algorithm = last_processing["algorithm"]
-        ordinal_dataset_id = last_processing["dataset_id"]
+        original_dataset_id = last_processing["dataset"]
         hyperparameters = last_processing["hyperparameters"]
+        dataset_info = self.get_dataset_info_from_context(
+            project_id, context_key, original_dataset_id
+        )
         self.log(
             "Requested polarization after algorithm %s for dataset %s with metrics=%s, sensitives=%s, targets=%s",
             algorithm,
@@ -102,13 +105,19 @@ class ProcessingRequestedReaction(Automator):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             for k, v in self.produce_info(
-                dataset_info, ordinal_dataset_id, algorithm, hyperparameters, **args
+                project_id,
+                dataset_info,
+                original_dataset_id,
+                algorithm,
+                hyperparameters,
+                **args,
             ):
                 self.update_context(project_id, k, v)
         self.update_context(project_id, processing_history=to_json(processing_history))
 
     def produce_info(
         self,
+        project_id: EntityId,
         dataset_info: DatasetInfo,
         ordinal_dataset_id: str,
         algorithm: str,
@@ -119,7 +128,7 @@ class ProcessingRequestedReaction(Automator):
         test_predictions = compute_polarization(dataset_info.sensitive, hyperparameters)
         test_predictions_head = test_predictions.head(100)
         computed_metrics = self.get_from_context(
-            f"computed_metrics__{algorithm}__{ordinal_dataset_id}", "csv"
+            project_id, f"computed_metrics__{algorithm}__{ordinal_dataset_id}", "csv"
         )
         cases = [
             (

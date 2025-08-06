@@ -53,6 +53,7 @@ from resources.akkodis import (
     PATH_AKKODIS_INPROCESSING_ADVDEB_RES_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_RES_1_CSV,
 )
+from resources.db.datasets import dataset_path
 from resources.skin_deseases import (
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_RES_NONE_CSV,
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_RES_MIN_CSV,
@@ -62,7 +63,6 @@ from resources.skin_deseases import (
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_BALANCED_CSV,
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV,
 )
-from resources.db.datasets import dataset_path
 from utils.logs import set_other_loggers_level
 
 FIG_WIDTH_SIZE = 12
@@ -1159,9 +1159,9 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         predictions_head = predictions.head(100)
         computed_metrics: pd.DataFrame = results[1]
 
-        test_dataset_id = "Test-" + dataset_id[:-2]
-        test_predictions = compute_polarization(sensitive, hyperparameters)
-        test_predictions_head = test_predictions.head(100)
+        # test_dataset_id = "Test-" + dataset_id[:-2]
+        # test_predictions = compute_polarization(sensitive, hyperparameters)
+        # test_predictions_head = test_predictions.head(100)
 
         cases = [
             (
@@ -1186,24 +1186,9 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                 lambda: generate_plot("fairness", computed_metrics),
             ),
             (
-                f"polarization_plot__{algorithm}__{test_dataset_id}",
-                lambda: generate_plot("polarization", computed_metrics),
-            ),
-            (
-                f"predictions_head__{algorithm}__{test_dataset_id}",
-                lambda: to_csv(test_predictions_head),
-            ),
-            (
-                f"predictions__{algorithm}__{test_dataset_id}",
-                lambda: to_csv(test_predictions),
-            ),
-            (
-                f"correlation_matrix__{algorithm}__{test_dataset_id}",
-                lambda: correlation_matrix_picture(test_predictions),
-            ),
-            (
-                f"metrics__{algorithm}__{test_dataset_id}",
-                lambda: generate_metrics(test_predictions, sensitive, targets, metrics),
+                # used by on_polarization_requested.py
+                f"computed_metrics__{algorithm}__{dataset_id}",
+                lambda: to_csv(computed_metrics),
             ),
         ]
         for k, v in cases:

@@ -129,15 +129,20 @@ class Automator:
 
     def get_from_context(
         self, project_id: EntityId, key: str, parse_as: str, optional: bool = False
-    ) -> Union[dict, pd.DataFrame]:
-        import application.automation.parsing as parsing
-
-        parsing_function = getattr(parsing, f"parse_{parse_as}", None)
-        if parsing_function is None:
-            raise ValueError(
-                f"Parsing function 'parse_{parse_as}' not found in module '{parsing.__name__}'"
-            )
+    ) -> Union[dict, pd.DataFrame, str]:
         if hasattr(self.components, "project_service"):
+            if parse_as == "str":
+                return self.components.project_service.get_from_context(
+                    project_id, key
+                )[0]
+
+            import application.automation.parsing as parsing
+
+            parsing_function = getattr(parsing, f"parse_{parse_as}", None)
+            if parsing_function is None:
+                raise ValueError(
+                    f"Parsing function 'parse_{parse_as}' not found in module '{parsing.__name__}'"
+                )
             value = self.components.project_service.get_from_context(project_id, key)[0]
             if value is None:
                 if not optional:
@@ -158,13 +163,19 @@ class Automator:
         else:
             raise ValueError("Project service not found in components")
 
-    def get_dataset_info_from_context(self, project_id: EntityId, context_key: str):
+    def get_dataset_info_from_context(
+        self, project_id: EntityId, context_key: str, original_dataset_id: str = None
+    ):
         dataset_id: str = context_key.split("__")[1]
+        original_dataset_id: str = (
+            dataset_id if original_dataset_id is None else original_dataset_id
+        )
+
         dataset: pd.DataFrame = self.get_from_context(
             project_id, f"dataset__{dataset_id}", "csv"
         )
         features: dict = self.get_from_context(
-            project_id, f"features__{dataset_id}", "json"
+            project_id, f"features__{original_dataset_id}", "json"
         )
         drops = {key for key, value in features.items() if value["drop"]}
         targets = {
@@ -179,8 +190,12 @@ class Automator:
             if value["sensitive"]
             if key not in drops
         }
-        proxies = self.get_from_context(project_id, f"proxies__{dataset_id}", "json")
-        detected = self.get_from_context(project_id, f"detected__{dataset_id}", "json")
+        proxies = self.get_from_context(
+            project_id, f"proxies__{original_dataset_id}", "json"
+        )
+        detected = self.get_from_context(
+            project_id, f"detected__{original_dataset_id}", "json"
+        )
         if isinstance(detected, dict):
             metrics = list(detected.keys())
             selected_targets = [
