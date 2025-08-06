@@ -53,6 +53,7 @@ from resources.akkodis import (
     PATH_AKKODIS_INPROCESSING_ADVDEB_RES_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_RES_1_CSV,
 )
+from resources.db.datasets import dataset_path
 from resources.skin_deseases import (
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_RES_NONE_CSV,
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_RES_MIN_CSV,
@@ -62,7 +63,6 @@ from resources.skin_deseases import (
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_BALANCED_CSV,
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV,
 )
-from resources.db.datasets import dataset_path
 from utils.logs import set_other_loggers_level
 
 FIG_WIDTH_SIZE = 12
@@ -106,46 +106,7 @@ class AbstractProcessingRequestedReaction(Automator):
                 self.__supported_phases,
             )
             return
-        dataset_id: str = context_key.split("__")[1]
-        dataset: pd.DataFrame = self.get_from_context(
-            project_id, f"dataset__{dataset_id}", "csv"
-        )
-        features: dict = self.get_from_context(
-            project_id, f"features__{dataset_id}", "json"
-        )
-        drops = {key for key, value in features.items() if value["drop"]}
-        targets = {
-            key
-            for key, value in features.items()
-            if value["target"]
-            if key not in drops
-        }
-        sensitive = {
-            key
-            for key, value in features.items()
-            if value["sensitive"]
-            if key not in drops
-        }
-        proxies = self.get_from_context(project_id, f"proxies__{dataset_id}", "json")
-        detected = self.get_from_context(project_id, f"detected__{dataset_id}", "json")
-        if isinstance(detected, dict):
-            metrics = list(detected.keys())
-            selected_targets = [
-                v["target"]
-                for _, v in detected.items()
-                if isinstance(v, dict) and "target" in v and v["target"] in targets
-            ] or list(targets)
-            selected_sensitives = [
-                v["sensitive"]
-                for _, v in detected.items()
-                if isinstance(v, dict)
-                and "sensitive" in v
-                and v["sensitive"] in sensitive
-            ] or list(sensitive)
-        else:
-            metrics = []
-            selected_targets = list(targets)
-            selected_sensitives = list(sensitive)
+        dataset_info = self.get_dataset_info_from_context(project_id, context_key)
         hyperparameters = self.get_from_context(project_id, context_key, "json")
         processing_history = (
             self.get_from_context(
@@ -158,25 +119,32 @@ class AbstractProcessingRequestedReaction(Automator):
             "Requested %sprocessing with algorithm %s for dataset %s with metrics=%s, sensitives=%s, targets=%s",
             phase,
             algorithm,
-            dataset_id,
-            metrics,
-            selected_sensitives,
-            selected_targets,
+            dataset_info.dataset_id,
+            dataset_info.metrics,
+            dataset_info.selected_sensitives,
+            dataset_info.selected_targets,
         )
+        hp = hyperparameters.copy()
+        del hp["$algorithm"]
         processing_history.append(
-            dict(phase=phase, dataset=dataset_id, algorithm=algorithm)
+            dict(
+                phase=phase,
+                dataset=dataset_info.dataset_id,
+                algorithm=algorithm,
+                hyperparameters=hp,
+            )
         )
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             for k, v in self.produce_info(
                 phase,
-                dataset_id,
-                dataset,
-                metrics,
-                selected_targets,
-                selected_sensitives,
-                proxies,
-                detected,
+                dataset_info.dataset_id,
+                dataset_info.dataset,
+                dataset_info.metrics,
+                dataset_info.selected_targets,
+                dataset_info.selected_sensitives,
+                dataset_info.proxies,
+                dataset_info.detected,
                 hyperparameters,
             ):
                 self.update_context(project_id, k, v)
@@ -705,10 +673,6 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         result_id = self.next_name(dataset_id)
         self.log("New dataset id: %s", result_id)
         cases = []
-
-        test_dataset_id = "Test-" + dataset_id[:-2]
-        test_predictions = compute_polarization(sensitive, hyperparameters)
-        test_predictions_head = test_predictions.head(100)
         try:
             if computed_metrics is None:
                 computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(
@@ -729,34 +693,17 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                 ]
             cases += [
                 (
+                    # used by on_polarization_requested.py
+                    f"computed_metrics__{algorithm}__{dataset_id}",
+                    lambda: to_csv(computed_metrics),
+                ),
+                (
                     f"performance_plot__{result_id}",
                     lambda: generate_plot("performance", computed_metrics),
                 ),
                 (
                     f"fairness_plot__{result_id}",
                     lambda: generate_plot("fairness", computed_metrics),
-                ),
-                (
-                    f"polarization_plot__{algorithm}__{test_dataset_id}",
-                    lambda: generate_plot("polarization", computed_metrics),
-                ),
-                (
-                    f"predictions_head__{algorithm}__{test_dataset_id}",
-                    lambda: to_csv(test_predictions_head),
-                ),
-                (
-                    f"predictions__{algorithm}__{test_dataset_id}",
-                    lambda: to_csv(test_predictions),
-                ),
-                (
-                    f"correlation_matrix__{algorithm}__{test_dataset_id}",
-                    lambda: correlation_matrix_picture(test_predictions),
-                ),
-                (
-                    f"metrics__{algorithm}__{test_dataset_id}",
-                    lambda: generate_metrics(
-                        test_predictions, sensitive, targets, metrics
-                    ),
                 ),
             ]
         except Exception as e:
@@ -1212,9 +1159,9 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         predictions_head = predictions.head(100)
         computed_metrics: pd.DataFrame = results[1]
 
-        test_dataset_id = "Test-" + dataset_id[:-2]
-        test_predictions = compute_polarization(sensitive, hyperparameters)
-        test_predictions_head = test_predictions.head(100)
+        # test_dataset_id = "Test-" + dataset_id[:-2]
+        # test_predictions = compute_polarization(sensitive, hyperparameters)
+        # test_predictions_head = test_predictions.head(100)
 
         cases = [
             (
@@ -1239,24 +1186,9 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                 lambda: generate_plot("fairness", computed_metrics),
             ),
             (
-                f"polarization_plot__{algorithm}__{test_dataset_id}",
-                lambda: generate_plot("polarization", computed_metrics),
-            ),
-            (
-                f"predictions_head__{algorithm}__{test_dataset_id}",
-                lambda: to_csv(test_predictions_head),
-            ),
-            (
-                f"predictions__{algorithm}__{test_dataset_id}",
-                lambda: to_csv(test_predictions),
-            ),
-            (
-                f"correlation_matrix__{algorithm}__{test_dataset_id}",
-                lambda: correlation_matrix_picture(test_predictions),
-            ),
-            (
-                f"metrics__{algorithm}__{test_dataset_id}",
-                lambda: generate_metrics(test_predictions, sensitive, targets, metrics),
+                # used by on_polarization_requested.py
+                f"computed_metrics__{algorithm}__{dataset_id}",
+                lambda: to_csv(computed_metrics),
             ),
         ]
         for k, v in cases:
@@ -1297,134 +1229,3 @@ def compute_polarization(
         result = result.drop("class", axis=1).rename(columns={"predictions": "class"})
 
     return result
-
-
-class PolarizationProcessingRequestedReaction(AbstractProcessingRequestedReaction):
-    def __init__(self):
-        super().__init__("polarization")
-
-    def __compute_polarization(
-        self,
-        dataset: pd.DataFrame,
-        targets: list[str],
-        sensitive: list[str],
-        proxies: dict,
-        detected: dict,
-        hyperparameters: dict,
-        prefix: str = "polarization",
-    ):
-        algorithm = hyperparameters.pop("$algorithm")
-        # TODO: to remove
-        if "cand_provenance_gender" in sensitive:
-            if hyperparameters["lambda_adv"] == 0:
-                result_paths = (
-                    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV,
-                    PATH_ADECCO_INPROCESSING_ADVDEB_RES_0_CSV,
-                )
-            elif hyperparameters["lambda_adv"] == 1:
-                result_paths = (
-                    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV,
-                    PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV,
-                )
-            else:
-                result_paths = (
-                    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV,
-                    PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV,
-                )
-        elif "Sensitive" in sensitive:
-            if hyperparameters["lambda_adv"] == 0:
-                result_paths = (
-                    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV,
-                    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_0_CSV,
-                )
-            elif hyperparameters["lambda_adv"] == 1:
-                result_paths = (
-                    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV,
-                    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_1_CSV,
-                )
-            else:
-                result_paths = (
-                    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV,
-                    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_CSV,
-                )
-        elif "f_ESCS" in sensitive:
-            result_paths = (
-                dataset_path("preprocessed_lfr_result_ull"),
-                PATH_INPROCESSING_FAUCI_RES_CSV,
-            )
-        else:
-            if hyperparameters["lambda"] == 0:
-                result_path = PATH_INPROCESSING_FAUCI_RES_0_CSV
-            elif hyperparameters["lambda"] == 1:
-                result_path = PATH_INPROCESSING_FAUCI_RES_1_CSV
-            else:
-                result_path = PATH_INPROCESSING_FAUCI_RES_CSV
-
-            result_paths = (
-                dataset_path("fauci_predictions"),
-                result_path,
-            )
-
-        results = (
-            (
-                pd.read_csv(result_paths[0])
-                if "lambda" not in hyperparameters
-                else pd.read_csv(result_paths[0])
-                .drop("class", axis=1)
-                .rename(columns={"predictions": "class"})
-            ),
-            pd.read_csv(result_paths[1]),
-        )
-        return algorithm, results
-
-    def produce_info(
-        self,
-        phase: str,
-        dataset_id: str,
-        dataset: pd.DataFrame,
-        metrics: list[str],
-        targets: list[str],
-        sensitive: list[str],
-        proxies: dict,
-        detected: dict,
-        hyperparameters: dict,
-    ) -> Iterable[tuple[str, Union[str, bytes]]]:
-
-        algorithm, results = self.__compute_polarization(
-            dataset,
-            targets,
-            sensitive,
-            proxies,
-            detected,
-            hyperparameters,
-            prefix=phase,
-        )
-
-        assert isinstance(results, tuple)
-        predictions: pd.DataFrame = results[0]
-        predictions_head = predictions.head(100)
-        computed_metrics: pd.DataFrame = results[1]
-        cases = [
-            (
-                f"predictions_head__{algorithm}__{dataset_id}",
-                lambda: to_csv(predictions_head),
-            ),
-            (f"predictions__{algorithm}__{dataset_id}", lambda: to_csv(predictions)),
-            (
-                f"correlation_matrix__{algorithm}__{dataset_id}",
-                lambda: correlation_matrix_picture(predictions),
-            ),
-            (
-                f"metrics__{algorithm}__{dataset_id}",
-                lambda: generate_metrics(predictions, sensitive, targets, metrics),
-            ),
-            (
-                f"polarization_plot__{algorithm}__{dataset_id}",
-                lambda: generate_plot("polarization", computed_metrics),
-            ),
-        ]
-        for k, v in cases:
-            try:
-                yield k, v()
-            except Exception as e:
-                self.log_error("Failed to produce %s", k, error=e)
