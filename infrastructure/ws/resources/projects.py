@@ -83,7 +83,7 @@ class ProjectResource(Resource):
 class ProjectContextResource(Resource, EventGenerator):
     SLEEP_TIME = timedelta(seconds=1)
     LOG_ONCE_EVERY = 10  # seconds
-    DEFAULT_TIMEOUT = timedelta(seconds=10)
+    DEFAULT_TIMEOUT = timedelta(minutes=2)
 
     def _try_get_key(
         self, project_id: EntityId, key: str, silent_miss=False
@@ -133,7 +133,7 @@ class ProjectContextResource(Resource, EventGenerator):
                 )
                 next_log_at += self.LOG_ONCE_EVERY
             time.sleep(self.SLEEP_TIME.total_seconds())
-        return Response("Key not found in time", StatusCode.REQUEST_TIMEOUT)
+        return Response(f"Key '{key}' not found in time", StatusCode.REQUEST_TIMEOUT)
 
     def _get_all(self, project_id: EntityId) -> tuple:
         value = project_service.get_context(project_id)

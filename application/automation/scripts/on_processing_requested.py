@@ -673,6 +673,7 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         result_id = self.next_name(dataset_id)
         self.log("New dataset id: %s", result_id)
         cases = []
+
         try:
             if computed_metrics is None:
                 computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(

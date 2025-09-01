@@ -146,7 +146,6 @@ class TestContextAutomation(AutomationRelatedTestCase):
             "preprocessing_plot": self.asserIsSvg,
             "performance_plot": self.asserIsSvg,
             "fairness_plot": self.asserIsSvg,
-            # "polarization_plot": self.asserIsSvg,
             "dataset": self.assertIsNonEmptyDataFrameInCsvFormat,
             "dataset_head": self.assertIsNonEmptyDataFrameInCsvFormat,
             "stats": self.assertIsNonEmptyDataFrameInCsvFormat,
