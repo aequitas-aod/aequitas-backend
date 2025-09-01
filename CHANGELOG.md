@@ -1,3 +1,18 @@
+## [1.8.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.7.5...v1.8.0) (2025-09-01)
+
+### Features
+
+* move polarization to ad-hoc script ([d49664b](https://github.com/aequitas-aod/aequitas-backend/commit/d49664b2f2bd78900557e3b247dea13ac45493ea))
+
+### Dependency updates
+
+* **deps:** update dependency poetry to v2.1.4 ([#155](https://github.com/aequitas-aod/aequitas-backend/issues/155)) ([59bbc73](https://github.com/aequitas-aod/aequitas-backend/commit/59bbc73a234ca34f75a057da1cad3d72d4914ebc))
+
+### Bug Fixes
+
+* fix timeout to retrieve keys form context ([7c49b73](https://github.com/aequitas-aod/aequitas-backend/commit/7c49b73ec3649b927a7bc17f72bf2730906cd65f))
+* move polarization process afterwards ([a59b986](https://github.com/aequitas-aod/aequitas-backend/commit/a59b986bdc56206e842b88c87298bbf8b8483bb2))
+
 ## [1.7.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.7.4...v1.7.5) (2025-08-04)
 
 ### Bug Fixes
