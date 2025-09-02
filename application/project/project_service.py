@@ -15,6 +15,7 @@ from domain.project.factories import ProjectFactory
 from domain.project.repositories import ProjectRepository
 from utils.encodings import encode
 from utils.errors import BadRequestError, NotFoundError
+from utils.logs import logger
 
 
 class ProjectService:
@@ -150,9 +151,11 @@ class ProjectService:
         regex_patterns_for_report: Dict[re.Pattern, str] = {
             re.compile(r"^dataset_head__\w+-1$"): "Dataset View",
             re.compile(r"^stats__\w+-1$"): "Features View",
-            re.compile(r"^correlation_matrix__\w+-1$"): "Proxies",
+            re.compile(
+                r"^correlation_matrix__(?!.*__)\w+-1$"
+            ): "Proxies",  # match correlation_matrix__<something>-1 but not correlation_matrix__<something>__<something>
             re.compile(r"^suggested_proxies__\w+-1$"): "Proxies",
-            re.compile(r"^metrics__\w+-1$"): "Detection",
+            re.compile(r"^metrics__(?!.*__)\w+-1$"): "Detection",  # same here
             re.compile(r"^preprocessing__\w+$"): "Data Mitigation",
             re.compile(r"^preprocessing_plot__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^performance_plot__\w+-2$"): "Data Mitigation Results",
@@ -160,10 +163,29 @@ class ProjectService:
             re.compile(r"^dataset_head__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^correlation_matrix__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^metrics__\w+-2$"): "Data Mitigation Results",
-            re.compile(r"^polarization_plot__[\w-]+__[\w-]+$"): "Stress Test Results",
-            re.compile(r"^predictions_head__[\w-]+__[\w-]+$"): "Stress Test Results",
-            re.compile(r"^correlation_matrix__[\w-]+__[\w-]+$"): "Stress Test Results",
-            re.compile(r"^metrics__[\w-]+__[\w-]+$"): "Stress Test Results",
+            re.compile(
+                r"^predictions_head__[\w-]+__(?!.*Test-)[\w-]+$"
+            ): "Model Mitigation Results",
+            re.compile(
+                r"^correlation_matrix__[\w-]+__(?!.*Test-)[\w-]+$"
+            ): "Model Mitigation Results",
+            re.compile(
+                r"^performance_plot__[\w-]+__[\w-]+$"
+            ): "Model Mitigation Results",
+            re.compile(
+                r"^metrics__[\w-]+__(?!.*Test-)[\w-]+$"
+            ): "Model Mitigation Results",
+            re.compile(r"^fairness_plot__[\w-]+__[\w-]+$"): "Model Mitigation Results",
+            re.compile(
+                r"^polarization_plot__[\w-]+__Test-[\w-]+$"
+            ): "Stress Test Results",
+            re.compile(
+                r"^predictions_head__[\w-]+__Test-[\w-]+$"
+            ): "Stress Test Results",
+            re.compile(
+                r"^correlation_matrix__[\w-]+__Test-[\w-]+$"
+            ): "Stress Test Results",
+            re.compile(r"^metrics__[\w-]+__Test-[\w-]+$"): "Stress Test Results",
         }
 
         current_dataset: str = ctx.get("current_dataset")[:-2]
@@ -176,13 +198,14 @@ class ProjectService:
                         to_delete.append(key)
                         if isinstance(value, bytes):
                             value = value.decode("utf-8")
+                        logger.info(f"Adding {key} to report under section {title}")
                         create_report_data(temp_dir, title, {key: value})
-                    else:
-                        warn(
-                            f"Pattern '{pattern}' did not match any key in the context.",
-                            RuntimeWarning,
-                        )
-            print(to_delete)
+            #         else:
+            #             warn(
+            #                 f"Pattern '{pattern}' did not match any key in the context.",
+            #                 RuntimeWarning,
+            #             )
+            # print(to_delete)
             # file_name: str = f"report_{project_id.code}.pdf"
             file_name: str = f"report.pdf"
             create_report(temp_dir, file_name)
