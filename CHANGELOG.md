@@ -1,3 +1,14 @@
+## [1.8.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.2...v1.8.3) (2025-09-04)
+
+### Dependency updates
+
+* **deps:** update actions/setup-node action to v5 ([#164](https://github.com/aequitas-aod/aequitas-backend/issues/164)) ([b0bf2ab](https://github.com/aequitas-aod/aequitas-backend/commit/b0bf2ab9bc4276f50bab225f62eaa093d431bde3))
+
+### Bug Fixes
+
+* **deps:** update dependency matplotlib to v3.10.6 ([#162](https://github.com/aequitas-aod/aequitas-backend/issues/162)) ([941e27c](https://github.com/aequitas-aod/aequitas-backend/commit/941e27c1f03b9031337a3faade7549caf62d4024))
+* **report:** fix generation of report ([3d1430e](https://github.com/aequitas-aod/aequitas-backend/commit/3d1430e3371086feb3c65b166194263e2154ff4c))
+
 ## [1.8.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.1...v1.8.2) (2025-09-02)
 
 ### Bug Fixes
