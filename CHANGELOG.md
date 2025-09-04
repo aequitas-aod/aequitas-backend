@@ -1,3 +1,9 @@
+## [1.8.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.4...v1.8.5) (2025-09-04)
+
+### Bug Fixes
+
+* **deps:** update dependency requests to v2.32.5 ([#159](https://github.com/aequitas-aod/aequitas-backend/issues/159)) ([8bb52da](https://github.com/aequitas-aod/aequitas-backend/commit/8bb52dad4f007228d008412abd4c6822eecca941))
+
 ## [1.8.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.3...v1.8.4) (2025-09-04)
 
 ### Bug Fixes
