@@ -1,3 +1,16 @@
+## [1.8.6](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.5...v1.8.6) (2025-09-09)
+
+### Dependency updates
+
+* **deps:** update actions/checkout action to v5 ([#157](https://github.com/aequitas-aod/aequitas-backend/issues/157)) ([0b83516](https://github.com/aequitas-aod/aequitas-backend/commit/0b83516bdd771b04cf588bcda95c825e6f1c8211))
+* **deps:** update actions/setup-python action to v6 ([#165](https://github.com/aequitas-aod/aequitas-backend/issues/165)) ([a7b7a60](https://github.com/aequitas-aod/aequitas-backend/commit/a7b7a606a4f9881daa5e1f0d14ac3058c6e852aa))
+* **deps:** update dependency poethepoet to v0.37.0 ([#158](https://github.com/aequitas-aod/aequitas-backend/issues/158)) ([62728d2](https://github.com/aequitas-aod/aequitas-backend/commit/62728d21bf1cca568ed57ede841d2e8f18f68bc7))
+* **deps:** update node.js to 22.19 ([#163](https://github.com/aequitas-aod/aequitas-backend/issues/163)) ([2e3c667](https://github.com/aequitas-aod/aequitas-backend/commit/2e3c6678db8688c9b6bcc935f460d59506bb9c36))
+
+### Bug Fixes
+
+* **deps:** update dependency scikit-learn to v1.7.2 ([#166](https://github.com/aequitas-aod/aequitas-backend/issues/166)) ([a666947](https://github.com/aequitas-aod/aequitas-backend/commit/a6669472ae9afe69d3c13d628729c6f0b9c77717))
+
 ## [1.8.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.4...v1.8.5) (2025-09-04)
 
 ### Bug Fixes
