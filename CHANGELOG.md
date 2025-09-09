@@ -1,3 +1,9 @@
+## [1.8.7](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.6...v1.8.7) (2025-09-09)
+
+### Bug Fixes
+
+* remove mitigation answers in summary questions ([688e4ee](https://github.com/aequitas-aod/aequitas-backend/commit/688e4ee002a22224fa9b25a26788dfec619d3fd1))
+
 ## [1.8.6](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.5...v1.8.6) (2025-09-09)
 
 ### Dependency updates
