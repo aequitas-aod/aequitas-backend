@@ -161,9 +161,6 @@
   description: Summary of data mitigation performed with results and updated dataset.
   type: single
   answers:
-    - id: { code: MitigateModel }
-      text: Mitigate Model
-      description: null
     - id: { code: Done }
       text: Done
       description: null
@@ -200,7 +197,6 @@
 #      text: Do Not Mitigate and Finish
 #      description: null
   enabled_by:
-    - { code: MitigateModel }
     - { code: NoDataMitigation }
   action_needed: null
   created_at: 2024-05-31T18:20:30
@@ -210,9 +206,6 @@
   description: Summary of model mitigation performed.
   type: single
   answers:
-    - id: { code: MitigateOutcome }
-      text: Mitigate Outcome
-      description: null
     - id: { code: Test }
       text: Go to Stress Test
       description: null
@@ -247,7 +240,6 @@
 #      text: Do Not Mitigate and Finish
 #      description: null
   enabled_by:
-    - { code: MitigateOutcome }
     - { code: NoModelMitigation }
   action_needed: null
   created_at: 2024-05-31T18:20:32
