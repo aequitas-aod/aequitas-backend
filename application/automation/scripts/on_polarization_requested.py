@@ -2,6 +2,7 @@ import warnings
 from typing import Iterable, Union
 
 import pandas as pd
+from pandas import DataFrame
 
 from application.automation.parsing import to_csv, to_json
 from application.automation.scripts.on_dataset_features_available import (
@@ -32,35 +33,43 @@ from resources.skin_deseases import (
 
 def compute_polarization(
     sensitive: list[str],
+    targets: list[str],
+    algorithm: str,
     hyperparameters: dict,
+    test_dataset_id: str,
+    test_dataset: DataFrame,
+    original_dataset: DataFrame,
 ):
     if "cand_provenance_gender" in sensitive:
         if hyperparameters["lambda_adv"] == 0:
-            result_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV
+            pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV
         elif hyperparameters["lambda_adv"] == 1:
-            result_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV
+            pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV
         else:
-            result_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV
+            pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV
     elif "Sensitive" in sensitive:
         if hyperparameters["lambda_adv"] == 0:
-            result_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV
+            pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV
         elif hyperparameters["lambda_adv"] == 1:
-            result_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV
+            pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV
         else:
-            result_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV
+            pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV
     elif "f_ESCS" in sensitive:
-        result_path = dataset_path("preprocessed_lfr_result_ull")
+        pred_path = dataset_path("preprocessed_lfr_result_ull")
     elif "skin_color" in sensitive:
-        result_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV
+        pred_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV
     else:
-        result_path = dataset_path("fauci_predictions")
+        pred_path = dataset_path("fauci_predictions")
 
-    result = pd.read_csv(result_path)
+    pred = pd.read_csv(pred_path)
 
     if "lambda" in hyperparameters:
-        result = result.drop("class", axis=1).rename(columns={"predictions": "class"})
+        pred = pred.drop("class", axis=1).rename(columns={"predictions": "class"})
 
-    return result
+    # TODO: compute new polarization metrics
+    result = DataFrame()
+
+    return pred, result
 
 
 class PolarizationRequestedReaction(Automator):
@@ -118,21 +127,34 @@ class PolarizationRequestedReaction(Automator):
     def produce_info(
         self,
         project_id: EntityId,
-        dataset_info: DatasetInfo,
-        ordinal_dataset_id: str,
+        test_dataset_info: DatasetInfo,
+        original_dataset_id: str,
         algorithm: str,
         hyperparameters: dict,
         **kwargs,
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
-        test_dataset_id = dataset_info.dataset_id
-        test_predictions = compute_polarization(dataset_info.sensitive, hyperparameters)
+        test_dataset_id = test_dataset_info.dataset_id
+        original_dataset: DataFrame = self.get_from_context(
+            project_id, "dataset__" + original_dataset_id, "csv"
+        )
+        test_predictions, computed_metrics = compute_polarization(
+            test_dataset_info.sensitive,
+            test_dataset_info.targets,
+            algorithm,
+            hyperparameters,
+            test_dataset_id,
+            test_dataset_info.dataset,
+            original_dataset,
+        )
         test_predictions_head = test_predictions.head(100)
+
+        # TODO: to remove when polarization metrics computation is implemented
         computed_metrics = self.get_from_context(
-            project_id, f"computed_metrics__{algorithm}__{ordinal_dataset_id}", "csv"
+            project_id, f"computed_metrics__{algorithm}__{original_dataset_id}", "csv"
         )
         cases = [
             (
-                f"polarization_plot__{algorithm}__{test_dataset_id}",
+                f"polarization_plot__{algorithm}__{test_dataset_id}",  # TODO: add incremental ids
                 lambda: generate_plot("polarization", computed_metrics),
             ),
             (
@@ -151,9 +173,9 @@ class PolarizationRequestedReaction(Automator):
                 f"metrics__{algorithm}__{test_dataset_id}",
                 lambda: generate_metrics(
                     test_predictions,
-                    dataset_info.sensitive,
-                    dataset_info.targets,
-                    dataset_info.metrics,
+                    test_dataset_info.sensitive,
+                    test_dataset_info.targets,
+                    test_dataset_info.metrics,
                 ),
             ),
         ]

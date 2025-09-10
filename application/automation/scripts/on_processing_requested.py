@@ -1197,36 +1197,3 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                 yield k, v()
             except Exception as e:
                 self.log_error("Failed to produce %s", k, error=e)
-
-
-def compute_polarization(
-    sensitive: list[str],
-    hyperparameters: dict,
-):
-    if "cand_provenance_gender" in sensitive:
-        if hyperparameters["lambda_adv"] == 0:
-            result_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV
-        elif hyperparameters["lambda_adv"] == 1:
-            result_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV
-        else:
-            result_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV
-    elif "Sensitive" in sensitive:
-        if hyperparameters["lambda_adv"] == 0:
-            result_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV
-        elif hyperparameters["lambda_adv"] == 1:
-            result_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV
-        else:
-            result_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV
-    elif "f_ESCS" in sensitive:
-        result_path = dataset_path("preprocessed_lfr_result_ull")
-    elif "skin_color" in sensitive:
-        result_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV
-    else:
-        result_path = dataset_path("fauci_predictions")
-
-    result = pd.read_csv(result_path)
-
-    if "lambda" in hyperparameters:
-        result = result.drop("class", axis=1).rename(columns={"predictions": "class"})
-
-    return result
