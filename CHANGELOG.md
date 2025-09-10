@@ -1,3 +1,9 @@
+## [1.9.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.7...v1.9.0) (2025-09-10)
+
+### Features
+
+* setup new metrics creation for polarization ([3fbbd12](https://github.com/aequitas-aod/aequitas-backend/commit/3fbbd12d76abb32363ca178c9ff69875139ac1e4))
+
 ## [1.8.7](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.6...v1.8.7) (2025-09-09)
 
 ### Bug Fixes
