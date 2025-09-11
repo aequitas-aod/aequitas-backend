@@ -711,7 +711,6 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
             self.log_error("Failed to compute no_mitigations metrics", error=e)
         cases = [
             (f"dataset__{result_id}", lambda: to_csv(result)),
-            (f"current_dataset", lambda: result_id),
             (f"dataset_head__{result_id}", lambda: to_csv(get_heads(result))),
             (f"stats__{result_id}", lambda: to_csv(get_stats(result))),
             (

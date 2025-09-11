@@ -58,8 +58,7 @@ def is_csv(value):
     try:
         pd.read_csv(io.StringIO(value))
         return True
-    except Exception as e:
-        logger.info("Error reading CSV:", e)
+    except Exception:
         return False
 
 

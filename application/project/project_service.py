@@ -198,15 +198,9 @@ class ProjectService:
                         to_delete.append(key)
                         if isinstance(value, bytes):
                             value = value.decode("utf-8")
-                        logger.info(f"Adding {key} to report under section {title}")
+                        logger.info(f"Adding key {key} to report under section {title}")
                         create_report_data(temp_dir, title, {key: value})
-            #         else:
-            #             warn(
-            #                 f"Pattern '{pattern}' did not match any key in the context.",
-            #                 RuntimeWarning,
-            #             )
-            # print(to_delete)
-            # file_name: str = f"report_{project_id.code}.pdf"
+
             file_name: str = f"report.pdf"
             create_report(temp_dir, file_name)
             print("Report created successfully")
