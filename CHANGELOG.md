@@ -1,3 +1,13 @@
+## [1.9.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.9.0...v1.9.1) (2025-09-11)
+
+### Bug Fixes
+
+* fix test because current_dataset is no longer updated ([3897eac](https://github.com/aequitas-aod/aequitas-backend/commit/3897eaceb95bb32401e3e8a2ca2f1ea6527a1df2))
+
+### Refactoring
+
+* **automation:** remove update of current_dataset in PreProcessing ([565f3d3](https://github.com/aequitas-aod/aequitas-backend/commit/565f3d313498b85d526529656be2256b02b45c50))
+
 ## [1.9.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.8.7...v1.9.0) (2025-09-10)
 
 ### Features
