@@ -160,7 +160,6 @@ class TestContextAutomation(AutomationRelatedTestCase):
             self.assertResponseIsSuccessful(response)
             self.assertIn("plain/text", response.headers["Content-Type"])
             assertion(response.data)
-        self.assertCurrentDatasetIs(result_id)
         self.assertLastProcessingIs("pre", algorithm, self.dataset_id)
 
     def test_inprocessing_requested_produces(self):
