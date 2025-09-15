@@ -150,17 +150,29 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         if project is None:
             raise ValueError(f"Project with id {project_id} does not exist")
         queries: List[Neo4jQuery] = []
+        # if question with the same code already exists, add a suffix to the code
+        already_exists: bool = self._check_project_question_exists(question.id)
+        # save code without suffix in the question text for graph question reference
+        question_code_without_suffix: str = question.id.code
+        if already_exists:
+            if question.id.code.replace(question.id.code, "") == "":
+                question.id.code = f"{question.id.code}-1"
+            else:
+                suffix = int(question.id.code.split("-")[-1]) + 1
+                question.id.code = f"{question.id.code.rsplit('-', 1)[0]}-{suffix}"
+
         q: dict = self._convert_project_question_in_node(question)
         query_string: str = (
             "CREATE (q:ProjectQuestion $question) RETURN elementId(q) AS node_question_id"
         )
         query: Neo4jQuery = Neo4jQuery(query_string, {"question": q})
         queries.append(query)
+
         res = self.driver.query(
             Neo4jQuery(
-                "MATCH (q:GraphQuestion {code: $question_code})-[:ENABLED_BY]->(a:GraphAnswer)<-[:HAS_ANSWER]-(prev_q:GraphQuestion) "
+                "MATCH (q:GraphQuestion {code: $question_code_without_suffix})-[:ENABLED_BY]->(a:GraphAnswer)<-[:HAS_ANSWER]-(prev_q:GraphQuestion) "
                 "RETURN prev_q.code AS previous_question_code ",
-                {"question_code": question.id.code},
+                {"question_code_without_suffix": question_code_without_suffix},
             )
         )
         if len(res) == 0:
@@ -176,19 +188,36 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             )
             queries.append(query)
         else:
-            query_string: str = (
-                "MATCH (project_q:ProjectQuestion {code: $question_code}) "
-                "WHERE elementId(project_q) = $node_question_id "
-                "MATCH (graph_q:GraphQuestion {code: $question_code})-[:ENABLED_BY]->(a:GraphAnswer)<-[:HAS_ANSWER]-(graph_prev_q:GraphQuestion) "
-                "MATCH (project_answer:ProjectAnswer {code: a.code})<-[:HAS_SELECTED]-(project_prev_q:ProjectQuestion {code: graph_prev_q.code}) "
-                "MATCH (p:Project {code: $project_code})-[*]-(project_prev_q) "
-                "MERGE (project_prev_q)-[:NEXT]->(project_q)"
+            last_project_question: Optional[ProjectQuestion] = self.get_last_question(
+                project_id
             )
-            query: Neo4jQuery = Neo4jQuery(
-                query_string,
-                {"project_code": project_id.code, "question_code": question.id.code},
-            )
-            queries.append(query)
+            if last_project_question:
+                query_string: str = (
+                    "MATCH (project_q:ProjectQuestion {code: $question_code}) "
+                    "WHERE elementId(project_q) = $node_question_id "
+                    "MATCH (project_prev_q:ProjectQuestion {code: $last_question_code}) "
+                    "MERGE (project_prev_q)-[:NEXT]->(project_q)"
+                )
+                query: Neo4jQuery = Neo4jQuery(
+                    query_string,
+                    {
+                        "question_code": question.id.code,
+                        "last_question_code": last_project_question.id.code,
+                    },
+                )
+                # query_string: str = (
+                #     "MATCH (project_q:ProjectQuestion {code: $question_code}) "
+                #     "WHERE elementId(project_q) = $node_question_id "
+                #     "MATCH (graph_q:GraphQuestion {code: $question_code_without_suffix})-[:ENABLED_BY]->(a:GraphAnswer)<-[:HAS_ANSWER]-(graph_prev_q:GraphQuestion) "
+                #     "MATCH (project_answer:ProjectAnswer {code: a.code})<-[:HAS_SELECTED]-(project_prev_q:ProjectQuestion {code: graph_prev_q.code}) "
+                #     "MATCH (p:Project {code: $project_code})-[*]-(project_prev_q) "
+                #     "MERGE (project_prev_q)-[:NEXT]->(project_q)"
+                # )
+                # query: Neo4jQuery = Neo4jQuery(
+                #     query_string,
+                #     {"project_code": project_id.code, "question_code": question.id.code, "question_code_without_suffix": question_code_without_suffix},
+                # )
+                queries.append(query)
 
         for answer in question.answers:
             a: dict = self._convert_answer_in_node(answer)
@@ -203,7 +232,6 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                     f"{'CREATE (q)-[:HAS_SELECTED]->(a)' if answer.selected else ''} "
                     "RETURN a",
                     {
-                        "project_code": project_id.code,
                         "question_code": question.id.code,
                         "answer_code": answer.id.code,
                     },
@@ -218,8 +246,55 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
     ) -> None:
         if not self._check_project_question_exists(question_id):
             raise NotFoundError(f"Question with id {question_id} does not exist")
-        self.delete_project_question(question_id)
-        self.insert_project_question(question)
+        new_project_question: dict = self._convert_project_question_in_node(question)
+        queries: List[Neo4jQuery] = []
+        query = """
+                MATCH (q:ProjectQuestion {code: $question_code})
+                SET q.text = $text,
+                    q.description = $description,
+                    q.type = $type,
+                    q.selection_strategy = $selection_strategy
+                RETURN elementId(q) AS node_question_id
+                """
+
+        queries.append(
+            Neo4jQuery(
+                query,
+                {
+                    "question_code": question_id.code,
+                    "text": new_project_question["text"],
+                    "description": new_project_question["description"],
+                    "type": new_project_question["type"],
+                    "selection_strategy": new_project_question["selection_strategy"],
+                },
+            )
+        )
+        queries.append(
+            Neo4jQuery(
+                "MATCH (q:ProjectQuestion {code: $question_code})-[:HAS_AVAILABLE|:HAS_SELECTED]->(a:ProjectAnswer) "
+                "DETACH DELETE a",
+                {"question_code": question_id.code},
+            )
+        )
+        for answer in question.answers:
+            a: dict = self._convert_answer_in_node(answer)
+            queries.append(Neo4jQuery("CREATE (:ProjectAnswer $answer)", {"answer": a}))
+            queries.append(
+                Neo4jQuery(
+                    "MATCH (q:ProjectQuestion {code: $question_code}) "
+                    "WHERE elementId(q) = $node_question_id "
+                    "MATCH (a:ProjectAnswer {code: $answer_code}) "
+                    "WHERE NOT (a)--() "  # selecting answers that are not connected any other node (nodes just created)
+                    f"CREATE (q)-[:HAS_AVAILABLE]->(a) "
+                    f"{'CREATE (q)-[:HAS_SELECTED]->(a)' if answer.selected else ''} "
+                    "RETURN a",
+                    {
+                        "question_code": question.id.code,
+                        "answer_code": answer.id.code,
+                    },
+                )
+            )
+        self.driver.transaction(queries)
 
     def delete_project_question(self, question_id: EntityId) -> None:
         if not self._check_project_question_exists(question_id):

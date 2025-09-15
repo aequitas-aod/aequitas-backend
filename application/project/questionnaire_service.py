@@ -76,11 +76,12 @@ class QuestionnaireService:
             question = question.select_answer(answer_id)
         self.questionnaire_repository.update_project_question(question.id, question)
         graph_q_id: EntityId = GraphQuestionFactory.id_of(
-            code=question.id.code.replace(project_id.code + "-", "")
+            code=question.id.code.split("-")[0]
         )
 
         def map_to_graph_answer_id(answer_id: EntityId) -> EntityId:
             del answer_id.project_code
+            answer_id.question_code = answer_id.question_code.split("-")[0]
             return answer_id
 
         graph_answer_ids: List[EntityId] = list(map(map_to_graph_answer_id, answer_ids))
