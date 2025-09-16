@@ -122,8 +122,9 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
     ) -> Optional[ProjectQuestion]:
         project_code: str = project_question_id.project_code
         query_string: str = (
+            "MATCH (p:Project {code: $project_code}) "
             "MATCH (q:ProjectQuestion {code: $question_code}) "
-            "MATCH (p:Project {code: $project_code})-[*]-(q) "
+            "MATCH path = (p)-[:QUESTIONNAIRE|NEXT*]->(q) "
             "OPTIONAL MATCH (q)-[:HAS_AVAILABLE]->(available:ProjectAnswer) "
             "OPTIONAL MATCH (q)-[:HAS_SELECTED]->(selected:ProjectAnswer) "
             "OPTIONAL MATCH (prev_q: ProjectQuestion)-[:NEXT]->(q) "
@@ -200,7 +201,8 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                     "MATCH (project_q:ProjectQuestion {code: $question_code}) "
                     "WHERE elementId(project_q) = $node_question_id "
                     "MATCH (project_prev_q:ProjectQuestion {code: $last_question_code}) "
-                    "MATCH (p:Project {code: $project_code})-[*]-(project_prev_q) "
+                    "MATCH (p:Project {code: $project_code}) "
+                    "MATCH path = (p)-[:QUESTIONNAIRE|NEXT*]->(project_prev_q) "
                     "MERGE (project_prev_q)-[:NEXT]->(project_q)"
                 )
                 query: Neo4jQuery = Neo4jQuery(
