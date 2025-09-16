@@ -123,13 +123,15 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         project_code: str = project_question_id.project_code
         query_string: str = (
             "MATCH (q:ProjectQuestion {code: $question_code}) "
+            "MATCH (p:Project {code: $project_code})-[*]-(q) "
             "OPTIONAL MATCH (q)-[:HAS_AVAILABLE]->(available:ProjectAnswer) "
             "OPTIONAL MATCH (q)-[:HAS_SELECTED]->(selected:ProjectAnswer) "
             "OPTIONAL MATCH (prev_q: ProjectQuestion)-[:NEXT]->(q) "
             "RETURN q, COLLECT(available) AS available_answers, COLLECT(selected) AS selected_answers, prev_q"
         )
         query: Neo4jQuery = Neo4jQuery(
-            query_string, {"question_code": project_question_id.code}
+            query_string,
+            {"project_code": project_code, "question_code": project_question_id.code},
         )
         res: List[dict] = self.driver.query(query)
         if len(res) == 0:
@@ -151,7 +153,9 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             raise ValueError(f"Project with id {project_id} does not exist")
         queries: List[Neo4jQuery] = []
         # if question with the same code already exists, add a suffix to the code
-        already_exists: bool = self._check_project_question_exists(question.id)
+        already_exists: bool = self._check_project_question_exists_within_project(
+            question.id
+        )
         # save code without suffix in the question text for graph question reference
         question_code_without_suffix: str = question.id.code
         if already_exists:
@@ -196,11 +200,13 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                     "MATCH (project_q:ProjectQuestion {code: $question_code}) "
                     "WHERE elementId(project_q) = $node_question_id "
                     "MATCH (project_prev_q:ProjectQuestion {code: $last_question_code}) "
+                    "MATCH (p:Project {code: $project_code})-[*]-(project_prev_q) "
                     "MERGE (project_prev_q)-[:NEXT]->(project_q)"
                 )
                 query: Neo4jQuery = Neo4jQuery(
                     query_string,
                     {
+                        "project_code": project_id.code,
                         "question_code": question.id.code,
                         "last_question_code": last_project_question.id.code,
                     },
@@ -244,7 +250,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
     def update_project_question(
         self, question_id: EntityId, question: ProjectQuestion
     ) -> None:
-        if not self._check_project_question_exists(question_id):
+        if not self._check_project_question_exists_within_project(question_id):
             raise NotFoundError(f"Question with id {question_id} does not exist")
         new_project_question: dict = self._convert_project_question_in_node(question)
         queries: List[Neo4jQuery] = []
@@ -272,10 +278,12 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         queries.append(
             Neo4jQuery(
                 "MATCH (q:ProjectQuestion {code: $question_code})-[:HAS_AVAILABLE|:HAS_SELECTED]->(a:ProjectAnswer) "
+                "WHERE elementId(q) = $node_question_id "
                 "DETACH DELETE a",
                 {"question_code": question_id.code},
             )
         )
+
         for answer in question.answers:
             a: dict = self._convert_answer_in_node(answer)
             queries.append(Neo4jQuery("CREATE (:ProjectAnswer $answer)", {"answer": a}))
@@ -297,7 +305,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         self.driver.transaction(queries)
 
     def delete_project_question(self, question_id: EntityId) -> None:
-        if not self._check_project_question_exists(question_id):
+        if not self._check_project_question_exists_within_project(question_id):
             raise NotFoundError(f"Question with id {question_id} does not exist")
         self.driver.query(
             Neo4jQuery(
@@ -351,7 +359,9 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             )
         )
 
-    def _check_project_question_exists(self, question_id: EntityId) -> bool:
+    def _check_project_question_exists_within_project(
+        self, question_id: EntityId
+    ) -> bool:
         q: ProjectQuestion = self.get_project_question_by_id(question_id)
         return q is not None
 
