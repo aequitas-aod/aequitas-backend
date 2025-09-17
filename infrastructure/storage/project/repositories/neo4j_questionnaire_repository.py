@@ -258,6 +258,8 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         queries: List[Neo4jQuery] = []
         query = """
                 MATCH (q:ProjectQuestion {code: $question_code})
+                MATCH (p:Project {code: $project_code})
+                MATCH path = (p)-[:QUESTIONNAIRE|NEXT*]->(q)
                 SET q.text = $text,
                     q.description = $description,
                     q.type = $type,
@@ -269,6 +271,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
             Neo4jQuery(
                 query,
                 {
+                    "project_code": question_id.project_code,
                     "question_code": question_id.code,
                     "text": new_project_question["text"],
                     "description": new_project_question["description"],
@@ -296,8 +299,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
                     "MATCH (a:ProjectAnswer {code: $answer_code}) "
                     "WHERE NOT (a)--() "  # selecting answers that are not connected any other node (nodes just created)
                     f"CREATE (q)-[:HAS_AVAILABLE]->(a) "
-                    f"{'CREATE (q)-[:HAS_SELECTED]->(a)' if answer.selected else ''} "
-                    "RETURN a",
+                    f"{'CREATE (q)-[:HAS_SELECTED]->(a)' if answer.selected else ''} ",
                     {
                         "question_code": question.id.code,
                         "answer_code": answer.id.code,

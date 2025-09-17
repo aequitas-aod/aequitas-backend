@@ -78,7 +78,7 @@ class TestQuestionnairesAPI(ProjectRelatedTestCase):
         first_question: ProjectQuestion = self._get_nth_question(
             self.project_id.code, 1
         )
-        answer = next(iter(first_question.answers))
+        answer = sorted(first_question.answers, key=lambda a: a.id.code)[0]
         expected_question: ProjectQuestion = first_question.select_answer(answer.id)
         self._select_answer_to_nth_question(self.project_id.code, 1, answer.id)
         selected_question: ProjectQuestion = self._get_nth_question(
@@ -108,19 +108,19 @@ class TestQuestionnairesAPI(ProjectRelatedTestCase):
             self._get_question_from_questionnaire_and_graph(1)
         )
         self._compare_graph_and_project_questions(first_question, related_question)
-        answer = next(iter(first_question.answers))
+        answer = sorted(first_question.answers, key=lambda a: a.id.code)[0]
         self._select_answer_to_nth_question(self.project_id.code, 1, answer.id)
         second_question, related_question = (
             self._get_question_from_questionnaire_and_graph(2)
         )
         self._compare_graph_and_project_questions(second_question, related_question)
-        answer = next(iter(second_question.answers))
+        answer = sorted(second_question.answers, key=lambda a: a.id.code)[0]
         self._select_answer_to_nth_question(self.project_id.code, 2, answer.id)
         third_question, related_question = (
             self._get_question_from_questionnaire_and_graph(3)
         )
         self._compare_graph_and_project_questions(third_question, related_question)
-        answer = next(iter(third_question.answers))
+        answer = sorted(third_question.answers, key=lambda a: a.id.code)[0]
         self._select_answer_to_nth_question(self.project_id.code, 3, answer.id)
         expected_question: ProjectQuestion = third_question.select_answer(answer.id)
         selected_question: ProjectQuestion = self._get_nth_question(
