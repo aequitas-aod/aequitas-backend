@@ -1,3 +1,21 @@
+## [1.10.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.9.2...v1.10.0) (2025-09-17)
+
+### Features
+
+* fix get project question by id, finish update project question ([17c2767](https://github.com/aequitas-aod/aequitas-backend/commit/17c2767b5e8a7b9fc3d546a35bc255e8079076d8))
+
+### Dependency updates
+
+* **deps:** update dependency poetry to v2.2.0 ([#168](https://github.com/aequitas-aod/aequitas-backend/issues/168)) ([ec5177a](https://github.com/aequitas-aod/aequitas-backend/commit/ec5177a946d073ea9c58df0f03231c484b3aef08))
+
+### Bug Fixes
+
+* fix update project question query ([5e4b780](https://github.com/aequitas-aod/aequitas-backend/commit/5e4b78090c57211d0405a680eaa2f0480b3e44cb))
+
+### Performance improvements
+
+* improve paths in queries ([d0ee81a](https://github.com/aequitas-aod/aequitas-backend/commit/d0ee81a3788236843ffefab7fe6913551f4ee6f2))
+
 ## [1.9.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.9.1...v1.9.2) (2025-09-14)
 
 ### Bug Fixes
