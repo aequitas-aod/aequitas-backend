@@ -159,12 +159,31 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         )
         # save code without suffix in the question text for graph question reference
         question_code_without_suffix: str = question.id.code
+
         if already_exists:
-            if question.id.code.replace(question.id.code, "") == "":
-                question.id.code = f"{question.id.code}-1"
-            else:
-                suffix = int(question.id.code.split("-")[-1]) + 1
-                question.id.code = f"{question.id.code.rsplit('-', 1)[0]}-{suffix}"
+            question.id.code = f"{question.id.code}-1"
+            already_exists = self._check_project_question_exists_within_project(
+                question.id
+            )
+            if already_exists:
+                res = self.driver.query(
+                    Neo4jQuery(
+                        "MATCH (q:ProjectQuestion) "
+                        "MATCH (p:Project {code: $project_code}) "
+                        "MATCH path = (p)-[:QUESTIONNAIRE|NEXT*]->(q) "
+                        "WHERE q.code STARTS WITH $question_code "
+                        "WITH q, toInteger(REPLACE(q.code, $question_code, '')) AS codeNum "
+                        "ORDER BY codeNum DESC "
+                        "LIMIT 1 "
+                        "RETURN q, codeNum ",
+                        {
+                            "project_code": project_id.code,
+                            "question_code": question_code_without_suffix + "-",
+                        },
+                    )
+                )
+                suffix = res[0]["codeNum"] + 1
+                question.id.code = f"{question_code_without_suffix}-{suffix}"
 
         q: dict = self._convert_project_question_in_node(question)
         query_string: str = (

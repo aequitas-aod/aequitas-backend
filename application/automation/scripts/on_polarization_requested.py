@@ -83,7 +83,6 @@ class PolarizationRequestedReaction(Automator):
         project_id: EntityId,
         project: Project,
         context_key: str,
-        # phase: str,
     ):
         args = self.get_from_context(project_id, context_key, "json")
         processing_history = (
@@ -92,14 +91,20 @@ class PolarizationRequestedReaction(Automator):
             )
             or []
         )
+        polarization_history = (
+            self.get_from_context(
+                project_id, f"polarization_history", "json", optional=True
+            )
+            or []
+        )
         if not processing_history:
             raise Exception(
                 "Processing history is empty: it makes no sense to proceed with polarization"
             )
-        last_processing = processing_history[-1]
+        last_processing: dict = processing_history[-1]
         algorithm = last_processing["algorithm"]
         original_dataset_id = last_processing["dataset"]
-        hyperparameters = last_processing["hyperparameters"]
+        hyperparameters: dict = last_processing["hyperparameters"]
         dataset_info = self.get_dataset_info_from_context(
             project_id, context_key, original_dataset_id
         )
@@ -111,6 +116,17 @@ class PolarizationRequestedReaction(Automator):
             dataset_info.selected_sensitives,
             dataset_info.selected_targets,
         )
+
+        index: int = int(args["index"])
+        polarization_dict = dict(
+            test_dataset=dataset_info.dataset_id,
+            original_dataset_id=original_dataset_id,
+        )
+        if index < len(polarization_history):
+            polarization_history[index] = polarization_dict
+        else:
+            polarization_history.append(polarization_dict)
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             for k, v in self.produce_info(
@@ -118,10 +134,14 @@ class PolarizationRequestedReaction(Automator):
                 dataset_info,
                 original_dataset_id,
                 algorithm,
+                index,
                 hyperparameters,
-                **args,
             ):
                 self.update_context(project_id, k, v)
+
+        self.update_context(
+            project_id, polarization_history=to_json(polarization_history)
+        )
         self.update_context(project_id, processing_history=to_json(processing_history))
 
     def produce_info(
@@ -130,8 +150,8 @@ class PolarizationRequestedReaction(Automator):
         test_dataset_info: DatasetInfo,
         original_dataset_id: str,
         algorithm: str,
+        index: int,
         hyperparameters: dict,
-        **kwargs,
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
         test_dataset_id = test_dataset_info.dataset_id
         original_dataset: DataFrame = self.get_from_context(
@@ -154,23 +174,23 @@ class PolarizationRequestedReaction(Automator):
         )
         cases = [
             (
-                f"polarization_plot__{algorithm}__{test_dataset_id}",  # TODO: add incremental ids
+                f"polarization_plot__{algorithm}__{test_dataset_id}-{index}",
                 lambda: generate_plot("polarization", computed_metrics),
             ),
             (
-                f"predictions_head__{algorithm}__{test_dataset_id}",
+                f"predictions_head__{algorithm}__{test_dataset_id}-{index}",
                 lambda: to_csv(test_predictions_head),
             ),
             (
-                f"predictions__{algorithm}__{test_dataset_id}",
+                f"predictions__{algorithm}__{test_dataset_id}-{index}",
                 lambda: to_csv(test_predictions),
             ),
             (
-                f"correlation_matrix__{algorithm}__{test_dataset_id}",
+                f"correlation_matrix__{algorithm}__{test_dataset_id}-{index}",
                 lambda: correlation_matrix_picture(test_predictions),
             ),
             (
-                f"metrics__{algorithm}__{test_dataset_id}",
+                f"metrics__{algorithm}__{test_dataset_id}-{index}",
                 lambda: generate_metrics(
                     test_predictions,
                     test_dataset_info.sensitive,
