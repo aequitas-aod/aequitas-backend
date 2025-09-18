@@ -1,3 +1,9 @@
+## [1.11.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.10.0...v1.11.0) (2025-09-18)
+
+### Features
+
+* add incremental id for stress test again ([f51130b](https://github.com/aequitas-aod/aequitas-backend/commit/f51130b6caaef3a61fc9d7c4231aedd0977d8819))
+
 ## [1.10.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.9.2...v1.10.0) (2025-09-17)
 
 ### Features
