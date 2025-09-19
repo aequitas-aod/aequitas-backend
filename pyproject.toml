@@ -38,7 +38,7 @@ svglib = "^1.5.1"
 pypdf2 = "^3.0.1"
 
 [tool.poetry.group.dev.dependencies]
-black = "25.1.0"
+black = "25.9.0"
 python-on-whales = "0.78.0"
 
 [build-system]
