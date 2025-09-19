@@ -1,3 +1,13 @@
+## [1.11.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.11.0...v1.11.1) (2025-09-19)
+
+### Dependency updates
+
+* **deps:** update dependency black to v25.9.0 ([#169](https://github.com/aequitas-aod/aequitas-backend/issues/169)) ([c240c7c](https://github.com/aequitas-aod/aequitas-backend/commit/c240c7c694d15575c87c1233b95364e6c133560f))
+
+### Bug Fixes
+
+* **deps:** update dependency reportlab to v4.4.4 ([#170](https://github.com/aequitas-aod/aequitas-backend/issues/170)) ([29193e4](https://github.com/aequitas-aod/aequitas-backend/commit/29193e41d787111551c36464bebca26a9cd4c5e7))
+
 ## [1.11.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.10.0...v1.11.0) (2025-09-18)
 
 ### Features
