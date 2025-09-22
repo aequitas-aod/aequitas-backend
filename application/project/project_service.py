@@ -8,6 +8,7 @@ from warnings import warn
 import shortuuid
 
 import utils.encodings as base64
+from application.automation.parsing import parse_json
 from application.project.report import create_report_data, create_report
 from domain.common.core import EntityId
 from domain.project.core import Project
@@ -148,7 +149,7 @@ class ProjectService:
         project = self.project_repository.get_project_by_id(project_id)
         public_context = self.project_repository.get_public_context()
         ctx = project.get_context() | public_context
-        regex_patterns_for_report: Dict[re.Pattern, str] = {
+        regex_patterns: Dict[re.Pattern, str] = {
             re.compile(r"^dataset_head__\w+-1$"): "Dataset View",
             re.compile(r"^stats__\w+-1$"): "Features View",
             re.compile(
@@ -176,16 +177,32 @@ class ProjectService:
                 r"^metrics__[\w-]+__(?!.*Test-)[\w-]+$"
             ): "Model Mitigation Results",
             re.compile(r"^fairness_plot__[\w-]+__[\w-]+$"): "Model Mitigation Results",
-            re.compile(
-                r"^polarization_plot__[\w-]+__Test-[\w-]+$"
-            ): "Stress Test Results",
-            re.compile(
-                r"^predictions_head__[\w-]+__Test-[\w-]+$"
-            ): "Stress Test Results",
-            re.compile(
-                r"^correlation_matrix__[\w-]+__Test-[\w-]+$"
-            ): "Stress Test Results",
-            re.compile(r"^metrics__[\w-]+__Test-[\w-]+$"): "Stress Test Results",
+        }
+
+        polarization_history: dict = parse_json(ctx.get("polarization_history", "[]"))
+        polarization_patterns: Dict[re.Pattern, str] = {}
+
+        for i, _ in enumerate(polarization_history):
+            polarization_patterns.update(
+                {
+                    re.compile(
+                        rf"^polarization_plot__[\w-]+__Test-[\w-]+-{i}$"
+                    ): f"Stress Test Results {i + 1}",
+                    re.compile(
+                        rf"^predictions_head__[\w-]+__Test-[\w-]+-{i}$"
+                    ): f"Stress Test Results {i + 1}",
+                    re.compile(
+                        rf"^correlation_matrix__[\w-]+__Test-[\w-]+-{i}$"
+                    ): f"Stress Test Results {i + 1}",
+                    re.compile(
+                        rf"^metrics__[\w-]+__Test-[\w-]+-{i}$"
+                    ): f"Stress Test Results {i + 1}",
+                }
+            )
+
+        regex_patterns_for_report: Dict[re.Pattern, str] = {
+            **regex_patterns,
+            **polarization_patterns,
         }
 
         current_dataset: str = ctx.get("current_dataset")[:-2]
