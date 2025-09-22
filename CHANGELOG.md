@@ -1,3 +1,9 @@
+## [1.12.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.11.2...v1.12.0) (2025-09-22)
+
+### Features
+
+* update report with multiple stress tests ([45b9bee](https://github.com/aequitas-aod/aequitas-backend/commit/45b9beeea85259fe71abbb742f125234fcdb6dca))
+
 ## [1.11.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.11.1...v1.11.2) (2025-09-22)
 
 ### Dependency updates
