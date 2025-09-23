@@ -28,6 +28,9 @@ from resources.akkodis import (
 from resources.db.datasets import dataset_path
 from resources.skin_deseases import (
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV,
+    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_RES_CSV,
+    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_RES_2_CSV,
+    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_2_CSV,
 )
 
 
@@ -40,6 +43,8 @@ def compute_polarization(
     test_dataset: DataFrame,
     original_dataset: DataFrame,
 ):
+    result_path = None
+    pred_path = None
     if "cand_provenance_gender" in sensitive:
         if hyperparameters["lambda_adv"] == 0:
             pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV
@@ -57,17 +62,23 @@ def compute_polarization(
     elif "f_ESCS" in sensitive:
         pred_path = dataset_path("preprocessed_lfr_result_ull")
     elif "skin_color" in sensitive:
-        pred_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV
+        if "Max" in test_dataset_id:
+            result_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_RES_CSV
+            pred_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV
+        else:
+            result_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_RES_2_CSV
+            pred_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_2_CSV
     else:
         pred_path = dataset_path("fauci_predictions")
 
     pred = pd.read_csv(pred_path)
+    result = None
+
+    if result_path:
+        result = pd.read_csv(result_path)
 
     if "lambda" in hyperparameters:
         pred = pred.drop("class", axis=1).rename(columns={"predictions": "class"})
-
-    # TODO: compute new polarization metrics
-    result = DataFrame()
 
     return pred, result
 
@@ -168,10 +179,14 @@ class PolarizationRequestedReaction(Automator):
         )
         test_predictions_head = test_predictions.head(100)
 
-        # TODO: to remove when polarization metrics computation is implemented
-        computed_metrics = self.get_from_context(
-            project_id, f"computed_metrics__{algorithm}__{original_dataset_id}", "csv"
-        )
+        if computed_metrics is None:
+            # TODO: remove this fallback when we are sure all the datasets have computed metrics
+            computed_metrics = self.get_from_context(
+                project_id,
+                f"computed_metrics__{algorithm}__{original_dataset_id}",
+                "csv",
+            )
+
         cases = [
             (
                 f"polarization_plot__{algorithm}__{test_dataset_id}-{index}",

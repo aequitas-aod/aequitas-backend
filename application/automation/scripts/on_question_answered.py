@@ -24,9 +24,9 @@ class AbstractQuestionAnsweredReaction(Automator):
         logger.info(
             f"Topic: {topic}, project id: {project_id}, question_index: {question_index}, selected_answers_ids: {selected_answers_ids}"
         )
-        if (
-            question_index in self.relevant_questions
-            or question_code in self.relevant_questions
+        if question_index in self.relevant_questions or any(
+            relevant_question in question_code
+            for relevant_question in self.relevant_questions
         ):
             new_keys = {
                 k: v

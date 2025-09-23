@@ -161,7 +161,7 @@ class Neo4jQuestionnaireRepository(QuestionnaireRepository):
         question_code_without_suffix: str = question.id.code
 
         if already_exists:
-            question.id.code = f"{question.id.code}-1"
+            question.id.code = f"{question.id.code}-2"
             already_exists = self._check_project_question_exists_within_project(
                 question.id
             )

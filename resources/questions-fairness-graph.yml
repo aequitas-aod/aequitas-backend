@@ -288,9 +288,12 @@
     - id: { code: Test-AdeccoDataset }
       text: AEQUITAS - Use Case HR1 - Recruitment
       description: A polarized version of the Adecco Dataset.
-    - id: { code: Test-SkinDiseaseDataset }
-      text: AEQUITAS - Use Case HC1 - Skin Disease
-      description: A polarized version of the Skin Disease Dataset.
+    - id: { code: Test-SkinDiseaseMaxDataset }
+      text: AEQUITAS - Use Case HC1 - Skin Disease - Max
+      description: A polarized version of the skin disease dataset, with a higher proportion of images showing brown and dark skin tones.
+    - id: { code: Test-SkinDiseaseBalancedDataset }
+      text: AEQUITAS - Use Case HC1 - Skin Disease - Balanced
+      description: A polarized version of the skin disease dataset, with a balanced representation of brown and dark tones relative to the others.
   enabled_by:
     - { code: Test }
     - { code: TestAgain }
@@ -316,7 +319,8 @@
     - { code: Test-UllDataset }
     - { code: Test-AkkodisDataset }
     - { code: Test-AdeccoDataset }
-    - { code: Test-SkinDiseaseDataset }
+    - { code: Test-SkinDiseaseMaxDataset }
+    - { code: Test-SkinDiseaseBalancedDataset }
   action_needed: null
   created_at: 2024-05-31T18:20:36
 
