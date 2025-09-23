@@ -1,3 +1,9 @@
+## [1.13.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.12.0...v1.13.0) (2025-09-23)
+
+### Features
+
+* add results for polarization of image dataset, update polarized datasets in questions ([3388988](https://github.com/aequitas-aod/aequitas-backend/commit/33889884bc4c0e9f44c2a4b66a2f76ba8e4f6cfe))
+
 ## [1.12.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.11.2...v1.12.0) (2025-09-22)
 
 ### Features
