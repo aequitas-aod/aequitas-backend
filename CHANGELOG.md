@@ -1,3 +1,9 @@
+## [1.13.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.3...v1.13.4) (2025-09-24)
+
+### Bug Fixes
+
+* **report:** fix missing keys in report (preprocessing, features), show images instead of URIs ([70c49fa](https://github.com/aequitas-aod/aequitas-backend/commit/70c49fad454ea77a9896ad0baf3d7f34cac10438))
+
 ## [1.13.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.2...v1.13.3) (2025-09-24)
 
 ### Bug Fixes
