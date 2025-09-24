@@ -1,27 +1,23 @@
+import functools
 import io
 import json
-import pprint
-from dis import pretty_flags
 from typing import Iterable, Union
-import functools
 
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
 import seaborn as sns
+from aif360.datasets import BinaryLabelDataset
+from aif360.metrics import BinaryLabelDatasetMetric
 from sklearn.preprocessing import OrdinalEncoder, KBinsDiscretizer
 
 import utils.env
-from utils.logs import logger
 from application.automation.parsing import to_csv, _pythonize
 from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
+from utils.logs import logger
 from utils.logs import set_other_loggers_level
-
-from aif360.datasets import BinaryLabelDataset
-from aif360.metrics import BinaryLabelDatasetMetric
 
 matplotlib.use("agg")
 THRESHOLD_PROXY = 0.8
@@ -67,6 +63,13 @@ class AbstractDatasetFeaturesAvailableReaction(Automator):
         sensitive = [key for key, value in features.items() if value["sensitive"]]
         drops = [key for key, value in features.items() if value["drop"]]
         actual_dataset = dataset.drop(columns=drops, axis=1)
+
+        stats_key = f"stats__{dataset_id}"
+        stats: pd.DataFrame = self.get_from_context(project_id, stats_key, "csv")
+        stats["target"] = stats["feature"].isin(targets)
+        stats["sensitive"] = stats["feature"].isin(sensitive)
+        self.update_context(project_id, stats_key, to_csv(stats))
+
         for k, v in self.produce_info(dataset_id, actual_dataset, targets, sensitive):
             self.update_context(project_id, k, v)
 
