@@ -132,11 +132,17 @@ class PolarizationRequestedReaction(Automator):
         polarization_dict = dict(
             test_dataset=dataset_info.dataset_id,
             original_dataset_id=original_dataset_id,
+            algorithm=algorithm,
         )
         if index < len(polarization_history):
             polarization_history[index] = polarization_dict
         else:
             polarization_history.append(polarization_dict)
+
+        self.update_context(
+            project_id, polarization_history=to_json(polarization_history)
+        )
+        self.update_context(project_id, processing_history=to_json(processing_history))
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -149,11 +155,6 @@ class PolarizationRequestedReaction(Automator):
                 hyperparameters,
             ):
                 self.update_context(project_id, k, v)
-
-        self.update_context(
-            project_id, polarization_history=to_json(polarization_history)
-        )
-        self.update_context(project_id, processing_history=to_json(processing_history))
 
     def produce_info(
         self,
@@ -189,23 +190,23 @@ class PolarizationRequestedReaction(Automator):
 
         cases = [
             (
-                f"polarization_plot__{algorithm}__{test_dataset_id}-{index}",
+                f"polarization_plot__{algorithm}__{test_dataset_id}",
                 lambda: generate_plot("polarization", computed_metrics),
             ),
             (
-                f"predictions_head__{algorithm}__{test_dataset_id}-{index}",
+                f"predictions_head__{algorithm}__{test_dataset_id}",
                 lambda: to_csv(test_predictions_head),
             ),
             (
-                f"predictions__{algorithm}__{test_dataset_id}-{index}",
+                f"predictions__{algorithm}__{test_dataset_id}",
                 lambda: to_csv(test_predictions),
             ),
             (
-                f"correlation_matrix__{algorithm}__{test_dataset_id}-{index}",
+                f"correlation_matrix__{algorithm}__{test_dataset_id}",
                 lambda: correlation_matrix_picture(test_predictions),
             ),
             (
-                f"metrics__{algorithm}__{test_dataset_id}-{index}",
+                f"metrics__{algorithm}__{test_dataset_id}",
                 lambda: generate_metrics(
                     test_predictions,
                     test_dataset_info.sensitive,

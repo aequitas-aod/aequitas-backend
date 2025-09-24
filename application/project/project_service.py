@@ -182,21 +182,23 @@ class ProjectService:
         polarization_history: dict = parse_json(ctx.get("polarization_history", "[]"))
         polarization_patterns: Dict[re.Pattern, str] = {}
 
-        for i, _ in enumerate(polarization_history):
+        for i, polarization in enumerate(polarization_history):
+            dataset = polarization["test_dataset"]
+            algorithm = polarization["algorithm"]
             polarization_patterns.update(
                 {
                     re.compile(
-                        rf"^polarization_plot__[\w-]+__Test-[\w-]+-{i}$"
-                    ): f"Stress Test Results {i + 1}",
+                        rf"^polarization_plot__{algorithm}__{dataset}$"
+                    ): f"Stress Test Results {i + 1} ({dataset})",
                     re.compile(
-                        rf"^predictions_head__[\w-]+__Test-[\w-]+-{i}$"
-                    ): f"Stress Test Results {i + 1}",
+                        rf"^predictions_head__{algorithm}__{dataset}$"
+                    ): f"Stress Test Results {i + 1} ({dataset})",
                     re.compile(
-                        rf"^correlation_matrix__[\w-]+__Test-[\w-]+-{i}$"
-                    ): f"Stress Test Results {i + 1}",
+                        rf"^correlation_matrix__{algorithm}__{dataset}$"
+                    ): f"Stress Test Results {i + 1} ({dataset})",
                     re.compile(
-                        rf"^metrics__[\w-]+__Test-[\w-]+-{i}$"
-                    ): f"Stress Test Results {i + 1}",
+                        rf"^metrics__{algorithm}__{dataset}$"
+                    ): f"Stress Test Results {i + 1} ({dataset})",
                 }
             )
 
