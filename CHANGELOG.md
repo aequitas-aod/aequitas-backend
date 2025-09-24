@@ -1,3 +1,9 @@
+## [1.13.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.0...v1.13.1) (2025-09-24)
+
+### Bug Fixes
+
+* fix key generation in polarization removing incremental numbers, update report creation ([5385b8c](https://github.com/aequitas-aod/aequitas-backend/commit/5385b8c82aa89bdfe9e739b9a66f87fc8d677e21))
+
 ## [1.13.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.12.0...v1.13.0) (2025-09-23)
 
 ### Features
