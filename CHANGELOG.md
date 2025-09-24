@@ -1,3 +1,9 @@
+## [1.13.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.1...v1.13.2) (2025-09-24)
+
+### Bug Fixes
+
+* fix polarization results csv ([2865954](https://github.com/aequitas-aod/aequitas-backend/commit/2865954c41b88b2830ec1c7f731936f128cab7a2))
+
 ## [1.13.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.0...v1.13.1) (2025-09-24)
 
 ### Bug Fixes
