@@ -1,3 +1,9 @@
+## [1.13.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.2...v1.13.3) (2025-09-24)
+
+### Bug Fixes
+
+* update stats key in order to keep updated sensitive and target features ([5b8d810](https://github.com/aequitas-aod/aequitas-backend/commit/5b8d8108c9799feda2bbfc6d2f5db4bf8c4398c0))
+
 ## [1.13.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.1...v1.13.2) (2025-09-24)
 
 ### Bug Fixes
