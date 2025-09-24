@@ -148,22 +148,24 @@ class ProjectService:
         """
         project = self.project_repository.get_project_by_id(project_id)
         public_context = self.project_repository.get_public_context()
-        ctx = project.get_context() | public_context
+        ctx = public_context | project.get_context()
         regex_patterns: Dict[re.Pattern, str] = {
             re.compile(r"^dataset_head__\w+-1$"): "Dataset View",
             re.compile(r"^stats__\w+-1$"): "Features View",
+            re.compile(r"^features__\w+-1$"): "Features View",
             re.compile(
                 r"^correlation_matrix__(?!.*__)\w+-1$"
             ): "Proxies",  # match correlation_matrix__<something>-1 but not correlation_matrix__<something>__<something>
             re.compile(r"^suggested_proxies__\w+-1$"): "Proxies",
             re.compile(r"^metrics__(?!.*__)\w+-1$"): "Detection",  # same here
-            re.compile(r"^preprocessing__\w+$"): "Data Mitigation",
+            re.compile(r"^preprocessing__[\w-]+$"): "Data Mitigation",
             re.compile(r"^preprocessing_plot__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^performance_plot__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^fairness_plot__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^dataset_head__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^correlation_matrix__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^metrics__\w+-2$"): "Data Mitigation Results",
+            re.compile(r"^inprocessing__[\w-]+$"): "Model Mitigation",
             re.compile(
                 r"^predictions_head__[\w-]+__(?!.*Test-)[\w-]+$"
             ): "Model Mitigation Results",

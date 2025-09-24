@@ -8,6 +8,7 @@ from tempfile import TemporaryDirectory
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import requests
 from PyPDF2 import PdfReader, PdfWriter
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
@@ -267,11 +268,41 @@ def csv_to_pdf_table(temp_dir, folder, output_pdf, csv_string):
     if dataframe_has_json_column(df):
         csv_with_json_to_pdf(folder, output_pdf, csv_string)
     else:
-        # Prepare table data with wrapped cells
-        data = [
-            [Paragraph(str(cell), styleN) for cell in row]
-            for row in [df.columns.tolist()] + df.values.tolist()
-        ]
+        MAX_IMG_WIDTH = 50
+        MAX_IMG_HEIGHT = 50
+        uri_col_idx = None
+        if "URIs" in df.columns:
+            df = df.head(15)
+            uri_col_idx = df.columns.get_loc("URIs")
+
+        data = []
+        header_row = [Paragraph(f"<b>{col}</b>", styleN) for col in df.columns.tolist()]
+        data.append(header_row)
+        # Add data rows
+        for row in df.values.tolist():
+            row_data = []
+            for col_idx, cell in enumerate(row):
+                if (
+                    uri_col_idx is not None
+                    and col_idx == uri_col_idx
+                    and isinstance(cell, str)
+                ):
+                    try:
+                        response = requests.get(cell, timeout=5)
+                        if response.status_code == 200:
+                            img_bytes = BytesIO(response.content)
+                            img = Image(img_bytes)
+                            img._restrictSize(MAX_IMG_WIDTH, MAX_IMG_HEIGHT)
+                            row_data.append(img)
+                        else:
+                            # Fallback to text if download fails
+                            row_data.append(Paragraph(str(cell), styleN))
+                    except Exception as e:
+                        # Fallback to URI text if error occurs
+                        row_data.append(Paragraph(str(cell), styleN))
+                else:
+                    row_data.append(Paragraph(str(cell), styleN))
+            data.append(row_data)
 
         # Column widths
         page_width, _ = landscape(letter)
@@ -595,10 +626,8 @@ def json_to_pdf2(temp_dir, folder, section_title, json_string):
             and (search_key(cleaned_data, "sensitive"))
             and (search_key(cleaned_data, "drop"))
         ):
-            os.makedirs(
-                "ReportData/FeatureSelection", exist_ok=True
-            )  # Ensure output folder exists
-            pdf_filename = "ReportData/FeatureSelection/" + section_title + ".pdf"
+            os.makedirs(folder, exist_ok=True)  # Ensure output folder exists
+            pdf_filename = folder + "/" + section_title + ".pdf"
             global extra_feature_selection
             extra_feature_selection = True
         doc = SimpleDocTemplate(pdf_filename, pagesize=A4)
@@ -823,11 +852,8 @@ def suggested_json_to_pdf(folder, name, data):
     logger.info(f"PDF saved to {doc.filename}")
 
 
-def preprocessing_json_to_pdf(folder, name, path):
+def preprocessing_json_to_pdf(folder, name, data):
     os.makedirs(folder, exist_ok=True)
-
-    with open(path, "r", encoding="utf-8") as f:
-        data = json.load(f)
 
     styles = getSampleStyleSheet()
     doc = SimpleDocTemplate(os.path.join(folder, f"{name}.pdf"), pagesize=letter)
