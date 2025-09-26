@@ -237,6 +237,9 @@ def PDFCreator2(temp_dir, folder, file_name):
                 # Add title overlay only on the first page of the first PDF
                 if first_pdf and i == 0:
                     logger.info(f"Adding title to {pdf_file}'s first page")
+                    if pdf_file.split("__")[0] == "dataset_head":
+                        dataset_name = pdf_file.split("__")[1].split("-")[0]
+                        title += f" - {dataset_name}"
                     page = add_title_overlay(page, title)
 
                 writer.add_page(page)
@@ -271,6 +274,7 @@ def csv_to_pdf_table(temp_dir, folder, output_pdf, csv_string):
         MAX_IMG_WIDTH = 50
         MAX_IMG_HEIGHT = 50
         uri_col_idx = None
+        df = df.head(30)
         if "URIs" in df.columns:
             df = df.head(15)
             uri_col_idx = df.columns.get_loc("URIs")
@@ -783,7 +787,7 @@ def suggested_json_to_pdf(folder, name, data):
     os.makedirs(folder, exist_ok=True)
 
     styles = getSampleStyleSheet()
-    doc = SimpleDocTemplate(os.path.join(folder, f"{name}.pdf"), pagesize=letter)
+    doc = SimpleDocTemplate(os.path.join(folder, f"{name}.pdf"), pagesize=landscape(A4))
     elements = []
 
     left_heading2 = ParagraphStyle(
