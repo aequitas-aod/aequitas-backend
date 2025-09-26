@@ -285,9 +285,12 @@
     - id: { code: Test-AkkodisDataset }
       text: AEQUITAS - Use Case HR2 - Recruitment
       description: A polarized version of the Akkodis Dataset.
-    - id: { code: Test-AdeccoDataset }
-      text: AEQUITAS - Use Case HR1 - Recruitment
-      description: A polarized version of the Adecco Dataset.
+    - id: { code: Test-AdeccoBalancedDataset }
+      text: AEQUITAS - Use Case HR1 - Recruitment - Balanced
+      description: A polarized version of the Adecco Dataset, having the same number of candidates for each protected group.
+    - id: { code: Test-AdeccoReverseDataset }
+      text: AEQUITAS - Use Case HR1 - Recruitment - Reverse
+      description: A polarized version of the Adecco Dataset, having people from the north and central Italy that are under-represented.
     - id: { code: Test-SkinDiseaseMaxDataset }
       text: AEQUITAS - Use Case HC1 - Skin Disease - Max
       description: A polarized version of the skin disease dataset, with a higher proportion of images showing brown and dark skin tones.
@@ -318,7 +321,8 @@
     - { code: Test-CreditDataset }
     - { code: Test-UllDataset }
     - { code: Test-AkkodisDataset }
-    - { code: Test-AdeccoDataset }
+    - { code: Test-AdeccoReverseDataset }
+    - { code: Test-AdeccoBalancedDataset }
     - { code: Test-SkinDiseaseMaxDataset }
     - { code: Test-SkinDiseaseBalancedDataset }
   action_needed: null

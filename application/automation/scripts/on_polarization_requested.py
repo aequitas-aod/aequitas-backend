@@ -19,6 +19,9 @@ from resources.adecco import (
     PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV,
     PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV,
     PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_RES_0_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV,
+    PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV,
 )
 from resources.akkodis import (
     PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV,
@@ -46,12 +49,27 @@ def compute_polarization(
     result_path = None
     pred_path = None
     if "cand_provenance_gender" in sensitive:
-        if hyperparameters["lambda_adv"] == 0:
-            pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV
-        elif hyperparameters["lambda_adv"] == 1:
-            pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV
+        if "Reverse" in test_dataset_id:
+            if hyperparameters["lambda_adv"] == 0:
+                pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV
+                result_path = PATH_ADECCO_INPROCESSING_ADVDEB_RES_0_CSV
+            elif hyperparameters["lambda_adv"] == 1:
+                pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV
+                result_path = PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV
+            else:
+                pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV
+                result_path = PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV
         else:
-            pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV
+            if hyperparameters["lambda_adv"] == 0:
+                pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV
+                result_path = PATH_ADECCO_INPROCESSING_ADVDEB_RES_0_CSV
+            elif hyperparameters["lambda_adv"] == 1:
+                pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV
+                result_path = PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV
+            else:
+                pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV
+                result_path = PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV
+
     elif "Sensitive" in sensitive:
         if hyperparameters["lambda_adv"] == 0:
             pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV
