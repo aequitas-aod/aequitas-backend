@@ -1,3 +1,10 @@
+## [1.14.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.5...v1.14.0) (2025-09-26)
+
+### Features
+
+* add Adecco polarization results ([481b1be](https://github.com/aequitas-aod/aequitas-backend/commit/481b1be59fe1debf9922e977b918ecca467d9925))
+* **report:** add use case name to report, make Proxies page landscape ([52cf9bf](https://github.com/aequitas-aod/aequitas-backend/commit/52cf9bf8ec2d0229e15ea5e4cacc69122535851a))
+
 ## [1.13.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.4...v1.13.5) (2025-09-26)
 
 ### Dependency updates
