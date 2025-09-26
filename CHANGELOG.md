@@ -1,3 +1,13 @@
+## [1.13.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.4...v1.13.5) (2025-09-26)
+
+### Dependency updates
+
+* **deps:** update node.js to 22.20 ([#173](https://github.com/aequitas-aod/aequitas-backend/issues/173)) ([921abf2](https://github.com/aequitas-aod/aequitas-backend/commit/921abf216446ea129ae79962138ff4a96a88047c))
+
+### Bug Fixes
+
+* **deps:** update dependency pyyaml to v6.0.3 ([#175](https://github.com/aequitas-aod/aequitas-backend/issues/175)) ([ceec229](https://github.com/aequitas-aod/aequitas-backend/commit/ceec22951dd9aafb1312116cac84255c13b23f03))
+
 ## [1.13.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.3...v1.13.4) (2025-09-24)
 
 ### Bug Fixes
