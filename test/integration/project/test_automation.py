@@ -122,9 +122,9 @@ class TestContextAutomation(AutomationRelatedTestCase):
         self.assertResponseIsSuccessful(response)
         self.assertIn("plain/text", response.headers["Content-Type"])
         parsed = parse_json(response.data.decode("utf-8"))
-        self.assertIsInstance(parsed, list)
+        self.assertIsInstance(parsed, dict)
         self.assertTrue(len(parsed) > 0)
-        last_processing = parsed[-1]
+        last_processing = parsed
         self.assertEqual(last_processing["phase"], phase)
         self.assertEqual(last_processing["dataset"], dataset)
         self.assertEqual(last_processing["algorithm"], algorithm)
