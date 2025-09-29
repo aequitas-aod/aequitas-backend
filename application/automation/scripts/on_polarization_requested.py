@@ -114,11 +114,8 @@ class PolarizationRequestedReaction(Automator):
         context_key: str,
     ):
         args = self.get_from_context(project_id, context_key, "json")
-        processing_history = (
-            self.get_from_context(
-                project_id, f"processing_history", "json", optional=True
-            )
-            or []
+        last_processing: dict = self.get_from_context(
+            project_id, f"processing_history", "json", optional=True
         )
         polarization_history = (
             self.get_from_context(
@@ -126,11 +123,10 @@ class PolarizationRequestedReaction(Automator):
             )
             or []
         )
-        if not processing_history:
+        if not last_processing:
             raise Exception(
                 "Processing history is empty: it makes no sense to proceed with polarization"
             )
-        last_processing: dict = processing_history[-1]
         algorithm = last_processing["algorithm"]
         original_dataset_id = last_processing["dataset"]
         hyperparameters: dict = last_processing["hyperparameters"]
@@ -160,7 +156,7 @@ class PolarizationRequestedReaction(Automator):
         self.update_context(
             project_id, polarization_history=to_json(polarization_history)
         )
-        self.update_context(project_id, processing_history=to_json(processing_history))
+        self.update_context(project_id, processing_history=to_json(last_processing))
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")

@@ -108,12 +108,6 @@ class AbstractProcessingRequestedReaction(Automator):
             return
         dataset_info = self.get_dataset_info_from_context(project_id, context_key)
         hyperparameters = self.get_from_context(project_id, context_key, "json")
-        processing_history = (
-            self.get_from_context(
-                project_id, f"processing_history", "json", optional=True
-            )
-            or []
-        )
         algorithm = hyperparameters["$algorithm"]
         self.log(
             "Requested %sprocessing with algorithm %s for dataset %s with metrics=%s, sensitives=%s, targets=%s",
@@ -126,14 +120,13 @@ class AbstractProcessingRequestedReaction(Automator):
         )
         hp = hyperparameters.copy()
         del hp["$algorithm"]
-        processing_history.append(
-            dict(
-                phase=phase,
-                dataset=dataset_info.dataset_id,
-                algorithm=algorithm,
-                hyperparameters=hp,
-            )
+        processing_history = dict(
+            phase=phase,
+            dataset=dataset_info.dataset_id,
+            algorithm=algorithm,
+            hyperparameters=hp,
         )
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             for k, v in self.produce_info(
