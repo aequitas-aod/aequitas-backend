@@ -1,47 +1,29 @@
 services:
 
-  zookeeper:
-    image: bitnami/zookeeper:latest
+  kafka:
+    image: apache/kafka:latest
     platform: &platform
       linux/x86_64
-    ports:
-      - __ZOOKEEPER_PORT__:2181
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-    healthcheck:
-      test: ["CMD-SHELL", "echo mntr | nc localhost 2181 | grep zk_version | grep -q zk_version"]
-      interval: 1m
-      timeout: 2s
-      retries: 5
-      start_period: 10s
-    networks:
-      - internal
-
-  kafka:
-    image: bitnami/kafka:3.9
-    platform: *platform
     ports:
       - __KAFKA_PORT__:__KAFKA_PORT__
       - __KAFKA_EXTERNAL_PORT__:__KAFKA_EXTERNAL_PORT__
     environment:
-      - KAFKA_CFG_NODE_ID=1
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:__KAFKA_PORT__,EXTERNAL://:__KAFKA_EXTERNAL_PORT__
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:__KAFKA_PORT__,EXTERNAL://__KAFKA_EXTERNAL_HOST__:__KAFKA_EXTERNAL_PORT__
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_DEFAULT_REPLICATION_FACTOR=1
-      - KAFKA_MESSAGE_MAX_BYTES=200000000
-      - KAFKA_DELETE_TOPIC_ENABLE=true
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:__KAFKA_PORT__,EXTERNAL://:__KAFKA_EXTERNAL_PORT__,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:__KAFKA_PORT__,EXTERNAL://localhost:__KAFKA_EXTERNAL_PORT__
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     healthcheck:
-      test: ["CMD", "kafka-broker-api-versions.sh", "--bootstrap-server", "localhost:${KAFKA_PORT}"]
+      test: ["CMD", "/opt/kafka/bin/kafka-broker-api-versions.sh", "--bootstrap-server", "localhost:${KAFKA_PORT}"]
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 30s
-    depends_on:
-      zookeeper:
-        condition: service_healthy
     networks:
       - internal
 
