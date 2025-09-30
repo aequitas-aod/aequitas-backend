@@ -1,3 +1,14 @@
+## [1.14.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.14.0...v1.14.1) (2025-09-30)
+
+### Bug Fixes
+
+* change processing history type ([3279778](https://github.com/aequitas-aod/aequitas-backend/commit/327977879d087ab5b383fff0ecb7968dedcc84e3))
+* **test:** adapt test to type change of processing history ([74e70e3](https://github.com/aequitas-aod/aequitas-backend/commit/74e70e32e3d0e25f9fec352d997e2cf6c8e700ac))
+
+### Refactoring
+
+* remove zookeeper, change kafka image ([5719be8](https://github.com/aequitas-aod/aequitas-backend/commit/5719be8b04f091e45bc3f7ffb1156b58baa73fc7))
+
 ## [1.14.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.13.5...v1.14.0) (2025-09-26)
 
 ### Features
