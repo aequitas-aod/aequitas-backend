@@ -48,3 +48,11 @@ AdversarialDebiasing:
     type: float
     default: 5.0
     values: [0.0, 10.0]
+
+ContributionBasedClassifier:
+  fairness_mechanism:
+    label: Fairness mechanism
+    description: The fairness mechanism to be used
+    type: categorical
+    default: unawareness
+    values: [unawareness, residualization]

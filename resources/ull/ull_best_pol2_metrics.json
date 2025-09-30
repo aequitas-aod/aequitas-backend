@@ -1,0 +1,92 @@
+{
+  "StatisticalParityDifference": [
+    {
+      "when": {
+        "socioeconomic_status": "High",
+        "decision": "Not Pass"
+      },
+      "value": -0.00024183678618638904
+    },
+    {
+      "when": {
+        "socioeconomic_status": "High",
+        "decision": "Pass"
+      },
+      "value": 0.00024183678618644455
+    },
+    {
+      "when": {
+        "socioeconomic_status": "Low",
+        "decision": "Not Pass"
+      },
+      "value": 0.00024183678618638904
+    },
+    {
+      "when": {
+        "socioeconomic_status": "Low",
+        "decision": "Pass"
+      },
+      "value": -0.00024183678618644455
+    }
+  ],
+  "ConditionedDemographicDisparity": [
+    {
+      "when": {
+        "socioeconomic_status": "High",
+        "decision": "Not Pass"
+      },
+      "value": 0.0012760936951671797
+    },
+    {
+      "when": {
+        "socioeconomic_status": "High",
+        "decision": "Pass"
+      },
+      "value": -0.0012760936951671797
+    },
+    {
+      "when": {
+        "socioeconomic_status": "Low",
+        "decision": "Not Pass"
+      },
+      "value": -0.0012760936951671797
+    },
+    {
+      "when": {
+        "socioeconomic_status": "Low",
+        "decision": "Pass"
+      },
+      "value": 0.0012760936951671797
+    }
+  ],
+  "DisparateImpact": [
+    {
+      "when": {
+        "socioeconomic_status": "High",
+        "decision": "Not Pass"
+      },
+      "value": 0.9996774732157225
+    },
+    {
+      "when": {
+        "socioeconomic_status": "High",
+        "decision": "Pass"
+      },
+      "value": 1.0009666481944968
+    },
+    {
+      "when": {
+        "socioeconomic_status": "Low",
+        "decision": "Not Pass"
+      },
+      "value": 1.0003226308413653
+    },
+    {
+      "when": {
+        "socioeconomic_status": "Low",
+        "decision": "Pass"
+      },
+      "value": 0.999034285311863
+    }
+  ]
+}

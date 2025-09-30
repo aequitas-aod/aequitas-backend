@@ -16,6 +16,7 @@ from application.automation.parsing import to_csv, _pythonize
 from application.automation.setup import Automator
 from domain.common.core import EntityId
 from domain.project.core import Project
+from resources.ull import PATH_ULL_METRICS_DATASET_JSON
 from utils.logs import logger
 from utils.logs import set_other_loggers_level
 
@@ -286,6 +287,10 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
         targets: list[str],
         sensitive: list[str],
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
+        if "Ull" in dataset_id:
+            lambda_metrics = lambda: PATH_ULL_METRICS_DATASET_JSON.read_text()
+        else:
+            lambda_metrics = lambda: metrics(dataset, sensitive, targets)
         cases = [
             (f"actual_dataset__{dataset_id}", lambda: to_csv(dataset)),
             (
@@ -296,7 +301,7 @@ class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
                 f"suggested_proxies__{dataset_id}",
                 lambda: proxy_suggestions(dataset, sensitive, targets),
             ),
-            (f"metrics__{dataset_id}", lambda: metrics(dataset, sensitive, targets)),
+            (f"metrics__{dataset_id}", lambda_metrics),
         ]
         for k, v in cases:
             try:

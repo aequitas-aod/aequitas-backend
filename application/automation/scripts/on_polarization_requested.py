@@ -35,6 +35,20 @@ from resources.skin_deseases import (
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_RES_2_CSV,
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_2_CSV,
 )
+from resources.ull import (
+    PATH_ULL_INPROCESSING_BASELINE_PRED_POL_1_CSV,
+    PATH_ULL_INPROCESSING_BASELINE_RES_POL_1_CSV,
+    PATH_ULL_INPROCESSING_BASELINE_RES_POL_2_CSV,
+    PATH_ULL_INPROCESSING_BASELINE_PRED_POL_2_CSV,
+    PATH_ULL_INPROCESSING_BEST_RES_POL_1_CSV,
+    PATH_ULL_INPROCESSING_BEST_PRED_POL_1_CSV,
+    PATH_ULL_INPROCESSING_BEST_RES_POL_2_CSV,
+    PATH_ULL_INPROCESSING_BEST_PRED_POL_2_CSV,
+    PATH_ULL_METRICS_BASELINE_POL_1_JSON,
+    PATH_ULL_METRICS_BASELINE_POL_2_JSON,
+    PATH_ULL_METRICS_BEST_POL_1_JSON,
+    PATH_ULL_METRICS_BEST_POL_2_JSON,
+)
 
 
 def compute_polarization(
@@ -86,6 +100,21 @@ def compute_polarization(
         else:
             result_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_RES_2_CSV
             pred_path = PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_2_CSV
+    elif "socioeconomic_status" in sensitive:
+        if hyperparameters["fairness_mechanism"] == "unawareness":
+            if "High" in test_dataset_id:
+                result_path = PATH_ULL_INPROCESSING_BASELINE_RES_POL_1_CSV
+                pred_path = PATH_ULL_INPROCESSING_BASELINE_PRED_POL_1_CSV
+            else:
+                result_path = PATH_ULL_INPROCESSING_BASELINE_RES_POL_2_CSV
+                pred_path = PATH_ULL_INPROCESSING_BASELINE_PRED_POL_2_CSV
+        elif hyperparameters["fairness_mechanism"] == "residualization":
+            if "High" in test_dataset_id:
+                result_path = PATH_ULL_INPROCESSING_BEST_RES_POL_1_CSV
+                pred_path = PATH_ULL_INPROCESSING_BEST_PRED_POL_1_CSV
+            else:
+                result_path = PATH_ULL_INPROCESSING_BEST_RES_POL_2_CSV
+                pred_path = PATH_ULL_INPROCESSING_BEST_PRED_POL_2_CSV
     else:
         pred_path = dataset_path("fauci_predictions")
 
@@ -202,6 +231,32 @@ class PolarizationRequestedReaction(Automator):
                 "csv",
             )
 
+        if "ull" in test_dataset_id and "fairness_mechanism" in hyperparameters:
+            if hyperparameters["fairness_mechanism"] == "unawareness":
+                if "High" in test_dataset_id:
+                    lambda_metrics = (
+                        lambda: PATH_ULL_METRICS_BASELINE_POL_1_JSON.read_text()
+                    )
+                else:
+                    lambda_metrics = (
+                        lambda: PATH_ULL_METRICS_BASELINE_POL_2_JSON.read_text()
+                    )
+            elif hyperparameters["fairness_mechanism"] == "residualization":
+                if "High" in test_dataset_id:
+                    lambda_metrics = (
+                        lambda: PATH_ULL_METRICS_BEST_POL_1_JSON.read_text()
+                    )
+                else:
+                    lambda_metrics = (
+                        lambda: PATH_ULL_METRICS_BEST_POL_2_JSON.read_text()
+                    )
+        else:
+            lambda_metrics = lambda: generate_metrics(
+                test_predictions,
+                test_dataset_info.sensitive,
+                test_dataset_info.targets,
+                test_dataset_info.metrics,
+            )
         cases = [
             (
                 f"polarization_plot__{algorithm}__{test_dataset_id}",
@@ -221,12 +276,7 @@ class PolarizationRequestedReaction(Automator):
             ),
             (
                 f"metrics__{algorithm}__{test_dataset_id}",
-                lambda: generate_metrics(
-                    test_predictions,
-                    test_dataset_info.sensitive,
-                    test_dataset_info.targets,
-                    test_dataset_info.metrics,
-                ),
+                lambda_metrics,
             ),
         ]
         for k, v in cases:

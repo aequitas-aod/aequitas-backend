@@ -36,9 +36,6 @@ from resources.adecco import (
     PATH_ADECCO_INPROCESSING_ADVDEB_PRED_2_CSV,
     PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV,
     PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV,
-    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV,
-    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_0_CSV,
-    PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_2_CSV,
 )
 from resources.adult import (
     PATH_INPROCESSING_FAUCI_RES_CSV,
@@ -61,7 +58,14 @@ from resources.skin_deseases import (
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_NONE_CSV,
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_MIN_CSV,
     PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_PRED_BALANCED_CSV,
-    PATH_SKINDESEASES_PREPROCESSING_STABLEDIFF_POL_PRED_CSV,
+)
+from resources.ull import (
+    PATH_ULL_INPROCESSING_BASELINE_RES_POL_1_CSV,
+    PATH_ULL_INPROCESSING_BASELINE_PRED_CSV,
+    PATH_ULL_INPROCESSING_BEST_RES_POL_1_CSV,
+    PATH_ULL_INPROCESSING_BEST_PRED_CSV,
+    PATH_ULL_METRICS_BASELINE_JSON,
+    PATH_ULL_METRICS_BEST_JSON,
 )
 from utils.logs import set_other_loggers_level
 
@@ -1011,6 +1015,27 @@ def inprocessing_algorithm_AdversarialDebiasing(
     )
 
 
+def inprocessing_algorithm_ContributionBasedClassifier(
+    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+) -> tuple:
+
+    if kwargs["fairness_mechanism"] == "unawareness":
+        result_paths = (
+            PATH_ULL_INPROCESSING_BASELINE_PRED_CSV,
+            PATH_ULL_INPROCESSING_BASELINE_RES_POL_1_CSV,
+        )
+    else:
+        result_paths = (
+            PATH_ULL_INPROCESSING_BEST_PRED_CSV,
+            PATH_ULL_INPROCESSING_BEST_RES_POL_1_CSV,
+        )
+
+    return (
+        pd.read_csv(result_paths[0]),
+        pd.read_csv(result_paths[1]),
+    )
+
+
 def generate_standard_plot_pictures(
     plot_type: str, results: pd.DataFrame, file: io.BytesIO
 ):
@@ -1152,10 +1177,16 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         predictions_head = predictions.head(100)
         computed_metrics: pd.DataFrame = results[1]
 
-        # test_dataset_id = "Test-" + dataset_id[:-2]
-        # test_predictions = compute_polarization(sensitive, hyperparameters)
-        # test_predictions_head = test_predictions.head(100)
-
+        if "Ull" in dataset_id and "fairness_mechanism" in hyperparameters:
+            lambda_metrics = lambda: (
+                PATH_ULL_METRICS_BASELINE_JSON.read_text()
+                if hyperparameters["fairness_mechanism"] == "unawareness"
+                else PATH_ULL_METRICS_BEST_JSON.read_text()
+            )
+        else:
+            lambda_metrics = lambda: generate_metrics(
+                predictions, sensitive, targets, metrics
+            )
         cases = [
             (
                 f"predictions_head__{algorithm}__{dataset_id}",
@@ -1168,7 +1199,7 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
             ),
             (
                 f"metrics__{algorithm}__{dataset_id}",
-                lambda: generate_metrics(predictions, sensitive, targets, metrics),
+                lambda_metrics,
             ),
             (
                 f"performance_plot__{algorithm}__{dataset_id}",

@@ -193,6 +193,10 @@
     - id: { code: NoModelMitigation }
       text: Do Not Mitigate
       description: null
+    - id: { code: ContributionBasedClassifier }
+      text: Contribution Based Classifier
+      description: To fill
+
 #    - id: { code: Done }
 #      text: Do Not Mitigate and Finish
 #      description: null
@@ -216,6 +220,7 @@
     - { code: FaUCI }
     - { code: PrejudiceRemover }
     - { code: AdversarialDebiasing }
+    - { code: ContributionBasedClassifier }
   action_needed: null
   created_at: 2024-05-31T18:20:31
 
@@ -279,9 +284,12 @@
     - id: { code: Test-CreditDataset }
       text: German Credit Dataset
       description: A polarized version of the German Credit Dataset.
-    - id: { code: Test-UllDataset }
-      text: AEQUITAS - Use Case S2 - Education
-      description: A polarized version of the ULL Dataset.
+    - id: { code: Test-UllHighDataset }
+      text: AEQUITAS - Use Case S2 - Education - High
+      description: A polarized version of the ULL Dataset with only high performing (A and B grades) students passing the year.
+    - id: { code: Test-UllExtremeDataset }
+      text: AEQUITAS - Use Case S2 - Education - Extreme
+      description: A polarized version of the ULL Dataset with only the best performing (A grades) students passing the year.
     - id: { code: Test-AkkodisDataset }
       text: AEQUITAS - Use Case HR2 - Recruitment
       description: A polarized version of the Akkodis Dataset.
@@ -319,7 +327,8 @@
     - { code: Test-AdultDataset }
     - { code: Test-CompasDataset }
     - { code: Test-CreditDataset }
-    - { code: Test-UllDataset }
+    - { code: Test-UllHighDataset }
+    - { code: Test-UllExtremeDataset }
     - { code: Test-AkkodisDataset }
     - { code: Test-AdeccoReverseDataset }
     - { code: Test-AdeccoBalancedDataset }

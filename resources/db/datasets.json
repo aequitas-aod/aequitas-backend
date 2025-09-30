@@ -29,9 +29,9 @@
     {
         "id": "ull",
         "name": "AEQUITAS - Use Case S2 - Education",
-        "size": 2.4,
-        "rows": 10735,
-        "columns": 19,
+        "size": 0.96,
+        "rows": 8290,
+        "columns": 15,
         "description": "",
         "created-at": "2024-11-12T10:00:09.611719"
     },
