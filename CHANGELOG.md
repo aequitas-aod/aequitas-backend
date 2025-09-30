@@ -1,3 +1,9 @@
+## [1.15.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.14.1...v1.15.0) (2025-09-30)
+
+### Features
+
+* update ULL use case ([89c98a3](https://github.com/aequitas-aod/aequitas-backend/commit/89c98a344dea9351694c718c1a18ef5acc06fd03))
+
 ## [1.14.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.14.0...v1.14.1) (2025-09-30)
 
 ### Bug Fixes
