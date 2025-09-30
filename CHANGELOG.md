@@ -1,3 +1,9 @@
+## [1.15.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.15.0...v1.15.1) (2025-09-30)
+
+### Bug Fixes
+
+* add some description and fix ull polarization metrics ([febe814](https://github.com/aequitas-aod/aequitas-backend/commit/febe8148397c059203cff93d7e2e105c6aeed5bd))
+
 ## [1.15.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.14.1...v1.15.0) (2025-09-30)
 
 ### Features
