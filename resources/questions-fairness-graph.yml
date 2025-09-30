@@ -122,6 +122,9 @@
     - id: { code: DisparateImpact }
       text: Disparate Impact
       description: Disparate Impact measures fairness by comparing favorable outcomes between groups. A ratio below 0.8 may indicate discrimination.
+    - id: { code: ConditionedDemographicDisparity }
+      text: Conditioned Demographic Disparity
+      description: The metric implements contextual equality, providing quantitative measures for inter-group and intra-group discrimination.
   enabled_by:
     - { code: Proxies-features-selected }
   action_needed: null
@@ -152,7 +155,8 @@
       description: null
   enabled_by:
     - { code: StatisticalParityDifference }
-    - { code: DisparateImpact } # note the comeback from the summary
+    - { code: DisparateImpact }
+    - { code: ConditionedDemographicDisparity }
   action_needed: null
   created_at: 2024-05-31T18:20:28
 
@@ -195,7 +199,7 @@
       description: null
     - id: { code: ContributionBasedClassifier }
       text: Contribution Based Classifier
-      description: To fill
+      description: A model using only non-sensitive features (awareness through unawareness) or non-sensitive features that are uncorrelated with circumstances (residualization approach).
 
 #    - id: { code: Done }
 #      text: Do Not Mitigate and Finish

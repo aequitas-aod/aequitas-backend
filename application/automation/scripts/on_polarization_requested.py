@@ -231,7 +231,7 @@ class PolarizationRequestedReaction(Automator):
                 "csv",
             )
 
-        if "ull" in test_dataset_id and "fairness_mechanism" in hyperparameters:
+        if "Ull" in test_dataset_id and "fairness_mechanism" in hyperparameters:
             if hyperparameters["fairness_mechanism"] == "unawareness":
                 if "High" in test_dataset_id:
                     lambda_metrics = (
