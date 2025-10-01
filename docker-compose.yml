@@ -1,21 +1,18 @@
 services:
 
   kafka:
-    image: apache/kafka:latest #bitnami/kafka:3.9
+    image: apache/kafka:latest
     container_name: ${KAFKA_HOST}
     platform: &platform
       linux/x86_64
-    ports:
-      - ${KAFKA_PORT}:${KAFKA_PORT}
-      - ${KAFKA_EXTERNAL_PORT}:${KAFKA_EXTERNAL_PORT}
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_LISTENERS: PLAINTEXT://:${KAFKA_PORT},EXTERNAL://:${KAFKA_EXTERNAL_PORT},CONTROLLER://:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:${KAFKA_PORT},EXTERNAL://localhost:${KAFKA_EXTERNAL_PORT}
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${KAFKA_HOST}:${KAFKA_PORT},EXTERNAL://${KAFKA_HOST}:${KAFKA_EXTERNAL_PORT}
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@${KAFKA_HOST}:9093
       KAFKA_DEFAULT_REPLICATION_FACTOR: 1
       KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
@@ -25,47 +22,70 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-#    depends_on:
-#      zookeeper:
-#        condition: service_healthy
     restart: on-failure
     networks:
       - internal
 
-#  kafka-ui:
-#    container_name: kafka-ui
-#    image: provectuslabs/kafka-ui:latest
-#    platform: *platform
-#    ports:
-#      - "${KAFKA_UI_PORT}:8080"
-#    environment:
-#      DYNAMIC_CONFIG_ENABLED: 'true'
-#      KAFKA_CLUSTERS_0_NAME: cluster
-#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_HOST}:${KAFKA_PORT}
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#    networks:
-#      - internal
+  gateway:
+    image: nginx:latest
+    container_name: aequitas-gateway
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    environment:
+      AEQUITAS_BACKEND_PORT: ${AEQUITAS_BACKEND_PORT}
+    command: /bin/sh -c "envsubst '$$AEQUITAS_BACKEND_PORT' < /etc/nginx/conf.d/app.conf.template > /etc/nginx/conf.d/app.conf && exec nginx -g 'daemon off;'"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/app.conf.template:ro
+      - ./certificates:/etc/letsencrypt/:ro
+    networks:
+      - internal
+    healthcheck: &curl-localhost
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      certbot:
+        condition: service_completed_successfully
+      frontend:
+        condition: service_healthy
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: aequitas-certificates-generator
+    ports:
+      - 80:80
+      - 443:443
+    entrypoint: |
+      certbot certonly --standalone --non-interactive --agree-tos --email ${EMAIL} --domains ${DOMAIN}
+    volumes:
+      - ./certificates:/etc/letsencrypt/:rw
 
   frontend:
     image: aequitaseu/frontend:latest
     container_name: ${AEQUITAS_FRONTEND_HOST}
-    ports:
-      - "80:80"
     environment:
-      NEXT_PUBLIC_BACKEND_URL: http://aequitas.apice.unibo.it:${AEQUITAS_BACKEND_PORT}
+      NEXT_PUBLIC_BACKEND_URL: https://aequitas.apice.unibo.it/api
     depends_on:
       backend:
         condition: service_healthy
+    healthcheck: &curl-localhost
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 1m
+    networks:
+      - internal
 
   backend:
     image: aequitaseu/backend:latest
     platform: *platform
     container_name: ${AEQUITAS_BACKEND_HOST}
     restart: on-failure
-    ports:
-      - ${AEQUITAS_BACKEND_PORT}:${AEQUITAS_BACKEND_PORT}
     environment:
       AEQUITAS_BACKEND_PORT: ${AEQUITAS_BACKEND_PORT}
       ENV: production
@@ -90,7 +110,6 @@ services:
 
   db:
     image: neo4j:5
-#    platform: *platform
     container_name: ${DB_HOST}
     restart: always
     environment:
@@ -102,9 +121,6 @@ services:
       NEO4J_apoc_import_file_enabled: true
       NEO4J_apoc_import_file_use__neo4j__config: false
       NEO4J_apoc_initializer_neo4j: CALL apoc.cypher.runFile("/neo4j-init.cypher")
-    ports:
-      - '7474:7474'
-      - '7687:7687'
     volumes:
       - data:/data
       - plugins:/plugins
