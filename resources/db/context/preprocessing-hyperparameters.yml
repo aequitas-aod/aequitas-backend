@@ -31,18 +31,6 @@ LearnedFairRepresentations:
     default: 42
     values: [1, 100]
 
-# https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.preprocessing.DisparateImpactRemover.html#aif360.algorithms.preprocessing.DisparateImpactRemover
-DisparateImpactRemover:
-  repair_level:
-    label: Repair Level
-    description: Repair level for the disparate impact remover
-    type: float
-    default: 1.0
-    values: [0, 1]
-
-# https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.preprocessing.Reweighing.html#aif360.algorithms.preprocessing.Reweighing
-Reweighing: {}
-
 # https://fairlearn.org/main/api_reference/generated/fairlearn.preprocessing.CorrelationRemover.html
 CorrelationRemover:
   alpha:

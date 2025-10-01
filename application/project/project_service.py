@@ -215,7 +215,9 @@ class ProjectService:
         with tempfile.TemporaryDirectory() as temp_dir:
             for pattern, title in regex_patterns_for_report.items():
                 for key, value in ctx.items():
-                    if pattern.match(key):
+                    if (
+                        pattern.match(key) and "PreprocessedLfr" not in key
+                    ):  # TODO: to remove
                         to_delete.append(key)
                         if isinstance(value, bytes):
                             value = value.decode("utf-8")

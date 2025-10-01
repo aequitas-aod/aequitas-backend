@@ -447,20 +447,6 @@ def preprocessing_algorithm_LearnedFairRepresentations(
         return transformed_df
 
 
-def preprocessing_algorithm_DisparateImpactRemover(
-    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
-) -> pd.DataFrame:
-    # TODO: @josephgiovanelli add implementation
-    return dataset
-
-
-def preprocessing_algorithm_Reweighing(
-    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
-) -> pd.DataFrame:
-    # TODO: @josephgiovanelli add implementation
-    return dataset
-
-
 def preprocessing_algorithm_CorrelationRemover(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> pd.DataFrame:

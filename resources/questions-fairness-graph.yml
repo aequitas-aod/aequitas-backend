@@ -135,15 +135,9 @@
   description: Data mitigation involves reducing biases in data to prevent unfair outcomes. This operation will produce a new dataset that will be used to train the model.
   type: single
   answers:
-    - id: { code: DisparateImpactRemover }
-      text: Disparate Impact Remover
-      description: Disparate Impact Remover adjusts the model to reduce bias by minimizing disparate impacts between groups.
     - id: { code: LearnedFairRepresentations }
       text: Learned Fair Representations
       description: Learned Fair Representations transforms data to minimize bias while preserving predictive power, ensuring fairness in model outcomes.
-    - id: { code: Reweighing }
-      text: Reweighing
-      description: Reweighing adjusts the importance of samples to correct for bias, giving more weight to underrepresented groups to promote fairness.
     - id: { code: CorrelationRemover }
       text: Correlation Remover
       description: Correlation Remover removes features highly correlated with others to reduce multicollinearity and improve model fairness.
@@ -172,9 +166,7 @@
       text: Go to Stress Test
       description: null
   enabled_by:
-    - { code: DisparateImpactRemover }
     - { code: LearnedFairRepresentations }
-    - { code: Reweighing }
     - { code: CorrelationRemover }
     - { code: StableDiffusionBasedDataAugmentation }
   action_needed: null
