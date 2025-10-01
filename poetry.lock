@@ -1269,23 +1269,23 @@ test = ["pep440", "pre-commit", "pytest", "testpath"]
 
 [[package]]
 name = "neo4j"
-version = "5.28.2"
+version = "6.0.0"
 description = "Neo4j Bolt driver for Python"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "neo4j-5.28.2-py3-none-any.whl", hash = "sha256:5c53b5c3eee6dee7e920c9724391aa38d7135a651e71b766da00533b92a91a94"},
-    {file = "neo4j-5.28.2.tar.gz", hash = "sha256:7d38e27e4f987a45cc9052500c6ee27325cb23dae6509037fe31dd7ddaed70c7"},
+    {file = "neo4j-6.0.0-py3-none-any.whl", hash = "sha256:708bf2ad34d470fe56f7e8d27164d5a44c6aa9345de28f0356c83040dd75e0f4"},
+    {file = "neo4j-6.0.0.tar.gz", hash = "sha256:d49bbf0d5047fbfa495da7fc62e869e728e29bebb01140ec32ac0c1aeb56b9db"},
 ]
 
 [package.dependencies]
 pytz = "*"
 
 [package.extras]
-numpy = ["numpy (>=1.7.0,<3.0.0)"]
-pandas = ["numpy (>=1.7.0,<3.0.0)", "pandas (>=1.1.0,<3.0.0)"]
-pyarrow = ["pyarrow (>=1.0.0)"]
+numpy = ["numpy (>=1.21.2,<3.0.0)"]
+pandas = ["numpy (>=1.21.2,<3.0.0)", "pandas (>=1.1.0,<3.0.0)"]
+pyarrow = ["pyarrow (>=6.0.0,<22.0.0)"]
 
 [[package]]
 name = "numpy"
@@ -2570,4 +2570,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">= 3.10.0, < 4.0.0"
-content-hash = "6993428a7003b7c98d456e0a5132e8e509899435565a17c62a168801e64671c7"
+content-hash = "9609870c78521e15d2ce992731628d5ee0802f1a5d758524fb609b93ef2d9984"
