@@ -1,3 +1,13 @@
+## [1.15.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.15.1...v1.15.2) (2025-10-01)
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v2.3.3 ([#176](https://github.com/aequitas-aod/aequitas-backend/issues/176)) ([2785e4b](https://github.com/aequitas-aod/aequitas-backend/commit/2785e4baca1c66c55edbfc9531b7a1d4e6c2223b))
+
+### Bug Fixes
+
+* **deps:** update dependency neo4j to v6 ([#177](https://github.com/aequitas-aod/aequitas-backend/issues/177)) ([eb296e9](https://github.com/aequitas-aod/aequitas-backend/commit/eb296e968477e5a9d62cad51ec25fc20030dce4f))
+
 ## [1.15.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.15.0...v1.15.1) (2025-09-30)
 
 ### Bug Fixes
