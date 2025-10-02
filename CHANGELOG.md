@@ -1,3 +1,10 @@
+## [1.15.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.15.2...v1.15.3) (2025-10-02)
+
+### Bug Fixes
+
+* **deps:** update dependency neo4j to v6.0.2 ([#178](https://github.com/aequitas-aod/aequitas-backend/issues/178)) ([e0edb51](https://github.com/aequitas-aod/aequitas-backend/commit/e0edb51aab57d962f27e370b4afc69f3fbee331f))
+* remove unimplemented algorithms ([7172bdd](https://github.com/aequitas-aod/aequitas-backend/commit/7172bdd7b63dbe4202724f69c0d9f6895d0c5955))
+
 ## [1.15.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.15.1...v1.15.2) (2025-10-01)
 
 ### Dependency updates
