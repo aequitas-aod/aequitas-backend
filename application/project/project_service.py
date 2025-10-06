@@ -157,14 +157,14 @@ class ProjectService:
                 r"^correlation_matrix__(?!.*__)\w+-1$"
             ): "Proxies",  # match correlation_matrix__<something>-1 but not correlation_matrix__<something>__<something>
             re.compile(r"^suggested_proxies__\w+-1$"): "Proxies",
-            re.compile(r"^metrics__(?!.*__)\w+-1$"): "Detection",  # same here
+            re.compile(r"^selected_metrics__(?!.*__)\w+-1$"): "Detection",  # same here
             re.compile(r"^preprocessing__[\w-]+$"): "Data Mitigation",
             re.compile(r"^preprocessing_plot__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^performance_plot__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^fairness_plot__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^dataset_head__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^correlation_matrix__\w+-2$"): "Data Mitigation Results",
-            re.compile(r"^metrics__\w+-2$"): "Data Mitigation Results",
+            re.compile(r"^selected_metrics__\w+-2$"): "Data Mitigation Results",
             re.compile(r"^inprocessing__[\w-]+$"): "Model Mitigation",
             re.compile(
                 r"^predictions_head__[\w-]+__(?!.*Test-)[\w-]+$"
@@ -176,7 +176,7 @@ class ProjectService:
                 r"^performance_plot__[\w-]+__[\w-]+$"
             ): "Model Mitigation Results",
             re.compile(
-                r"^metrics__[\w-]+__(?!.*Test-)[\w-]+$"
+                r"^selected_metrics__[\w-]+__(?!.*Test-)[\w-]+$"
             ): "Model Mitigation Results",
             re.compile(r"^fairness_plot__[\w-]+__[\w-]+$"): "Model Mitigation Results",
         }
@@ -199,7 +199,7 @@ class ProjectService:
                         rf"^correlation_matrix__{algorithm}__{dataset}$"
                     ): f"Stress Test Results {i + 1} ({dataset})",
                     re.compile(
-                        rf"^metrics__{algorithm}__{dataset}$"
+                        rf"^selected_metrics__{algorithm}__{dataset}$"
                     ): f"Stress Test Results {i + 1} ({dataset})",
                 }
             )

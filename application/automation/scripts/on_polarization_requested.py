@@ -1,3 +1,4 @@
+import json
 import warnings
 from typing import Iterable, Union
 
@@ -8,6 +9,7 @@ from application.automation.parsing import to_csv, to_json
 from application.automation.scripts.on_dataset_features_available import (
     metrics as generate_metrics,
     correlation_matrix_picture,
+    selected_metrics,
 )
 from application.automation.scripts.on_processing_requested import (
     generate_plot,
@@ -257,6 +259,10 @@ class PolarizationRequestedReaction(Automator):
                 test_dataset_info.targets,
                 test_dataset_info.metrics,
             )
+
+        selected_metrics_lambda = lambda: selected_metrics(
+            json.loads(lambda_metrics()), test_dataset_info.detected
+        )
         cases = [
             (
                 f"polarization_plot__{algorithm}__{test_dataset_id}",
@@ -277,6 +283,10 @@ class PolarizationRequestedReaction(Automator):
             (
                 f"metrics__{algorithm}__{test_dataset_id}",
                 lambda_metrics,
+            ),
+            (
+                f"selected_metrics__{algorithm}__{test_dataset_id}",
+                selected_metrics_lambda,
             ),
         ]
         for k, v in cases:

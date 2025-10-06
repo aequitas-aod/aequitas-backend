@@ -693,91 +693,114 @@ def histogram_json_to_pdf(folder, pdf_name, json_value):
     elements.append(Spacer(1, 24))
 
     with TemporaryDirectory() as tmpdir:
-        for metric_name, records in json_value.items():
-            if not records:
-                continue
 
-            when_keys = list(records[0].get("when", {}).keys())
-            if len(when_keys) < 2:
-                continue
-            first_attr, second_attr = when_keys[0], when_keys[1]
+        for metric_name, data in json_value.items():
 
-            first_vals = sorted(
-                set(r["when"][first_attr] for r in records if first_attr in r["when"])
-            )
-            second_vals = sorted(
-                set(r["when"][second_attr] for r in records if second_attr in r["when"])
-            )
-
-            data_map = {
-                col_val: {row_val: None for row_val in first_vals}
-                for col_val in second_vals
+            sensitive_features = {
+                k
+                for d in data
+                for k in d["when"].keys()
+                if k != d["when"]["target"] and k != "target"
+            }
+            json_value_with_distinct_feature = {
+                key: [d for d in data if key in d["when"]] for key in sensitive_features
             }
 
-            for rec in records:
-                w = rec["when"]
-                val = rec.get("value", None)
-                if val is None:
+            for feature, records in json_value_with_distinct_feature.items():
+
+                if not records:
                     continue
-                f_val = w.get(first_attr)
-                s_val = w.get(second_attr)
-                if f_val in first_vals and s_val in second_vals:
-                    data_map[s_val][f_val] = val
 
-            # Break second_vals into chunks of max 8 columns
-            chunk_size = 6
-            for i in range(0, len(second_vals), chunk_size):
-                chunk = second_vals[i : i + chunk_size]
+                when_keys = list(records[0].get("when", {}).keys())
+                if len(when_keys) < 2:
+                    continue
+                first_attr, second_attr = when_keys[0], when_keys[1]
 
-                # Create header row for this chunk
-                header_row = [""] + chunk
-                # Create image row for this chunk
-                img_cells = []
-                for col_val in chunk:
-                    labels = []
-                    values = []
-                    for f_val in first_vals:
-                        v = data_map[col_val][f_val]
-                        if v is not None:
-                            labels.append(str(f_val))
-                            values.append(v)
-                    img_path = os.path.join(
-                        tmpdir, f"{metric_name}_{sanitize_filename(col_val)}.png"
+                first_vals = sorted(
+                    set(
+                        r["when"][first_attr]
+                        for r in records
+                        if first_attr in r["when"]
                     )
-                    create_histogram_image(labels, values, img_path, title=col_val)
-                    img = Image(img_path, width=100, height=80)
-                    img_cells.append(img)
-
-                data_rows = [["Values"] + img_cells]
-
-                table_data = [header_row] + data_rows
-
-                col_widths = [100] + [110] * len(chunk)
-                table = Table(table_data, colWidths=col_widths)
-                table.setStyle(
-                    TableStyle(
-                        [
-                            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
-                            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                            ("ALIGN", (1, 1), (-1, -1), "CENTER"),
-                            ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
-                        ]
+                )
+                second_vals = sorted(
+                    set(
+                        r["when"][second_attr]
+                        for r in records
+                        if second_attr in r["when"]
                     )
                 )
 
-                elements.append(
-                    KeepTogether(
-                        [
-                            Paragraph(
-                                to_camel_case(metric_name.split("__")[0]),
-                                styles["Heading2"],
-                            ),
-                            Spacer(1, 12),
-                            table,
-                        ]
+                data_map = {
+                    col_val: {row_val: None for row_val in first_vals}
+                    for col_val in second_vals
+                }
+
+                for rec in records:
+                    w = rec["when"]
+                    val = rec.get("value", None)
+                    if val is None:
+                        continue
+                    f_val = w.get(first_attr)
+                    s_val = w.get(second_attr)
+                    if f_val in first_vals and s_val in second_vals:
+                        data_map[s_val][f_val] = val
+
+                # Break second_vals into chunks of max 8 columns
+                chunk_size = 6
+                for i in range(0, len(second_vals), chunk_size):
+                    chunk = second_vals[i : i + chunk_size]
+
+                    # Create header row for this chunk
+                    header_row = [""] + chunk
+                    # Create image row for this chunk
+                    img_cells = []
+                    for col_val in chunk:
+                        labels = []
+                        values = []
+                        for f_val in first_vals:
+                            v = data_map[col_val][f_val]
+                            if v is not None:
+                                labels.append(str(f_val))
+                                values.append(v)
+                        img_path = os.path.join(
+                            tmpdir,
+                            f"{metric_name}_{feature}_{sanitize_filename(col_val)}.png",
+                        )
+                        create_histogram_image(labels, values, img_path, title=col_val)
+                        img = Image(img_path, width=100, height=80)
+                        img_cells.append(img)
+
+                    data_rows = [[feature] + img_cells]
+
+                    table_data = [header_row] + data_rows
+
+                    col_widths = [100] + [110] * len(chunk)
+                    table = Table(table_data, colWidths=col_widths)
+                    table.setStyle(
+                        TableStyle(
+                            [
+                                ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                                ("ALIGN", (1, 1), (-1, -1), "CENTER"),
+                                ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                            ]
+                        )
                     )
-                )
-                elements.append(Spacer(1, 24))
+
+                    elements.append(
+                        KeepTogether(
+                            [
+                                Paragraph(
+                                    to_camel_case(metric_name.split("__")[0]),
+                                    styles["Heading2"],
+                                ),
+                                Spacer(1, 12),
+                                table,
+                            ]
+                        )
+                    )
+                    elements.append(Spacer(1, 24))
 
         doc.build(elements)
         logger.info(f"PDF created at: {pdf_path}")

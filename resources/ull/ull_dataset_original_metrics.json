@@ -3,28 +3,32 @@
     {
       "when": {
         "socioeconomic_status": "High",
-        "decision": "Not Pass"
+        "decision": "Not Pass",
+        "target": "decision"
       },
       "value": 0.09626076093668304
     },
     {
       "when": {
         "socioeconomic_status": "High",
-        "decision": "Pass"
+        "decision": "Pass",
+        "target": "decision"
       },
       "value": -0.09626076093668312
     },
     {
       "when": {
         "socioeconomic_status": "Low",
-        "decision": "Not Pass"
+        "decision": "Not Pass",
+        "target": "decision"
       },
       "value": -0.09626076093668304
     },
     {
       "when": {
         "socioeconomic_status": "Low",
-        "decision": "Pass"
+        "decision": "Pass",
+        "target": "decision"
       },
       "value": 0.09626076093668312
     }
@@ -33,28 +37,32 @@
     {
       "when": {
         "socioeconomic_status": "High",
-        "decision": "Not Pass"
+        "decision": "Not Pass",
+        "target": "decision"
       },
       "value": -0.2567655537312332
     },
     {
       "when": {
         "socioeconomic_status": "High",
-        "decision": "Pass"
+        "decision": "Pass",
+        "target": "decision"
       },
       "value": 0.2567655537312332
     },
     {
       "when": {
         "socioeconomic_status": "Low",
-        "decision": "Not Pass"
+        "decision": "Not Pass",
+        "target": "decision"
       },
       "value": 0.2567655537312332
     },
     {
       "when": {
         "socioeconomic_status": "Low",
-        "decision": "Pass"
+        "decision": "Pass",
+        "target": "decision"
       },
       "value": -0.2567655537312332
     }
@@ -63,28 +71,32 @@
     {
       "when": {
         "socioeconomic_status": "High",
-        "decision": "Not Pass"
+        "decision": "Not Pass",
+        "target": "decision"
       },
       "value": 1.4765941493153913
     },
     {
       "when": {
         "socioeconomic_status": "High",
-        "decision": "Pass"
+        "decision": "Pass",
+        "target": "decision"
       },
       "value": 0.879376050399789
     },
     {
       "when": {
         "socioeconomic_status": "Low",
-        "decision": "Not Pass"
+        "decision": "Not Pass",
+        "target": "decision"
       },
       "value": 0.6772341611021826
     },
     {
       "when": {
         "socioeconomic_status": "Low",
-        "decision": "Pass"
+        "decision": "Pass",
+        "target": "decision"
       },
       "value": 1.1371699280931882
     }

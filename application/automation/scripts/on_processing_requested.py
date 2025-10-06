@@ -1,5 +1,6 @@
 import copy
 import io
+import json
 import random
 import warnings
 from typing import Iterable, Union
@@ -25,6 +26,7 @@ from application.automation.scripts.on_dataset_created import (
 from application.automation.scripts.on_dataset_features_available import (
     metrics as generate_metrics,
     correlation_matrix_picture,
+    selected_metrics,
 )
 from application.automation.setup import Automator
 from domain.common.core import EntityId
@@ -692,6 +694,11 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
             ]
         except Exception as e:
             self.log_error("Failed to compute no_mitigations metrics", error=e)
+
+        lambda_metrics = lambda: generate_metrics(result, sensitive, targets, metrics)
+        lambda_selected_metrics = lambda: selected_metrics(
+            json.loads(lambda_metrics()), detected
+        )
         cases = [
             (f"dataset__{result_id}", lambda: to_csv(result)),
             (f"dataset_head__{result_id}", lambda: to_csv(get_heads(result))),
@@ -700,10 +707,8 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                 f"correlation_matrix__{result_id}",
                 lambda: correlation_matrix_picture(result),
             ),
-            (
-                f"metrics__{result_id}",
-                lambda: generate_metrics(result, sensitive, targets, metrics),
-            ),
+            (f"metrics__{result_id}", lambda_metrics),
+            (f"selected_metrics__{result_id}", lambda_selected_metrics),
         ] + cases
         for k, v in cases:
             try:
@@ -1173,6 +1178,9 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
             lambda_metrics = lambda: generate_metrics(
                 predictions, sensitive, targets, metrics
             )
+        selected_metrics_lambda = lambda: selected_metrics(
+            json.loads(lambda_metrics()), detected
+        )
         cases = [
             (
                 f"predictions_head__{algorithm}__{dataset_id}",
@@ -1187,6 +1195,7 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                 f"metrics__{algorithm}__{dataset_id}",
                 lambda_metrics,
             ),
+            (f"selected_metrics__{algorithm}__{dataset_id}", selected_metrics_lambda),
             (
                 f"performance_plot__{algorithm}__{dataset_id}",
                 lambda: generate_plot("performance", computed_metrics),

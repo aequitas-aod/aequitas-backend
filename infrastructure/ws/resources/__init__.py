@@ -50,6 +50,8 @@ class EventGenerator:
             topic = "datasets.created"
         elif event_key.startswith("features__"):
             topic = "features.created"
+        elif event_key.startswith("detected__"):
+            topic = "detected.created"
         elif any(event_key.startswith(f"{prefix}processing__") for prefix in _prefixes):
             topic = "processing.requested"
             phase = event_key.split("processing__")[0]

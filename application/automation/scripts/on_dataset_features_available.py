@@ -253,6 +253,9 @@ def compute_metrics(
                                 "value": stat_parity_diff,
                             }
                         )
+    for metric, data in result.items():
+        for d in data:
+            d["when"]["target"] = targets[0]
 
     return result
 
@@ -276,6 +279,19 @@ def metrics(
     metrics: list[str] = None,
 ) -> str:
     return json.dumps(_pythonize(compute_metrics(dataset, sensitive, targets, metrics)))
+
+
+def selected_metrics(
+    metrics: dict,
+    detected: dict,
+) -> str:
+    selected_metrics = {k: v for k, v in metrics.items() if k in detected}
+    for metric_name, records in selected_metrics.items():
+        allowed_sensitives = {d["sensitive"] for d in detected[metric_name]}
+        selected_metrics[metric_name] = [
+            r for r in records if any(s in allowed_sensitives for s in r["when"].keys())
+        ]
+    return json.dumps(_pythonize(selected_metrics))
 
 
 class ProxyDetectionReaction(AbstractDatasetFeaturesAvailableReaction):
