@@ -1,3 +1,13 @@
+## [1.16.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.15.4...v1.16.0) (2025-10-07)
+
+### Features
+
+* add selected_metrics key, event reaction to detected metrics, fix generation of report with multiple selected metrics and features ([85270e6](https://github.com/aequitas-aod/aequitas-backend/commit/85270e603fb238cdc2f873666429f50998763910))
+
+### Bug Fixes
+
+* update metrics resource files ([251e9cc](https://github.com/aequitas-aod/aequitas-backend/commit/251e9cc2385d0681a3f548c6d9775067f59ca2e0))
+
 ## [1.15.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.15.3...v1.15.4) (2025-10-04)
 
 ### Bug Fixes
