@@ -286,9 +286,12 @@
     - id: { code: Test-UllExtremeDataset }
       text: AEQUITAS - Use Case S2 - Education - Extreme
       description: A polarized version of the ULL Dataset with only the best performing (A grades) students passing the year.
-    - id: { code: Test-AkkodisDataset }
-      text: AEQUITAS - Use Case HR2 - Recruitment
-      description: A polarized version of the Akkodis Dataset.
+    - id: { code: Test-AkkodisLowerDataset }
+      text: AEQUITAS - Use Case HR2 - Recruitment - Lower
+      description: A polarized version of the Akkodis Dataset, having minority subgroups represented less than 10% of the overall dataset
+    - id: { code: Test-AkkodisExtremeDataset }
+      text: AEQUITAS - Use Case HR2 - Recruitment - Extreme
+      description: A polarized version of the Akkodis Dataset, having minority subgroups represented less than 5% of the overall dataset
     - id: { code: Test-AdeccoBalancedDataset }
       text: AEQUITAS - Use Case HR1 - Recruitment - Balanced
       description: A polarized version of the Adecco Dataset, having the same number of candidates for each protected group.
@@ -325,7 +328,8 @@
     - { code: Test-CreditDataset }
     - { code: Test-UllHighDataset }
     - { code: Test-UllExtremeDataset }
-    - { code: Test-AkkodisDataset }
+    - { code: Test-AkkodisLowerDataset }
+    - { code: Test-AkkodisExtremeDataset }
     - { code: Test-AdeccoReverseDataset }
     - { code: Test-AdeccoBalancedDataset }
     - { code: Test-SkinDiseaseMaxDataset }

@@ -29,6 +29,14 @@ from resources.akkodis import (
     PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV,
+    PATH_AKKODIS_METRICS_FAUCI_POL_1_JSON,
+    PATH_AKKODIS_METRICS_BASELINE_POL_1_JSON,
+    PATH_AKKODIS_METRICS_FAUCI_POL_2_JSON,
+    PATH_AKKODIS_METRICS_BASELINE_POL_2_JSON,
+    PATH_AKKODIS_FAUCI_RES_1_CSV,
+    PATH_AKKODIS_BASELINE_RES_1_CSV,
+    PATH_AKKODIS_FAUCI_RES_2_CSV,
+    PATH_AKKODIS_BASELINE_RES_2_CSV,
 )
 from resources.db.datasets import dataset_path
 from resources.skin_deseases import (
@@ -86,13 +94,24 @@ def compute_polarization(
                 pred_path = PATH_ADECCO_INPROCESSING_ADVDEB_POL_PRED_1_CSV
                 result_path = PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV
 
-    elif "Sensitive" in sensitive:
-        if hyperparameters["lambda_adv"] == 0:
-            pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV
-        elif hyperparameters["lambda_adv"] == 1:
-            pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV
+    elif "Sensitive" in sensitive and algorithm == "FaUCI":
+        pred_path = dataset_path("akkodis")
+        if "Lower" in test_dataset_id:
+            if hyperparameters["lambda"] >= 0.5:
+                result_path = PATH_AKKODIS_FAUCI_RES_1_CSV
+            else:
+                result_path = PATH_AKKODIS_BASELINE_RES_1_CSV
         else:
-            pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV
+            if hyperparameters["lambda"] >= 0.5:
+                result_path = PATH_AKKODIS_FAUCI_RES_2_CSV
+            else:
+                result_path = PATH_AKKODIS_BASELINE_RES_2_CSV
+        # if hyperparameters["lambda_adv"] == 0:
+        #     pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV
+        # elif hyperparameters["lambda_adv"] == 1:
+        #     pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV
+        # else:
+        #     pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV
     elif "f_ESCS" in sensitive:
         pred_path = dataset_path("preprocessed_lfr_result_ull")
     elif "skin_color" in sensitive:
@@ -126,7 +145,7 @@ def compute_polarization(
     if result_path:
         result = pd.read_csv(result_path)
 
-    if "lambda" in hyperparameters:
+    if "lambda" in hyperparameters and "Adult" in test_dataset_id:
         pred = pred.drop("class", axis=1).rename(columns={"predictions": "class"})
 
     return pred, result
@@ -232,8 +251,21 @@ class PolarizationRequestedReaction(Automator):
                 f"computed_metrics__{algorithm}__{original_dataset_id}",
                 "csv",
             )
+        if "Akkodis" in test_dataset_id and algorithm == "FaUCI":
+            if "Lower" in test_dataset_id:
+                lambda_metrics = lambda: (
+                    PATH_AKKODIS_METRICS_FAUCI_POL_1_JSON.read_text()
+                    if hyperparameters["lambda"] >= 0.5
+                    else PATH_AKKODIS_METRICS_BASELINE_POL_1_JSON.read_text()
+                )
+            else:
+                lambda_metrics = lambda: (
+                    PATH_AKKODIS_METRICS_FAUCI_POL_2_JSON.read_text()
+                    if hyperparameters["lambda"] >= 0.5
+                    else PATH_AKKODIS_METRICS_BASELINE_POL_2_JSON.read_text()
+                )
 
-        if "Ull" in test_dataset_id and "fairness_mechanism" in hyperparameters:
+        elif "Ull" in test_dataset_id and "fairness_mechanism" in hyperparameters:
             if hyperparameters["fairness_mechanism"] == "unawareness":
                 if "High" in test_dataset_id:
                     lambda_metrics = (

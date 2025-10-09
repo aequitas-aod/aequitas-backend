@@ -51,6 +51,10 @@ from resources.akkodis import (
     PATH_AKKODIS_INPROCESSING_ADVDEB_RES_0_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_RES_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_RES_1_CSV,
+    PATH_AKKODIS_METRICS_FAUCI_ORIGINAL_JSON,
+    PATH_AKKODIS_METRICS_BASELINE_ORIGINAL_JSON,
+    PATH_AKKODIS_FAUCI_RES_1_CSV,
+    PATH_AKKODIS_BASELINE_RES_1_CSV,
 )
 from resources.db.datasets import dataset_path
 from resources.skin_deseases import (
@@ -799,8 +803,6 @@ def inprocessing_algorithm_FaUCI(
 
     # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
-    new_dataset = read_csv(dataset_path("fauci_predictions"))
-
     # X, y, y_pred = (
     #     new_dataset[
     #         [
@@ -945,16 +947,28 @@ def inprocessing_algorithm_FaUCI(
     #     lambda x: x.replace("_", " ").title()
     # )
 
-    # TODO: to remove
-    if kwargs["lambda"] == 0:
-        result_path = PATH_INPROCESSING_FAUCI_RES_0_CSV
-    elif kwargs["lambda"] == 1:
-        result_path = PATH_INPROCESSING_FAUCI_RES_1_CSV
+    if "Sensitive" in sensitive:
+        new_dataset = read_csv(dataset_path("akkodis"))
+        if kwargs["lambda"] >= 0.5:
+            result_path = PATH_AKKODIS_FAUCI_RES_1_CSV
+        else:
+            result_path = PATH_AKKODIS_BASELINE_RES_1_CSV
     else:
-        result_path = PATH_INPROCESSING_FAUCI_RES_CSV
+        # TODO: to remove
+        new_dataset = (
+            read_csv(dataset_path("fauci_predictions"))
+            .drop("class", axis=1)
+            .rename(columns={"predictions": "class"})
+        )
+        if kwargs["lambda"] == 0:
+            result_path = PATH_INPROCESSING_FAUCI_RES_0_CSV
+        elif kwargs["lambda"] == 1:
+            result_path = PATH_INPROCESSING_FAUCI_RES_1_CSV
+        else:
+            result_path = PATH_INPROCESSING_FAUCI_RES_CSV
 
     return (
-        new_dataset.drop("class", axis=1).rename(columns={"predictions": "class"}),
+        new_dataset,
         pd.read_csv(result_path),
         # pd.DataFrame(df_results),
     )
@@ -1168,7 +1182,13 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         predictions_head = predictions.head(100)
         computed_metrics: pd.DataFrame = results[1]
 
-        if "Ull" in dataset_id and "fairness_mechanism" in hyperparameters:
+        if "Akkodis" in dataset_id and algorithm == "FaUCI":
+            lambda_metrics = lambda: (
+                PATH_AKKODIS_METRICS_FAUCI_ORIGINAL_JSON.read_text()
+                if hyperparameters["lambda"] >= 0.5
+                else PATH_AKKODIS_METRICS_BASELINE_ORIGINAL_JSON.read_text()
+            )
+        elif "Ull" in dataset_id and "fairness_mechanism" in hyperparameters:
             lambda_metrics = lambda: (
                 PATH_ULL_METRICS_BASELINE_JSON.read_text()
                 if hyperparameters["fairness_mechanism"] == "unawareness"
