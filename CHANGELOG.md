@@ -1,3 +1,13 @@
+## [1.17.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.16.1...v1.17.0) (2025-10-09)
+
+### Features
+
+* update akkodis use case ([eff6e06](https://github.com/aequitas-aod/aequitas-backend/commit/eff6e066c9ed06d5c92409f52ebbbd1add26af82))
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.10.7 ([#182](https://github.com/aequitas-aod/aequitas-backend/issues/182)) ([5dc895c](https://github.com/aequitas-aod/aequitas-backend/commit/5dc895cb44457f0b19b62669f617d7f87e1597da))
+
 ## [1.16.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.16.0...v1.16.1) (2025-10-08)
 
 ### Bug Fixes
