@@ -1,3 +1,9 @@
+## [1.17.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.17.3...v1.17.4) (2025-10-20)
+
+### Bug Fixes
+
+* **deps:** update dependency fairlearn to ^0.13.0 ([#188](https://github.com/aequitas-aod/aequitas-backend/issues/188)) ([5dc3f06](https://github.com/aequitas-aod/aequitas-backend/commit/5dc3f066855bd1e0a47dd172cd91ab57867a24ab))
+
 ## [1.17.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.17.2...v1.17.3) (2025-10-18)
 
 ### Dependency updates
