@@ -39,7 +39,7 @@ pypdf2 = "^3.0.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "25.9.0"
-python-on-whales = "0.78.0"
+python-on-whales = "0.79.0"
 
 [build-system]
 requires = ["poetry-core"]
