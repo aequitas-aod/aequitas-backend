@@ -1,3 +1,14 @@
+## [1.17.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.17.4...v1.17.5) (2025-10-26)
+
+### Dependency updates
+
+* **deps:** update dependency python-on-whales to v0.79.0 ([#190](https://github.com/aequitas-aod/aequitas-backend/issues/190)) ([4f34a61](https://github.com/aequitas-aod/aequitas-backend/commit/4f34a6107dd4a819dc39174c9644dbc425d4ef84))
+* **deps:** update node.js to 22.21 ([#189](https://github.com/aequitas-aod/aequitas-backend/issues/189)) ([0081c34](https://github.com/aequitas-aod/aequitas-backend/commit/0081c3418a145e774db8fa24c0ccd4d6aaffff90))
+
+### Bug Fixes
+
+* **deps:** update dependency python-dotenv to v1.2.1 ([#191](https://github.com/aequitas-aod/aequitas-backend/issues/191)) ([ab7cbfa](https://github.com/aequitas-aod/aequitas-backend/commit/ab7cbfaf2da8835b9bd6f4dc595010f2785bb0eb))
+
 ## [1.17.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.17.3...v1.17.4) (2025-10-20)
 
 ### Bug Fixes
