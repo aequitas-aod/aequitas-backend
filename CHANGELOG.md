@@ -1,3 +1,13 @@
+## [1.17.6](https://github.com/aequitas-aod/aequitas-backend/compare/v1.17.5...v1.17.6) (2025-11-05)
+
+### Dependency updates
+
+* **deps:** update node.js to v24 ([#192](https://github.com/aequitas-aod/aequitas-backend/issues/192)) ([25af4e3](https://github.com/aequitas-aod/aequitas-backend/commit/25af4e3c99e49d1c911e0c4a17cb339638708f50))
+
+### Bug Fixes
+
+* **deps:** update dependency pydantic to v2.12.4 ([#193](https://github.com/aequitas-aod/aequitas-backend/issues/193)) ([f6dd1ec](https://github.com/aequitas-aod/aequitas-backend/commit/f6dd1ecadce037d523a12d8c5abbf36d0dcdacca))
+
 ## [1.17.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.17.4...v1.17.5) (2025-10-26)
 
 ### Dependency updates
