@@ -1048,17 +1048,10 @@ def inprocessing_algorithm_PrejudiceRemover(
         hidden_dim=kwargs["hidden_dim"] if "hidden_dim" in kwargs else 8,
         output_dim=kwargs["output_dim"] if "output_dim" in kwargs else 1,
         sensitive_dim=kwargs["sensitive_dim"] if "sensitive_dim" in kwargs else 1,
-        eta=(
-            kwargs["eta"]
-            if "eta" in kwargs
-            else 0.5
-        ),
+        eta=(kwargs["eta"] if "eta" in kwargs else 0.5),
     )
 
-    return (
-        predictions_df, 
-        results_df 
-    )
+    return (predictions_df, results_df)
 
 
 def inprocessing_algorithm_AdversarialDebiasing(
