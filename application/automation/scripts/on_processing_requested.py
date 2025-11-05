@@ -6,6 +6,7 @@ import warnings
 from typing import Iterable, Union
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from aif360.algorithms.preprocessing import LFR
@@ -16,6 +17,26 @@ from pandas.plotting import parallel_coordinates
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import OrdinalEncoder
+
+import torch
+import torch.nn as nn
+
+import sklearn
+from sklearn.model_selection import train_test_split, KFold
+from sklearn.metrics import (
+    accuracy_score,
+    recall_score,
+    precision_score,
+    roc_auc_score,
+    f1_score,
+)
+from sklearn.preprocessing import LabelEncoder
+
+from fairlearn.metrics import demographic_parity_ratio, equalized_odds_ratio
+
+from fairlib import DataFrame as FairDataFrame
+from fairlib.inprocessing import Fauci, AdversarialDebiasing, PrejudiceRemover
+
 
 import utils.env
 from application.automation.parsing import read_csv, to_csv, to_json
@@ -761,191 +782,208 @@ def _generate_random_number(min_value: float, max_value: float) -> float:
     return random.uniform(min_value, max_value)
 
 
+class BaseModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim):
+        super(BaseModel, self).__init__()
+        self.layer1 = nn.Linear(input_dim, hidden_dim)
+        self.layer2 = nn.Linear(hidden_dim, hidden_dim)
+        self.layer3 = nn.Linear(hidden_dim, output_dim)
+        self.relu = nn.ReLU()
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        x = self.relu(self.layer1(x))
+        x = self.relu(self.layer2(x))
+        x = self.sigmoid(self.layer3(x))
+        return x
+
+
+def inprocessing_algorithm_general(
+    algorithm: str,
+    dataset: pd.DataFrame,
+    sensitive: list[str],
+    targets: list[str],
+    **kwargs,
+) -> tuple:
+
+    reg_hyperparam, reg_hyperparam_value = None, None
+    hyperparams = []
+    if algorithm == "Fauci":
+        reg_hyperparam = "regularization_weight"
+    elif algorithm == "AdversarialDebiasing":
+        reg_hyperparam = "lambda_adv"
+        hyperparams = ["input_dim", "hidden_dim", "output_dim", "sensitive_dim"]
+    elif algorithm == "PrejudiceRemover":
+        reg_hyperparam = "eta"
+    else:
+        reg_hyperparam = None
+
+    if reg_hyperparam is not None:
+        reg_hyperparam_value = kwargs[reg_hyperparam]
+    else:
+        raise Exception("Invalid algorithm")
+    hyperparams += [reg_hyperparam]
+
+    df = FairDataFrame(dataset.copy())
+
+    df.targets = targets
+    df.sensitive = sensitive
+
+    label_maps = {}
+
+    for col in df.columns:
+        if df[col].dtype == "object" or df[col].dtype == "category":
+            df[col], uniques = pd.factorize(df[col])
+            label_maps[col] = uniques
+
+    print(f"Dataset Form: {df.shape}")
+    print(f"Target Column: {df.targets}")
+    print(f"Sensitive Attributes: {df.sensitive}")
+
+    ########################### K-FOLD ##################################################
+    n_splits = 5
+    metric_name_dict = {
+        "performance": ["Accuracy", "Precision", "Recall", "Roc Auc", "F1"],
+        "fairness": ["Demographic Parity Ratio", "Equalized Odds Ratio"],
+    }
+    n_metrics = len(metric_name_dict["performance"] + metric_name_dict["fairness"])
+    kfold = KFold(n_splits=n_splits, shuffle=True, random_state=42)
+
+    y = df[targets[0]]
+    X = df.drop(columns=targets[0])
+
+    fold_list = [
+        x
+        for fold_lst in [[fold_idx] * n_metrics for fold_idx in range(n_splits)]
+        for x in fold_lst
+    ]
+
+    metric_type_list = [
+        key
+        for key in metric_name_dict.keys()
+        for _ in range(len(metric_name_dict[key]))
+    ] * n_splits
+    metric_list = [
+        metric_name for lst in metric_name_dict.values() for metric_name in lst
+    ] * n_splits
+    value_mitig_list = []
+    value_nomitig_list = []
+    value_pol_list = [0.0 for _ in range(n_metrics * n_splits)]
+
+    predictions = np.zeros(
+        len(dataset)
+    )  # store predictions to return predictions dataframe later
+
+    for fold, (train_idx, test_idx) in enumerate(kfold.split(X, y), 1):
+
+        print(f"Fold: {fold+1}")
+
+        train_df = df.loc[train_idx]
+        test_df = df.loc[test_idx]
+
+        train_df = FairDataFrame(train_df)
+        train_df.targets = targets
+        train_df.sensitive = sensitive
+
+        ############### LOOPING OVER MITIG (REG_WEIGHTS=0.0) AND NOMITIG (REG_WEIGHTS=VALUE) ###########
+        # First we use the user-defined regularization_weight, then we put
+        # kwargs[regularization_weight] = 0.0 to compute the nomitig values.
+
+        for mitig_value in ["mitig", "nomitig"]:
+            print(f"\tMitigation: {mitig_value == 'mitig'}")
+            # putting kwargs[regularization_weight] = 0.0 to compute the nomitig values
+            if mitig_value == "nomitig":
+                kwargs[reg_hyperparam] = 0.0
+            elif mitig_value == "mitig":
+                kwargs[reg_hyperparam] = reg_hyperparam_value
+
+            ################################## TRAINING AND EVALUATING FAUCI MODEL #########################
+            hyperparams_value = {
+                key: kwargs[key] for key in kwargs.keys() if key in hyperparams
+            }
+
+            base_model = BaseModel(
+                input_dim=kwargs["input_dim"],
+                hidden_dim=kwargs["hidden_dim"],
+                output_dim=kwargs["output_dim"],
+            )
+            if algorithm in ["FaUCI", "PrejudiceRemover"]:
+                mitigated_model = globals()[algorithm](
+                    torchModel=base_model, **hyperparams_value
+                )
+                mitigated_model.fit(train_df, epochs=100, batch_size=128, verbose=False)
+                base_model.eval()
+            else:
+                mitigated_model = globals()[algorithm](**hyperparams_value)
+                mitigated_model.fit(
+                    train_df.drop(columns=[targets[0]]),
+                    train_df[targets[0]],
+                    epochs=100,
+                    batch_size=128,
+                    verbose=False,
+                )
+
+            with torch.no_grad():
+                X_test = FairDataFrame(test_df.drop(columns=targets[0]))
+                y_test = test_df[targets[0]]
+                y_pred_base = mitigated_model.predict(X_test)
+                y_pred_base_binary = (y_pred_base > 0.5).float()
+
+                y_pred_baseline = y_pred_base_binary.detach().cpu().numpy()
+
+                accuracy = accuracy_score(y_test, y_pred_baseline)
+                precision = precision_score(y_test, y_pred_baseline)
+                recall = recall_score(y_test, y_pred_baseline)
+                roc_auc = roc_auc_score(y_test, y_pred_base)
+                f1 = f1_score(y_test, y_pred_baseline)
+
+                dpr = demographic_parity_ratio(
+                    y_test, y_pred_baseline, sensitive_features=X_test[sensitive]
+                )
+                eor = equalized_odds_ratio(
+                    y_test, y_pred_baseline, sensitive_features=X_test[sensitive]
+                )
+
+                if mitig_value == "mitig":
+                    value_mitig_list.extend(
+                        [accuracy, precision, recall, roc_auc, f1, dpr, eor]
+                    )
+                    predictions[test_idx] = list(
+                        y_pred_baseline.flatten()
+                    )  # store the predictions in the correct positions
+                elif mitig_value == "nomitig":
+                    value_nomitig_list.extend(
+                        [accuracy, precision, recall, roc_auc, f1, dpr, eor]
+                    )
+
+    # build the dataset we want to return, with the predictions
+    # instead of the targets
+    predictions_df = dataset.copy()
+
+    for target in targets:
+        predictions_df[target] = predictions
+        predictions_df[target] = label_maps[target].take(predictions_df[target])
+
+    results_df = pd.DataFrame(
+        {
+            "fold": fold_list,
+            "metric_type": metric_type_list,
+            "metric": metric_list,
+            "value_mitig": value_mitig_list,
+            "value_nomitig": value_nomitig_list,
+            "value_pol": value_pol_list,
+        }
+    )
+
+    return (
+        predictions_df,
+        results_df,
+    )
+
+
 def inprocessing_algorithm_FaUCI(
     dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
 ) -> tuple:
-
-    def __simulate_mit_improvement_value_fauci(metric_name: str) -> float:
-        if metric_name == "accuracy":
-            return 0.05
-        elif metric_name == "precision":
-            return 0.05
-        elif metric_name == "recall":
-            return 0.15
-        elif metric_name == "roc_auc":
-            return 0.1
-        elif metric_name == "f1":
-            return 0.1
-        elif metric_name == "demographic_parity_ratio":
-            return 0.25
-        elif metric_name == "equalized_odds_ratio":
-            return 0.15
-        else:
-            return 0.5
-
-    def __simulate_no_mit_value_fauci(metric_type: str, actual_value: float) -> float:
-        if metric_type == "performance":
-            return min(actual_value + _generate_random_number(0.05, 0.1), 1.0)
-        elif metric_type == "fairness":
-            return max(actual_value - _generate_random_number(0.25, 0.45), 0.0)
-        else:
-            return actual_value
-
-    def __simulate_polarized_value_fauci(
-        metric_type: str, actual_value: float
-    ) -> float:
-        if metric_type == "performance":
-            return min(actual_value - _generate_random_number(0.15, 0.25), 1.0)
-        elif metric_type == "fairness":
-            return max(actual_value - _generate_random_number(0.35, 0.4), 0.0)
-        else:
-            return actual_value
-
-    # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
-
-    # X, y, y_pred = (
-    #     new_dataset[
-    #         [
-    #             col
-    #             for col in new_dataset.columns
-    #             if col != default_settings["target_feat"]
-    #             and col != default_settings["predictions_feat"]
-    #         ]
-    #     ],
-    #     new_dataset[default_settings["target_feat"]],
-    #     new_dataset[default_settings["predictions_feat"]],
-    # )
-    #
-    # skf = StratifiedKFold(n_splits=5)
-    #
-    # # Prepare list for 1) and 2)
-    # df_results = []  # list of dicts; one dict per fold-metric
-    #
-    # perf_metrics = ["accuracy", "precision", "recall", "roc_auc", "f1"]
-    # fair_metrics = ["demographic_parity_ratio", "equalized_odds_ratio"]
-    # support_dict = {"performance": perf_metrics, "fairness": fair_metrics}
-    #
-    # # Evaluation loop
-    # for fold_idx, (train_index, test_index) in enumerate(skf.split(X, y)):
-    #     X_train = X.iloc[train_index, :]
-    #     X_test = X.iloc[test_index, :]
-    #     y_train = y.iloc[train_index]
-    #     y_test = y.iloc[test_index]
-    #     y_pred_test = y_pred.iloc[test_index]
-    #
-    #     # Encode predictions and ground truth
-    #     y_pred_encoded = y_pred_test.apply(
-    #         lambda x: 1 if x == default_settings["favorable_class_label"] else 0
-    #     )
-    #     y_pred_encoded.index = X_test.index  # align them explicitly if needed
-    #     y_test_encoded = y_test.apply(
-    #         lambda x: 1 if x == default_settings["favorable_class_label"] else 0
-    #     )
-    #     y_test_encoded.index = (
-    #         X_test.index
-    #     )  # Should already match because we didn't reset
-    #
-    #     # for metric_type, metric_list in support_dict.items():
-    #     #     for metric_name in metric_list:
-    #     #         if metric_type == "performance":
-    #     #             mit_value = get_scorer(metric_name)._score_func(
-    #     #                 y_test_encoded, y_pred_encoded
-    #     #             )
-    #     #         else:
-    #     #             mit_value = _compute_fair_metric(
-    #     #                 fair_metric_name=metric_name,
-    #     #                 settings=default_settings,
-    #     #                 X=X_test,
-    #     #                 y_true=y_test_encoded,
-    #     #                 y_pred=y_pred_encoded,
-    #     #             )
-    #     #         no_mit_value = __simulate_no_mit_value_fauci(metric_type, mit_value)
-    #     #         pol_value = __simulate_polarized_value_fauci(metric_type, no_mit_value)
-    #
-    #     #         df_results.append(
-    #     #             {
-    #     #                 "fold": fold_idx,
-    #     #                 "metric_type": metric_type,
-    #     #                 "metric": metric_name.replace("_", " ").title(),
-    #     #                 "value_mitig": mit_value,
-    #     #                 "value_nomitig": no_mit_value,
-    #     #                 "value_pol": pol_value,
-    #     #             }
-    #     #         )
-    #
-    #     # 1) Overall performance metrics
-    #     for pm in perf_metrics:
-    #         pm_value = get_scorer(pm)._score_func(
-    #             y_test_encoded, y_pred_encoded
-    #         ) + __simulate_mit_improvement_value_fauci(pm)
-    #         # pm_value = simulate_mit_value_fauci(pm)
-    #         pm_nomit = __simulate_no_mit_value_fauci("performance", pm_value)
-    #         pm_pol = __simulate_polarized_value_fauci("performance", pm_value)
-    #
-    #         if kwargs["lambda"] == 0:
-    #             pm_value = pm_nomit
-    #         elif pm != "recall":
-    #             pm_value = (pm_value - 0.15) if kwargs["lambda"] == 1 else pm_value
-    #         else:
-    #             pm_value = (pm_value - 0.05) if kwargs["lambda"] == 1 else pm_value
-    #
-    #         if kwargs["lambda"] == 0:
-    #             pm_pol = pm_pol - 0.05
-    #         elif pm != "recall":
-    #             pm_pol = (pm_pol - 0.15) if kwargs["lambda"] == 1 else pm_pol
-    #         else:
-    #             pm_pol = (pm_pol - 0.05) if kwargs["lambda"] == 1 else pm_pol
-    #
-    #         df_results.append(
-    #             {
-    #                 "fold": fold_idx,
-    #                 "metric_type": "performance",
-    #                 "metric": pm,
-    #                 "value_mitig": pm_value,
-    #                 "value_nomitig": pm_nomit,
-    #                 "value_pol": pm_pol,
-    #             }
-    #         )
-    #
-    #     # 2) Overall fairness metrics
-    #     for fm in fair_metrics:
-    #         fm_value = _compute_fair_metric(
-    #             fair_metric_name=fm,
-    #             settings=default_settings,
-    #             X=X_test,
-    #             y_true=y_test_encoded,
-    #             y_pred=y_pred_encoded,
-    #         ) + __simulate_mit_improvement_value_fauci(fm)
-    #         # fm_value = simulate_mit_value_fauci(pm)
-    #         fm_nomit = __simulate_no_mit_value_fauci("fairness", fm_value)
-    #         fm_pol = __simulate_polarized_value_fauci("fairness", fm_value)
-    #
-    #         fm_value = (
-    #             min(fm_value + 0.05, 0.95)
-    #             if kwargs["lambda"] == 1
-    #             else (fm_nomit if kwargs["lambda"] == 0 else fm_value)
-    #         )
-    #         fm_pol = (
-    #             fm_pol + 0.05
-    #             if kwargs["lambda"] == 1
-    #             else ((fm_pol - 0.05) if kwargs["lambda"] == 0 else fm_pol)
-    #         )
-    #
-    #         df_results.append(
-    #             {
-    #                 "fold": fold_idx,
-    #                 "metric_type": "fairness",
-    #                 "metric": fm,
-    #                 "value_mitig": fm_value,
-    #                 "value_nomitig": fm_nomit,
-    #                 "value_pol": fm_pol,
-    #             }
-    #         )
-    #
-    # df_results = pd.DataFrame(df_results)
-    # df_results["metric"] = df_results["metric"].apply(
-    #     lambda x: x.replace("_", " ").title()
-    # )
 
     if "Sensitive" in sensitive:
         new_dataset = read_csv(dataset_path("akkodis"))
@@ -953,24 +991,73 @@ def inprocessing_algorithm_FaUCI(
             result_path = PATH_AKKODIS_FAUCI_RES_1_CSV
         else:
             result_path = PATH_AKKODIS_BASELINE_RES_1_CSV
-    else:
-        # TODO: to remove
-        new_dataset = (
-            read_csv(dataset_path("fauci_predictions"))
-            .drop("class", axis=1)
-            .rename(columns={"predictions": "class"})
+        return (
+            new_dataset,
+            pd.read_csv(result_path),
         )
-        if kwargs["lambda"] == 0:
-            result_path = PATH_INPROCESSING_FAUCI_RES_0_CSV
-        elif kwargs["lambda"] == 1:
-            result_path = PATH_INPROCESSING_FAUCI_RES_1_CSV
-        else:
-            result_path = PATH_INPROCESSING_FAUCI_RES_CSV
+    # TODO: POSSO VEDERE IL NOME DEL DATASET??
+    # if use_case == "adult:"
+    #     new_dataset = (
+    #         read_csv(dataset_path("fauci_predictions"))
+    #         .drop("class", axis=1)
+    #         .rename(columns={"predictions": "class"})
+    #     )
+    #     if kwargs["lambda"] == 0:
+    #         result_path = PATH_INPROCESSING_FAUCI_RES_0_CSV
+    #     elif kwargs["lambda"] == 1:
+    #         result_path = PATH_INPROCESSING_FAUCI_RES_1_CSV
+    #     else:
+    #         result_path = PATH_INPROCESSING_FAUCI_RES_CSV
+    #     return (
+    #         new_dataset,
+    #         pd.read_csv(result_path),
+    #     )
+
+    predictions_df, results_df = inprocessing_algorithm_general(
+        algorithm="Fauci",
+        dataset=dataset,
+        sensitive=[sensitive[0]],
+        targets=[targets[0]],
+        input_dim=dataset.drop(columns=[targets[0]]).shape[1],
+        hidden_dim=kwargs["hidden_dim"] if "hidden_dim" in kwargs else 8,
+        output_dim=kwargs["output_dim"] if "output_dim" in kwargs else 1,
+        sensitive_dim=kwargs["sensitive_dim"] if "sensitive_dim" in kwargs else 1,
+        regularization_weight=(
+            kwargs["regularization_weight"]
+            if "regularization_weight" in kwargs
+            else 0.5
+        ),
+    )
 
     return (
-        new_dataset,
-        pd.read_csv(result_path),
-        # pd.DataFrame(df_results),
+        predictions_df,
+        results_df,
+    )
+
+
+def inprocessing_algorithm_PrejudiceRemover(
+    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+) -> tuple:
+
+    predictions_df, results_df = inprocessing_algorithm_general(
+        algorithm="PrejudiceRemover",
+        dataset=dataset,
+        sensitive=[sensitive[0]],
+        targets=[targets[0]],
+        input_dim=dataset.drop(columns=[targets[0]]).shape[1],
+        hidden_dim=kwargs["hidden_dim"] if "hidden_dim" in kwargs else 8,
+        output_dim=kwargs["output_dim"] if "output_dim" in kwargs else 1,
+        sensitive_dim=kwargs["sensitive_dim"] if "sensitive_dim" in kwargs else 1,
+        eta=(
+            kwargs["eta"]
+            if "eta" in kwargs
+            else 0.5
+        ),
+    )
+
+    return (
+        predictions_df, 
+        results_df 
     )
 
 
@@ -981,43 +1068,58 @@ def inprocessing_algorithm_AdversarialDebiasing(
     # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
     # TODO: to remove
-    if "cand_provenance_gender" in sensitive:
-        if kwargs["lambda_adv"] == 0:
-            result_paths = (
-                PATH_ADECCO_INPROCESSING_ADVDEB_PRED_0_CSV,
-                PATH_ADECCO_INPROCESSING_ADVDEB_RES_0_CSV,
-            )
-        elif kwargs["lambda_adv"] == 1:
-            result_paths = (
-                PATH_ADECCO_INPROCESSING_ADVDEB_PRED_1_CSV,
-                PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV,
-            )
+    if "cand_provenance_gender" in sensitive or "Sensitive" in sensitive:
+        if "cand_provenance_gender" in sensitive:
+            if kwargs["lambda_adv"] == 0:
+                result_paths = (
+                    PATH_ADECCO_INPROCESSING_ADVDEB_PRED_0_CSV,
+                    PATH_ADECCO_INPROCESSING_ADVDEB_RES_0_CSV,
+                )
+            elif kwargs["lambda_adv"] == 1:
+                result_paths = (
+                    PATH_ADECCO_INPROCESSING_ADVDEB_PRED_1_CSV,
+                    PATH_ADECCO_INPROCESSING_ADVDEB_RES_1_CSV,
+                )
+            else:
+                result_paths = (
+                    PATH_ADECCO_INPROCESSING_ADVDEB_PRED_2_CSV,
+                    PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV,
+                )
         else:
-            result_paths = (
-                PATH_ADECCO_INPROCESSING_ADVDEB_PRED_2_CSV,
-                PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV,
-            )
-    else:
-        if kwargs["lambda_adv"] == 0:
-            result_paths = (
-                PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV,
-                PATH_AKKODIS_INPROCESSING_ADVDEB_RES_0_CSV,
-            )
-        elif kwargs["lambda_adv"] == 1:
-            result_paths = (
-                PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV,
-                PATH_AKKODIS_INPROCESSING_ADVDEB_RES_1_CSV,
-            )
-        else:
-            result_paths = (
-                PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV,
-                PATH_AKKODIS_INPROCESSING_ADVDEB_RES_CSV,
-            )
+            if kwargs["lambda_adv"] == 0:
+                result_paths = (
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV,
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_0_CSV,
+                )
+            elif kwargs["lambda_adv"] == 1:
+                result_paths = (
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV,
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_1_CSV,
+                )
+            else:
+                result_paths = (
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV,
+                    PATH_AKKODIS_INPROCESSING_ADVDEB_RES_CSV,
+                )
 
-    return (
-        pd.read_csv(result_paths[0]),
-        pd.read_csv(result_paths[1]),
+        return (
+            pd.read_csv(result_paths[0]),
+            pd.read_csv(result_paths[1]),
+        )
+
+    predictions_df, results_df = inprocessing_algorithm_general(
+        algorithm="AdversarialDebiasing",
+        dataset=dataset,
+        sensitive=[sensitive[0]],
+        targets=[targets[0]],
+        input_dim=dataset.drop(columns=[targets[0]]).shape[1],
+        hidden_dim=kwargs["hidden_dim"] if "hidden_dim" in kwargs else 8,
+        output_dim=kwargs["output_dim"] if "output_dim" in kwargs else 1,
+        sensitive_dim=kwargs["sensitive_dim"] if "sensitive_dim" in kwargs else 1,
+        lambda_adv=(kwargs["lambda_adv"] if "lambda_adv" in kwargs else 0.5),
     )
+
+    return (predictions_df, results_df)
 
 
 def inprocessing_algorithm_ContributionBasedClassifier(
