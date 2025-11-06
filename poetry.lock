@@ -1353,14 +1353,14 @@ test = ["pep440", "pre-commit", "pytest", "testpath"]
 
 [[package]]
 name = "neo4j"
-version = "6.0.2"
+version = "6.0.3"
 description = "Neo4j Bolt driver for Python"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "neo4j-6.0.2-py3-none-any.whl", hash = "sha256:dc3fc1c99f6da2293d9deefead1e31dd7429bbb513eccf96e4134b7dbf770243"},
-    {file = "neo4j-6.0.2.tar.gz", hash = "sha256:c98734c855b457e7a976424dc04446d652838d00907d250d6e9a595e88892378"},
+    {file = "neo4j-6.0.3-py3-none-any.whl", hash = "sha256:a92023854da96aed4270e0d03d6429cdd7f0d3335eae977370934f4732de5678"},
+    {file = "neo4j-6.0.3.tar.gz", hash = "sha256:7fb79e166e281aafd67d521f6611763ebcdc529f26db506c5605f91ddcd825ea"},
 ]
 
 [package.dependencies]
@@ -1369,7 +1369,7 @@ pytz = "*"
 [package.extras]
 numpy = ["numpy (>=1.21.2,<3.0.0)"]
 pandas = ["numpy (>=1.21.2,<3.0.0)", "pandas (>=1.1.0,<3.0.0)"]
-pyarrow = ["pyarrow (>=6.0.0,<22.0.0)"]
+pyarrow = ["pyarrow (>=6.0.0,<23.0.0)"]
 
 [[package]]
 name = "networkx"
@@ -3078,4 +3078,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10.0,<3.15"
-content-hash = "4fc7608bec9070ed0930e6f6078d9cae3d370178e9d85b0849c8467ccd8b0494"
+content-hash = "81d6da0b311485ea6f73b9e2fb755ad76fa6175ad0297a12b6113244fa48d8e3"
