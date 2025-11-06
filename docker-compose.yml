@@ -3,8 +3,8 @@ services:
   kafka:
     image: apache/kafka:latest
     container_name: ${KAFKA_HOST}
-    platform: &platform
-      linux/x86_64
+#    platform: &platform
+#      linux/x86_64
     ports:
       - ${KAFKA_PORT}:${KAFKA_PORT}
       - ${KAFKA_EXTERNAL_PORT}:${KAFKA_EXTERNAL_PORT}
@@ -43,7 +43,7 @@ services:
   backend:
     build: .
     image: aequitaseu/backend:latest
-    platform: *platform
+#    platform: *platform
     container_name: ${AEQUITAS_BACKEND_HOST}
     restart: on-failure
     ports:
