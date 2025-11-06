@@ -26,4 +26,3 @@ RUN apt-get update && \
 ENV ENV=production
 
 CMD ["sh", "-c", "poe serve --port $AEQUITAS_BACKEND_PORT"]
-
