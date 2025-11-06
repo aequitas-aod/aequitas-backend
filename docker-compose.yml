@@ -1,7 +1,7 @@
 services:
 
   kafka:
-    image: apache/kafka:latest #bitnami/kafka:3.9
+    image: apache/kafka:latest
     container_name: ${KAFKA_HOST}
     platform: &platform
       linux/x86_64
@@ -25,28 +25,9 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-#    depends_on:
-#      zookeeper:
-#        condition: service_healthy
     restart: on-failure
     networks:
       - internal
-
-#  kafka-ui:
-#    container_name: kafka-ui
-#    image: provectuslabs/kafka-ui:latest
-#    platform: *platform
-#    ports:
-#      - "${KAFKA_UI_PORT}:8080"
-#    environment:
-#      DYNAMIC_CONFIG_ENABLED: 'true'
-#      KAFKA_CLUSTERS_0_NAME: cluster
-#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_HOST}:${KAFKA_PORT}
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#    networks:
-#      - internal
 
   frontend:
     image: aequitaseu/frontend:latest
