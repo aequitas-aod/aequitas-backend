@@ -40,7 +40,7 @@ class TestContextAutomation(AutomationRelatedTestCase):
 
     def setUp(self):
         super().setUp()
-        self.dataset_id = "adult-1"
+        self.dataset_id = "Adult-1"
         response = self.app.put(
             f"/projects/{self.project_id.code}/context?key=dataset__{self.dataset_id}",
             data=self.dataset_path.read_bytes(),
@@ -150,7 +150,7 @@ class TestContextAutomation(AutomationRelatedTestCase):
             "dataset_head": self.assertIsNonEmptyDataFrameInCsvFormat,
             "stats": self.assertIsNonEmptyDataFrameInCsvFormat,
         }
-        result_id = "adult-2"
+        result_id = "Adult-2"
         for key_prefix, assertion in key_results.items():
             key = f"{key_prefix}__{result_id}"
             # with self.subTest(get=key):

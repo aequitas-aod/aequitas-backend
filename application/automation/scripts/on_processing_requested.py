@@ -21,8 +21,7 @@ from sklearn.preprocessing import OrdinalEncoder
 import torch
 import torch.nn as nn
 
-import sklearn
-from sklearn.model_selection import train_test_split, KFold
+from sklearn.model_selection import KFold
 from sklearn.metrics import (
     accuracy_score,
     recall_score,
@@ -30,13 +29,10 @@ from sklearn.metrics import (
     roc_auc_score,
     f1_score,
 )
-from sklearn.preprocessing import LabelEncoder
 
 from fairlearn.metrics import demographic_parity_ratio, equalized_odds_ratio
 
 from fairlib import DataFrame as FairDataFrame
-from fairlib.inprocessing import Fauci, AdversarialDebiasing, PrejudiceRemover
-
 
 import utils.env
 from application.automation.parsing import read_csv, to_csv, to_json
@@ -202,6 +198,7 @@ class AbstractProcessingRequestedReaction(Automator):
     def _call_global_algorithm(
         self,
         dataset: pd.DataFrame,
+        dataset_id: str,
         targets: list[str],
         sensitive: list[str],
         proxies: dict,
@@ -230,6 +227,7 @@ class AbstractProcessingRequestedReaction(Automator):
         )
         result = function(
             dataset,
+            dataset_id,
             sensitive,
             targets,
             proxies=proxies,
@@ -404,7 +402,11 @@ def _filter_keys(data: dict, *keys):
 
 
 def preprocessing_algorithm_StableDiffusionBasedDataAugmentation(
-    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+    dataset: pd.DataFrame,
+    dataset_id: str,
+    sensitive: list[str],
+    targets: list[str],
+    **kwargs,
 ) -> pd.DataFrame:
     if "min" in kwargs["augmentation_criterion"]:
         result_paths = (
@@ -429,7 +431,11 @@ def preprocessing_algorithm_StableDiffusionBasedDataAugmentation(
 
 
 def preprocessing_algorithm_LearnedFairRepresentations(
-    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+    dataset: pd.DataFrame,
+    dataset_id: str,
+    sensitive: list[str],
+    targets: list[str],
+    **kwargs,
 ) -> pd.DataFrame:
     default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
     if default_settings["sensitive_feat"] == "f_ESCS":
@@ -475,7 +481,11 @@ def preprocessing_algorithm_LearnedFairRepresentations(
 
 
 def preprocessing_algorithm_CorrelationRemover(
-    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+    dataset: pd.DataFrame,
+    dataset_id: str,
+    sensitive: list[str],
+    targets: list[str],
+    **kwargs,
 ) -> pd.DataFrame:
     default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
@@ -515,7 +525,11 @@ def preprocessing_algorithm_CorrelationRemover(
 
 
 def inprocessing_algorithm_no_mitigation(
-    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+    dataset: pd.DataFrame,
+    dataset_id: str,
+    sensitive: list[str],
+    targets: list[str],
+    **kwargs,
 ) -> pd.DataFrame:
 
     def __simulate_mit_value(metric_name: str) -> float:
@@ -666,6 +680,7 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
         algorithm, result = self._call_global_algorithm(
             dataset,
+            dataset_id,
             targets,
             sensitive,
             proxies,
@@ -687,7 +702,7 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         try:
             if computed_metrics is None:
                 computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(
-                    dataset, targets, sensitive
+                    dataset, dataset_id, targets, sensitive
                 )
                 cases += [
                     (
@@ -783,19 +798,24 @@ def _generate_random_number(min_value: float, max_value: float) -> float:
 
 
 class BaseModel(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim):
+    def __init__(self, input_dim, hidden_dim, hidden_layers: int, output_dim):
         super(BaseModel, self).__init__()
-        self.layer1 = nn.Linear(input_dim, hidden_dim)
-        self.layer2 = nn.Linear(hidden_dim, hidden_dim)
-        self.layer3 = nn.Linear(hidden_dim, output_dim)
-        self.relu = nn.ReLU()
-        self.sigmoid = nn.Sigmoid()
+        layers = []
+        layers.append(nn.Linear(input_dim, hidden_dim))
+        layers.append(nn.ReLU())
+
+        for _ in range(hidden_layers - 1):
+            layers.append(nn.Linear(hidden_dim, hidden_dim))
+            layers.append(nn.ReLU())
+
+        layers.append(nn.Linear(hidden_dim, output_dim))
+        layers.append(nn.Sigmoid())
+
+        # Combine into a single sequential model
+        self.model = nn.Sequential(*layers)
 
     def forward(self, x):
-        x = self.relu(self.layer1(x))
-        x = self.relu(self.layer2(x))
-        x = self.sigmoid(self.layer3(x))
-        return x
+        return self.model(x)
 
 
 def inprocessing_algorithm_general(
@@ -876,7 +896,7 @@ def inprocessing_algorithm_general(
 
     for fold, (train_idx, test_idx) in enumerate(kfold.split(X, y), 1):
 
-        print(f"Fold: {fold+1}")
+        print(f"Fold: {fold}")
 
         train_df = df.loc[train_idx]
         test_df = df.loc[test_idx]
@@ -905,21 +925,26 @@ def inprocessing_algorithm_general(
             base_model = BaseModel(
                 input_dim=kwargs["input_dim"],
                 hidden_dim=kwargs["hidden_dim"],
+                hidden_layers=kwargs["hidden_layers"],
                 output_dim=kwargs["output_dim"],
             )
-            if algorithm in ["FaUCI", "PrejudiceRemover"]:
+            epochs: int = kwargs["epochs"]
+            batch_size: int = 128
+            if algorithm in ["Fauci", "PrejudiceRemover"]:
                 mitigated_model = globals()[algorithm](
                     torchModel=base_model, **hyperparams_value
                 )
-                mitigated_model.fit(train_df, epochs=100, batch_size=128, verbose=False)
+                mitigated_model.fit(
+                    train_df, epochs=epochs, batch_size=batch_size, verbose=False
+                )
                 base_model.eval()
             else:
                 mitigated_model = globals()[algorithm](**hyperparams_value)
                 mitigated_model.fit(
                     train_df.drop(columns=[targets[0]]),
                     train_df[targets[0]],
-                    epochs=100,
-                    batch_size=128,
+                    epochs=epochs,
+                    batch_size=batch_size,
                     verbose=False,
                 )
 
@@ -982,10 +1007,14 @@ def inprocessing_algorithm_general(
 
 
 def inprocessing_algorithm_FaUCI(
-    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+    dataset: pd.DataFrame,
+    dataset_id: str,
+    sensitive: list[str],
+    targets: list[str],
+    **kwargs,
 ) -> tuple:
 
-    if "Sensitive" in sensitive:
+    if "Akkodis" in dataset_id:
         new_dataset = read_csv(dataset_path("akkodis"))
         if kwargs["lambda"] >= 0.5:
             result_path = PATH_AKKODIS_FAUCI_RES_1_CSV
@@ -995,23 +1024,23 @@ def inprocessing_algorithm_FaUCI(
             new_dataset,
             pd.read_csv(result_path),
         )
-    # TODO: POSSO VEDERE IL NOME DEL DATASET??
-    # if use_case == "adult:"
-    #     new_dataset = (
-    #         read_csv(dataset_path("fauci_predictions"))
-    #         .drop("class", axis=1)
-    #         .rename(columns={"predictions": "class"})
-    #     )
-    #     if kwargs["lambda"] == 0:
-    #         result_path = PATH_INPROCESSING_FAUCI_RES_0_CSV
-    #     elif kwargs["lambda"] == 1:
-    #         result_path = PATH_INPROCESSING_FAUCI_RES_1_CSV
-    #     else:
-    #         result_path = PATH_INPROCESSING_FAUCI_RES_CSV
-    #     return (
-    #         new_dataset,
-    #         pd.read_csv(result_path),
-    #     )
+
+    if "Adult" in dataset_id:
+        new_dataset = (
+            read_csv(dataset_path("fauci_predictions"))
+            .drop("class", axis=1)
+            .rename(columns={"predictions": "class"})
+        )
+        if kwargs["lambda"] == 0:
+            result_path = PATH_INPROCESSING_FAUCI_RES_0_CSV
+        elif kwargs["lambda"] == 1:
+            result_path = PATH_INPROCESSING_FAUCI_RES_1_CSV
+        else:
+            result_path = PATH_INPROCESSING_FAUCI_RES_CSV
+        return (
+            new_dataset,
+            pd.read_csv(result_path),
+        )
 
     predictions_df, results_df = inprocessing_algorithm_general(
         algorithm="Fauci",
@@ -1019,14 +1048,12 @@ def inprocessing_algorithm_FaUCI(
         sensitive=[sensitive[0]],
         targets=[targets[0]],
         input_dim=dataset.drop(columns=[targets[0]]).shape[1],
-        hidden_dim=kwargs["hidden_dim"] if "hidden_dim" in kwargs else 8,
-        output_dim=kwargs["output_dim"] if "output_dim" in kwargs else 1,
-        sensitive_dim=kwargs["sensitive_dim"] if "sensitive_dim" in kwargs else 1,
-        regularization_weight=(
-            kwargs["regularization_weight"]
-            if "regularization_weight" in kwargs
-            else 0.5
-        ),
+        hidden_dim=kwargs["hidden_dim"],
+        hidden_layers=kwargs["hidden_layers"],
+        output_dim=1,
+        sensitive_dim=1,
+        epochs=kwargs["epochs"],
+        regularization_weight=kwargs["lambda"],
     )
 
     return (
@@ -1036,7 +1063,11 @@ def inprocessing_algorithm_FaUCI(
 
 
 def inprocessing_algorithm_PrejudiceRemover(
-    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+    dataset: pd.DataFrame,
+    dataset_id: str,
+    sensitive: list[str],
+    targets: list[str],
+    **kwargs,
 ) -> tuple:
 
     predictions_df, results_df = inprocessing_algorithm_general(
@@ -1045,17 +1076,23 @@ def inprocessing_algorithm_PrejudiceRemover(
         sensitive=[sensitive[0]],
         targets=[targets[0]],
         input_dim=dataset.drop(columns=[targets[0]]).shape[1],
-        hidden_dim=kwargs["hidden_dim"] if "hidden_dim" in kwargs else 8,
-        output_dim=kwargs["output_dim"] if "output_dim" in kwargs else 1,
-        sensitive_dim=kwargs["sensitive_dim"] if "sensitive_dim" in kwargs else 1,
-        eta=(kwargs["eta"] if "eta" in kwargs else 0.5),
+        hidden_dim=kwargs["hidden_dim"],
+        hidden_layers=kwargs["hidden_layers"],
+        output_dim=1,
+        sensitive_dim=1,
+        epochs=kwargs["epochs"],
+        eta=kwargs["eta"],
     )
 
-    return (predictions_df, results_df)
+    return predictions_df, results_df
 
 
 def inprocessing_algorithm_AdversarialDebiasing(
-    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+    dataset: pd.DataFrame,
+    dataset_id: str,
+    sensitive: list[str],
+    targets: list[str],
+    **kwargs,
 ) -> tuple:
 
     # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
@@ -1106,17 +1143,23 @@ def inprocessing_algorithm_AdversarialDebiasing(
         sensitive=[sensitive[0]],
         targets=[targets[0]],
         input_dim=dataset.drop(columns=[targets[0]]).shape[1],
-        hidden_dim=kwargs["hidden_dim"] if "hidden_dim" in kwargs else 8,
-        output_dim=kwargs["output_dim"] if "output_dim" in kwargs else 1,
-        sensitive_dim=kwargs["sensitive_dim"] if "sensitive_dim" in kwargs else 1,
-        lambda_adv=(kwargs["lambda_adv"] if "lambda_adv" in kwargs else 0.5),
+        hidden_dim=kwargs["hidden_dim"],
+        hidden_layers=kwargs["hidden_layers"],
+        output_dim=1,
+        sensitive_dim=1,
+        epochs=kwargs["epochs"],
+        lambda_adv=kwargs["lambda_adv"],
     )
 
-    return (predictions_df, results_df)
+    return predictions_df, results_df
 
 
 def inprocessing_algorithm_ContributionBasedClassifier(
-    dataset: pd.DataFrame, sensitive: list[str], targets: list[str], **kwargs
+    dataset: pd.DataFrame,
+    dataset_id: str,
+    sensitive: list[str],
+    targets: list[str],
+    **kwargs,
 ) -> tuple:
 
     if kwargs["fairness_mechanism"] == "unawareness":
@@ -1265,6 +1308,7 @@ class InProcessingRequestedReaction(AbstractProcessingRequestedReaction):
     ) -> Iterable[tuple[str, Union[str, bytes]]]:
         algorithm, results = self._call_global_algorithm(
             dataset,
+            dataset_id,
             targets,
             sensitive,
             proxies,

@@ -6,6 +6,22 @@ FaUCI:
     type: float
     default: 0.5
     values: [0, 1]
+  hidden_layers: &hidden_layers
+    label: Number of hidden layers
+    type: integer
+    values: [1, 20]
+    default: 1
+  hidden_dim: &hidden_dim
+    label: Number of neurons per layer
+    type: integer
+    values: [8, 512]
+    default: 8
+  epochs: &epochs
+    label: Number of training epochs
+    type: integer
+    values: [50, 500]
+    default: 100
+
 
 # https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.inprocessing.PrejudiceRemover.html
 PrejudiceRemover:
@@ -15,39 +31,21 @@ PrejudiceRemover:
     type: float
     default: 0.5
     values: [0, 1]
+  layers: *hidden_layers
+  dimension: *hidden_dim
+  training: *epochs
 
 # https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.inprocessing.AdversarialDebiasing.html
 AdversarialDebiasing:
-  input_dim:
-      label: Input dimension of predictor model
-      description: Number of features in the input data
-      type: integer
-      default: 8
-      values: [1, 10]
-  hidden_dim:
-    label: Hidden dimension of predictor model and input dimension of adversary model
-    description: Dimension of both the predictor and adversary model in order to execute adversarial training
-    type: integer
-    default: 8
-    values: [1, 10]
-  output_dim:
-    label: Output dimension of predictor model
-    description: Number of classes in the output data
-    type: integer
-    default: 1
-    values: [1, 10]
-  sensitive_dim:
-    label: Output dimension of adversary model
-    description: Number of sensitive values that the adversary model tries to predict
-    type: integer
-    default: 1
-    values: [1, 10]
   lambda_adv:
     label: Adversary weight
     description: Weight that defines the relative importance of the adversary loss w.r.t. the predictor loss
     type: float
     default: 5.0
     values: [0.0, 10.0]
+  layers: *hidden_layers
+  dimension: *hidden_dim
+  training: *epochs
 
 ContributionBasedClassifier:
   fairness_mechanism:

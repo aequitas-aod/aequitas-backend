@@ -12,7 +12,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">= 3.10.0, < 4.0.0"
+python = ">=3.10.0,<3.15"
 flask = "3.1.2"
 flask-restful = "0.3.10"
 requests = "2.32.5"
@@ -36,6 +36,7 @@ aequitas-fairlib = "^2.8.0"
 reportlab = "^4.4.3"
 svglib = "^1.5.1"
 pypdf2 = "^3.0.1"
+torch = "^2.9.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "25.9.0"

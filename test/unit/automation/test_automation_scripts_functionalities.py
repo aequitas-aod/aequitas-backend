@@ -119,7 +119,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
 
         dataset = read_csv(dataset_path("adult"))
         result = preprocessing_algorithm_LearnedFairRepresentations(
-            dataset, sensitive=["sex"], targets=["class"], **hyperparameters
+            dataset, "Adult", sensitive=["sex"], targets=["class"], **hyperparameters
         )
         return result
 
@@ -142,7 +142,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         dataset = read_csv(dataset_path("adult"))
         my_conf = {"alpha": 0.5}
         result = preprocessing_algorithm_CorrelationRemover(
-            dataset, ["sex"], ["class"], **my_conf
+            dataset, "Adult", ["sex"], ["class"], **my_conf
         )
         expected = read_csv(PATH_PREPROCESSING_CR_CSV)
 
@@ -158,7 +158,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         hyperparameters = {k: hyperparameters[k]["default"] for k in hyperparameters}
 
         (actual_predictions, actual_results) = inprocessing_algorithm_FaUCI(
-            dataset, ["sex"], ["class"], **hyperparameters
+            dataset, "Adult", ["sex"], ["class"], **hyperparameters
         )
 
         # alpha = 0.5
@@ -172,7 +172,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         # alpha = 0
         hyperparameters["lambda"] = 0
         (actual_predictions, actual_results) = inprocessing_algorithm_FaUCI(
-            dataset, ["sex"], ["class"], **hyperparameters
+            dataset, "Adult", ["sex"], ["class"], **hyperparameters
         )
         expected_predictions = read_csv(PATH_INPROCESSING_FAUCI_PRED_CSV)
         self.assertDataFramesAreEqual(actual_predictions, expected_predictions)
@@ -184,7 +184,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         # alpha = 1
         hyperparameters["lambda"] = 1
         (actual_predictions, actual_results) = inprocessing_algorithm_FaUCI(
-            dataset, ["sex"], ["class"], **hyperparameters
+            dataset, "Adult", ["sex"], ["class"], **hyperparameters
         )
         expected_predictions = read_csv(PATH_INPROCESSING_FAUCI_PRED_CSV)
         self.assertDataFramesAreEqual(actual_predictions, expected_predictions)
@@ -255,7 +255,7 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
 
         dataset = read_csv(dataset_path("adult"))
         actual_results = inprocessing_algorithm_no_mitigation(
-            dataset, ["sex"], ["class"]
+            dataset, "Adult", ["sex"], ["class"]
         )
         # actual_results.to_csv(PATH_INPROCESSING_NO_MIT_CSV, index=False)
         expected_results = read_csv(PATH_INPROCESSING_NO_MIT_CSV)
