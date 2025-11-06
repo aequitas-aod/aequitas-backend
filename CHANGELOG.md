@@ -12,6 +12,28 @@
 ### Bug Fixes
 
 * fix neo4j image version ([b774c2a](https://github.com/aequitas-aod/aequitas-backend/commit/b774c2a547395f971325e0c6aab9e116f1fd1362))
+* remove comments from docker compose file ([304c998](https://github.com/aequitas-aod/aequitas-backend/commit/304c998a4b7c47dd72f9869aaa4cc66c51a079b0))
+* remove multi-stage build and cache from GitHub runners ([8e3e389](https://github.com/aequitas-aod/aequitas-backend/commit/8e3e3896db70ebb668a094e03179797511610742))
+* trigger new release ([7567ae9](https://github.com/aequitas-aod/aequitas-backend/commit/7567ae9d9f4f5e4ca3473107afb17e95c3f486fc))
+
+### General maintenance
+
+* **release:** 1.18.0 [skip ci] ([f50deae](https://github.com/aequitas-aod/aequitas-backend/commit/f50deae49feef4e391533ef24ec1db5a5e5e9fb6)), closes [#194](https://github.com/aequitas-aod/aequitas-backend/issues/194)
+
+## [1.18.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.17.6...v1.18.0) (2025-11-06)
+
+### Features
+
+* add algorithm for Fauci ([fc261f2](https://github.com/aequitas-aod/aequitas-backend/commit/fc261f20066e2fc15b30b41843a9e894b97645a7))
+* add fairlib implementation ([aec000d](https://github.com/aequitas-aod/aequitas-backend/commit/aec000d1dd50c35f1ee02f4ae9887e5b0ab22487))
+
+### Dependency updates
+
+* **deps:** update docker/setup-qemu-action action to v3.7.0 ([#194](https://github.com/aequitas-aod/aequitas-backend/issues/194)) ([214253e](https://github.com/aequitas-aod/aequitas-backend/commit/214253e14662712fd62306cfcb675a01d9a81c11))
+
+### Bug Fixes
+
+* fix neo4j image version ([b774c2a](https://github.com/aequitas-aod/aequitas-backend/commit/b774c2a547395f971325e0c6aab9e116f1fd1362))
 * remove multi-stage build and cache from GitHub runners ([8e3e389](https://github.com/aequitas-aod/aequitas-backend/commit/8e3e3896db70ebb668a094e03179797511610742))
 
 ## [1.17.6](https://github.com/aequitas-aod/aequitas-backend/compare/v1.17.5...v1.17.6) (2025-11-05)
