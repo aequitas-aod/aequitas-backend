@@ -1,3 +1,9 @@
+## [1.18.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.0...v1.18.1) (2025-11-06)
+
+### Bug Fixes
+
+* remove platform field in docker compose ([d673ba9](https://github.com/aequitas-aod/aequitas-backend/commit/d673ba9f40482ea6c3d5063e11b6291a8a875f30))
+
 ## [1.18.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.17.6...v1.18.0) (2025-11-06)
 
 ### Features
