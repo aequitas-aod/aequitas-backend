@@ -1,3 +1,20 @@
+## [1.18.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.0...v1.18.1) (2025-11-07)
+
+### Bug Fixes
+
+* change publish cmd to build images ([dce7d59](https://github.com/aequitas-aod/aequitas-backend/commit/dce7d591a784a5588c38ea3da1b30555cfad4415))
+* **deps:** update dependency neo4j to v6.0.3 ([#195](https://github.com/aequitas-aod/aequitas-backend/issues/195)) ([16a8e85](https://github.com/aequitas-aod/aequitas-backend/commit/16a8e8541e97d83dd9ae20a480e9e9673bf6fdac))
+* remove multi-stage build ([befb055](https://github.com/aequitas-aod/aequitas-backend/commit/befb0551ffaee763636d4723011e1f5d3b1a9eb0))
+* remove platform field in docker compose ([d673ba9](https://github.com/aequitas-aod/aequitas-backend/commit/d673ba9f40482ea6c3d5063e11b6291a8a875f30))
+* trigger new release ([3202e48](https://github.com/aequitas-aod/aequitas-backend/commit/3202e48ef62801c5584690dc4a1695acf33366f0))
+
+### General maintenance
+
+* **release:** 1.18.1 [skip ci] ([c3475e8](https://github.com/aequitas-aod/aequitas-backend/commit/c3475e849eab20bc182b3263a77a92cb3b95c0f3))
+* **release:** 1.18.2 [skip ci] ([ba80bd6](https://github.com/aequitas-aod/aequitas-backend/commit/ba80bd6ecd711e992e58b0c387a2061a7faab9de)), closes [#195](https://github.com/aequitas-aod/aequitas-backend/issues/195)
+* **release:** 1.18.3 [skip ci] ([4736dde](https://github.com/aequitas-aod/aequitas-backend/commit/4736dde73d0379c99c814c9b579230f46ac92d18))
+* **release:** 1.18.4 [skip ci] ([74e491b](https://github.com/aequitas-aod/aequitas-backend/commit/74e491b12a35c2b9d87eaaa62fb061d5023316ea))
+
 ## [1.18.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.3...v1.18.4) (2025-11-07)
 
 ### Bug Fixes
