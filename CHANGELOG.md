@@ -1,3 +1,9 @@
+## [1.18.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.1...v1.18.2) (2025-11-07)
+
+### Bug Fixes
+
+* **deps:** update dependency neo4j to v6.0.3 ([#195](https://github.com/aequitas-aod/aequitas-backend/issues/195)) ([16a8e85](https://github.com/aequitas-aod/aequitas-backend/commit/16a8e8541e97d83dd9ae20a480e9e9673bf6fdac))
+
 ## [1.18.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.0...v1.18.1) (2025-11-06)
 
 ### Bug Fixes
