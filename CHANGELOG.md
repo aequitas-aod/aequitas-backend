@@ -1,3 +1,9 @@
+## [1.18.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.3...v1.18.4) (2025-11-07)
+
+### Bug Fixes
+
+* remove multi-stage build ([befb055](https://github.com/aequitas-aod/aequitas-backend/commit/befb0551ffaee763636d4723011e1f5d3b1a9eb0))
+
 ## [1.18.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.2...v1.18.3) (2025-11-07)
 
 ### Bug Fixes
