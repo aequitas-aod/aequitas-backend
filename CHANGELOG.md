@@ -1,3 +1,9 @@
+## [1.18.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.2...v1.18.3) (2025-11-07)
+
+### Bug Fixes
+
+* trigger new release ([3202e48](https://github.com/aequitas-aod/aequitas-backend/commit/3202e48ef62801c5584690dc4a1695acf33366f0))
+
 ## [1.18.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.1...v1.18.2) (2025-11-07)
 
 ### Bug Fixes
