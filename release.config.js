@@ -10,7 +10,7 @@ config.plugins.push(
   [
     '@semantic-release/exec',
     {
-      "publishCmd": `docker buildx build --platform linux/amd64,linux/arm64 \
+      "publishCmd": `docker build \
         -t ${imageTag}:latest \
         -t ${imageTag}:\${nextRelease.version} \
         --push .`,
