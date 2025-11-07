@@ -1,3 +1,9 @@
+## [1.18.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.1...v1.18.2) (2025-11-07)
+
+### Bug Fixes
+
+* reintroduce multi platform build ([7b37d94](https://github.com/aequitas-aod/aequitas-backend/commit/7b37d946f02b910f9cff1bdc5d6ffd15debdca8b))
+
 ## [1.18.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.0...v1.18.1) (2025-11-07)
 
 ### Bug Fixes
