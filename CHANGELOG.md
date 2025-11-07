@@ -1,3 +1,9 @@
+## [1.18.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.2...v1.18.3) (2025-11-07)
+
+### Bug Fixes
+
+* **ci:** remove test image creation ([67c2b46](https://github.com/aequitas-aod/aequitas-backend/commit/67c2b4638f0e200d6215602f19173cc24f7a6196))
+
 ## [1.18.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.1...v1.18.2) (2025-11-07)
 
 ### Bug Fixes
