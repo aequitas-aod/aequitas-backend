@@ -1,4 +1,6 @@
 import logging
+from typing import Callable
+
 import utils.env
 
 if utils.env.is_testing():
@@ -24,7 +26,7 @@ def _our_loggers():
     return result
 
 
-def set_loggers_level(selector, level: int | str = DEFAULT_LOG_LEVEL):
+def set_loggers_level(selector: Callable, level: int | str = DEFAULT_LOG_LEVEL):
     if isinstance(level, str):
         level = logging.ERROR
     for l in _all_loggers():
@@ -34,3 +36,8 @@ def set_loggers_level(selector, level: int | str = DEFAULT_LOG_LEVEL):
 
 def set_other_loggers_level(level: int | str = logging.ERROR):
     set_loggers_level(lambda l: l not in _our_loggers(), level)
+
+
+# if testing, lowers the visibility of non-aequitas logs
+if utils.env.is_testing():
+    set_other_loggers_level()

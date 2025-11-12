@@ -29,7 +29,9 @@ def get_brokers_from_env() -> List[KafkaBroker]:
     if len(broker_hosts) != len(broker_ports):
         raise ValueError("Invalid configuration for Kafka brokers")
 
-    return [
+    kafka_brokers: List[KafkaBroker] = [
         KafkaBroker(host, broker_ports[index])
         for index, host in enumerate(broker_hosts)
     ]
+    print(f"Kafka Brokers Configuration: {kafka_brokers}")
+    return kafka_brokers

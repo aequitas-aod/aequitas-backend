@@ -47,6 +47,8 @@ if is_testing() and DB_HOST != "localhost":
         stacklevel=2,
     )
 
+print(f"Env variables: ENV={ENV}, DB_HOST={DB_HOST}, DB_USER={DB_USER}")
+
 
 def environ():
     return os.environ.copy()

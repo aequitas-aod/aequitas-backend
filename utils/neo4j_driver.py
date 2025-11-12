@@ -1,15 +1,13 @@
+import logging
 from typing import List, Optional, Tuple
 
 import backoff
-from neo4j import GraphDatabase, Driver, Result
+from neo4j import GraphDatabase, Result
 from neo4j.exceptions import ServiceUnavailable, SessionExpired
 
-import utils.env
-from utils.logs import set_other_loggers_level
+from utils.logs import set_loggers_level
 
-# if testing, lowers the visibility of non-aequitas logs
-if utils.env.is_testing():
-    set_other_loggers_level()
+set_loggers_level(lambda l: l.name == "neo4j.notifications", logging.ERROR)
 
 
 class Credentials:
