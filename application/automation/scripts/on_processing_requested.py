@@ -9,19 +9,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import torch
+import torch.nn as nn
 from aif360.algorithms.preprocessing import LFR
 from aif360.datasets import BinaryLabelDataset
 from fairlearn import metrics as fairlearn_metrics
+from fairlearn.metrics import demographic_parity_ratio, equalized_odds_ratio
 from fairlearn.preprocessing import CorrelationRemover
+from fairlib import DataFrame as FairDataFrame
+from fairlib.inprocessing import Fauci, AdversarialDebiasing, PrejudiceRemover
 from pandas.plotting import parallel_coordinates
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.model_selection import StratifiedKFold
-from sklearn.preprocessing import OrdinalEncoder
-
-import torch
-import torch.nn as nn
-
-from sklearn.model_selection import KFold
 from sklearn.metrics import (
     accuracy_score,
     recall_score,
@@ -29,10 +27,9 @@ from sklearn.metrics import (
     roc_auc_score,
     f1_score,
 )
-
-from fairlearn.metrics import demographic_parity_ratio, equalized_odds_ratio
-
-from fairlib import DataFrame as FairDataFrame
+from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
+from sklearn.preprocessing import OrdinalEncoder
 
 import utils.env
 from application.automation.parsing import read_csv, to_csv, to_json
@@ -828,12 +825,16 @@ def inprocessing_algorithm_general(
 
     reg_hyperparam, reg_hyperparam_value = None, None
     hyperparams = []
-    if algorithm == "Fauci":
+    model_cls: Processor
+    if algorithm == "FaUCI":
+        model_cls = Fauci
         reg_hyperparam = "regularization_weight"
     elif algorithm == "AdversarialDebiasing":
+        model_cls = AdversarialDebiasing
         reg_hyperparam = "lambda_adv"
         hyperparams = ["input_dim", "hidden_dim", "output_dim", "sensitive_dim"]
     elif algorithm == "PrejudiceRemover":
+        model_cls = PrejudiceRemover
         reg_hyperparam = "eta"
     else:
         reg_hyperparam = None
@@ -930,16 +931,14 @@ def inprocessing_algorithm_general(
             )
             epochs: int = kwargs["epochs"]
             batch_size: int = 128
-            if algorithm in ["Fauci", "PrejudiceRemover"]:
-                mitigated_model = globals()[algorithm](
-                    torchModel=base_model, **hyperparams_value
-                )
+            if algorithm in ["FaUCI", "PrejudiceRemover"]:
+                mitigated_model = model_cls(torchModel=base_model, **hyperparams_value)
                 mitigated_model.fit(
                     train_df, epochs=epochs, batch_size=batch_size, verbose=False
                 )
                 base_model.eval()
             else:
-                mitigated_model = globals()[algorithm](**hyperparams_value)
+                mitigated_model = model_cls(**hyperparams_value)
                 mitigated_model.fit(
                     train_df.drop(columns=[targets[0]]),
                     train_df[targets[0]],
@@ -1043,7 +1042,7 @@ def inprocessing_algorithm_FaUCI(
         )
 
     predictions_df, results_df = inprocessing_algorithm_general(
-        algorithm="Fauci",
+        algorithm="FaUCI",
         dataset=dataset,
         sensitive=[sensitive[0]],
         targets=[targets[0]],
