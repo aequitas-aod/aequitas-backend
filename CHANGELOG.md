@@ -1,3 +1,16 @@
+## [1.18.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.3...v1.18.4) (2025-11-12)
+
+### Dependency updates
+
+* **deps:** update dependency black to v25.11.0 ([#199](https://github.com/aequitas-aod/aequitas-backend/issues/199)) ([d6acf13](https://github.com/aequitas-aod/aequitas-backend/commit/d6acf1383aaaf5a4c4e28037799c22ad21f3cf68))
+* **deps:** update dependency coverage to v7.11.1 ([#196](https://github.com/aequitas-aod/aequitas-backend/issues/196)) ([9ee2c4b](https://github.com/aequitas-aod/aequitas-backend/commit/9ee2c4b4ba196f06ec40635ec1c0686c429e0b9f))
+* **deps:** update dependency coverage to v7.11.2 ([#197](https://github.com/aequitas-aod/aequitas-backend/issues/197)) ([b45892e](https://github.com/aequitas-aod/aequitas-backend/commit/b45892ee1146aabd7941fc3a9648fadd88be7294))
+* **deps:** update dependency coverage to v7.11.3 ([#198](https://github.com/aequitas-aod/aequitas-backend/issues/198)) ([5dea7cd](https://github.com/aequitas-aod/aequitas-backend/commit/5dea7cd89da66b7ab951b2d2442c40315e4be134))
+
+### Bug Fixes
+
+* **logs:** remove warning logs of neo4j ([903b635](https://github.com/aequitas-aod/aequitas-backend/commit/903b635a63eb665bff9d8669a3ba6ed01929342b))
+
 ## [1.18.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.2...v1.18.3) (2025-11-07)
 
 ### Bug Fixes
