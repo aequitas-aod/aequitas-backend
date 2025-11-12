@@ -1,3 +1,9 @@
+## [1.18.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.4...v1.18.5) (2025-11-12)
+
+### Bug Fixes
+
+* **automation:** fix call of fairlib algorithms ([af45c2a](https://github.com/aequitas-aod/aequitas-backend/commit/af45c2ac8fc95859c515fb69d18ed378a89a30a3))
+
 ## [1.18.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.3...v1.18.4) (2025-11-12)
 
 ### Dependency updates
