@@ -31,9 +31,9 @@ PrejudiceRemover:
     type: float
     default: 0.5
     values: [0, 1]
-  layers: *hidden_layers
-  dimension: *hidden_dim
-  training: *epochs
+  hidden_layers: *hidden_layers
+  hidden_dim: *hidden_dim
+  epochs: *epochs
 
 # https://aif360.readthedocs.io/en/stable/modules/generated/aif360.algorithms.inprocessing.AdversarialDebiasing.html
 AdversarialDebiasing:
@@ -43,9 +43,9 @@ AdversarialDebiasing:
     type: float
     default: 5.0
     values: [0.0, 10.0]
-  layers: *hidden_layers
-  dimension: *hidden_dim
-  training: *epochs
+  hidden_layers: *hidden_layers
+  hidden_dim: *hidden_dim
+  epochs: *epochs
 
 ContributionBasedClassifier:
   fairness_mechanism:
