@@ -87,6 +87,7 @@ from resources.ull import (
     PATH_ULL_METRICS_BASELINE_JSON,
     PATH_ULL_METRICS_BEST_JSON,
 )
+from utils.logs import logger
 from utils.logs import set_other_loggers_level
 
 FIG_WIDTH_SIZE = 12
@@ -897,7 +898,7 @@ def inprocessing_algorithm_general(
 
     for fold, (train_idx, test_idx) in enumerate(kfold.split(X, y), 1):
 
-        print(f"Fold: {fold}")
+        logger.info(f"Fold: {fold}")
 
         train_df = df.loc[train_idx]
         test_df = df.loc[test_idx]
@@ -911,7 +912,7 @@ def inprocessing_algorithm_general(
         # kwargs[regularization_weight] = 0.0 to compute the nomitig values.
 
         for mitig_value in ["mitig", "nomitig"]:
-            print(f"\tMitigation: {mitig_value == 'mitig'}")
+            logger.info(f"\tMitigation: {mitig_value == 'mitig'}")
             # putting kwargs[regularization_weight] = 0.0 to compute the nomitig values
             if mitig_value == "nomitig":
                 kwargs[reg_hyperparam] = 0.0

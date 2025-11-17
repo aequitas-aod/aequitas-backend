@@ -7,7 +7,7 @@ if utils.env.is_testing():
     DEFAULT_LOG_LEVEL = logging.DEBUG
     logging.basicConfig(level=DEFAULT_LOG_LEVEL)
 else:
-    DEFAULT_LOG_LEVEL = logging.ERROR
+    DEFAULT_LOG_LEVEL = logging.INFO
 
 logger = logging.getLogger("aequitas.backend")
 logger.setLevel(DEFAULT_LOG_LEVEL)
