@@ -1,3 +1,9 @@
+## [1.18.7](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.6...v1.18.7) (2025-11-17)
+
+### Bug Fixes
+
+* **resources:** generate cypher db init files ([69a0bd7](https://github.com/aequitas-aod/aequitas-backend/commit/69a0bd77ba5cc967212ebb33c791ff46f3c1a8d9))
+
 ## [1.18.6](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.5...v1.18.6) (2025-11-17)
 
 ### Dependency updates
