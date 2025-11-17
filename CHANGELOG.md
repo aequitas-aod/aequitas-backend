@@ -1,3 +1,17 @@
+## [1.18.6](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.5...v1.18.6) (2025-11-17)
+
+### Dependency updates
+
+* **deps:** update dependency torch to v2.9.1 ([#200](https://github.com/aequitas-aod/aequitas-backend/issues/200)) ([e2079b4](https://github.com/aequitas-aod/aequitas-backend/commit/e2079b49cf527a61047a59ad2defd8c50eea577a))
+
+### Bug Fixes
+
+* **resources:** fix hyperparameters name for inprocessing algorithms ([4f62243](https://github.com/aequitas-aod/aequitas-backend/commit/4f62243cd5b762e1c93e9c67b3aa6bd4d8d34219))
+
+### General maintenance
+
+* set log level to INFO in production ([45dbfd7](https://github.com/aequitas-aod/aequitas-backend/commit/45dbfd7b478f44b7216b1bea418667e0858991f3))
+
 ## [1.18.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.4...v1.18.5) (2025-11-12)
 
 ### Bug Fixes
