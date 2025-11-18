@@ -26,9 +26,12 @@ from resources.adecco import (
     PATH_ADECCO_INPROCESSING_ADVDEB_RES_2_CSV,
 )
 from resources.akkodis import (
+    PATH_AKKODIS_BASELINE_RES_3_CSV,
+    PATH_AKKODIS_FAUCI_RES_3_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_CSV,
     PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_1_CSV,
+    PATH_AKKODIS_METRICS_BASELINE_POL_3_JSON,
     PATH_AKKODIS_METRICS_FAUCI_POL_1_JSON,
     PATH_AKKODIS_METRICS_BASELINE_POL_1_JSON,
     PATH_AKKODIS_METRICS_FAUCI_POL_2_JSON,
@@ -37,6 +40,7 @@ from resources.akkodis import (
     PATH_AKKODIS_BASELINE_RES_1_CSV,
     PATH_AKKODIS_FAUCI_RES_2_CSV,
     PATH_AKKODIS_BASELINE_RES_2_CSV,
+    PATH_AKKODIS_METRICS_FAUCI_POL_3_JSON,
 )
 from resources.db.datasets import dataset_path
 from resources.skin_deseases import (
@@ -101,11 +105,16 @@ def compute_polarization(
                 result_path = PATH_AKKODIS_FAUCI_RES_1_CSV
             else:
                 result_path = PATH_AKKODIS_BASELINE_RES_1_CSV
-        else:
+        elif "Extreme" in test_dataset_id:
             if hyperparameters["lambda"] >= 0.5:
                 result_path = PATH_AKKODIS_FAUCI_RES_2_CSV
             else:
                 result_path = PATH_AKKODIS_BASELINE_RES_2_CSV
+        else:
+            if hyperparameters["lambda"] >= 0.5:
+                result_path = PATH_AKKODIS_FAUCI_RES_3_CSV
+            else:
+                result_path = PATH_AKKODIS_BASELINE_RES_3_CSV
         # if hyperparameters["lambda_adv"] == 0:
         #     pred_path = PATH_AKKODIS_INPROCESSING_ADVDEB_PRED_0_CSV
         # elif hyperparameters["lambda_adv"] == 1:
@@ -258,11 +267,17 @@ class PolarizationRequestedReaction(Automator):
                     if hyperparameters["lambda"] >= 0.5
                     else PATH_AKKODIS_METRICS_BASELINE_POL_1_JSON.read_text()
                 )
-            else:
+            elif "Extreme" in test_dataset_id:
                 lambda_metrics = lambda: (
                     PATH_AKKODIS_METRICS_FAUCI_POL_2_JSON.read_text()
                     if hyperparameters["lambda"] >= 0.5
                     else PATH_AKKODIS_METRICS_BASELINE_POL_2_JSON.read_text()
+                )
+            else:
+                lambda_metrics = lambda: (
+                    PATH_AKKODIS_METRICS_FAUCI_POL_3_JSON.read_text()
+                    if hyperparameters["lambda"] >= 0.5
+                    else PATH_AKKODIS_METRICS_BASELINE_POL_3_JSON.read_text()
                 )
 
         elif "Ull" in test_dataset_id and "fairness_mechanism" in hyperparameters:

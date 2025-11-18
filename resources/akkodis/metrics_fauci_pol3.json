@@ -1,0 +1,388 @@
+{
+    "StatisticalParityDifference": [
+        {
+            "when": {
+                "Sensitive": "Female 20 - 25 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.055690767812458835
+        },
+        {
+            "when": {
+                "Sensitive": "Female 20 - 25 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.055690767812458835
+        },
+        {
+            "when": {
+                "Sensitive": "Female 26 - 30 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.05650438512326637
+        },
+        {
+            "when": {
+                "Sensitive": "Female 26 - 30 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.05650438512326637
+        },
+        {
+            "when": {
+                "Sensitive": "Female 26 - 30 Non-Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.10188792452612043
+        },
+        {
+            "when": {
+                "Sensitive": "Female 26 - 30 Non-Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.07241143110493697
+        },
+        {
+            "when": {
+                "Sensitive": "Female 31 - 35 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.13216085271317822
+        },
+        {
+            "when": {
+                "Sensitive": "Female 31 - 35 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.13216085271317833
+        },
+        {
+            "when": {
+                "Sensitive": "Female 31 - 35 Non-Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.15178294573643412
+        },
+        {
+            "when": {
+                "Sensitive": "Female 31 - 35 Non-Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.15178294573643412
+        },
+        {
+            "when": {
+                "Sensitive": "Female 36 - 40 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.1687333119345673
+        },
+        {
+            "when": {
+                "Sensitive": "Female 36 - 40 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.1687333119345673
+        },
+        {
+            "when": {
+                "Sensitive": "Female 36 - 40 Non-Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.16503602319963949
+        },
+        {
+            "when": {
+                "Sensitive": "Female 36 - 40 Non-Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.09305573614078323
+        },
+        {
+            "when": {
+                "Sensitive": "Female 40 - 45 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.18597844435787557
+        },
+        {
+            "when": {
+                "Sensitive": "Female 40 - 45 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.18597844435787562
+        },
+        {
+            "when": {
+                "Sensitive": "Female < 20 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.0372797896603597
+        },
+        {
+            "when": {
+                "Sensitive": "Female < 20 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.0372797896603597
+        },
+        {
+            "when": {
+                "Sensitive": "Female < 20 Non-Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.13761788877908065
+        },
+        {
+            "when": {
+                "Sensitive": "Female < 20 Non-Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.1091800349502251
+        },
+        {
+            "when": {
+                "Sensitive": "Female > 45 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.1731638639030114
+        },
+        {
+            "when": {
+                "Sensitive": "Female > 45 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.17316386390301134
+        },
+        {
+            "when": {
+                "Sensitive": "Male 20 - 25 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.08383722737398334
+        },
+        {
+            "when": {
+                "Sensitive": "Male 20 - 25 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.08383722737398329
+        },
+        {
+            "when": {
+                "Sensitive": "Male 26 - 30 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.029390739697088923
+        },
+        {
+            "when": {
+                "Sensitive": "Male 26 - 30 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.029390739697088923
+        },
+        {
+            "when": {
+                "Sensitive": "Male 26 - 30 Non-Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.14342139909435029
+        },
+        {
+            "when": {
+                "Sensitive": "Male 26 - 30 Non-Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.1025589102390126
+        },
+        {
+            "when": {
+                "Sensitive": "Male 31 - 35 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.03454149180655473
+        },
+        {
+            "when": {
+                "Sensitive": "Male 31 - 35 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.034541491806554785
+        },
+        {
+            "when": {
+                "Sensitive": "Male 31 - 35 Non-Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.10713638413314877
+        },
+        {
+            "when": {
+                "Sensitive": "Male 31 - 35 Non-Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.08377640538871736
+        },
+        {
+            "when": {
+                "Sensitive": "Male 36 - 40 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.024264654264654277
+        },
+        {
+            "when": {
+                "Sensitive": "Male 36 - 40 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.024264654264654277
+        },
+        {
+            "when": {
+                "Sensitive": "Male 36 - 40 Non-Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.09639158785680356
+        },
+        {
+            "when": {
+                "Sensitive": "Male 36 - 40 Non-Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.09639158785680356
+        },
+        {
+            "when": {
+                "Sensitive": "Male 40 - 45 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.17985638259094548
+        },
+        {
+            "when": {
+                "Sensitive": "Male 40 - 45 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.17985638259094553
+        },
+        {
+            "when": {
+                "Sensitive": "Male 40 - 45 Non-Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.09927374370322345
+        },
+        {
+            "when": {
+                "Sensitive": "Male 40 - 45 Non-Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.12681733075289937
+        },
+        {
+            "when": {
+                "Sensitive": "Male < 20 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.102870184583958
+        },
+        {
+            "when": {
+                "Sensitive": "Male < 20 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.102870184583958
+        },
+        {
+            "when": {
+                "Sensitive": "Male < 20 Non-Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.026701631701631738
+        },
+        {
+            "when": {
+                "Sensitive": "Male < 20 Non-Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.026701631701631683
+        },
+        {
+            "when": {
+                "Sensitive": "Male > 45 Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": -0.050272654370489205
+        },
+        {
+            "when": {
+                "Sensitive": "Male > 45 Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": 0.050272654370489205
+        },
+        {
+            "when": {
+                "Sensitive": "Male > 45 Non-Italian",
+                "Status": "Negative",
+                "target": "Status"
+            },
+            "value": 0.11342397918502665
+        },
+        {
+            "when": {
+                "Sensitive": "Male > 45 Non-Italian",
+                "Status": "Positive",
+                "target": "Status"
+            },
+            "value": -0.11342397918502665
+        }
+    ]
+}
