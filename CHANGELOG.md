@@ -1,3 +1,13 @@
+## [1.19.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.7...v1.19.0) (2025-11-18)
+
+### Features
+
+* upload cached results for demo ([25ea4ad](https://github.com/aequitas-aod/aequitas-backend/commit/25ea4ad16b6625249ad4e863a8c9ff677caffd73))
+
+### Dependency updates
+
+* **deps:** update dependency reportlab to v4.4.5 ([#201](https://github.com/aequitas-aod/aequitas-backend/issues/201)) ([dcbf288](https://github.com/aequitas-aod/aequitas-backend/commit/dcbf288b8df6bc448251037d412f895970744c38))
+
 ## [1.18.7](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.6...v1.18.7) (2025-11-17)
 
 ### Bug Fixes
