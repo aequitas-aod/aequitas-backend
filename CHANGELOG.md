@@ -1,3 +1,15 @@
+## [1.19.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.0...v1.19.1) (2025-11-26)
+
+### Dependency updates
+
+* **deps:** update actions/checkout action to v6 ([#203](https://github.com/aequitas-aod/aequitas-backend/issues/203)) ([3284461](https://github.com/aequitas-aod/aequitas-backend/commit/32844618044409e3132cb6a5746653375391f373))
+* **deps:** update dependency coverage to v7.12.0 ([#202](https://github.com/aequitas-aod/aequitas-backend/issues/202)) ([19da1e2](https://github.com/aequitas-aod/aequitas-backend/commit/19da1e2c1f534deb6a4dde7ddb8ed00565072a94))
+* **deps:** update dependency poethepoet to v0.38.0 ([#204](https://github.com/aequitas-aod/aequitas-backend/issues/204)) ([1456891](https://github.com/aequitas-aod/aequitas-backend/commit/145689106fad5824a0da27878fa38a9cccfdf12b))
+
+### Bug Fixes
+
+* **deps:** update dependency pydantic to v2.12.5 ([#205](https://github.com/aequitas-aod/aequitas-backend/issues/205)) ([9549a22](https://github.com/aequitas-aod/aequitas-backend/commit/9549a2210f792c2e17b6eefbaec8ad3a976d0e7a))
+
 ## [1.19.0](https://github.com/aequitas-aod/aequitas-backend/compare/v1.18.7...v1.19.0) (2025-11-18)
 
 ### Features
