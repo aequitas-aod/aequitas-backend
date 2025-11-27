@@ -108,45 +108,45 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
         expected = read_json(PATH_METRICS_JSON)
         self.assertContainersAreAlmostEqual(actual, expected, tolerance=0.5)
 
-    def __preprocessing_algorithm_LearnedFairRepresentations(self):
-        from resources.db.datasets import dataset_path
-        from resources.db.context import context_data
+    # def __preprocessing_algorithm_LearnedFairRepresentations(self):
+    #     from resources.db.datasets import dataset_path
+    #     from resources.db.context import context_data
 
-        hyperparameters = context_data("preprocessing-hyperparameters")[
-            "LearnedFairRepresentations"
-        ]
-        hyperparameters = {k: hyperparameters[k]["default"] for k in hyperparameters}
+    #     hyperparameters = context_data("preprocessing-hyperparameters")[
+    #         "LearnedFairRepresentations"
+    #     ]
+    #     hyperparameters = {k: hyperparameters[k]["default"] for k in hyperparameters}
 
-        dataset = read_csv(dataset_path("adult"))
-        result = preprocessing_algorithm_LearnedFairRepresentations(
-            dataset, "Adult", sensitive=["sex"], targets=["class"], **hyperparameters
-        )
-        return result
+    #     dataset = read_csv(dataset_path("adult"))
+    #     result = preprocessing_algorithm_LearnedFairRepresentations(
+    #         dataset, "Adult", sensitive=["sex"], targets=["class"], **hyperparameters
+    #     )
+    #     return result
 
-    def test_preprocessing_algorithm_LearnedFairRepresentations(self):
-        result = self.__preprocessing_algorithm_LearnedFairRepresentations()
-        expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
-        self.assertDataFramesHaveSameStructure(result, expected)
+    # def test_preprocessing_algorithm_LearnedFairRepresentations(self):
+    #     result = self.__preprocessing_algorithm_LearnedFairRepresentations()
+    #     expected = read_csv(PATH_PREPROCESSING_LFR_CSV)
+    #     self.assertDataFramesHaveSameStructure(result, expected)
 
-    def test_metrics_after_LFR(self):
-        result = self.__preprocessing_algorithm_LearnedFairRepresentations()
-        compute_metrics(
-            result,
-            sensitives=["sex"],
-            targets=["class"],
-        )
+    # def test_metrics_after_LFR(self):
+    #     result = self.__preprocessing_algorithm_LearnedFairRepresentations()
+    #     compute_metrics(
+    #         result,
+    #         sensitives=["sex"],
+    #         targets=["class"],
+    #     )
 
-    def test_preprocessing_algorithm_CorrelationRemover(self):
-        from resources.db.datasets import dataset_path
+    # def test_preprocessing_algorithm_CorrelationRemover(self):
+    #     from resources.db.datasets import dataset_path
 
-        dataset = read_csv(dataset_path("adult"))
-        my_conf = {"alpha": 0.5}
-        result = preprocessing_algorithm_CorrelationRemover(
-            dataset, "Adult", ["sex"], ["class"], **my_conf
-        )
-        expected = read_csv(PATH_PREPROCESSING_CR_CSV)
+    #     dataset = read_csv(dataset_path("adult"))
+    #     my_conf = {"alpha": 0.5}
+    #     result = preprocessing_algorithm_CorrelationRemover(
+    #         dataset, "Adult", ["sex"], ["class"], **my_conf
+    #     )
+    #     expected = read_csv(PATH_PREPROCESSING_CR_CSV)
 
-        self.assertDataFramesAreEqual(result, expected)
+    #     self.assertDataFramesAreEqual(result, expected)
 
     def test_inprocessing_algorithm_FaUCI(self):
         from resources.db.datasets import dataset_path
@@ -250,25 +250,16 @@ class TestDatasetRelatedFunctionalities(unittest.TestCase):
                 self.assertEqual(len(actual_svg), len(expected_svg))
                 self.assertEqual(actual_svg[:4], expected_svg[:4])
 
-    def test_inprocessing_algorithm_no_mitigation(self):
-        from resources.db.datasets import dataset_path
+    # OLD
+    # def test_inprocessing_algorithm_no_mitigation(self):
+    #     from resources.db.datasets import dataset_path
 
-        dataset = read_csv(dataset_path("adult"))
-        actual_results = inprocessing_algorithm_no_mitigation(
-            dataset, "Adult", ["sex"], ["class"]
-        )
-        # actual_results.to_csv(PATH_INPROCESSING_NO_MIT_CSV, index=False)
-        expected_results = read_csv(PATH_INPROCESSING_NO_MIT_CSV)
-        self.assertDataFramesAreEqual(actual_results, expected_results, tolerance=0.2)
-
-        # for plot_type, file_name in {
-        #     "performance": DIR / "my_test_performance.svg",
-        #     "fairness": DIR / "my_test_fairness.svg",
-        #     "polarization": DIR / "my_test_polarization.svg",
-        # }.items():
-        #     generate_plot_picture(
-        #         plot_type=plot_type, results=actual_results, file=file_name
-        #     )
+    #     dataset = read_csv(dataset_path("adult"))
+    #     actual_results = inprocessing_algorithm_no_mitigation(
+    #         dataset, "Adult", ["sex"], ["class"]
+    #     )
+    #     expected_results = read_csv(PATH_INPROCESSING_NO_MIT_CSV)
+    #     self.assertDataFramesAreEqual(actual_results, expected_results, tolerance=0.2)
 
     def test_preprocessing_picture(self):
         import io

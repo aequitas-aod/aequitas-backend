@@ -11,6 +11,7 @@ import pandas as pd
 import seaborn as sns
 import torch
 import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
 from aif360.algorithms.preprocessing import LFR
 from aif360.datasets import BinaryLabelDataset
 from fairlearn import metrics as fairlearn_metrics
@@ -245,33 +246,23 @@ class AIF360PreprocWrapper(BaseEstimator, TransformerMixin):
         self,
         aif360_model,
         sensitive_feature,
-        favorable_class_label,
-        unfavorable_class_label,
-        favorable_sens_group,
-        unfavorable_sens_group,
     ):
         self.aif360_model = aif360_model
 
         self.sensitive_feature = sensitive_feature
-        self.favorable_sens_group = favorable_sens_group
-        self.unfavorable_sens_group = unfavorable_sens_group
 
         self.class_feature = "label"
-        self.favorable_class_label = favorable_class_label
-        self.unfavorable_class_label = unfavorable_class_label
 
         self.ordinal_encoder = None
+        self.favorable_sens_group = None
+        self.unfavorable_sens_group = None
 
     def _encode_features(self, df, fit):
 
         df_encoded = df.copy()
 
         # Encode class
-        if self.class_feature in df_encoded.columns:
-            df_encoded[self.class_feature] = df_encoded[self.class_feature].apply(
-                lambda x: 1 if x == self.favorable_class_label else 0
-            )
-        else:
+        if self.class_feature not in df_encoded.columns:
             df_encoded[self.class_feature] = 0  # or any constant value
 
         # Encode sensitive feature
@@ -279,9 +270,19 @@ class AIF360PreprocWrapper(BaseEstimator, TransformerMixin):
             self.sensitive_feature
             in df_encoded.select_dtypes(include=["object", "category"]).columns
         ):
+
+            favorable_sens_group = (
+                df_encoded[self.sensitive_feature].value_counts().index[0]
+            )
+            unfavorable_sens_group = (
+                df_encoded[self.sensitive_feature].value_counts().index[1]
+            )
+            if fit:
+                self.favorable_sens_group = favorable_sens_group
+                self.unfavorable_sens_group = unfavorable_sens_group
             df_encoded[self.sensitive_feature] = df_encoded[
                 self.sensitive_feature
-            ].apply(lambda x: 1 if x == self.favorable_sens_group else 0)
+            ].apply(lambda x: 1 if x == favorable_sens_group else 0)
 
         # Encode other columns
         categorical_cols = df_encoded.select_dtypes(
@@ -326,8 +327,8 @@ class AIF360PreprocWrapper(BaseEstimator, TransformerMixin):
         self.aif360_model = self.aif360_model.fit(dataset, **kwargs)
         return self
 
-    def transform(self, X, decode=False):
-        X_encoded = self._encode_features(df=X, fit=False)
+    def transform(self, X, y, decode=False):
+        X_encoded = self._encode_features(df=X.assign(label=y), fit=False)
         dataset = BinaryLabelDataset(
             df=X_encoded,
             label_names=[self.class_feature],
@@ -349,35 +350,35 @@ class AIF360PreprocWrapper(BaseEstimator, TransformerMixin):
         return new_X
 
 
-def _get_default_settings(sensitive: list[str], targets: list[str]) -> dict:
+# def _get_default_settings(sensitive: list[str], targets: list[str]) -> dict:
 
-    sensitive_feat = sensitive[0]
-    target_feat = targets[0]
+#     sensitive_feat = sensitive[0]
+#     target_feat = targets[0]
 
-    if sensitive_feat == "f_ESCS":
-        favorable_sensitive_label = "OTHERS"
-        unfavorable_sensitive_label = "DISADVANTAGED"
+#     if sensitive_feat == "f_ESCS":
+#         favorable_sensitive_label = "OTHERS"
+#         unfavorable_sensitive_label = "DISADVANTAGED"
 
-        favorable_class_label = "PASSING"
-        unfavorable_class_label = "AT RISK"
-    else:
-        favorable_sensitive_label = "Male"
-        unfavorable_sensitive_label = "Female"
+#         favorable_class_label = "PASSING"
+#         unfavorable_class_label = "AT RISK"
+#     else:
+#         favorable_sensitive_label = "Male"
+#         unfavorable_sensitive_label = "Female"
 
-        favorable_class_label = ">50K"
-        unfavorable_class_label = "<=50K"
+#         favorable_class_label = ">50K"
+#         unfavorable_class_label = "<=50K"
 
-    return {
-        # sensitive variables
-        "sensitive_feat": sensitive_feat,
-        "favorable_sensitive_label": favorable_sensitive_label,
-        "unfavorable_sensitive_label": unfavorable_sensitive_label,
-        # target variables
-        "target_feat": target_feat,
-        "favorable_class_label": favorable_class_label,
-        "unfavorable_class_label": unfavorable_class_label,
-        "predictions_feat": "predictions",
-    }
+#     return {
+#         # sensitive variables
+#         "sensitive_feat": sensitive_feat,
+#         "favorable_sensitive_label": favorable_sensitive_label,
+#         "unfavorable_sensitive_label": unfavorable_sensitive_label,
+#         # target variables
+#         "target_feat": target_feat,
+#         "favorable_class_label": favorable_class_label,
+#         "unfavorable_class_label": unfavorable_class_label,
+#         "predictions_feat": "predictions",
+#     }
 
 
 def _discretize_columns(df: pd.DataFrame) -> pd.DataFrame:
@@ -435,47 +436,46 @@ def preprocessing_algorithm_LearnedFairRepresentations(
     targets: list[str],
     **kwargs,
 ) -> pd.DataFrame:
-    default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
-    if default_settings["sensitive_feat"] == "f_ESCS":
-        return pd.read_csv(dataset_path("preprocessed_lfr_result_ull"))
-    else:
-        X, y = (
-            dataset[
-                [
-                    col
-                    for col in dataset.columns
-                    if col != default_settings["target_feat"]
-                ]
-            ],
-            dataset[default_settings["target_feat"]],
-        )
 
-        mitigator = LFR(
-            unprivileged_groups=[{default_settings["sensitive_feat"]: 0}],
-            privileged_groups=[{default_settings["sensitive_feat"]: 1}],
-            **_filter_keys(kwargs, "k", "Ax", "Ay", "Az", "seed"),
-            seed=0,
-        )
-        wrapper = AIF360PreprocWrapper(
-            aif360_model=mitigator,
-            sensitive_feature=default_settings["sensitive_feat"],
-            favorable_sens_group=default_settings["favorable_sensitive_label"],
-            unfavorable_sens_group=default_settings["unfavorable_sensitive_label"],
-            favorable_class_label=default_settings["favorable_class_label"],
-            unfavorable_class_label=default_settings["unfavorable_class_label"],
-        )
+    target_feat = targets[0]
+    sensitive_feat = sensitive[0]
 
-        wrapper.fit(X, y)
-        X_t = wrapper.transform(X, decode=True)
-        transformed_df = pd.concat(
-            [
-                X_t.reset_index(drop=True).drop("label", axis=1),
-                y.reset_index(drop=True),
-            ],
-            axis=1,
-        )
+    X, y = (
+        dataset[[col for col in dataset.columns if col != target_feat]],
+        dataset[target_feat],
+    )
 
-        return transformed_df
+    mitigator = LFR(
+        unprivileged_groups=[{sensitive_feat: 0}],
+        privileged_groups=[{sensitive_feat: 1}],
+        **_filter_keys(kwargs, "k", "Ax", "Ay", "Az", "seed"),
+        seed=0,
+    )
+    wrapper = AIF360PreprocWrapper(
+        aif360_model=mitigator, sensitive_feature=sensitive_feat
+    )
+
+    wrapper.fit(X, y)
+    X_t = wrapper.transform(X, y, decode=True)
+    transformed_df = pd.concat(
+        [
+            X_t.reset_index(drop=True).drop("label", axis=1),
+            y.reset_index(drop=True),
+        ],
+        axis=1,
+    )
+
+    prediction_df, result_df = inprocessing_algorithm_no_mitigation(
+        dataset,
+        transformed_df,
+        sensitive,
+        targets,
+        **_filter_keys(
+            kwargs, "input_dim", "hidden_dim", "hidden_layers", "epochs", "output_dim"
+        ),
+    )
+
+    return prediction_df, result_df
 
 
 def preprocessing_algorithm_CorrelationRemover(
@@ -485,20 +485,17 @@ def preprocessing_algorithm_CorrelationRemover(
     targets: list[str],
     **kwargs,
 ) -> pd.DataFrame:
-    default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
+    target_feat = targets[0]
+    sensitive_feat = sensitive[0]
     X, y = (
-        dataset[
-            [col for col in dataset.columns if col != default_settings["target_feat"]]
-        ],
-        dataset[default_settings["target_feat"]],
+        dataset[[col for col in dataset.columns if col != target_feat]],
+        dataset[target_feat],
     )
 
     feature_names = X.columns
     selected_sensitive_index = [
-        idx
-        for idx, elem in enumerate(feature_names)
-        if default_settings["sensitive_feat"] == elem
+        idx for idx, elem in enumerate(feature_names) if sensitive_feat == elem
     ]
     corr_remover = CorrelationRemover(
         sensitive_feature_ids=selected_sensitive_index, **_filter_keys(kwargs, "alpha")
@@ -508,109 +505,279 @@ def preprocessing_algorithm_CorrelationRemover(
         [
             pd.DataFrame(
                 X_t,
-                columns=[
-                    elem
-                    for elem in feature_names
-                    if elem != default_settings["sensitive_feat"]
-                ],
+                columns=[elem for elem in feature_names if elem != sensitive_feat],
             ),
-            X[default_settings["sensitive_feat"]].reset_index(drop=True),
+            X[sensitive_feat].reset_index(drop=True),
             y.reset_index(drop=True),
         ],
         axis=1,
     )
-    return transformed_df
+
+    prediction_df, result_df = inprocessing_algorithm_no_mitigation(
+        dataset,
+        transformed_df,
+        sensitive,
+        targets,
+        **_filter_keys(
+            kwargs, "input_dim", "hidden_dim", "hidden_layers", "epochs", "output_dim"
+        ),
+    )
+
+    return prediction_df, result_df
 
 
 def inprocessing_algorithm_no_mitigation(
-    dataset: pd.DataFrame,
-    dataset_id: str,
+    original_dataset: pd.DataFrame,
+    transformed_dataset: pd.DataFrame,
     sensitive: list[str],
     targets: list[str],
     **kwargs,
 ) -> pd.DataFrame:
 
-    def __simulate_mit_value(metric_name: str) -> float:
-        if metric_name == "accuracy":
-            return _generate_random_number(0.8, 0.9)
-        elif metric_name == "precision":
-            return _generate_random_number(0.85, 0.9)
-        elif metric_name == "recall":
-            return _generate_random_number(0.75, 0.8)
-        elif metric_name == "roc_auc":
-            return _generate_random_number(0.75, 0.8)
-        elif metric_name == "f1":
-            return _generate_random_number(0.75, 0.85)
-        elif metric_name == "demographic_parity_ratio":
-            return _generate_random_number(0.8, 0.9)
-        elif metric_name == "equalized_odds_ratio":
-            return _generate_random_number(0.75, 0.85)
-        else:
-            return 0.5
+    # -------------------------
+    # 1) encode categories based on original_dataset (consistent mapping)
+    # -------------------------
+    label_maps = {}
+    orig = original_dataset.copy()
+    trans = transformed_dataset.copy()
 
-    def __simulate_no_mit_value(
-        metric_type: str, metric_name: str, actual_value: float
-    ) -> float:
-        if metric_type == "performance":
-            if metric_name not in ["recall", "roc_auc", "f1"]:
-                return min(actual_value + _generate_random_number(0.01, 0.07), 0.95)
-            elif metric_name == "recall":
-                return actual_value - _generate_random_number(0.05, 0.07)
+    for col in orig.columns:
+        if col in targets:
+            # factorize target to integers and keep mapping
+            codes, uniques = pd.factorize(orig[col])
+            orig[col] = codes
+            label_maps[col] = uniques
+            # map transformed dataset target using same uniques (unseen -> -1 -> map to 0)
+            if col in trans.columns:
+                trans[col] = pd.Categorical(trans[col], categories=uniques).codes
+                trans[col] = trans[col].replace(-1, 0)
+        else:
+            if orig[col].dtype == "object" or orig[col].dtype.name == "category":
+                codes, uniques = pd.factorize(orig[col])
+                orig[col] = codes
+                label_maps[col] = uniques
+                if col in trans.columns:
+                    trans[col] = pd.Categorical(trans[col], categories=uniques).codes
+                    trans[col] = trans[col].replace(-1, 0)
             else:
-                return actual_value - _generate_random_number(0.01, 0.05)
-        elif metric_type == "fairness":
-            return max(actual_value - _generate_random_number(0.2, 0.25), 0.0)
+                # numeric column, leave as is; for transformed dataset try to coerce to numeric
+                if col in trans.columns:
+                    try:
+                        trans[col] = pd.to_numeric(trans[col])
+                    except Exception:
+                        pass
+
+    # ensure no NaNs remain (simple strategy: fill with 0)
+    orig = orig.fillna(0)
+    trans = trans.fillna(0)
+
+    # -------------------------
+    # 2) Setup KFold and bookkeeping
+    # -------------------------
+    n_splits = kwargs.get("n_splits", 2)
+    metric_name_dict = {
+        "performance": ["Accuracy", "Precision", "Recall", "Roc Auc", "F1"],
+        "fairness": ["Demographic Parity Ratio", "Equalized Odds Ratio"],
+    }
+    n_metrics = len(metric_name_dict["performance"] + metric_name_dict["fairness"])
+    kfold = KFold(n_splits=n_splits, shuffle=True, random_state=42)
+
+    y = orig[targets[0]]
+    X = orig.drop(columns=targets[0])
+
+    fold_list = [
+        x
+        for fold_lst in [[fold_idx] * n_metrics for fold_idx in range(n_splits)]
+        for x in fold_lst
+    ]
+
+    metric_type_list = [
+        key
+        for key in metric_name_dict.keys()
+        for _ in range(len(metric_name_dict[key]))
+    ] * n_splits
+    metric_list = [
+        metric_name for lst in metric_name_dict.values() for metric_name in lst
+    ] * n_splits
+    value_mitig_list = []
+    value_nomitig_list = []
+    value_pol_list = [0.0 for _ in range(n_metrics * n_splits)]
+
+    predictions = np.zeros(len(original_dataset), dtype=float)
+
+    # -------------------------
+    # 3) K-Fold loop
+    # -------------------------
+    for fold, (train_idx, test_idx) in enumerate(kfold.split(X, y), 1):
+        print(f"Fold: {fold}")
+
+        for mitig_value in ["mitig", "nomitig"]:
+            # choose dataset for this run
+            if mitig_value == "nomitig":
+                df_all = orig
+            else:
+                df_all = trans
+
+            # slice train/test using positional indices (loc with index labels must match)
+            train_df = df_all.iloc[train_idx].reset_index(drop=True)
+            test_df = df_all.iloc[test_idx].reset_index(drop=True)
+
+            # create tensors (drop target column for features)
+            X_df_train = train_df.drop(columns=targets)
+            y_df_train = train_df[targets[0]]
+            X_df_test = test_df.drop(columns=targets)
+            y_df_test = test_df[targets[0]]
+
+            # Ensure labels are 1-D float arrays
+            X_tensor_train = torch.tensor(
+                X_df_train.values.astype(np.float32), dtype=torch.float32
+            )
+            y_tensor_train = torch.tensor(
+                y_df_train.values.astype(np.float32), dtype=torch.float32
+            ).reshape(-1)
+            X_tensor_test = torch.tensor(
+                X_df_test.values.astype(np.float32), dtype=torch.float32
+            )
+            y_tensor_test = torch.tensor(
+                y_df_test.values.astype(np.float32), dtype=torch.float32
+            ).reshape(-1)
+
+            train_dataset = TensorDataset(X_tensor_train, y_tensor_train)
+            train_loader = DataLoader(
+                train_dataset, batch_size=kwargs.get("batch_size", 128), shuffle=True
+            )
+
+            test_dataset = TensorDataset(X_tensor_test, y_tensor_test)
+            test_loader = DataLoader(
+                test_dataset, batch_size=kwargs.get("batch_size", 128), shuffle=False
+            )
+
+            # -------------------------
+            # model, loss, optimizer
+            # -------------------------
+            base_model = BaseModel(
+                input_dim=kwargs["input_dim"],
+                hidden_dim=kwargs["hidden_dim"],
+                hidden_layers=kwargs["hidden_layers"],
+                output_dim=kwargs["output_dim"],
+            )
+            learning_rate = kwargs.get("learning_rate", 1e-2)
+            epochs = int(kwargs.get("epochs", 10))
+
+            criterion = nn.BCELoss()
+            optimizer = torch.optim.Adam(base_model.parameters(), lr=learning_rate)
+
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            base_model = base_model.to(device)
+
+            # -------------------------
+            # training loop (ensure shapes match)
+            # -------------------------
+            base_model.train()
+            for epoch in range(epochs):
+                epoch_loss = 0.0
+                for batch_x, batch_y in train_loader:
+                    batch_x = batch_x.to(device)
+                    batch_y = batch_y.to(device).reshape(-1)
+
+                    optimizer.zero_grad()
+
+                    outputs = base_model(batch_x).squeeze(1)  # [batch]
+                    loss = criterion(outputs, batch_y)
+                    loss.backward()
+                    optimizer.step()
+
+                    epoch_loss += loss.item()
+
+            # -------------------------
+            # prediction on test set (collect scalars)
+            # -------------------------
+            base_model.eval()
+            all_y = []
+            all_preds = []
+            all_probs = []
+
+            with torch.no_grad():
+                for batch_x, batch_y in test_loader:
+                    batch_x = batch_x.to(device)
+                    batch_y = batch_y.to(device).reshape(-1)
+
+                    probs = base_model(batch_x).squeeze(1)  # tensor [batch]
+                    preds = (probs > 0.5).long()  # tensor [batch] (0/1)
+
+                    all_probs.extend(probs.cpu().numpy().reshape(-1).tolist())
+                    all_preds.extend(preds.cpu().numpy().reshape(-1).tolist())
+                    all_y.extend(batch_y.cpu().numpy().reshape(-1).tolist())
+
+            # -------------------------
+            # compute metrics (use numpy arrays)
+            # -------------------------
+            y_true = np.array(all_y)
+            y_pred_labels = np.array(all_preds)
+            y_pred_probs = np.array(all_probs)
+
+            # sklearn metrics (imported in your environment)
+            accuracy = accuracy_score(y_true, y_pred_labels)
+            precision = precision_score(y_true, y_pred_labels, zero_division=0)
+            recall = recall_score(y_true, y_pred_labels, zero_division=0)
+            roc_auc = (
+                roc_auc_score(y_true, y_pred_probs)
+                if len(np.unique(y_true)) > 1
+                else 0.0
+            )
+            f1 = f1_score(y_true, y_pred_labels, zero_division=0)
+
+            # fairness metrics (assume these accept arrays / DataFrame columns)
+            # test_df currently corresponds to the test set used above
+            dpr = demographic_parity_ratio(
+                y_true, y_pred_labels, sensitive_features=test_df[sensitive]
+            )
+            eor = equalized_odds_ratio(
+                y_true, y_pred_labels, sensitive_features=test_df[sensitive]
+            )
+
+            if mitig_value == "mitig":
+                value_mitig_list.extend(
+                    [accuracy, precision, recall, roc_auc, f1, dpr, eor]
+                )
+                # assign predictions into global array — ensure 1D scalar list
+                predictions[test_idx] = y_pred_labels.tolist()
+            else:
+                value_nomitig_list.extend(
+                    [accuracy, precision, recall, roc_auc, f1, dpr, eor]
+                )
+
+    # -------------------------
+    # Build predictions dataframe (map target codes back to original labels if present)
+    # -------------------------
+    predictions_df = original_dataset.copy()
+    for target in targets:
+        # predictions are numeric codes; map back only if a mapping exists
+        if target in label_maps:
+            uniques = label_maps[target]
+            preds_series = (
+                pd.Series(predictions)
+                .astype(int)
+                .map(
+                    lambda idx: uniques[idx] if 0 <= idx < len(uniques) else uniques[0]
+                )
+            )
+            predictions_df[target] = preds_series.values
         else:
-            return actual_value
+            predictions_df[target] = predictions
 
-    def __simulate_polarized_value(metric_type: str, actual_value: float) -> float:
-        if metric_type == "performance":
-            return min(actual_value - _generate_random_number(0.2, 0.25), 1.0)
-        elif metric_type == "fairness":
-            return max(actual_value - _generate_random_number(0.2, 0.25), 0.0)
-        else:
-            return actual_value
-
-    default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
-
-    X, y = (
-        dataset[
-            [col for col in dataset.columns if col != default_settings["target_feat"]]
-        ],
-        dataset[default_settings["target_feat"]],
+    results_df = pd.DataFrame(
+        {
+            "fold": fold_list,
+            "metric_type": metric_type_list,
+            "metric": metric_list,
+            "value_mitig": value_mitig_list,
+            "value_nomitig": value_nomitig_list,
+            "value_pol": value_pol_list,
+        }
     )
 
-    skf = StratifiedKFold(n_splits=5)
-
-    # Prepare list for 1) and 2)
-    df_results = []  # list of dicts; one dict per fold-metric
-
-    perf_metrics = ["accuracy", "precision", "recall", "roc_auc", "f1"]
-    fair_metrics = ["demographic_parity_ratio", "equalized_odds_ratio"]
-    support_dict = {"performance": perf_metrics, "fairness": fair_metrics}
-
-    # Evaluation loop
-    for fold_idx, (train_index, test_index) in enumerate(skf.split(X, y)):
-        for metric_type, metric_list in support_dict.items():
-            for metric_name in metric_list:
-                mit_value = __simulate_mit_value(metric_name)
-                no_mit_value = __simulate_no_mit_value(
-                    metric_type, metric_name, mit_value
-                )
-                pol_value = __simulate_polarized_value(metric_type, no_mit_value)
-
-                df_results.append(
-                    {
-                        "fold": fold_idx,
-                        "metric_type": metric_type,
-                        "metric": metric_name.replace("_", " ").title(),
-                        "value_mitig": mit_value,
-                        "value_nomitig": no_mit_value,
-                        "value_pol": pol_value,
-                    }
-                )
-
-    return pd.DataFrame(df_results)
+    return predictions_df, results_df
 
 
 def generate_preprocessing_plot_picture(
@@ -698,23 +865,23 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
         cases = []
 
         try:
-            if computed_metrics is None:
-                computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(
-                    dataset, dataset_id, targets, sensitive
-                )
-                cases += [
-                    (
-                        f"preprocessing_plot__{result_id}",
-                        lambda: generate_plot(
-                            "preprocessing",
-                            result,
-                            **{
-                                "original_dataset": dataset,
-                                "class_feature": targets[0],
-                            },
-                        ),
+            # if computed_metrics is None:
+            #     computed_metrics: pd.DataFrame = inprocessing_algorithm_no_mitigation(
+            #         dataset, dataset_id, targets, sensitive
+            #     )
+            cases += [
+                (
+                    f"preprocessing_plot__{result_id}",
+                    lambda: generate_plot(
+                        "preprocessing",
+                        result,
+                        **{
+                            "original_dataset": dataset,
+                            "class_feature": targets[0],
+                        },
                     ),
-                ]
+                ),
+            ]
             cases += [
                 (
                     # used by on_polarization_requested.py
@@ -755,40 +922,40 @@ class PreProcessingRequestedReaction(AbstractProcessingRequestedReaction):
                 self.log_error("Failed to produce %s", k, error=e)
 
 
-def _encode_single_feature(
-    df: pd.DataFrame, feature: str, favorable_label: str
-) -> pd.DataFrame:
+# def _encode_single_feature(
+#     df: pd.DataFrame, feature: str, favorable_label: str
+# ) -> pd.DataFrame:
 
-    df_encoded = df.copy()
+#     df_encoded = df.copy()
 
-    if feature in df_encoded.columns:
-        df_encoded[feature] = df_encoded[feature].apply(
-            lambda x: 1 if x == favorable_label else 0
-        )
-    return df_encoded
+#     if feature in df_encoded.columns:
+#         df_encoded[feature] = df_encoded[feature].apply(
+#             lambda x: 1 if x == favorable_label else 0
+#         )
+#     return df_encoded
 
 
-def _compute_fair_metric(
-    fair_metric_name: str,
-    settings: dict,
-    X: pd.DataFrame,
-    y_true: pd.Series,
-    y_pred: pd.Series,
-) -> float:
-    fair_metric_scorer = getattr(fairlearn_metrics, fair_metric_name)
+# def _compute_fair_metric(
+#     fair_metric_name: str,
+#     settings: dict,
+#     X: pd.DataFrame,
+#     y_true: pd.Series,
+#     y_pred: pd.Series,
+# ) -> float:
+#     fair_metric_scorer = getattr(fairlearn_metrics, fair_metric_name)
 
-    X_sensitive = _encode_single_feature(
-        df=X,
-        feature=settings["sensitive_feat"],
-        favorable_label=settings["favorable_sensitive_label"],
-    )
-    X_sensitive = X_sensitive[settings["sensitive_feat"]]
+#     X_sensitive = _encode_single_feature(
+#         df=X,
+#         feature=settings["sensitive_feat"],
+#         favorable_label=settings["favorable_sensitive_label"],
+#     )
+#     X_sensitive = X_sensitive[settings["sensitive_feat"]]
 
-    return fair_metric_scorer(
-        y_true=y_true,
-        y_pred=y_pred,
-        sensitive_features=X_sensitive,
-    )
+#     return fair_metric_scorer(
+#         y_true=y_true,
+#         y_pred=y_pred,
+#         sensitive_features=X_sensitive,
+#     )
 
 
 def _generate_random_number(min_value: float, max_value: float) -> float:
@@ -1094,8 +1261,6 @@ def inprocessing_algorithm_AdversarialDebiasing(
     targets: list[str],
     **kwargs,
 ) -> tuple:
-
-    # default_settings = _get_default_settings(sensitive=sensitive, targets=targets)
 
     # TODO: to remove
     if "cand_provenance_gender" in sensitive or "Sensitive" in sensitive:
