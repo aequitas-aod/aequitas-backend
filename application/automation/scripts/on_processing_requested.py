@@ -470,9 +470,7 @@ def preprocessing_algorithm_LearnedFairRepresentations(
         transformed_df,
         sensitive,
         targets,
-        **_filter_keys(
-            kwargs, "input_dim", "hidden_dim", "hidden_layers", "epochs", "output_dim"
-        ),
+        **_filter_keys(kwargs, "hidden_dim", "hidden_layers", "epochs"),
     )
 
     return prediction_df, result_df
@@ -518,9 +516,7 @@ def preprocessing_algorithm_CorrelationRemover(
         transformed_df,
         sensitive,
         targets,
-        **_filter_keys(
-            kwargs, "input_dim", "hidden_dim", "hidden_layers", "epochs", "output_dim"
-        ),
+        **_filter_keys(kwargs, "hidden_dim", "hidden_layers", "epochs"),
     )
 
     return prediction_df, result_df
@@ -656,10 +652,10 @@ def inprocessing_algorithm_no_mitigation(
             # model, loss, optimizer
             # -------------------------
             base_model = BaseModel(
-                input_dim=kwargs["input_dim"],
+                input_dim=orig.drop(columns=[targets[0]]).shape[1],
                 hidden_dim=kwargs["hidden_dim"],
                 hidden_layers=kwargs["hidden_layers"],
-                output_dim=kwargs["output_dim"],
+                output_dim=1,
             )
             learning_rate = kwargs.get("learning_rate", 1e-2)
             epochs = int(kwargs.get("epochs", 10))
