@@ -30,6 +30,21 @@ LearnedFairRepresentations:
     type: integer
     default: 42
     values: [1, 100]
+  hidden_layers: &hidden_layers
+    label: Number of hidden layers
+    type: integer
+    values: [1, 20]
+    default: 1
+  hidden_dim: &hidden_dim
+    label: Number of neurons per layer
+    type: integer
+    values: [8, 512]
+    default: 8
+  epochs: &epochs
+    label: Number of training epochs
+    type: integer
+    values: [50, 500]
+    default: 100
 
 # https://fairlearn.org/main/api_reference/generated/fairlearn.preprocessing.CorrelationRemover.html
 CorrelationRemover:
@@ -39,6 +54,9 @@ CorrelationRemover:
     type: float
     default: 0.5
     values: [0, 1]
+  hidden_layers: *hidden_layers
+  hidden_dim: *hidden_dim
+  epochs: *epochs
 
 StableDiffusionBasedDataAugmentation:
   augmentation_criterion:

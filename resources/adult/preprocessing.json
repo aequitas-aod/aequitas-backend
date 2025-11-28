@@ -5,5 +5,8 @@
   "Ay": 1,
   "Az": 50,
   "random_state": 42,
-  "polarization": 0.6
+  "polarization": 0.6,
+  "hidden_layers": 1,
+  "hidden_dim": 8,
+  "epochs": 50
 }

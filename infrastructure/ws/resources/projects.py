@@ -83,7 +83,7 @@ class ProjectResource(Resource):
 class ProjectContextResource(Resource, EventGenerator):
     SLEEP_TIME = timedelta(seconds=1)
     LOG_ONCE_EVERY = 10  # seconds
-    DEFAULT_TIMEOUT = timedelta(minutes=2)
+    DEFAULT_TIMEOUT = timedelta(minutes=3)
 
     def _try_get_key(
         self, project_id: EntityId, key: str, silent_miss=False
