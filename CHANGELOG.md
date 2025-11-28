@@ -1,3 +1,11 @@
+## [1.19.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.1...v1.19.2) (2025-11-28)
+
+### Bug Fixes
+
+* add hyperparameters in preprocessing resources ([e7d2575](https://github.com/aequitas-aod/aequitas-backend/commit/e7d2575969c868db5205063d07cd6bbaa13885ee))
+* hyperparameters ([b28ccce](https://github.com/aequitas-aod/aequitas-backend/commit/b28ccceb60f5f8f27e87a8aa08ffbebad596cc59))
+* modelling during pre-processing ([c678b89](https://github.com/aequitas-aod/aequitas-backend/commit/c678b89eb3047b6102e0db588318988833501ebd))
+
 ## [1.19.1](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.0...v1.19.1) (2025-11-26)
 
 ### Dependency updates
