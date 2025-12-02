@@ -38,7 +38,7 @@
       description: The Akkodis dataset contains data collected during the company's recruitment process, between 2019 and 2023, including candidates' technical skills and sensitive attributes. The task involves predicting whether a candidate has been selected or not.
     - id: { code: AdeccoDataset }
       text: AEQUITAS - Use Case HR1 - Recruitment
-      description: To fill
+      description: The Adecco dataset contains relevant information from candidates’ resumes, such as age, gender, geographic location, education, and the specific job position requirements. The task involves predicting whether a candidate has been selected or not.
   enabled_by:
     - { code: TabularDatasetType }
   action_needed: null
