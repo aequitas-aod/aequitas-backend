@@ -12,8 +12,8 @@
         "id": "compas",
         "name": "ProPublica COMPAS Dataset",
         "size": 2.3,
-        "rows": 18316,
-        "columns": 33,
+        "rows": 8364,
+        "columns": 20,
         "description": "This dataset contains criminal justice data used to analyze biases in the COMPAS risk assessment algorithm.",
         "created-at": "2024-11-12T10:00:09.611719"
     },
