@@ -1,3 +1,9 @@
+## [1.19.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.2...v1.19.3) (2025-12-02)
+
+### Bug Fixes
+
+* db metadata ([2ea1d24](https://github.com/aequitas-aod/aequitas-backend/commit/2ea1d24592970c655608d935231c7c264567f7d7))
+
 ## [1.19.2](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.1...v1.19.2) (2025-11-28)
 
 ### Bug Fixes
