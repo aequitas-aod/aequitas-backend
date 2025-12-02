@@ -1,3 +1,10 @@
+## [1.19.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.3...v1.19.4) (2025-12-02)
+
+### Bug Fixes
+
+* drop missing from compas ([ea635ce](https://github.com/aequitas-aod/aequitas-backend/commit/ea635ce9488f317648d8e0d71428258452f23bbc))
+* **resources:** update Adecco description ([eeadad1](https://github.com/aequitas-aod/aequitas-backend/commit/eeadad1049cfb2ea05940ddc569ef89b1979a906))
+
 ## [1.19.3](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.2...v1.19.3) (2025-12-02)
 
 ### Bug Fixes
