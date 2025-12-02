@@ -3,7 +3,7 @@
         "id": "adult",
         "name": "Adult Census Income Dataset",
         "size": 4.8,
-        "rows": 48842,
+        "rows": 45222,
         "columns": 15,
         "description": "This is a custom dataset uploaded by the user.",
         "created-at": "2024-11-12T10:00:09.611719"
@@ -12,8 +12,8 @@
         "id": "compas",
         "name": "ProPublica COMPAS Dataset",
         "size": 2.3,
-        "rows": 7214,
-        "columns": 12,
+        "rows": 18316,
+        "columns": 33,
         "description": "This dataset contains criminal justice data used to analyze biases in the COMPAS risk assessment algorithm.",
         "created-at": "2024-11-12T10:00:09.611719"
     },
@@ -22,7 +22,7 @@
         "name": "German Credit Dataset",
         "size": 1.2,
         "rows": 1000,
-        "columns": 20,
+        "columns": 21,
         "description": "This dataset provides data on credit risk classification based on personal and financial characteristics.",
         "created-at": "2024-11-12T10:00:09.611719"
     },
@@ -57,7 +57,7 @@
         "id": "skin-disease",
         "name": "Skin Disease Dataset",
         "size": 773.0,
-        "rows": 49269,
+        "rows": 49268,
         "columns": 3,
         "description": "This dataset contains images of skin diseases for classification purposes.",
         "created-at": "2024-11-12T10:00:09.611719"
