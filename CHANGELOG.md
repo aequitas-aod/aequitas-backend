@@ -1,3 +1,20 @@
+## [1.19.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.4...v1.19.5) (2025-12-19)
+
+### Dependency updates
+
+* **deps:** update actions/setup-node action to v6.1.0 ([#206](https://github.com/aequitas-aod/aequitas-backend/issues/206)) ([ea077b8](https://github.com/aequitas-aod/aequitas-backend/commit/ea077b8ae3d70f9e9b2543710399a1763b5a6fef))
+* **deps:** update dependency black to v25.12.0 ([#207](https://github.com/aequitas-aod/aequitas-backend/issues/207)) ([1fc864f](https://github.com/aequitas-aod/aequitas-backend/commit/1fc864fcbd7c4fcea9c48ef0582100a76d83605b))
+* **deps:** update dependency coverage to v7.13.0 ([#208](https://github.com/aequitas-aod/aequitas-backend/issues/208)) ([e190346](https://github.com/aequitas-aod/aequitas-backend/commit/e190346cb8648872f0210a26a084e3c1a736b7ee))
+* **deps:** update dependency matplotlib to v3.10.8 ([#212](https://github.com/aequitas-aod/aequitas-backend/issues/212)) ([d41bc20](https://github.com/aequitas-aod/aequitas-backend/commit/d41bc2012beab02fefb3d3aa3fb7771b3c723f02))
+* **deps:** update dependency reportlab to v4.4.6 ([#210](https://github.com/aequitas-aod/aequitas-backend/issues/210)) ([f9048f8](https://github.com/aequitas-aod/aequitas-backend/commit/f9048f8f5ec54527b8c0fb1d62b96980353796fb))
+* **deps:** update dependency scikit-learn to v1.8.0 ([#209](https://github.com/aequitas-aod/aequitas-backend/issues/209)) ([b304542](https://github.com/aequitas-aod/aequitas-backend/commit/b304542c7db89ef51dfbcf18216ba99b0a26345e))
+* **deps:** update docker/setup-buildx-action action to v3.12.0 ([#214](https://github.com/aequitas-aod/aequitas-backend/issues/214)) ([a90bcac](https://github.com/aequitas-aod/aequitas-backend/commit/a90bcaca1aea07e71f68435f0120edecc58c2644))
+* **deps:** update node.js to 24.12 ([#211](https://github.com/aequitas-aod/aequitas-backend/issues/211)) ([ac3b019](https://github.com/aequitas-aod/aequitas-backend/commit/ac3b0197846dd0b76798d84e966ca73e71527816))
+
+### Bug Fixes
+
+* **deps:** update dependency flask-cors to v6.0.2 ([#213](https://github.com/aequitas-aod/aequitas-backend/issues/213)) ([66d29e5](https://github.com/aequitas-aod/aequitas-backend/commit/66d29e55b0391eb4f1152fe9351e2aaed82b556a))
+
 ## [1.19.4](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.3...v1.19.4) (2025-12-02)
 
 ### Bug Fixes
