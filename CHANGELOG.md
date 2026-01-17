@@ -1,3 +1,19 @@
+## [1.19.6](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.5...v1.19.6) (2026-01-17)
+
+### Dependency updates
+
+* **deps:** update dependency coverage to v7.13.1 ([#218](https://github.com/aequitas-aod/aequitas-backend/issues/218)) ([383e5ce](https://github.com/aequitas-aod/aequitas-backend/commit/383e5ceb4a02cf8dbd2de2b148068197247addfe))
+* **deps:** update dependency poethepoet to v0.39.0 ([#217](https://github.com/aequitas-aod/aequitas-backend/issues/217)) ([20cc26a](https://github.com/aequitas-aod/aequitas-backend/commit/20cc26aca52a6ad87bb4b95b6ff593e2675f9679))
+* **deps:** update dependency poethepoet to v0.40.0 ([#219](https://github.com/aequitas-aod/aequitas-backend/issues/219)) ([d9111d5](https://github.com/aequitas-aod/aequitas-backend/commit/d9111d542a214a5fa69160c027b57e5810941203))
+* **deps:** update dependency python-on-whales to v0.80.0 ([#220](https://github.com/aequitas-aod/aequitas-backend/issues/220)) ([277abf5](https://github.com/aequitas-aod/aequitas-backend/commit/277abf50d05a55c18d5856091812b7afb14ce4da))
+* **deps:** update dependency reportlab to v4.4.7 ([#216](https://github.com/aequitas-aod/aequitas-backend/issues/216)) ([0064c13](https://github.com/aequitas-aod/aequitas-backend/commit/0064c13e23dcce5f7f7898b8910bd5bae5f7fc91))
+* **deps:** update neo4j docker tag to v2025.11 ([#215](https://github.com/aequitas-aod/aequitas-backend/issues/215)) ([8abffd4](https://github.com/aequitas-aod/aequitas-backend/commit/8abffd4313aa0414a9e3e977024385a4d966360f))
+* **deps:** update neo4j docker tag to v2025.12 ([#225](https://github.com/aequitas-aod/aequitas-backend/issues/225)) ([3702fbf](https://github.com/aequitas-aod/aequitas-backend/commit/3702fbf693f46068039da069668c33e8129485b2))
+
+### Bug Fixes
+
+* **deps:** update dependency neo4j to v6.1.0 ([#221](https://github.com/aequitas-aod/aequitas-backend/issues/221)) ([ac80518](https://github.com/aequitas-aod/aequitas-backend/commit/ac80518e2815a96d3b36286323f3510a0e931ea6))
+
 ## [1.19.5](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.4...v1.19.5) (2025-12-19)
 
 ### Dependency updates
