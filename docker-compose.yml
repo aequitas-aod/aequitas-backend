@@ -71,7 +71,7 @@ services:
           target: /home/aequitas-backend
 
   db:
-    image: neo4j:2025.12
+    image: neo4j:2026.01
 #    platform: *platform
     container_name: ${DB_HOST}
     restart: always
