@@ -1,3 +1,25 @@
+## [1.19.7](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.6...v1.19.7) (2026-02-19)
+
+### Dependency updates
+
+* **deps:** update actions/setup-node action to v6.2.0 ([#223](https://github.com/aequitas-aod/aequitas-backend/issues/223)) ([a8321a7](https://github.com/aequitas-aod/aequitas-backend/commit/a8321a73341bc6935903c43fa41901bf32c6295b))
+* **deps:** update dependency coverage to v7.13.2 ([#231](https://github.com/aequitas-aod/aequitas-backend/issues/231)) ([572335e](https://github.com/aequitas-aod/aequitas-backend/commit/572335e4aebca8e7c5b4e91a99a824a5182d2e6f))
+* **deps:** update dependency coverage to v7.13.3 ([#233](https://github.com/aequitas-aod/aequitas-backend/issues/233)) ([edc0098](https://github.com/aequitas-aod/aequitas-backend/commit/edc00980d22b232ac8029261b131278835c26e45))
+* **deps:** update dependency coverage to v7.13.4 ([#236](https://github.com/aequitas-aod/aequitas-backend/issues/236)) ([2ff430a](https://github.com/aequitas-aod/aequitas-backend/commit/2ff430a3fbc3ce4060cfa70991d17e067a180f5a))
+* **deps:** update dependency poethepoet to v0.41.0 ([#235](https://github.com/aequitas-aod/aequitas-backend/issues/235)) ([b864636](https://github.com/aequitas-aod/aequitas-backend/commit/b864636f7aae07e067e8ec02ef9e373481b77c5c))
+* **deps:** update dependency poetry to v2.3.0 ([#227](https://github.com/aequitas-aod/aequitas-backend/issues/227)) ([80dc721](https://github.com/aequitas-aod/aequitas-backend/commit/80dc7210eb53a1db3b7888e453e34d5fdd1c05d3))
+* **deps:** update dependency poetry to v2.3.1 ([#228](https://github.com/aequitas-aod/aequitas-backend/issues/228)) ([e3683e6](https://github.com/aequitas-aod/aequitas-backend/commit/e3683e66fa5dfd86a3b826d451ab11a61382702e))
+* **deps:** update dependency poetry to v2.3.2 ([#232](https://github.com/aequitas-aod/aequitas-backend/issues/232)) ([9b6dbcb](https://github.com/aequitas-aod/aequitas-backend/commit/9b6dbcbdc150ba7c31b78fd41f90a604ac58cf31))
+* **deps:** update dependency reportlab to v4.4.10 ([#237](https://github.com/aequitas-aod/aequitas-backend/issues/237)) ([bb7bca7](https://github.com/aequitas-aod/aequitas-backend/commit/bb7bca76ad957b1dfecf133c7515e0a59fe69efb))
+* **deps:** update dependency reportlab to v4.4.9 ([#224](https://github.com/aequitas-aod/aequitas-backend/issues/224)) ([2a0b581](https://github.com/aequitas-aod/aequitas-backend/commit/2a0b5813bd8aab88d1064e6ad22a846873e203a2))
+* **deps:** update dependency torch to v2.10.0 ([#229](https://github.com/aequitas-aod/aequitas-backend/issues/229)) ([6b2c114](https://github.com/aequitas-aod/aequitas-backend/commit/6b2c114ccb3dbadcb58ddd672c76e135041cde09))
+* **deps:** update neo4j docker tag to v2026 ([#234](https://github.com/aequitas-aod/aequitas-backend/issues/234)) ([e6aa9b9](https://github.com/aequitas-aod/aequitas-backend/commit/e6aa9b993a6554f98d49ee2057a6318fe4518b9a))
+* **deps:** update node.js to 24.13 ([#222](https://github.com/aequitas-aod/aequitas-backend/issues/222)) ([3879124](https://github.com/aequitas-aod/aequitas-backend/commit/38791244de3338d1c283c65894a82c71e555fc15))
+
+### Bug Fixes
+
+* **deps:** update dependency flask to v3.1.3 ([#238](https://github.com/aequitas-aod/aequitas-backend/issues/238)) ([4ede54b](https://github.com/aequitas-aod/aequitas-backend/commit/4ede54b3c3da39aec9ecbbef2ebcb2fde699316a))
+
 ## [1.19.6](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.5...v1.19.6) (2026-01-17)
 
 ### Dependency updates
