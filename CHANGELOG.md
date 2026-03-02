@@ -1,3 +1,15 @@
+## [1.19.8](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.7...v1.19.8) (2026-03-02)
+
+### Dependency updates
+
+* **deps:** update dependency poethepoet to v0.42.0 ([#239](https://github.com/aequitas-aod/aequitas-backend/issues/239)) ([f091ca9](https://github.com/aequitas-aod/aequitas-backend/commit/f091ca938214f157bb3ef88cea6d525a11ef1644))
+* **deps:** update dependency poethepoet to v0.42.1 ([#241](https://github.com/aequitas-aod/aequitas-backend/issues/241)) ([4df26a1](https://github.com/aequitas-aod/aequitas-backend/commit/4df26a1e399956ac484d1258798f5a750ab696fc))
+* **deps:** update node.js to 24.14 ([#240](https://github.com/aequitas-aod/aequitas-backend/issues/240)) ([98352ba](https://github.com/aequitas-aod/aequitas-backend/commit/98352ba41adfdb4aecc73d28f44378c8d7e0add2))
+
+### Bug Fixes
+
+* **deps:** update dependency python-dotenv to v1.2.2 ([#242](https://github.com/aequitas-aod/aequitas-backend/issues/242)) ([89f0385](https://github.com/aequitas-aod/aequitas-backend/commit/89f038504095aad972c591d8a2d3fcae90736039))
+
 ## [1.19.7](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.6...v1.19.7) (2026-02-19)
 
 ### Dependency updates
