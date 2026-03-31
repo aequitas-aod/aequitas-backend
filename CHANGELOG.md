@@ -1,3 +1,18 @@
+## [1.19.9](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.8...v1.19.9) (2026-03-31)
+
+### Dependency updates
+
+* **deps:** update actions/setup-node action to v6.3.0 ([#243](https://github.com/aequitas-aod/aequitas-backend/issues/243)) ([fbec715](https://github.com/aequitas-aod/aequitas-backend/commit/fbec7151f1d7b5995d0a9c62b9c888314f950a7e))
+* **deps:** update dependency python-on-whales to v0.81.0 ([#248](https://github.com/aequitas-aod/aequitas-backend/issues/248)) ([4f3255e](https://github.com/aequitas-aod/aequitas-backend/commit/4f3255e8ad62c7d23e8f396096c3a8eab8014855))
+* **deps:** update docker/login-action action to v4 ([#245](https://github.com/aequitas-aod/aequitas-backend/issues/245)) ([292c0e4](https://github.com/aequitas-aod/aequitas-backend/commit/292c0e44e69b91dff39622f06c3f048538dab65b))
+* **deps:** update docker/setup-buildx-action action to v4 ([#246](https://github.com/aequitas-aod/aequitas-backend/issues/246)) ([30eed5b](https://github.com/aequitas-aod/aequitas-backend/commit/30eed5b3c582f70d4e4b8912405a5bb9ef9bd3dd))
+* **deps:** update docker/setup-qemu-action action to v4 ([#244](https://github.com/aequitas-aod/aequitas-backend/issues/244)) ([69df23a](https://github.com/aequitas-aod/aequitas-backend/commit/69df23a4d97986f510657bd5e30815c4f5dc1d3d))
+* **deps:** update neo4j docker tag to v2026.02 ([#247](https://github.com/aequitas-aod/aequitas-backend/issues/247)) ([0f0c57a](https://github.com/aequitas-aod/aequitas-backend/commit/0f0c57afae63119e24c238d1d37abe5ca3237ddd))
+
+### Bug Fixes
+
+* **deps:** update dependency requests to v2.33.0 [security] ([#250](https://github.com/aequitas-aod/aequitas-backend/issues/250)) ([56824f3](https://github.com/aequitas-aod/aequitas-backend/commit/56824f33fdcff1c50dce6bc4dbc19b8ea9685e5f))
+
 ## [1.19.8](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.7...v1.19.8) (2026-03-02)
 
 ### Dependency updates
