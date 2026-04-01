@@ -1,3 +1,14 @@
+## [1.19.10](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.9...v1.19.10) (2026-04-01)
+
+### Dependency updates
+
+* **deps:** update dependency coverage to v7.13.5 ([#251](https://github.com/aequitas-aod/aequitas-backend/issues/251)) ([769c6f1](https://github.com/aequitas-aod/aequitas-backend/commit/769c6f1ce6c6a25e1bc3630cbd810f9238955ead))
+* **deps:** update dependency poetry to v2.3.3 ([#252](https://github.com/aequitas-aod/aequitas-backend/issues/252)) ([eab6aba](https://github.com/aequitas-aod/aequitas-backend/commit/eab6aba868e88f1365db41c25aad3ed71e9b61b7))
+
+### Bug Fixes
+
+* **deps:** update dependency requests to v2.33.1 ([#253](https://github.com/aequitas-aod/aequitas-backend/issues/253)) ([419fd61](https://github.com/aequitas-aod/aequitas-backend/commit/419fd610509b94f9569950c3996ad64206e6ce9d))
+
 ## [1.19.9](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.8...v1.19.9) (2026-03-31)
 
 ### Dependency updates
