@@ -1,3 +1,17 @@
+## [1.19.11](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.10...v1.19.11) (2026-04-13)
+
+### Dependency updates
+
+* **deps:** update dependency poethepoet to v0.43.0 ([#256](https://github.com/aequitas-aod/aequitas-backend/issues/256)) ([99ace1a](https://github.com/aequitas-aod/aequitas-backend/commit/99ace1ae7498125923e60ace7dfb5a92b1cb50b1))
+* **deps:** update dependency poethepoet to v0.44.0 ([#257](https://github.com/aequitas-aod/aequitas-backend/issues/257)) ([b978925](https://github.com/aequitas-aod/aequitas-backend/commit/b978925fc8949f1cdb8cedf2bb7af8fd3f7da51b))
+* **deps:** update dependency poetry to v2.3.4 ([#258](https://github.com/aequitas-aod/aequitas-backend/issues/258)) ([edb1377](https://github.com/aequitas-aod/aequitas-backend/commit/edb137711cdf079bdb0b9bcdc252f8de41b46242))
+* **deps:** update dependency torch to v2.11.0 ([#254](https://github.com/aequitas-aod/aequitas-backend/issues/254)) ([2d3bb7b](https://github.com/aequitas-aod/aequitas-backend/commit/2d3bb7bbd0d27bb9b181b856fd5800e4a170ecc4))
+* **deps:** update neo4j docker tag to v2026.03 ([#255](https://github.com/aequitas-aod/aequitas-backend/issues/255)) ([2f656c0](https://github.com/aequitas-aod/aequitas-backend/commit/2f656c0a115474090065655914680e50f3e29ca3))
+
+### Bug Fixes
+
+* **deps:** update dependency pydantic to v2.13.0 ([#259](https://github.com/aequitas-aod/aequitas-backend/issues/259)) ([ce9399c](https://github.com/aequitas-aod/aequitas-backend/commit/ce9399c3f8376de5efe250da20a08553afccbabb))
+
 ## [1.19.10](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.9...v1.19.10) (2026-04-01)
 
 ### Dependency updates
