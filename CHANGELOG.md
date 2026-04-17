@@ -1,3 +1,9 @@
+## [1.19.13](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.12...v1.19.13) (2026-04-17)
+
+### Bug Fixes
+
+* **deps:** update dependency pydantic to v2.13.2 ([#262](https://github.com/aequitas-aod/aequitas-backend/issues/262)) ([a9d24cd](https://github.com/aequitas-aod/aequitas-backend/commit/a9d24cd2cdf5c6058e366c9b1f03109a05bfb2c2))
+
 ## [1.19.12](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.11...v1.19.12) (2026-04-16)
 
 ### Dependency updates
