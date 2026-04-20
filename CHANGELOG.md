@@ -1,3 +1,13 @@
+## [1.19.14](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.13...v1.19.14) (2026-04-20)
+
+### Dependency updates
+
+* **deps:** update actions/setup-node action to v6.4.0 ([#263](https://github.com/aequitas-aod/aequitas-backend/issues/263)) ([da325f1](https://github.com/aequitas-aod/aequitas-backend/commit/da325f19bdef6192d84c7c58cde45ea206e0d16f))
+
+### Bug Fixes
+
+* **deps:** update dependency pydantic to v2.13.3 ([#264](https://github.com/aequitas-aod/aequitas-backend/issues/264)) ([1edf559](https://github.com/aequitas-aod/aequitas-backend/commit/1edf559ddb8a15512f6c214cfef53777b35c514a))
+
 ## [1.19.13](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.12...v1.19.13) (2026-04-17)
 
 ### Bug Fixes
