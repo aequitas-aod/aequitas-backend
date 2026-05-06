@@ -1,3 +1,18 @@
+## [1.19.15](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.14...v1.19.15) (2026-05-06)
+
+### Dependency updates
+
+* **deps:** update adityagarg8/remove-unwanted-software action to v5 ([#265](https://github.com/aequitas-aod/aequitas-backend/issues/265)) ([767add2](https://github.com/aequitas-aod/aequitas-backend/commit/767add2b752e4d2dc59136d53468fc0a3c1b0589))
+* **deps:** update dependency matplotlib to v3.10.9 ([#267](https://github.com/aequitas-aod/aequitas-backend/issues/267)) ([ad8e758](https://github.com/aequitas-aod/aequitas-backend/commit/ad8e758232d86a15e5ed4bff29613377d3a328fc))
+* **deps:** update dependency poethepoet to v0.45.0 ([#269](https://github.com/aequitas-aod/aequitas-backend/issues/269)) ([7f69fe3](https://github.com/aequitas-aod/aequitas-backend/commit/7f69fe31a7c3bfa0c605a7e21b5b064d9a63f594))
+* **deps:** update dependency poetry to v2.4.0 ([#271](https://github.com/aequitas-aod/aequitas-backend/issues/271)) ([9d589ce](https://github.com/aequitas-aod/aequitas-backend/commit/9d589cebb321211605b95bd9a1c59cbf46ed5ddb))
+* **deps:** update dependency reportlab to v4.5.0 ([#270](https://github.com/aequitas-aod/aequitas-backend/issues/270)) ([8766b89](https://github.com/aequitas-aod/aequitas-backend/commit/8766b894f562905180879bd63b3f0efc78b21c81))
+* **deps:** update neo4j docker tag to v2026.04 ([#266](https://github.com/aequitas-aod/aequitas-backend/issues/266)) ([b460893](https://github.com/aequitas-aod/aequitas-backend/commit/b460893c8511d92d63a8b14abfa0e60dc0ca7b1a))
+
+### Bug Fixes
+
+* **deps:** update dependency pydantic to v2.13.4 ([#273](https://github.com/aequitas-aod/aequitas-backend/issues/273)) ([6e580fb](https://github.com/aequitas-aod/aequitas-backend/commit/6e580fb18d73051141ea9009a93d3114d1d46fb8))
+
 ## [1.19.14](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.13...v1.19.14) (2026-04-20)
 
 ### Dependency updates
