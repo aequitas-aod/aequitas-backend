@@ -1,3 +1,14 @@
+## [1.19.18](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.17...v1.19.18) (2026-05-14)
+
+### Dependency updates
+
+* **deps:** update dependency reportlab to v4.5.1 ([#277](https://github.com/aequitas-aod/aequitas-backend/issues/277)) ([6e43563](https://github.com/aequitas-aod/aequitas-backend/commit/6e43563dc38be34413e1dc9d9725353ed8cd779d))
+* **deps:** update dependency torch to v2.12.0 ([#278](https://github.com/aequitas-aod/aequitas-backend/issues/278)) ([effb4a4](https://github.com/aequitas-aod/aequitas-backend/commit/effb4a4983d7b69280eba14b9b4bb3e9bb352410))
+
+### Bug Fixes
+
+* **deps:** update dependency requests to v2.34.1 ([#279](https://github.com/aequitas-aod/aequitas-backend/issues/279)) ([c951144](https://github.com/aequitas-aod/aequitas-backend/commit/c951144fd894ebd518bdb58c9f3f912f5a6f7a6e))
+
 ## [1.19.17](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.16...v1.19.17) (2026-05-12)
 
 ### Dependency updates
