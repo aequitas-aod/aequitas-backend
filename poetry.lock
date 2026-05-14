@@ -2537,14 +2537,14 @@ shaping = ["uharfbuzz"]
 
 [[package]]
 name = "requests"
-version = "2.34.0"
+version = "2.34.1"
 description = "Python HTTP for Humans."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "requests-2.34.0-py3-none-any.whl", hash = "sha256:917520a21b767485ce7c588f4ebb917c436b24a31231b44228715eaeb5a52c60"},
-    {file = "requests-2.34.0.tar.gz", hash = "sha256:7d62fe92f50eb82c529b0916bb445afa1531a566fc8f35ffdc64446e771b856a"},
+    {file = "requests-2.34.1-py3-none-any.whl", hash = "sha256:bf38a3ff993960d3dd819c08862c40b3c703306eb7c744fcd9f4ddbb95b548f0"},
+    {file = "requests-2.34.1.tar.gz", hash = "sha256:0fc5669f2b69704449fe1552360bd2a73a54512dfd03e65529157f1513322beb"},
 ]
 
 [package.dependencies]
@@ -3250,4 +3250,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10.0,<3.15"
-content-hash = "7869d553602acd2d6cedf1220e6cfe1b7193862d2f2530cce926144c6b9c59af"
+content-hash = "759618cf317debd6f36157c3b9ae2fe766e3701991c5e25b7f9163e736e822dd"
