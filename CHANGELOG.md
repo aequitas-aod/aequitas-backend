@@ -1,3 +1,9 @@
+## [1.19.19](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.18...v1.19.19) (2026-05-15)
+
+### Bug Fixes
+
+* **deps:** update dependency requests to v2.34.2 ([#280](https://github.com/aequitas-aod/aequitas-backend/issues/280)) ([0514772](https://github.com/aequitas-aod/aequitas-backend/commit/0514772a832896710337daae231f3e270dce8c29))
+
 ## [1.19.18](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.17...v1.19.18) (2026-05-14)
 
 ### Dependency updates
