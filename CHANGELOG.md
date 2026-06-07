@@ -1,3 +1,19 @@
+## [1.19.20](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.19...v1.19.20) (2026-06-07)
+
+### Dependency updates
+
+* **deps:** update dependency coverage to v7.14.1 ([#285](https://github.com/aequitas-aod/aequitas-backend/issues/285)) ([a0832d0](https://github.com/aequitas-aod/aequitas-backend/commit/a0832d0a69e7c1e7051df7deae6e0244ee591768))
+* **deps:** update dependency poethepoet to v0.46.0 ([#281](https://github.com/aequitas-aod/aequitas-backend/issues/281)) ([a65fb79](https://github.com/aequitas-aod/aequitas-backend/commit/a65fb79510b98d83ea42f62397fd06e8c63e2554))
+* **deps:** update dependency scikit-learn to v1.9.0 ([#288](https://github.com/aequitas-aod/aequitas-backend/issues/288)) ([efd84d4](https://github.com/aequitas-aod/aequitas-backend/commit/efd84d4e473a2392621ac34c7f74830294b0bdd1))
+* **deps:** update docker/setup-buildx-action action to v4.1.0 ([#283](https://github.com/aequitas-aod/aequitas-backend/issues/283)) ([e437b81](https://github.com/aequitas-aod/aequitas-backend/commit/e437b815372de6d3474a7ec153044f37b45e12fc))
+* **deps:** update docker/setup-qemu-action action to v4.1.0 ([#286](https://github.com/aequitas-aod/aequitas-backend/issues/286)) ([4fc402c](https://github.com/aequitas-aod/aequitas-backend/commit/4fc402ca30a100647d63ea670dab41cd4dcd6541))
+* **deps:** update neo4j docker tag to v2026.05 ([#287](https://github.com/aequitas-aod/aequitas-backend/issues/287)) ([65b75e2](https://github.com/aequitas-aod/aequitas-backend/commit/65b75e2431c320936a20f5c220512dbb58c3be7f))
+* **deps:** update node.js to 24.16 ([#282](https://github.com/aequitas-aod/aequitas-backend/issues/282)) ([eb460f7](https://github.com/aequitas-aod/aequitas-backend/commit/eb460f76189d27e6fdc1aef797d2b52646b0f92b))
+
+### Bug Fixes
+
+* **deps:** update dependency flask-cors to v6.0.3 ([#289](https://github.com/aequitas-aod/aequitas-backend/issues/289)) ([16f647e](https://github.com/aequitas-aod/aequitas-backend/commit/16f647e6b3230fa15cd201b9b76839a79c4cb5bb))
+
 ## [1.19.19](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.18...v1.19.19) (2026-05-15)
 
 ### Bug Fixes
