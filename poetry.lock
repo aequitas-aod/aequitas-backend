@@ -2927,20 +2927,24 @@ files = [
 
 [[package]]
 name = "svglib"
-version = "1.5.1"
+version = "2.0.0"
 description = "A pure-Python library for reading and converting SVG"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "svglib-1.5.1.tar.gz", hash = "sha256:3ae765d3a9409ee60c0fb4d24c2deb6a80617aa927054f5bcd7fc98f0695e587"},
+    {file = "svglib-2.0.0-py3-none-any.whl", hash = "sha256:4d1ff77ff3a6986bc1f55cf3615518e2700554848b4039c7032941703619c8b3"},
+    {file = "svglib-2.0.0.tar.gz", hash = "sha256:ac94889c758635bb806b2964e5943e192ab68f66b9f9adfbe08178680c53b47f"},
 ]
 
 [package.dependencies]
 cssselect2 = ">=0.2.0"
-lxml = "*"
-reportlab = "*"
+lxml = ">=6.0.0"
+reportlab = ">=4.4.3"
 tinycss2 = ">=0.6.0"
+
+[package.extras]
+bitmaps = ["rlpycairo (>=0.4.0)"]
 
 [[package]]
 name = "sympy"
@@ -3246,4 +3250,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10.0,<3.15"
-content-hash = "89a95b4c796676281c59b7a45cb729d7d4b88d4f3a0b0375446b22a187077a33"
+content-hash = "04caed42567b0c1e3c512ffb7dc42b68c4ca57e2ee78edbb65087faee157c92f"
