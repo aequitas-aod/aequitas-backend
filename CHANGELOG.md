@@ -1,3 +1,9 @@
+## [1.19.24](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.23...v1.19.24) (2026-06-16)
+
+### Bug Fixes
+
+* **deps:** update dependency svglib to v2 ([#294](https://github.com/aequitas-aod/aequitas-backend/issues/294)) ([47ad952](https://github.com/aequitas-aod/aequitas-backend/commit/47ad952f0e63a61ec5bbea058817fd3f39ae365f))
+
 ## [1.19.23](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.22...v1.19.23) (2026-06-09)
 
 ### Bug Fixes
