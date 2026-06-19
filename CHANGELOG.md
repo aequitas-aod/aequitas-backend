@@ -1,3 +1,17 @@
+## [1.19.25](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.24...v1.19.25) (2026-06-19)
+
+### Dependency updates
+
+* **deps:** update actions/checkout action to v7 ([#299](https://github.com/aequitas-aod/aequitas-backend/issues/299)) ([ca9e231](https://github.com/aequitas-aod/aequitas-backend/commit/ca9e23157061c282478ddac34be330d593878201))
+* **deps:** update dependency svglib to v2.0.1 ([#295](https://github.com/aequitas-aod/aequitas-backend/issues/295)) ([92e8683](https://github.com/aequitas-aod/aequitas-backend/commit/92e8683b9e63a7458e0a6f536e9dbcb59e3ff6b9))
+* **deps:** update dependency svglib to v2.0.2 ([#298](https://github.com/aequitas-aod/aequitas-backend/issues/298)) ([b3f5fbb](https://github.com/aequitas-aod/aequitas-backend/commit/b3f5fbbcdee4f46b13e1e014c191a9c85115a95a))
+* **deps:** update dependency torch to v2.12.1 ([#296](https://github.com/aequitas-aod/aequitas-backend/issues/296)) ([1fff2b6](https://github.com/aequitas-aod/aequitas-backend/commit/1fff2b6113e8caad6fe766e89ef11669db4f8509))
+* **deps:** update node.js to 24.17 ([#297](https://github.com/aequitas-aod/aequitas-backend/issues/297)) ([47f2729](https://github.com/aequitas-aod/aequitas-backend/commit/47f272941b2a6020d52c95209bd7934901dcd8f1))
+
+### Bug Fixes
+
+* **deps:** update dependency reportlab to v5 ([#300](https://github.com/aequitas-aod/aequitas-backend/issues/300)) ([4084a10](https://github.com/aequitas-aod/aequitas-backend/commit/4084a10bfb3874e03120bb4dc7717ace4a335082))
+
 ## [1.19.24](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.23...v1.19.24) (2026-06-16)
 
 ### Bug Fixes
