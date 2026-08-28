@@ -1,3 +1,15 @@
+## [1.19.27](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.26...v1.19.27) (2026-08-28)
+
+### Dependency updates
+
+* **deps:** update dependency reportlab to v5.0.1 ([#326](https://github.com/aequitas-aod/aequitas-backend/issues/326)) ([5f4a38c](https://github.com/aequitas-aod/aequitas-backend/commit/5f4a38c5fcc3a58f289a95540f59bbdb5843f6d5))
+* **deps:** update docker/setup-buildx-action action to v4.3.0 ([#325](https://github.com/aequitas-aod/aequitas-backend/issues/325)) ([8e9081c](https://github.com/aequitas-aod/aequitas-backend/commit/8e9081cb7406336e9642a2a406b98bfa5c08f048))
+* **deps:** update node.js to 24.20 ([#327](https://github.com/aequitas-aod/aequitas-backend/issues/327)) ([f0d2ef6](https://github.com/aequitas-aod/aequitas-backend/commit/f0d2ef68dceb30e78b03a5039dcbef900cd1a985))
+
+### Bug Fixes
+
+* **deps:** update dependency neo4j to v6.3.0 ([#328](https://github.com/aequitas-aod/aequitas-backend/issues/328)) ([af5e3a3](https://github.com/aequitas-aod/aequitas-backend/commit/af5e3a378d305c48f5bd8defd5759ca4cfd364fc))
+
 ## [1.19.26](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.25...v1.19.26) (2026-08-16)
 
 ### Dependency updates
