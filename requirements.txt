@@ -1,2 +1,2 @@
-poetry==2.4.1
+poetry==2.4.2
 poethepoet==0.48.0
