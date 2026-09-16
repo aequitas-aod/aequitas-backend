@@ -1,3 +1,21 @@
+## [1.19.29](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.28...v1.19.29) (2026-09-16)
+
+### Dependency updates
+
+* **deps:** update dependency coverage to v7.16.0 ([#330](https://github.com/aequitas-aod/aequitas-backend/issues/330)) ([1a0e76c](https://github.com/aequitas-aod/aequitas-backend/commit/1a0e76c8a1cfdcda11399118e360be340bd503c7))
+* **deps:** update dependency coverage to v7.16.1 ([#338](https://github.com/aequitas-aod/aequitas-backend/issues/338)) ([4c70343](https://github.com/aequitas-aod/aequitas-backend/commit/4c70343ab2be18bc65c1053e022426d979b7ad24))
+* **deps:** update dependency poetry to v2.4.2 ([#331](https://github.com/aequitas-aod/aequitas-backend/issues/331)) ([ec05dae](https://github.com/aequitas-aod/aequitas-backend/commit/ec05daeb82431780f2ca1639cc10f5c3dbe20ea3))
+* **deps:** update dependency poetry to v2.4.3 ([#334](https://github.com/aequitas-aod/aequitas-backend/issues/334)) ([b9d15a8](https://github.com/aequitas-aod/aequitas-backend/commit/b9d15a8e14bf4bbd831cffb92696a06fc42f98a3))
+* **deps:** update dependency scikit-learn to v1.9.1 ([#336](https://github.com/aequitas-aod/aequitas-backend/issues/336)) ([0988345](https://github.com/aequitas-aod/aequitas-backend/commit/09883456445087f6b2d6703a8f7dfc437553d7af))
+* **deps:** update dependency torch to v2.14.0 ([#333](https://github.com/aequitas-aod/aequitas-backend/issues/333)) ([aca43d2](https://github.com/aequitas-aod/aequitas-backend/commit/aca43d2610d87fa359af5caca53ae238cbf4ff20))
+* **deps:** update docker/setup-qemu-action action to v4.3.0 ([#332](https://github.com/aequitas-aod/aequitas-backend/issues/332)) ([ef1c506](https://github.com/aequitas-aod/aequitas-backend/commit/ef1c5064051f871eee5067f19e7234edd4677a03))
+* **deps:** update neo4j docker tag to v2026.08 ([#337](https://github.com/aequitas-aod/aequitas-backend/issues/337)) ([939889a](https://github.com/aequitas-aod/aequitas-backend/commit/939889a8ab7f58d5f02d06aad9782cfaf7fe73d5))
+* **deps:** update node.js to 24.21 ([#335](https://github.com/aequitas-aod/aequitas-backend/issues/335)) ([bbe13ea](https://github.com/aequitas-aod/aequitas-backend/commit/bbe13eaddb0dce40cc2a43900083e305abf58e1f))
+
+### Bug Fixes
+
+* **deps:** update dependency neo4j to v6.3.1 ([#339](https://github.com/aequitas-aod/aequitas-backend/issues/339)) ([8a1114e](https://github.com/aequitas-aod/aequitas-backend/commit/8a1114ed510e82aa9ec32d07b5f35a3f47161ba4))
+
 ## [1.19.28](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.27...v1.19.28) (2026-08-29)
 
 ### Bug Fixes
