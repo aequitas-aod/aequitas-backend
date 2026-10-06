@@ -1,3 +1,13 @@
+## [1.19.31](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.30...v1.19.31) (2026-10-06)
+
+### Dependency updates
+
+* **deps:** update dependency svglib to v2.3.0 ([#348](https://github.com/aequitas-aod/aequitas-backend/issues/348)) ([7a66aa2](https://github.com/aequitas-aod/aequitas-backend/commit/7a66aa2bb37e3ac92354624834bde3ea41984327))
+
+### Bug Fixes
+
+* **deps:** update dependency neo4j to v6.4.0 ([#349](https://github.com/aequitas-aod/aequitas-backend/issues/349)) ([1be1841](https://github.com/aequitas-aod/aequitas-backend/commit/1be184161a8ee317ddf217ddc774f8cb3381978f))
+
 ## [1.19.30](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.29...v1.19.30) (2026-10-02)
 
 ### Dependency updates
