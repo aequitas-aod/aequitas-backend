@@ -1,3 +1,15 @@
+## [1.19.36](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.35...v1.19.36) (2026-11-05)
+
+### Dependency updates
+
+* **deps:** update dependency coverage to v7.17.1 ([#366](https://github.com/aequitas-aod/aequitas-backend/issues/366)) ([f588d78](https://github.com/aequitas-aod/aequitas-backend/commit/f588d7851a7f63389c0f1db528f3980145a2d58e))
+* **deps:** update dependency coverage to v7.17.2 ([#368](https://github.com/aequitas-aod/aequitas-backend/issues/368)) ([901809b](https://github.com/aequitas-aod/aequitas-backend/commit/901809be02d359c163cdf0d3b42bcb05e70c2536))
+* **deps:** update dependency svglib to v2.4.0 ([#367](https://github.com/aequitas-aod/aequitas-backend/issues/367)) ([406abbf](https://github.com/aequitas-aod/aequitas-backend/commit/406abbfbfaea4b1f1de3feb7e52cd38926883dcf))
+
+### Bug Fixes
+
+* **deps:** update dependency pydantic to v2.14.3 ([#369](https://github.com/aequitas-aod/aequitas-backend/issues/369)) ([58f312d](https://github.com/aequitas-aod/aequitas-backend/commit/58f312d4cf75a27b8f4fdd77da6dc59aa016a7f9))
+
 ## [1.19.35](https://github.com/aequitas-aod/aequitas-backend/compare/v1.19.34...v1.19.35) (2026-10-29)
 
 ### Dependency updates
