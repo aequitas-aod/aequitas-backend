@@ -3344,14 +3344,14 @@ files = [
 
 [[package]]
 name = "svglib"
-version = "2.4.0"
+version = "2.5.0"
 description = "A pure-Python library for reading and converting SVG"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "svglib-2.4.0-py3-none-any.whl", hash = "sha256:0c69c9a7ce14d375f70fed2572f8db7ff4bd7e714be9e6476e392c8703bde97a"},
-    {file = "svglib-2.4.0.tar.gz", hash = "sha256:90f58628ca7e6d48b40f638ad0dab472f2994f823eb33a623c8fa28e434ce574"},
+    {file = "svglib-2.5.0-py3-none-any.whl", hash = "sha256:778a111c63100504c0b10381efdd999bf140cf96585c51714d407813ae1d54c5"},
+    {file = "svglib-2.5.0.tar.gz", hash = "sha256:d7c908f6c942ba0b60f494939a80a6f5db35d28f73dffcfbc4ecabc58a2c6394"},
 ]
 
 [package.dependencies]
